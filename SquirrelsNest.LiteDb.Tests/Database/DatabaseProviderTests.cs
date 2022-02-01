@@ -7,6 +7,7 @@ using SquirrelsNest.LiteDb.Database;
 using Xunit;
 
 namespace SquirrelsNest.LiteDb.Tests.Database {
+    [Collection(nameof(SequentialCollection))]
     public class DatabaseProviderTests : IDisposable {
         private readonly IEnvironment           mEnvironment;
         private readonly IApplicationConstants  mConstants;

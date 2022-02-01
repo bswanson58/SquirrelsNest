@@ -42,6 +42,7 @@ namespace SquirrelsNest.LiteDb.Tests.Database {
         public new Either<Error, TestEntity> GetEntityById( ObjectId id ) => base.GetEntityById( id );
     }
 
+    [Collection(nameof(SequentialCollection))]
     public class EntityProviderTests : IDisposable {
         private readonly IEnvironment           mEnvironment;
         private readonly IApplicationConstants  mConstants;
