@@ -72,6 +72,7 @@ namespace SquirrelsNest.LiteDb.Database {
             return FindWithExpression( expression ); //.ToEither( Error.New );
         }
 
+        /*
         private Try<Unit> FindListWithExpression( string expression, Action<IEnumerable<T>> action ) {
             return Prelude.Try( () => {
                 WithCollection( c => action( c.Find( expression )));
@@ -84,7 +85,8 @@ namespace SquirrelsNest.LiteDb.Database {
             return ValidateAction( action )
                 .Bind( _ => FindListWithExpression( expression, action ).ToEither( Error.New ));
         }
-
+        */
+        /*
         private Try<Unit> QueryEntities( LiteDatabase db, Action<ILiteQueryable<T>> queryAction ) {
             return Prelude.Try( () => {
                 queryAction( Include( db.GetCollection<T>( mCollectionName )).Query());
@@ -98,7 +100,8 @@ namespace SquirrelsNest.LiteDb.Database {
                 .Bind( _ => CreateConnection())
                     .Bind( db => QueryEntities( db, action ).ToEither( Error.New ));
         }
-
+        */
+        /*
         private Try<Unit> SelectEntities( LiteDatabase db, Action<IEnumerable<T>> withAction ) {
             return Prelude.Try(  () => {
                 withAction( Include( db.GetCollection<T>( mCollectionName )).FindAll());
@@ -112,6 +115,7 @@ namespace SquirrelsNest.LiteDb.Database {
                 .Bind( _ => CreateConnection())
                     .Bind( db => SelectEntities( db, action ).ToEither( Error.New ));
         }
+        */
 
         private Try<ILiteQueryable<T>> GetQueryable( LiteDatabase db ) {
             return Prelude.Try( () => Include( db.GetCollection<T>( mCollectionName )).Query());
