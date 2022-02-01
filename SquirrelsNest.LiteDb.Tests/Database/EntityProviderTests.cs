@@ -39,7 +39,7 @@ namespace SquirrelsNest.LiteDb.Tests.Database {
         }
 
         public new Either<Error, Unit> InsertEntity( TestEntity entity ) => base.InsertEntity( entity );
-        public new Either<Error, Option<TestEntity>> GetEntityById( ObjectId id ) => base.GetEntityById( id );
+        public new Either<Error, TestEntity> GetEntityById( ObjectId id ) => base.GetEntityById( id );
     }
 
     public class EntityProviderTests : IDisposable {
@@ -60,9 +60,7 @@ namespace SquirrelsNest.LiteDb.Tests.Database {
         }
 
         private TestEntityProvider CreateSut() {
-            var databaseProvider = new DatabaseProvider( mEnvironment, mConstants );
-
-            return new TestEntityProvider( databaseProvider );
+            return new TestEntityProvider( new DatabaseProvider( mEnvironment, mConstants ));
         }
 
         [Fact]
@@ -84,9 +82,24 @@ namespace SquirrelsNest.LiteDb.Tests.Database {
             var result = sut.GetEntityById( entity.Id );
 
             result.IsRight.Should().BeTrue( "entity should be retrievable" );
-            result.Match( noError => noError.Match( retrieved => retrieved.Should().BeEquivalentTo( entity, "retrieved entity should be equivalent to stored entity." ),
-                                                    () => true.Should().BeFalse( "entity was not retrieved" )),
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+            result.Match( retrieved => retrieved.Should().BeEquivalentTo( entity, "retrieved entity should be equivalent to stored entity." ),
                           error => error.Should().BeNull( "entity retrieval caused an error" ));
+        }
+
+        [Fact]
+        public void NonExistingEntityShouldReturnError() {
+            var entity = new TestEntity( "One", 1 );
+            using var sut = CreateSut();
+
+            sut.InsertEntity( entity );
+            entity = new TestEntity( "Two", 2 );
+            var result = sut.GetEntityById( entity.Id );
+
+            result.IsLeft.Should().BeTrue( "entity should not be retrievable" );
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+            result.Match( retrieved => retrieved.Should().NotBeEquivalentTo( entity, "retrieved entity should not be found." ),
+                          error => error.Should().NotBeNull( "non retrieved entity should return an error" ));
         }
 
         private void DeleteDatabase() {

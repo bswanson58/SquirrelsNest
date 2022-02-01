@@ -126,10 +126,22 @@ namespace SquirrelsNest.LiteDb.Database {
             return Prelude.TryOption( () => Include( db.GetCollection<T>( mCollectionName )).FindById( id ));
         }
 
+        /*
+        // returns option.IsNone if an entity is not located
         protected Either<Error, Option<T>> GetEntityById( ObjectId id ) {
             return ValidateObjectId( id )
                 .Bind( _ => CreateConnection())
                     .Bind( db => GetEntityById( db, id ).ToEither( Error.New ));
+        }
+        */
+
+        // returns an error if the entity is not located.
+        protected Either<Error, T> GetEntityById( ObjectId id ) {
+            return ValidateObjectId( id )
+                .Bind( _ => CreateConnection())
+                    .Bind( db => GetEntityById( db, id ).ToEither( Error.New ))
+                        .Bind( x => x.IsNone ? Prelude.Left<Error, T>( Error.New( "Entity was not found by ID" ))
+                                             : Prelude.Right<Error, T>( x.AsEnumerable().First()));
         }
 
         private Try<Unit> InsertEntity( LiteDatabase db, T entity ) {
