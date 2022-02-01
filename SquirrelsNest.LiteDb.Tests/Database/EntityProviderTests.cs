@@ -19,8 +19,8 @@ namespace SquirrelsNest.LiteDb.Tests.Database {
         // ReSharper restore MemberCanBePrivate.Global
 
         // ReSharper disable once MemberCanBePrivate.Global
-        public TestEntity( ObjectId id, string name, int number ) :
-            base( id ) {
+        public TestEntity( ObjectId id, string name, int number ) {
+            Id = id;
             Name = name;
             Number = number;
         }

@@ -3,10 +3,10 @@
 namespace SquirrelsNest.LiteDb.Dto {
     internal class DbBase {
         [BsonId]
-        public  ObjectId    Id { get; }
+        public  ObjectId    Id { get; set; }
 
-        protected DbBase( ObjectId id ) {
-            Id = id;
+        protected DbBase() {
+            Id = ObjectId.Empty;
         }
     }
 }
