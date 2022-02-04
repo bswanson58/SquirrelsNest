@@ -34,10 +34,18 @@ namespace SquirrelsNest.LiteDb.Tests.Database {
         internal TestEntityProvider( IDatabaseProvider databaseProvider )
             : base( databaseProvider, "TestEntities" ) { }
 
-        protected override void InitializeDatabase( LiteDatabase db ) {
-            BsonMapper.Global.Entity<TestEntity>().Id( e => e.Id );
+        protected override Either<Error, LiteDatabase> InitializeDatabase( LiteDatabase db ) {
+            try {
+                BsonMapper.Global.Entity<TestEntity>().Id( e => e.Id );
+            }
+            catch( Exception ex ) {
+                return Error.New( ex );
+            }
+
+            return db;
         }
 
+        // methods are protected, make them public
         public new Either<Error, Unit> InsertEntity( TestEntity entity ) => base.InsertEntity( entity );
         public new Either<Error, Unit> DeleteEntity( TestEntity entity ) => base.DeleteEntity( entity );
         public new Either<Error, Unit> UpdateEntity( TestEntity entity ) => base.UpdateEntity( entity );

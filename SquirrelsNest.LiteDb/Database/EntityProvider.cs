@@ -8,29 +8,26 @@ namespace SquirrelsNest.LiteDb.Database {
     internal class EntityProvider<T> : ValidationBase<T>, IDisposable where T : DbBase {
         private readonly IDatabaseProvider  mDatabaseProvider;
         private readonly string             mCollectionName;
-        private LiteDatabase ?              mDatabase;
+        private Option<LiteDatabase>        mDatabase;
 
         internal EntityProvider( IDatabaseProvider databaseProvider, string collectionName ) {
             mDatabaseProvider = databaseProvider;
             mCollectionName = collectionName;
+
+            mDatabase = Option<LiteDatabase>.None;
         }
 
         protected Either<Error, LiteDatabase> CreateConnection() {
-            if( mDatabase == null ) {
+            if( mDatabase.IsNone ) {
                 return mDatabaseProvider.GetDatabase()
-                    .Map( db => {
-                        mDatabase = db;
-
-                        InitializeDatabase( mDatabase );
-                        
-                        return mDatabase;
-                    });
+                        .Bind( InitializeDatabase )
+                            .Do( db => mDatabase = db );
             }
 
-            return mDatabase;
+            return mDatabase.ToEither( Error.New( "database should not be null" ));
         }
 
-        protected virtual void InitializeDatabase( LiteDatabase db ) { }
+        protected virtual Either<Error, LiteDatabase> InitializeDatabase( LiteDatabase db ) => db;
         protected virtual ILiteCollection<T> Include( ILiteCollection<T> list ) {
             return list;
         }
@@ -203,9 +200,9 @@ namespace SquirrelsNest.LiteDb.Database {
         }
 
         public void Dispose() {
-            if( mDatabase != null ) {
-                mDatabase.Dispose();
-                mDatabase = null;
+            if( mDatabase.IsSome ) {
+                mDatabase.Do( database => database.Dispose());
+                mDatabase = Option<LiteDatabase>.None;
             }
         }
     }
