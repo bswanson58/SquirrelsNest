@@ -44,9 +44,11 @@ namespace SquirrelsNest.LiteDb.Database {
         }
 
         protected Either<Error, Unit> WithCollection( Action<ILiteCollection<T>> action ) {
-            return ValidateAction( action )
-                .Bind( _ => CreateConnection())
-                    .Bind( db => ScanCollection( db, action ).ToEither( Error.New ));
+            return
+                from va in ValidateAction( action )
+                    from db in CreateConnection()
+                        from ret in ScanCollection( db, va ).ToEither( Error.New )
+                            select ret;
         }
 
         private Either<Error, T> FindWithExpression( string expression ) {
@@ -69,7 +71,7 @@ namespace SquirrelsNest.LiteDb.Database {
         }
 
         protected Either<Error, T> FindEntity( string expression ) {
-            return FindWithExpression( expression ); //.ToEither( Error.New );
+            return FindWithExpression( expression );
         }
 
         /*
@@ -157,9 +159,11 @@ namespace SquirrelsNest.LiteDb.Database {
         }
 
         protected Either<Error, Unit> InsertEntity( T entity ) {
-            return ValidateEntity( entity )
-                .Bind( _ => CreateConnection())
-                    .Bind( db => InsertEntity( db, entity ).ToEither( Error.New ));
+            return 
+                from ve in ValidateEntity( entity )
+                    from db in CreateConnection()
+                        from ret in InsertEntity( db, ve ).ToEither( Error.New )
+                            select ret;
         }
 
         private Try<Unit> UpdateEntity( LiteDatabase db, T entity ) {
@@ -173,9 +177,11 @@ namespace SquirrelsNest.LiteDb.Database {
         }
 
         protected Either<Error, Unit> UpdateEntity( T entity ) {
-            return ValidateEntity( entity )
-                .Bind( _ => CreateConnection())
-                    .Bind( db => UpdateEntity( db, entity ).ToEither( Error.New ));
+            return 
+                from ve in ValidateEntity( entity )
+                    from db in CreateConnection()
+                        from ret in UpdateEntity( db, ve ).ToEither( Error.New )
+                            select ret;
         }
 
         private Try<Unit> DeleteEntity( LiteDatabase db, T entity ) {
@@ -189,9 +195,11 @@ namespace SquirrelsNest.LiteDb.Database {
         }
 
         protected Either<Error, Unit> DeleteEntity( T entity ) {
-            return ValidateEntity( entity )
-                .Bind( _ => CreateConnection())
-                    .Bind( db => DeleteEntity( db, entity ).ToEither( Error.New ));
+            return 
+                from ve in ValidateEntity( entity )
+                    from db in CreateConnection()
+                        from ret in DeleteEntity( db, ve ).ToEither( Error.New )
+                            select ret;
         }
 
         public void Dispose() {
