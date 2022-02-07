@@ -1,10 +1,17 @@
 ﻿using System;
 using FluentAssertions;
 using SquirrelsNest.Common.Entities;
+using SquirrelsNest.Common.Platform;
 using Xunit;
 
 namespace SquirrelsNest.Common.Tests.Entities {
     public class SnProjectTests {
+        private readonly DateTime   mTestTime = new DateTime( 2000, 11, 30, 9, 45, 50 );
+
+        public SnProjectTests() {
+            DateTimeProvider.SetProvider( new TestTimeProvider( mTestTime ));
+        }
+
         [Fact]
         public void ProjectCannotBeCreatedWithEmptyName() {
             Assert.Throws<ApplicationException>(() => new SnProject( String.Empty, "prefix" ));
@@ -30,6 +37,13 @@ namespace SquirrelsNest.Common.Tests.Entities {
 
             sut.Should().BeEquivalentTo( original, options => options.Excluding( e => e.Name ));
             sut.Name.Should().Be( "new name" );
+        }
+
+        [Fact]
+        public void ProjectShouldBeCreatedWIthCurrentTime() {
+            var sut = new SnProject( "name", "prefix" );
+
+            sut.Inception.Should().Be( DateOnly.FromDateTime( mTestTime ), "project inception should be current date" );
         }
 
         [Fact]

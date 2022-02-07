@@ -1,4 +1,6 @@
-﻿namespace SquirrelsNest.Common.Entities {
+﻿using SquirrelsNest.Common.Platform;
+
+namespace SquirrelsNest.Common.Entities {
     public class SnProject : EntityBase {
         public  string      Name { get; }
         public  string      Description { get; }
@@ -28,7 +30,7 @@
             IssuePrefix = issuePrefix;
             NextIssueNumber = 100;
 
-            Inception = DateOnly.FromDateTime( DateTime.Now );
+            Inception = DateTimeProvider.Instance.CurrentDate;
         }
 
         public SnProject With( string ? name = null, string ? description = null, string ? repository = null, string ?  issuePrefix = null, int ? nextIssueNumber = null ) {
