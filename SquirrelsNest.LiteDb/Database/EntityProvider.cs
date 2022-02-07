@@ -27,7 +27,12 @@ namespace SquirrelsNest.LiteDb.Database {
             return mDatabase.ToEither( Error.New( "database should not be null" ));
         }
 
-        protected virtual Either<Error, LiteDatabase> InitializeDatabase( LiteDatabase db ) => db;
+        protected virtual Either<Error, LiteDatabase> InitializeDatabase( LiteDatabase db ) {
+            BsonMapper.Global.EmptyStringToNull = false;
+
+            return db;
+        }
+
         protected virtual ILiteCollection<T> Include( ILiteCollection<T> list ) {
             return list;
         }
