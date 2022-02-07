@@ -19,14 +19,15 @@ namespace SquirrelsNest.LiteDb.Tests.Database {
         // ReSharper restore MemberCanBePrivate.Global
 
         // ReSharper disable once MemberCanBePrivate.Global
-        public TestEntity( ObjectId id, string name, int number ) {
+        public TestEntity( ObjectId id, string entityId, string name, int number ) {
             Id = id;
+            EntityId = entityId;
             Name = name;
             Number = number;
         }
 
         public TestEntity( string name, int number ) :
-            this( ObjectId.NewObjectId(), name, number ) {
+            this( ObjectId.NewObjectId(), "entity id", name, number ) {
         }
     }
 
