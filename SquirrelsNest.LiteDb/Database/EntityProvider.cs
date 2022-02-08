@@ -152,15 +152,15 @@ namespace SquirrelsNest.LiteDb.Database {
                                              : Prelude.Right<Error, T>( x.AsEnumerable().First()));
         }
 
-        private Try<Unit> InsertEntity( LiteDatabase db, T entity ) {
+        private Try<T> InsertEntity( LiteDatabase db, T entity ) {
             return Prelude.Try( () => {
                 db.GetCollection<T>( mCollectionName ).Insert( entity );
 
-                return Unit.Default;
+                return entity;
             });
         }
 
-        protected Either<Error, Unit> InsertEntity( T entity ) {
+        protected Either<Error, T> InsertEntity( T entity ) {
             return 
                 from ve in ValidateEntity( entity )
                     from db in CreateConnection()

@@ -13,9 +13,8 @@ using Xunit;
 namespace SquirrelsNest.LiteDb.Tests.Database {
     internal class TestEntity : DbBase {
         // ReSharper disable MemberCanBePrivate.Global
-        // ReSharper disable UnusedAutoPropertyAccessor.Global
         public  string  Name { get; set; }
-        public  int     Number {  get; }
+        public  int     Number {  get; set; }
         // ReSharper restore MemberCanBePrivate.Global
 
         // ReSharper disable once MemberCanBePrivate.Global
@@ -29,6 +28,9 @@ namespace SquirrelsNest.LiteDb.Tests.Database {
         public TestEntity( string name, int number ) :
             this( ObjectId.NewObjectId(), "entity id", name, number ) {
         }
+
+        public TestEntity() :
+            this( ObjectId.Empty, String.Empty, String.Empty, 0 ) { }
     }
 
     internal class TestEntityProvider : EntityProvider<TestEntity> {
@@ -43,13 +45,13 @@ namespace SquirrelsNest.LiteDb.Tests.Database {
                 return Error.New( ex );
             }
 
-            return db;
+            return base.InitializeDatabase( db );
         }
 
         // methods are protected, make them public
-        public new Either<Error, Unit> InsertEntity( TestEntity entity ) => base.InsertEntity( entity );
-        public new Either<Error, Unit> DeleteEntity( TestEntity entity ) => base.DeleteEntity( entity );
-        public new Either<Error, Unit> UpdateEntity( TestEntity entity ) => base.UpdateEntity( entity );
+        public new Either<Error, TestEntity> InsertEntity( TestEntity entity ) => base.InsertEntity( entity );
+        public new Either<Error, Unit>       DeleteEntity( TestEntity entity ) => base.DeleteEntity( entity );
+        public new Either<Error, Unit>       UpdateEntity( TestEntity entity ) => base.UpdateEntity( entity );
 
         public new Either<Error, TestEntity> GetEntityById( ObjectId id ) => base.GetEntityById( id );
         public new Either<Error, TestEntity> FindEntity( string expression ) => base.FindEntity( expression );
@@ -86,6 +88,20 @@ namespace SquirrelsNest.LiteDb.Tests.Database {
             var result = sut.InsertEntity( entity );
 
             result.IsRight.Should().BeTrue( "entity should be inserted without error" );
+        }
+
+        [Fact]
+        public void AddingEntityShouldUpdateId() {
+            var entity = new TestEntity();
+            var id = entity.Id;
+            using var sut = CreateSut();
+            sut.InsertEntity( entity );
+
+            var result = sut.GetEntityById( entity.Id );
+
+            // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+            result.Match( retrieved => retrieved.Id.Should().NotBe( id, "retrieved entity id should be updated." ),
+                          error => error.Should().BeNull( "entity retrieval caused an error" ));
         }
 
         [Fact]
