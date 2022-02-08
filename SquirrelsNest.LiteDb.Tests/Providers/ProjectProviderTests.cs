@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using AutoMapper;
 using FluentAssertions;
 using LiteDB;
 using NSubstitute;
@@ -19,7 +18,6 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
         private readonly IEnvironment           mEnvironment;
         private readonly IApplicationConstants  mConstants;
         private readonly DateTime               mTestTime;
-        private readonly IMapper                mMapper;
 
         private string      TestDirectory => Path.GetTempPath();
         private string      DatabaseFile => Path.Combine( mEnvironment.DatabaseDirectory(), mConstants.DatabaseFileName );
@@ -35,13 +33,11 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
             mConstants = Substitute.For<IApplicationConstants>();
             mConstants.DatabaseFileName.Returns( "Project.DB" );
 
-            mMapper = new MapperConfiguration( cfg => cfg.AddMaps( typeof( DbMappingProfile ))).CreateMapper();
-
             DeleteDatabase();
         }
 
         private IProjectProvider CreateSut() {
-            return new ProjectProvider( new DatabaseProvider( mEnvironment, mConstants ), mMapper );
+            return new ProjectProvider( new DatabaseProvider( mEnvironment, mConstants ));
         }
 
         [Fact]

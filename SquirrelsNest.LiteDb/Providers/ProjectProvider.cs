@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using LanguageExt;
+﻿using LanguageExt;
 using LanguageExt.Common;
 using LiteDB;
 using SquirrelsNest.Common.Entities;
@@ -10,11 +9,8 @@ using SquirrelsNest.LiteDb.Dto;
 
 namespace SquirrelsNest.LiteDb.Providers {
     internal class ProjectProvider : EntityProvider<DbProject>, IProjectProvider {
-        private readonly IMapper    mMapper;
-
-        public ProjectProvider( IDatabaseProvider databaseProvider, IMapper mapper )
+        public ProjectProvider( IDatabaseProvider databaseProvider )
             : base( databaseProvider, DbCollectionNames.ProjectCollection ) {
-            mMapper = mapper;
         }
 
         protected override Either<Error, LiteDatabase> InitializeDatabase( LiteDatabase db ) {
@@ -44,7 +40,8 @@ namespace SquirrelsNest.LiteDb.Providers {
 
         public Either<Error, IEnumerable<SnProject>> GetProjects() {
             return GetList()
-                .Map( projectList => mMapper.Map<IEnumerable<SnProject>>( projectList.ToEnumerable()));
+                .Map( projectList => projectList.ToEnumerable())
+                .Map( entityList => from entity in entityList select entity.ToEntity());
         }
     }
 }
