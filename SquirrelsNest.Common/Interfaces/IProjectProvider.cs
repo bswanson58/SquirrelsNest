@@ -1,15 +1,15 @@
 ﻿using LanguageExt;
 using LanguageExt.Common;
 using SquirrelsNest.Common.Entities;
-using SquirrelsNest.Common.Types;
+using SquirrelsNest.Common.Values;
 
 namespace SquirrelsNest.Common.Interfaces {
     public interface IProjectProvider : IDisposable {
-        Either<Error, Unit>                     AddProject( SnProject project );
+        Either<Error, SnProject>                AddProject( SnProject project );
         Either<Error, Unit>                     UpdateProject( SnProject project );
         Either<Error, Unit>                     DeleteProject( SnProject project );
 
-        Either<Error, SnProject>                GetProject( IssueId byId );
+        Either<Error, SnProject>                GetProject( EntityId projectId );
         Either<Error, IEnumerable<SnProject>>   GetProjects();
     }
 }

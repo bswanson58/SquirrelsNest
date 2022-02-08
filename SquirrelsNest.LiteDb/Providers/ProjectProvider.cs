@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using LanguageExt;
 using LanguageExt.Common;
+using LiteDB;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
-using SquirrelsNest.Common.Types;
+using SquirrelsNest.Common.Values;
 using SquirrelsNest.LiteDb.Database;
 using SquirrelsNest.LiteDb.Dto;
 
@@ -16,22 +17,29 @@ namespace SquirrelsNest.LiteDb.Providers {
             mMapper = mapper;
         }
 
-        public Either<Error, Unit> AddProject( SnProject project ) {
-            return InsertEntity( mMapper.Map<DbProject>( project ));
+        protected override Either<Error, LiteDatabase> InitializeDatabase( LiteDatabase db ) {
+            BsonMapper.Global.Entity<DbProject>().Id( e => e.Id );
+
+            return base.InitializeDatabase( db );
+        }
+
+        public Either<Error, SnProject> AddProject( SnProject project ) {
+            return InsertEntity( DbProject.From( project ))
+                .Map( dbProject => dbProject.ToEntity());
         }
 
         public Either<Error, Unit> UpdateProject( SnProject project ) {
-            return UpdateEntity( mMapper.Map<DbProject>( project ));
+            return UpdateEntity( DbProject.From( project ));
         }
 
         public Either<Error, Unit> DeleteProject( SnProject project ) {
-            return DeleteEntity( mMapper.Map<DbProject>( project ));
+            return DeleteEntity( DbProject.From( project ));
         }
 
-        public Either<Error, SnProject> GetProject( IssueId byId ) {
-            return ValidateString( byId )
-                .Bind( _ => FindEntity( LiteDB.Query.EQ( nameof( DbProject.Name ), byId.Value )))
-                    .Map( dbProject => mMapper.Map<SnProject>( dbProject ));
+        public Either<Error, SnProject> GetProject( EntityId projectId ) {
+            return ValidateString( projectId )
+                .Bind( _ => FindEntity( LiteDB.Query.EQ( nameof( DbProject.EntityId ), projectId.Value )))
+                    .Map( dbProject => dbProject.ToEntity());
         }
 
         public Either<Error, IEnumerable<SnProject>> GetProjects() {
