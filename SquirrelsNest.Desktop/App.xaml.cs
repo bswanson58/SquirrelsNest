@@ -20,8 +20,8 @@ namespace SquirrelsNest.Desktop {
             base.OnStartup( e );
 
             mContainer
-                .RegisterModule( typeof( CoreModule ))
-                .RegisterModule( typeof( LiteDbModule ))
+                .RegisterModule<CoreModule>()
+                .RegisterModule<LiteDbModule>()
                 .RegisterViewModels( Assembly.GetExecutingAssembly())
                 .BuildDependencies();
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 using Autofac;
 using Autofac.Core;
@@ -13,28 +12,6 @@ namespace SquirrelsNest.Desktop.Ioc {
             mBuilder = new ContainerBuilder();
         }
 
-        public IDependencyContainer RegisterModules( IEnumerable<Type> containerModules ) {
-            if( mRootScope != null ) {
-                throw new ApplicationException( "All registrations must occur before building dependencies" );
-            }
-
-            foreach( var module in containerModules ) {
-                RegisterModule( module );
-            }
-
-            return this;
-        }
-
-        public IDependencyContainer RegisterModule( Type moduleClass ) {
-            if( mRootScope != null ) {
-                throw new ApplicationException( "All registrations must occur before building dependencies" );
-            }
-
-            mBuilder.RegisterAssemblyModules( moduleClass );
-
-            return this;
-        }
-
         public IDependencyContainer BuildDependencies() {
             if( mRootScope != null ) {
                 mRootScope.Dispose();
@@ -42,6 +19,26 @@ namespace SquirrelsNest.Desktop.Ioc {
             }
 
             mRootScope = mBuilder.Build();
+
+            return this;
+        }
+
+        public IDependencyContainer RegisterModule( IModule module ) {
+            if( mRootScope != null ) {
+                throw new ApplicationException( "All registrations must occur before building dependencies" );
+            }
+
+            mBuilder.RegisterModule( module );
+
+            return this;
+        }
+
+        public IDependencyContainer RegisterModule<T>() where T: IModule, new() {
+            if( mRootScope != null ) {
+                throw new ApplicationException( "All registrations must occur before building dependencies" );
+            }
+
+            mBuilder.RegisterModule<T>();
 
             return this;
         }
