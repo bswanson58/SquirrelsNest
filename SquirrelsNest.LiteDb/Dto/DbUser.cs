@@ -2,7 +2,6 @@
 
 namespace SquirrelsNest.LiteDb.Dto {
     internal class DbUser : DbBase {
-        protected DbUser( ObjectId id )
-            : base( id ) { }
+        protected DbUser() { }
     }
 }
