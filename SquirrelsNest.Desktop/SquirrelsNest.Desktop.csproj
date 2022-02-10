@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac" Version="6.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SquirrelsNest.Common\SquirrelsNest.Common.csproj" />
     <ProjectReference Include="..\SquirrelsNest.Core\SquirrelsNest.Core.csproj" />
     <ProjectReference Include="..\SquirrelsNest.LiteDb\SquirrelsNest.LiteDb.csproj" />
