@@ -67,6 +67,16 @@ namespace SquirrelsNest.Desktop.Ioc {
             return this;
         }
 
+        public IDependencyContainer RegisterDialog( Type viewType, string viewName ) {
+            if( mRootScope != null ) {
+                throw new ApplicationException( "All registrations must occur before building dependencies" );
+            }
+
+            mBuilder.RegisterType( viewType ).Named( viewName, typeof( object ));
+
+            return this;
+        }
+
         public void Stop() {
             mRootScope?.Dispose();
             mRootScope = null;

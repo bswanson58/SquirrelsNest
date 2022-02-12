@@ -8,6 +8,7 @@ namespace SquirrelsNest.Desktop.Ioc {
         IDependencyContainer    RegisterModule<T>() where T: IModule, new();
         IDependencyContainer    RegisterViewModels( Assembly forAssembly );
         IDependencyContainer    RegisterAsInterfaces( Assembly forAssembly, string classNameSuffix );
+        IDependencyContainer    RegisterDialog( Type viewType, string viewName );
         IDependencyContainer    BuildDependencies();
 
         void    Stop();
