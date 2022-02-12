@@ -51,16 +51,18 @@
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Text="Name:"/>
-            <TextBox Grid.Row="0" Grid.Column="2" Style="{StaticResource ErrorToolTip}" HorizontalAlignment="Left" Width="200" Text="{Binding Name}"/>
+            <TextBox Grid.Row="0" Grid.Column="2" Style="{StaticResource ErrorToolTip}" HorizontalAlignment="Left" Width="200"
+                     Text="{Binding Name, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
 
             <TextBlock Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" Text="Issue Prefix:"/>
-            <TextBox Grid.Row="2" Grid.Column="2" Width="50" Style="{StaticResource ErrorToolTip}" HorizontalAlignment="Left" Text="{Binding IssuePrefix}"/>
+            <TextBox Grid.Row="2" Grid.Column="2" Width="50" Style="{StaticResource ErrorToolTip}" HorizontalAlignment="Left"
+                     Text="{Binding IssuePrefix, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
         </Grid>
 
         <StackPanel Grid.Row="1" Margin="0,5,0,0" Orientation="Vertical">
             <TextBlock Margin="0,0,0,3" Text="Description:"/>
             <TextBox Height="50" TextWrapping="Wrap" AcceptsReturn="True" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
-                     Text="{Binding Description}"/>
+                     Text="{Binding Description, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
         </StackPanel>
 
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
