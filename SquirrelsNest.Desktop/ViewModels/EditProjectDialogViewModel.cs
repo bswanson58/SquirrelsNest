@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
@@ -6,6 +7,7 @@ using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
 
 namespace SquirrelsNest.Desktop.ViewModels {
+    // ReSharper disable once ClassNeverInstantiated.Global
     internal class EditProjectDialogViewModel : ObservableValidator, IDialogAware {
         public  const string    cProject = "project";
 
@@ -29,8 +31,10 @@ namespace SquirrelsNest.Desktop.ViewModels {
             mIssuePrefix = String.Empty;
             mDescription = String.Empty;
 
-            Ok = new RelayCommand( OnOk );
+            Ok = new RelayCommand( OnOk, CanExecuteOk );
             Cancel = new RelayCommand( OnCancel );
+
+            ErrorsChanged += OnErrorsUpdated;
         }
 
         public void OnDialogOpened( IDialogParameters parameters ) {
@@ -45,6 +49,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
                 OnPropertyChanged( nameof( IssuePrefix ));
                 OnPropertyChanged( nameof( Description ));
             }
+
+            ValidateAllProperties();
         }
 
         [Required( ErrorMessage = "Name is required" )]
@@ -78,12 +84,18 @@ namespace SquirrelsNest.Desktop.ViewModels {
             }
         }
 
+        private bool CanExecuteOk() => !HasErrors;
+
         private void OnCancel() {
             RaiseRequestClose(new DialogResult( ButtonResult.Cancel, new DialogParameters()));
         }
 
         protected virtual void RaiseRequestClose( IDialogResult dialogResult ) {
             RequestClose?.Invoke( dialogResult );
+        }
+
+        private void OnErrorsUpdated( object ? sender, DataErrorsChangedEventArgs args ) {
+            Ok.NotifyCanExecuteChanged();
         }
 
         public bool CanCloseDialog() => true;
