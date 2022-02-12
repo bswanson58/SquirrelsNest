@@ -1,8 +1,9 @@
 ﻿using System.Reflection;
 using System.Windows;
+using MvvmSupport;
+using MvvmSupport.ViewModelLocator;
 using SquirrelsNest.Core;
 using SquirrelsNest.Desktop.Ioc;
-using SquirrelsNest.Desktop.Mvvm;
 using SquirrelsNest.LiteDb;
 
 namespace SquirrelsNest.Desktop {
@@ -20,6 +21,8 @@ namespace SquirrelsNest.Desktop {
             base.OnStartup( e );
 
             mContainer
+                .RegisterModule<DesktopModule>()
+                .RegisterModule<MvvmSupportModule>()
                 .RegisterModule<CoreModule>()
                 .RegisterModule<LiteDbModule>()
                 .RegisterViewModels( Assembly.GetExecutingAssembly())
