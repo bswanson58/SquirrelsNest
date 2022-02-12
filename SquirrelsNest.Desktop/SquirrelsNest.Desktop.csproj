@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MvvmSupport\MvvmSupport.csproj" />
     <ProjectReference Include="..\SquirrelsNest.Common\SquirrelsNest.Common.csproj" />
     <ProjectReference Include="..\SquirrelsNest.Core\SquirrelsNest.Core.csproj" />
     <ProjectReference Include="..\SquirrelsNest.LiteDb\SquirrelsNest.LiteDb.csproj" />

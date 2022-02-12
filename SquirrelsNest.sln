@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SquirrelsNest.Desktop", "Sq
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SquirrelsNest.Common.Tests", "SquirrelsNest.Common.Tests\SquirrelsNest.Common.Tests.csproj", "{F3BF6AD3-C8FC-40A7-A09F-435888544F83}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SquirrelsNest.LiteDb.Tests", "SquirrelsNest.LiteDb.Tests\SquirrelsNest.LiteDb.Tests.csproj", "{6996DD20-E4D4-4891-B7CB-AE5E17B02209}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SquirrelsNest.LiteDb.Tests", "SquirrelsNest.LiteDb.Tests\SquirrelsNest.LiteDb.Tests.csproj", "{6996DD20-E4D4-4891-B7CB-AE5E17B02209}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvvmSupport", "MvvmSupport\MvvmSupport.csproj", "{1DF5A200-D23D-4813-B26A-C45B644BA1B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +73,14 @@ Global
 		{6996DD20-E4D4-4891-B7CB-AE5E17B02209}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6996DD20-E4D4-4891-B7CB-AE5E17B02209}.Release|x64.ActiveCfg = Release|Any CPU
 		{6996DD20-E4D4-4891-B7CB-AE5E17B02209}.Release|x64.Build.0 = Release|Any CPU
+		{1DF5A200-D23D-4813-B26A-C45B644BA1B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DF5A200-D23D-4813-B26A-C45B644BA1B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DF5A200-D23D-4813-B26A-C45B644BA1B0}.Debug|x64.ActiveCfg = Debug|x64
+		{1DF5A200-D23D-4813-B26A-C45B644BA1B0}.Debug|x64.Build.0 = Debug|x64
+		{1DF5A200-D23D-4813-B26A-C45B644BA1B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DF5A200-D23D-4813-B26A-C45B644BA1B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DF5A200-D23D-4813-B26A-C45B644BA1B0}.Release|x64.ActiveCfg = Release|Any CPU
+		{1DF5A200-D23D-4813-B26A-C45B644BA1B0}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

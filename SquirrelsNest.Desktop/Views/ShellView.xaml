@@ -3,12 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mvvm="clr-namespace:SquirrelsNest.Desktop.Mvvm"
              xmlns:viewModels="clr-namespace:SquirrelsNest.Desktop.ViewModels"
              xmlns:views="clr-namespace:SquirrelsNest.Desktop.Views"
+             xmlns:viewModelLocator="clr-namespace:MvvmSupport.ViewModelLocator;assembly=MvvmSupport"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             mvvm:ViewModelLocator.AutoWireViewModel="True"
+             viewModelLocator:ViewModelLocator.AutoWireViewModel="True"
              d:DataContext="{d:DesignInstance viewModels:ShellViewModel, IsDesignTimeCreatable=False}">
 
     <Grid Margin="10">
