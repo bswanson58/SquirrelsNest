@@ -6,6 +6,7 @@
              xmlns:viewModels="clr-namespace:SquirrelsNest.Desktop.ViewModels"
              xmlns:viewModelLocator="clr-namespace:MvvmSupport.ViewModelLocator;assembly=MvvmSupport"
              xmlns:dialogService="clr-namespace:MvvmSupport.DialogService;assembly=MvvmSupport"
+             xmlns:adorners="http://gu.se/Adorners"
              mc:Ignorable="d" 
              Height="250" Width="400"
              viewModelLocator:ViewModelLocator.AutoWireViewModel="True"
@@ -30,7 +31,7 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid Margin="10">
+    <Grid Margin="10" FocusManager.FocusedElement="{Binding ElementName=_firstFocus}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -51,8 +52,9 @@
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Text="Name:"/>
-            <TextBox Grid.Row="0" Grid.Column="2" Style="{StaticResource ErrorToolTip}" HorizontalAlignment="Left" Width="200"
-                     Text="{Binding Name, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+            <TextBox Grid.Row="0" Grid.Column="2" Style="{StaticResource ErrorToolTip}" HorizontalAlignment="Left" Width="200" x:Name="_firstFocus"
+                     Text="{Binding Name, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                     adorners:Watermark.Text="  enter project name" adorners:Watermark.VisibleWhen="Empty"/>
 
             <TextBlock Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" Text="Issue Prefix:"/>
             <TextBox Grid.Row="2" Grid.Column="2" Width="50" Style="{StaticResource ErrorToolTip}" HorizontalAlignment="Left"
