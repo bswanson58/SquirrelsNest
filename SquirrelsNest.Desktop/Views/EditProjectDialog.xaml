@@ -64,8 +64,8 @@
         </StackPanel>
 
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Width="70" Margin="10,0" Content="OK" Command="{Binding Ok}" IsDefault="True"/>
-            <Button Width="70" Content="Cancel" Command="{Binding Cancel}" IsCancel="True"/>
+            <Button Width="70" Margin="10,0" Content="OK" Command="{Binding AcceptCommand}" IsDefault="True"/>
+            <Button Width="70" Content="Cancel" Command="{Binding CancelCommand}" IsCancel="True"/>
         </StackPanel>
     </Grid>
 </UserControl>

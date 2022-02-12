@@ -1,14 +1,12 @@
 ﻿using System;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Mvvm.Input;
 using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
+using SquirrelsNest.Desktop.Support;
 
 namespace SquirrelsNest.Desktop.ViewModels {
     // ReSharper disable once ClassNeverInstantiated.Global
-    internal class EditProjectDialogViewModel : ObservableValidator, IDialogAware {
+    internal class EditProjectDialogViewModel : DialogAwareBase {
         public  const string    cProject = "project";
 
         private SnProject ?     mProject;
@@ -16,28 +14,15 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private string          mIssuePrefix;
         private string          mDescription;
 
-        public  IRelayCommand   Ok { get; }
-        public  IRelayCommand   Cancel { get; }
-
-        public string           Title { get; }
-
-        public event Action<IDialogResult> ? RequestClose;
-
         public EditProjectDialogViewModel() {
-            Name = String.Empty;
-            Title = "Project Properties";
+            SetTitle( "Project Properties");
 
             mName = String.Empty;
             mIssuePrefix = String.Empty;
             mDescription = String.Empty;
-
-            Ok = new RelayCommand( OnOk, CanExecuteOk );
-            Cancel = new RelayCommand( OnCancel );
-
-            ErrorsChanged += OnErrorsUpdated;
         }
 
-        public void OnDialogOpened( IDialogParameters parameters ) {
+        public override void OnDialogOpened( IDialogParameters parameters ) {
             mProject = parameters.GetValue<SnProject>( cProject );
 
             if( mProject != null ) {
@@ -74,7 +59,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
             set => SetProperty( ref mDescription, value, true );
         }
 
-        private void OnOk() {
+        protected override void OnAccept() {
             if(!HasErrors ) {
                 var project = mProject ?? new SnProject( Name, IssuePrefix );
 
@@ -83,22 +68,5 @@ namespace SquirrelsNest.Desktop.ViewModels {
                 RaiseRequestClose( new DialogResult( ButtonResult.Ok, new DialogParameters {{ cProject, project }}));
             }
         }
-
-        private bool CanExecuteOk() => !HasErrors;
-
-        private void OnCancel() {
-            RaiseRequestClose(new DialogResult( ButtonResult.Cancel, new DialogParameters()));
-        }
-
-        protected virtual void RaiseRequestClose( IDialogResult dialogResult ) {
-            RequestClose?.Invoke( dialogResult );
-        }
-
-        private void OnErrorsUpdated( object ? sender, DataErrorsChangedEventArgs args ) {
-            Ok.NotifyCanExecuteChanged();
-        }
-
-        public bool CanCloseDialog() => true;
-        public void OnDialogClosed() { }
     }
 }

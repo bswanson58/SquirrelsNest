@@ -58,6 +58,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
                     if( editedProject != null ) {
                         mProjects.AddProject( editedProject )
+                            .Do( _ => LoadProjects())
                             .IfLeft( _ => { });
                     }
                 }
