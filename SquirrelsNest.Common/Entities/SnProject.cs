@@ -1,6 +1,8 @@
-﻿using SquirrelsNest.Common.Platform;
+﻿using System.Diagnostics;
+using SquirrelsNest.Common.Platform;
 
 namespace SquirrelsNest.Common.Entities {
+    [DebuggerDisplay("{" + nameof( DebugName ) + "}")]
     public class SnProject : EntityBase {
         public  string      Name { get; }
         public  string      Description { get; }
@@ -8,6 +10,8 @@ namespace SquirrelsNest.Common.Entities {
         public  string      RepositoryUrl { get; }
         public  string      IssuePrefix { get; }
         public  int         NextIssueNumber { get; }
+
+        public  string      DebugName => $"Project: '{Name}' ({IssuePrefix})";
 
         public SnProject( string entityId, string dbId, string name, string description, DateOnly inception, string repository, string issuePrefix, int nextIssueNumber ) :
             base( entityId, dbId ) {
