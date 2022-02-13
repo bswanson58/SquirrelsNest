@@ -7,6 +7,7 @@ using MoreLinq;
 using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
+using SquirrelsNest.Common.Logging;
 using SquirrelsNest.Desktop.Models;
 using SquirrelsNest.Desktop.Views;
 
@@ -17,16 +18,18 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private readonly IIssueProvider         mIssueProvider;
         private readonly IDialogService         mDialogService;
         private readonly IModelState            mModelState;
+        private readonly ILog                   mLog;
         private SnProject ?                     mCurrentProject;
 
         public  ObservableCollection<SnProject> ProjectList { get; }
         public  IRelayCommand                   CreateProject { get; }
         public  IRelayCommand                   CreateIssue { get; }
 
-        public IssueListFilterViewModel( IProjectProvider projects, IModelState modelState, IIssueProvider issueProvider, IDialogService dialogService ) {
+        public IssueListFilterViewModel( IProjectProvider projects, IModelState modelState, IIssueProvider issueProvider, IDialogService dialogService, ILog log ) {
             mProjectProvider = projects;
             mModelState = modelState;
             mDialogService = dialogService;
+            mLog = log;
             mIssueProvider = issueProvider;
 
             ProjectList = new ObservableCollection<SnProject>();
@@ -77,7 +80,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
                     if( editedProject != null ) {
                         mProjectProvider.AddProject( editedProject )
                             .Do( _ => LoadProjects())
-                            .IfLeft( error => { });
+                            .IfLeft( error => mLog.LogError( error ));
 
                         mModelState.SetProject( editedProject );
                     }
@@ -102,9 +105,9 @@ namespace SquirrelsNest.Desktop.ViewModels {
                             .Match( _ => {
                                         mProjectProvider
                                             .UpdateProject( project.WithNextIssueNumber())
-                                            .IfLeft( error => { });
+                                            .IfLeft( error => mLog.LogError( error ));
                                     },
-                                    error => { });
+                                    error => mLog.LogError( error ));
                     }
                 });
             } 
