@@ -1,7 +1,10 @@
 ﻿using System.Reflection;
 using System.Windows;
+using LanguageExt;
+using LanguageExt.SomeHelp;
 using MvvmSupport;
 using MvvmSupport.ViewModelLocator;
+using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Core;
 using SquirrelsNest.Desktop.Ioc;
 using SquirrelsNest.LiteDb;
@@ -12,9 +15,11 @@ namespace SquirrelsNest.Desktop {
     /// </summary>
     public partial class App {
         private readonly IDependencyContainer   mContainer;
+        private Option<IApplicationLog>         mLog;
 
         public App() {
             mContainer = new DependencyContainer();
+            mLog = Option<IApplicationLog>.None;
         }
 
         protected override void OnStartup( StartupEventArgs e ) {
@@ -30,9 +35,16 @@ namespace SquirrelsNest.Desktop {
 
             ViewModelLocationProvider.SetDefaultViewModelFactory( vm => mContainer.Resolve( vm ));
 
+            mLog = mContainer.Resolve<IApplicationLog>().ToSome();
+            mLog.Do( log => log.ApplicationStarting());
+
             var window = new MainWindow();
 
-            window.Closed += (_, _) => mContainer.Stop();
+            window.Closed += (_, _) => {
+                mContainer.Stop();
+
+                mLog.Do( log => log.ApplicationExiting());
+            };
 
             window.Show();
         }
