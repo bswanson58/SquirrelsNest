@@ -11,5 +11,6 @@ namespace SquirrelsNest.Common.Interfaces {
 
         Either<Error, SnIssue>              GetIssue( EntityId issueId );
         Either<Error, IEnumerable<SnIssue>> GetIssues();
+        Either<Error, IEnumerable<SnIssue>> GetIssues( SnProject forProject );
     }
 }
