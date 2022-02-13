@@ -6,19 +6,23 @@ using MoreLinq;
 using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
+using SquirrelsNest.Desktop.Models;
 using SquirrelsNest.Desktop.Views;
 
 namespace SquirrelsNest.Desktop.ViewModels {
+    // ReSharper disable once ClassNeverInstantiated.Global
     internal class IssueListFilterViewModel : ObservableObject {
         private readonly IProjectProvider       mProjects;
         private readonly IDialogService         mDialogService;
+        private readonly IModelState            mModelState;
         private SnProject ?                     mCurrentProject;
 
         public  ObservableCollection<SnProject> ProjectList { get; }
         public  IRelayCommand                   CreateProject { get; }
 
-        public IssueListFilterViewModel( IProjectProvider projects, IDialogService dialogService ) {
+        public IssueListFilterViewModel( IProjectProvider projects, IModelState modelState, IDialogService dialogService ) {
             mProjects = projects;
+            mModelState = modelState;
             mDialogService = dialogService;
 
             ProjectList = new ObservableCollection<SnProject>();
@@ -30,7 +34,16 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
         public SnProject ?  CurrentProject {
             get => mCurrentProject;
-            set => SetProperty( ref mCurrentProject, value );
+            set {
+                SetProperty( ref mCurrentProject, value );
+
+                if( mCurrentProject != null ) {
+                    mModelState.SetProject( mCurrentProject );
+                }
+                else {
+                    mModelState.ClearProject();
+                }
+            } 
         }
 
         private void LoadProjects() {
@@ -60,6 +73,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
                         mProjects.AddProject( editedProject )
                             .Do( _ => LoadProjects())
                             .IfLeft( _ => { });
+
+                        mModelState.SetProject( editedProject );
                     }
                 }
             });
