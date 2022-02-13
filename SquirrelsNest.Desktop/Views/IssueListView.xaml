@@ -5,11 +5,33 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:viewModels="clr-namespace:SquirrelsNest.Desktop.ViewModels"
              xmlns:viewModelLocator="clr-namespace:MvvmSupport.ViewModelLocator;assembly=MvvmSupport"
+             xmlns:entities="clr-namespace:SquirrelsNest.Common.Entities;assembly=SquirrelsNest.Common"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              viewModelLocator:ViewModelLocator.AutoWireViewModel="True"
              d:DataContext="{d:DesignInstance viewModels:IssueListViewModel, IsDesignTimeCreatable=False}">
+
+    <UserControl.Resources>
+        <DataTemplate x:Key="IssueTemplate" DataType="entities:SnIssue">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Text="{Binding Title}"/>
+                <TextBlock Grid.Row="1" Text="{Binding Description}"/>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+
     <Grid>
-        <TextBlock Margin="20" Text="Issue List View"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Margin="5" Text="Current Issues:"/>
+        <ListView Grid.Row="1" ItemsSource="{Binding IssueList}" ItemTemplate="{StaticResource IssueTemplate}"/>
     </Grid>
 </UserControl>
