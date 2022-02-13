@@ -35,7 +35,7 @@ namespace SquirrelsNest.Common.Tests.Entities {
 
             var sut = original.With( name: "new name" );
 
-            sut.Should().BeEquivalentTo( original, options => options.Excluding( e => e.Name ));
+            sut.Should().BeEquivalentTo( original, options => options.Excluding( e => e.Name ).Excluding( e => e.DebugName ));
             sut.Name.Should().Be( "new name" );
         }
 
@@ -72,18 +72,18 @@ namespace SquirrelsNest.Common.Tests.Entities {
 
             var sut = original.With( issuePrefix: "new prefix" );
 
-            sut.Should().BeEquivalentTo( original, options => options.Excluding( e => e.IssuePrefix ));
+            sut.Should().BeEquivalentTo( original, options => options.Excluding( e => e.IssuePrefix ).Excluding( e => e.DebugName ));
             sut.IssuePrefix.Should().Be( "new prefix" );
         }
 
         [Fact]
         public void ProjectCanHaveNextIssueNumberChanged() {
-            var original = new SnProject( "Name","prefix" ).With( nextIssueNumber: 100 );
+            var original = new SnProject( "Name","prefix" );
 
-            var sut = original.With( nextIssueNumber: 200 );
+            var sut = original.WithNextIssueNumber();
 
             sut.Should().BeEquivalentTo( original, options => options.Excluding( e => e.NextIssueNumber ));
-            sut.NextIssueNumber.Should().Be( 200 );
+            sut.NextIssueNumber.Should().Be( original.NextIssueNumber + 1 );
         }
     }
 }
