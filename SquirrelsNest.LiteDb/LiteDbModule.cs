@@ -6,8 +6,10 @@ using SquirrelsNest.LiteDb.Providers;
 namespace SquirrelsNest.LiteDb {
     public class LiteDbModule : Module {
         protected override void Load( ContainerBuilder builder ) {
-            builder.RegisterType<DatabaseProvider>().As<IDatabaseProvider>();
-            builder.RegisterType<ProjectProvider>().As<IProjectProvider>();
+            builder.RegisterType<DatabaseProvider>().As<IDatabaseProvider>().SingleInstance();
+
+            builder.RegisterType<IssueProvider>().As<IIssueProvider>().SingleInstance();
+            builder.RegisterType<ProjectProvider>().As<IProjectProvider>().SingleInstance();
         }
     }
 }
