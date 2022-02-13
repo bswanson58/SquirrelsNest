@@ -37,7 +37,7 @@ namespace SquirrelsNest.Common.Entities {
             Inception = DateTimeProvider.Instance.CurrentDate;
         }
 
-        public SnProject With( string ? name = null, string ? description = null, string ? repository = null, string ?  issuePrefix = null, int ? nextIssueNumber = null ) {
+        public SnProject With( string ? name = null, string ? description = null, string ? repository = null, string ?  issuePrefix = null ) {
             return new SnProject( 
                 EntityId, DbId,
                 name ?? Name, 
@@ -45,7 +45,11 @@ namespace SquirrelsNest.Common.Entities {
                 Inception, 
                 repository ?? RepositoryUrl, 
                 issuePrefix ?? IssuePrefix, 
-                nextIssueNumber ?? NextIssueNumber );
+                NextIssueNumber );
+        }
+
+        public SnProject WithNextIssueNumber() {
+            return new SnProject( EntityId, DbId, Name, Description, Inception, RepositoryUrl, IssuePrefix, NextIssueNumber + 1 );
         }
     }
 }

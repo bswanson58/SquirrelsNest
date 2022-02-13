@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
@@ -12,22 +13,26 @@ using SquirrelsNest.Desktop.Views;
 namespace SquirrelsNest.Desktop.ViewModels {
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class IssueListFilterViewModel : ObservableObject {
-        private readonly IProjectProvider       mProjects;
+        private readonly IProjectProvider       mProjectProvider;
+        private readonly IIssueProvider         mIssueProvider;
         private readonly IDialogService         mDialogService;
         private readonly IModelState            mModelState;
         private SnProject ?                     mCurrentProject;
 
         public  ObservableCollection<SnProject> ProjectList { get; }
         public  IRelayCommand                   CreateProject { get; }
+        public  IRelayCommand                   CreateIssue { get; }
 
-        public IssueListFilterViewModel( IProjectProvider projects, IModelState modelState, IDialogService dialogService ) {
-            mProjects = projects;
+        public IssueListFilterViewModel( IProjectProvider projects, IModelState modelState, IIssueProvider issueProvider, IDialogService dialogService ) {
+            mProjectProvider = projects;
             mModelState = modelState;
             mDialogService = dialogService;
+            mIssueProvider = issueProvider;
 
             ProjectList = new ObservableCollection<SnProject>();
 
             CreateProject = new RelayCommand( OnCreateProject );
+            CreateIssue = new RelayCommand( OnCreateIssue );
 
             LoadProjects();
         }
@@ -51,7 +56,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
             ProjectList.Clear();
 
-            mProjects.GetProjects()
+            mProjectProvider.GetProjects()
                 .Do( projectList => projectList.ForEach( project => ProjectList.Add( project )))
                 .IfLeft( _ => { });
 
@@ -70,14 +75,39 @@ namespace SquirrelsNest.Desktop.ViewModels {
                     var editedProject = result.Parameters.GetValue<SnProject>( EditProjectDialogViewModel.cProject );
 
                     if( editedProject != null ) {
-                        mProjects.AddProject( editedProject )
+                        mProjectProvider.AddProject( editedProject )
                             .Do( _ => LoadProjects())
-                            .IfLeft( _ => { });
+                            .IfLeft( error => { });
 
                         mModelState.SetProject( editedProject );
                     }
                 }
             });
+        }
+
+        private void OnCreateIssue() {
+            if( mCurrentProject != null ) {
+                var parameters = new DialogParameters{{ EditIssueDialogViewModel.cProjectParameter, mCurrentProject }};
+
+                mDialogService.ShowDialog( nameof( EditIssueDialog ), parameters, result => {
+                    if( result.Result == ButtonResult.Ok ) {
+                        var issue = result.Parameters.GetValue<SnIssue>( EditIssueDialogViewModel.cIssueParameter );
+                        var project = result.Parameters.GetValue<SnProject>( EditIssueDialogViewModel.cProjectParameter );
+
+                        if( issue == null ) throw new ApplicationException( "Issue was not returned when editing issue" );
+                        if( project == null ) throw new ApplicationException( "Project was not returned when editing issue" );
+
+                        mIssueProvider
+                            .AddIssue( issue )
+                            .Match( _ => {
+                                        mProjectProvider
+                                            .UpdateProject( project.WithNextIssueNumber())
+                                            .IfLeft( error => { });
+                                    },
+                                    error => { });
+                    }
+                });
+            } 
         }
     }
 }
