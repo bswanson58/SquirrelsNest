@@ -8,9 +8,12 @@ using SquirrelsNest.LiteDb.Database;
 using SquirrelsNest.LiteDb.Dto;
 
 namespace SquirrelsNest.LiteDb.Providers {
-    internal class ProjectProvider : EntityProvider<DbProject>, IProjectProvider {
+    internal class ProjectProvider : BaseProvider<SnProject, DbProject>, IProjectProvider {
+        private static SnProject ConvertTo( DbProject project ) => project.ToEntity();
+        private static DbProject ConvertFrom( SnProject project ) => DbProject.From( project );
+
         public ProjectProvider( IDatabaseProvider databaseProvider )
-            : base( databaseProvider, DbCollectionNames.ProjectCollection ) {
+            : base( databaseProvider, DbCollectionNames.ProjectCollection, ConvertFrom, ConvertTo ) {
         }
 
         protected override Either<Error, LiteDatabase> InitializeDatabase( LiteDatabase db ) {
@@ -19,29 +22,10 @@ namespace SquirrelsNest.LiteDb.Providers {
             return base.InitializeDatabase( db );
         }
 
-        public Either<Error, SnProject> AddProject( SnProject project ) {
-            return InsertEntity( DbProject.From( project ))
-                .Map( dbProject => dbProject.ToEntity());
-        }
-
-        public Either<Error, Unit> UpdateProject( SnProject project ) {
-            return UpdateEntity( DbProject.From( project ));
-        }
-
-        public Either<Error, Unit> DeleteProject( SnProject project ) {
-            return DeleteEntity( DbProject.From( project ));
-        }
-
-        public Either<Error, SnProject> GetProject( EntityId projectId ) {
-            return ValidateString( projectId )
-                .Bind( _ => FindEntity( LiteDB.Query.EQ( nameof( DbProject.EntityId ), projectId.Value )))
-                    .Map( dbProject => dbProject.ToEntity());
-        }
-
-        public Either<Error, IEnumerable<SnProject>> GetProjects() {
-            return GetList()
-                .Map( projectList => projectList.ToEnumerable())
-                .Map( entityList => from entity in entityList select entity.ToEntity());
-        }
+        public Either<Error, SnProject> AddProject( SnProject project ) => Add( project );
+        public Either<Error, Unit> UpdateProject( SnProject project ) => Update( project );
+        public Either<Error, Unit> DeleteProject( SnProject project ) => Delete( project );
+        public Either<Error, SnProject> GetProject( EntityId projectId ) => Get( projectId, nameof( DbProject.EntityId ));
+        public Either<Error, IEnumerable<SnProject>> GetProjects() => GetEnumerable();
     }
 }
