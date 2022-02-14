@@ -2,13 +2,12 @@
 using LanguageExt.Common;
 using LiteDB;
 using SquirrelsNest.Common.Entities;
-using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Values;
 using SquirrelsNest.LiteDb.Database;
 using SquirrelsNest.LiteDb.Dto;
 
 namespace SquirrelsNest.LiteDb.Providers {
-    internal class IssueProvider : BaseProvider<SnIssue, DbIssue>, IIssueProvider {
+    internal class IssueProvider : BaseProvider<SnIssue, DbIssue> {
         private static SnIssue ConvertTo( DbIssue issue ) => issue.ToEntity();
         private static DbIssue ConvertFrom( SnIssue issue ) => DbIssue.From( issue );
 

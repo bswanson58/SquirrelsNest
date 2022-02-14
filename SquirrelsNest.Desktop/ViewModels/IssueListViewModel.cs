@@ -43,7 +43,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
             IssueList.Clear();
 
             forState.Project.ToEither( new Error())
-                .Bind( project => mIssueProvider.GetIssues( project ))
+                .BindAsync( project => mIssueProvider.GetIssues( project )).Result
                 .Match( list => list.ForEach( i => IssueList.Add( i )),
                         error => mLog.LogError( error ));
         }

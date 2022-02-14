@@ -36,7 +36,8 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
 
             DeleteDatabase();
         }
-        private IIssueProvider CreateSut() {
+
+        private IssueProvider CreateSut() {
             return new IssueProvider( new DatabaseProvider( mEnvironment, mConstants ));
         }
 

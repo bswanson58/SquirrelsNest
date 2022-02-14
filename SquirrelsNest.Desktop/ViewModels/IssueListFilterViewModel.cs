@@ -101,7 +101,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
                         if( project == null ) throw new ApplicationException( "Project was not returned when editing issue" );
 
                         mIssueProvider
-                            .AddIssue( issue )
+                            .AddIssue( issue ).Result
                             .Match( _ => {
                                         mProjectProvider
                                             .UpdateProject( project.WithNextIssueNumber())
@@ -110,7 +110,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
                                     error => mLog.LogError( error ));
                     }
                 });
-            } 
+            }
         }
     }
 }

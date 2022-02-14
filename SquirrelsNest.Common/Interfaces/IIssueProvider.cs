@@ -5,12 +5,12 @@ using SquirrelsNest.Common.Values;
 
 namespace SquirrelsNest.Common.Interfaces {
     public interface IIssueProvider : IEntityChangeNotifier, IDisposable {
-        Either<Error, SnIssue>              AddIssue( SnIssue issue );
-        Either<Error, Unit>                 UpdateIssue( SnIssue issue );
-        Either<Error, Unit>                 DeleteIssue( SnIssue issue );
+        Task<Either<Error, SnIssue>>                AddIssue( SnIssue issue );
+        Task<Either<Error, Unit>>                   UpdateIssue( SnIssue issue );
+        Task<Either<Error, Unit>>                   DeleteIssue( SnIssue issue );
 
-        Either<Error, SnIssue>              GetIssue( EntityId issueId );
-        Either<Error, IEnumerable<SnIssue>> GetIssues();
-        Either<Error, IEnumerable<SnIssue>> GetIssues( SnProject forProject );
+        Task<Either<Error, SnIssue>>                GetIssue( EntityId issueId );
+        Task<Either<Error, IEnumerable<SnIssue>>>   GetIssues();
+        Task<Either<Error, IEnumerable<SnIssue>>>   GetIssues( SnProject forProject );
     }
 }
