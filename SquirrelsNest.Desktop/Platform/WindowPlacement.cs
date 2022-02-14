@@ -75,7 +75,7 @@ namespace SquirrelsNest.Desktop.Platform {
 
             try {
                 using( MemoryStream memoryStream = new MemoryStream( xmlBytes ) ) {
-                    placement = (WINDOWPLACEMENT)serializer.Deserialize( memoryStream );
+                    placement = (WINDOWPLACEMENT)(serializer.Deserialize( memoryStream ) ?? new WINDOWPLACEMENT());
                 }
 
                 placement.length = Marshal.SizeOf( typeof( WINDOWPLACEMENT ) );
