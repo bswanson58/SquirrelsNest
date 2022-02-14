@@ -6,15 +6,15 @@ using SquirrelsNest.Common.Entities;
 
 namespace SquirrelsNest.Desktop.Models {
     internal class ModelState : IModelState {
-        private readonly Subject<CurrentState>  mCurrentState;
-        private Option<SnProject>               mCurrentProject;
+        private readonly BehaviorSubject<CurrentState>  mCurrentState;
+        private Option<SnProject>                       mCurrentProject;
 
-        public IObservable<CurrentState>        OnStateChange => mCurrentState.AsObservable();
+        public IObservable<CurrentState>                OnStateChange => mCurrentState.AsObservable();
 
-        public CurrentState                     CurrentState => ConstructState;
+        public CurrentState                             CurrentState => ConstructState;
 
         public ModelState() {
-            mCurrentState = new Subject<CurrentState>();
+            mCurrentState = new BehaviorSubject<CurrentState>( ConstructState );
             mCurrentProject = Option<SnProject>.None;
         }
 
