@@ -19,12 +19,12 @@
 
     <Grid>
         <StackPanel Orientation="Vertical">
-            <TextBlock Text="Issue List Filters"/>
+            <TextBlock Style="{StaticResource ControlTitleStyle}" Text="Issue List Filters"/>
 
-            <TextBlock Margin="0,20,0,0" Text="Project:"/>
+            <TextBlock Margin="0,20,0,0" Style="{StaticResource ControlTitleStyle}" Text="Project:"/>
             <ComboBox Margin="10,5" ItemsSource="{Binding ProjectList}" SelectedItem="{Binding CurrentProject}" ItemTemplate="{StaticResource Project}"/>
-            <Button Margin="12,3" HorizontalAlignment="Left" Content="New Project" Command="{Binding CreateProject}"/>
-            <Button Margin="12,3" HorizontalAlignment="Left" Content="New Issue" Command="{Binding CreateIssue}"/>
+            <Button Margin="12,3" HorizontalAlignment="Left" Style="{StaticResource GeneralButtonStyle}" Content="New Project" Command="{Binding CreateProject}"/>
+            <Button Margin="12,3" HorizontalAlignment="Left" Style="{StaticResource GeneralButtonStyle}" Content="New Issue" Command="{Binding CreateIssue}"/>
         </StackPanel>
     </Grid>
 </UserControl>

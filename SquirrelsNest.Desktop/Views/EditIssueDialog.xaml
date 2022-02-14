@@ -54,21 +54,21 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Text="Title:"/>
+            <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Style="{StaticResource ControlTitleStyle}" Text="Title:"/>
             <TextBox Grid.Row="0" Grid.Column="2" Style="{StaticResource ErrorToolTip}" HorizontalAlignment="Left" Width="200" x:Name="_firstFocus"
                      Text="{Binding IssueTitle, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                      adorners:Watermark.Text="  enter issue title" adorners:Watermark.VisibleWhen="Empty"/>
         </Grid>
 
         <StackPanel Grid.Row="2" Margin="0,5,0,0" Orientation="Vertical">
-            <TextBlock Margin="0,0,0,3" Text="Description:"/>
+            <TextBlock Margin="0,0,0,3" Style="{StaticResource ControlTitleStyle}" Text="Description:"/>
             <TextBox Height="50" TextWrapping="Wrap" AcceptsReturn="True" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
                      Text="{Binding Description, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
         </StackPanel>
 
         <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Width="70" Margin="10,0" Content="OK" Command="{Binding AcceptCommand}" IsDefault="True"/>
-            <Button Width="70" Content="Cancel" Command="{Binding CancelCommand}" IsCancel="True"/>
+            <Button Width="70" Margin="10,0" Style="{StaticResource GeneralButtonStyle}" Content="OK" Command="{Binding AcceptCommand}" IsDefault="True"/>
+            <Button Width="70" Style="{StaticResource GeneralButtonStyle}" Content="Cancel" Command="{Binding CancelCommand}" IsCancel="True"/>
         </StackPanel>
     </Grid>
 </UserControl>
