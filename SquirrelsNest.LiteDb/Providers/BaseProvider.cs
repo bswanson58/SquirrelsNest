@@ -1,11 +1,12 @@
 ﻿using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using LanguageExt;
 using LanguageExt.Common;
-using LiteDB;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Values;
 using SquirrelsNest.LiteDb.Database;
 using SquirrelsNest.LiteDb.Dto;
+using Query = LiteDB.Query;
 using Unit = LanguageExt.Unit;
 
 namespace SquirrelsNest.LiteDb.Providers {
@@ -25,7 +26,7 @@ namespace SquirrelsNest.LiteDb.Providers {
             mChangeSubject = new Subject<EntitySourceChange>();
         }
 
-        protected LanguageExt.Either<Error, TEntity> Add( TEntity entity ) {
+        protected Either<Error, TEntity> Add( TEntity entity ) {
             var retValue = InsertEntity( mConvertToDbEntity( entity ))
                 .Map( dbEntity => mConvertFromDbEntity( dbEntity ));
 
@@ -34,7 +35,7 @@ namespace SquirrelsNest.LiteDb.Providers {
             return retValue;
         }
 
-        protected LanguageExt.Either<Error, Unit> Update( TEntity entity ) {
+        protected Either<Error, Unit> Update( TEntity entity ) {
             var retValue = UpdateEntity( mConvertToDbEntity( entity ));
 
             mChangeSubject.OnNext( EntitySourceChange.EntityUpdated );
@@ -42,7 +43,7 @@ namespace SquirrelsNest.LiteDb.Providers {
             return retValue;
         }
 
-        protected LanguageExt.Either<Error, Unit> Delete( TEntity entity ) {
+        protected Either<Error, Unit> Delete( TEntity entity ) {
             var retValue = DeleteEntity( mConvertToDbEntity( entity ));
 
             mChangeSubject.OnNext( EntitySourceChange.EntityDeleted );
@@ -50,13 +51,12 @@ namespace SquirrelsNest.LiteDb.Providers {
             return retValue;
         }
 
-        protected LanguageExt.Either<Error, TEntity> Get( EntityId entityId, string dbIdName ) {
-            return ValidateString( entityId )
-                .Bind( _ => FindEntity( Query.EQ( dbIdName, entityId.Value )))
+        protected Either<Error, TEntity> Get( EntityId entityId, string dbIdName ) {
+            return ValidateString( entityId ).Bind( _ => FindEntity( Query.EQ( dbIdName, entityId.Value )))
                 .Map( dbEntity => mConvertFromDbEntity( dbEntity ));
         }
 
-        protected LanguageExt.Either<Error, IEnumerable<TEntity>> GetEnumerable() {
+        protected Either<Error, IEnumerable<TEntity>> GetEnumerable() {
             return GetList()
                 .Map( dbList => dbList.ToEnumerable())
                 .Map( entityList => from entity in entityList select mConvertFromDbEntity( entity ));
