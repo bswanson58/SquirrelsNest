@@ -4,7 +4,7 @@ using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Values;
 
 namespace SquirrelsNest.Common.Interfaces {
-    public interface IProjectProvider : IDisposable {
+    public interface IProjectProvider : IEntityChangeNotifier, IDisposable {
         Either<Error, SnProject>                AddProject( SnProject project );
         Either<Error, Unit>                     UpdateProject( SnProject project );
         Either<Error, Unit>                     DeleteProject( SnProject project );
