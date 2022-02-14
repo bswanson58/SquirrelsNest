@@ -7,8 +7,8 @@ using SquirrelsNest.LiteDb.Database;
 using SquirrelsNest.LiteDb.Dto;
 
 namespace SquirrelsNest.LiteDb.Providers {
-    internal class AsyncIssueProvider : IssueProvider, IIssueProvider {
-        public AsyncIssueProvider( IDatabaseProvider databaseProvider ) :
+    internal class IssueProviderAsync : IssueProvider, IIssueProvider {
+        public IssueProviderAsync( IDatabaseProvider databaseProvider ) :
             base( databaseProvider ) {
         }
 

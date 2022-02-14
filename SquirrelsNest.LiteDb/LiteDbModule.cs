@@ -8,7 +8,7 @@ namespace SquirrelsNest.LiteDb {
         protected override void Load( ContainerBuilder builder ) {
             builder.RegisterType<DatabaseProvider>().As<IDatabaseProvider>().SingleInstance();
 
-            builder.RegisterType<AsyncIssueProvider>().As<IIssueProvider>().SingleInstance();
+            builder.RegisterType<IssueProviderAsync>().As<IIssueProvider>().SingleInstance();
             builder.RegisterType<ProjectProviderAsync>().As<IProjectProvider>().SingleInstance();
         }
     }
