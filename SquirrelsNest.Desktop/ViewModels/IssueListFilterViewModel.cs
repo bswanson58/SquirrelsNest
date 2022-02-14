@@ -59,7 +59,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
             ProjectList.Clear();
 
-            mProjectProvider.GetProjects()
+            mProjectProvider
+                .GetProjects().Result
                 .Do( projectList => projectList.ForEach( project => ProjectList.Add( project )))
                 .IfLeft( _ => { });
 
@@ -78,7 +79,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
                     var editedProject = result.Parameters.GetValue<SnProject>( EditProjectDialogViewModel.cProject );
 
                     if( editedProject != null ) {
-                        mProjectProvider.AddProject( editedProject )
+                        mProjectProvider
+                            .AddProject( editedProject ).Result
                             .Do( _ => LoadProjects())
                             .IfLeft( error => mLog.LogError( error ));
 
@@ -104,8 +106,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
                             .AddIssue( issue ).Result
                             .Match( _ => {
                                         mProjectProvider
-                                            .UpdateProject( project.WithNextIssueNumber())
-                                            .IfLeft( error => mLog.LogError( error ));
+                                            .UpdateProject( project.WithNextIssueNumber()).Result
+                                                .IfLeft( error => mLog.LogError( error ));
                                     },
                                     error => mLog.LogError( error ));
                     }

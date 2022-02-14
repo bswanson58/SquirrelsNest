@@ -2,13 +2,12 @@
 using LanguageExt.Common;
 using LiteDB;
 using SquirrelsNest.Common.Entities;
-using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Values;
 using SquirrelsNest.LiteDb.Database;
 using SquirrelsNest.LiteDb.Dto;
 
 namespace SquirrelsNest.LiteDb.Providers {
-    internal class ProjectProvider : BaseProvider<SnProject, DbProject>, IProjectProvider {
+    internal class ProjectProvider : BaseProvider<SnProject, DbProject> {
         private static SnProject ConvertTo( DbProject project ) => project.ToEntity();
         private static DbProject ConvertFrom( SnProject project ) => DbProject.From( project );
 
