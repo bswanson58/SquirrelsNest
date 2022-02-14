@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Reactive.Disposables;
 using LanguageExt.Common;
 using MoreLinq;
 using SquirrelsNest.Common.Entities;
@@ -10,23 +11,32 @@ using SquirrelsNest.Desktop.Models;
 namespace SquirrelsNest.Desktop.ViewModels {
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class IssueListViewModel : IDisposable {
-        private readonly IIssueProvider     mIssueProvider;
-        private readonly ILog               mLog;
-        private IDisposable ?               mModelStateSubscription;
+        // ReSharper disable once CollectionNeverQueried.Local
+        private readonly CompositeDisposable    mSubscriptions;
+        private readonly IIssueProvider         mIssueProvider;
+        private readonly IModelState            mModelState;
+        private readonly ILog                   mLog;
 
         public  ObservableCollection<SnIssue>   IssueList { get; }
 
         public IssueListViewModel( IModelState modelState, IIssueProvider issueProvider, ILog log ) {
             mIssueProvider = issueProvider;
+            mModelState = modelState;
             mLog = log;
 
+            mSubscriptions = new CompositeDisposable();
             IssueList = new ObservableCollection<SnIssue>();
 
-            mModelStateSubscription = modelState.OnStateChange.Subscribe( OnModelStateChanged );
+            mSubscriptions.Add( modelState.OnStateChange.Subscribe( OnModelStateChanged ));
+            mSubscriptions.Add( mIssueProvider.OnEntitySourceChange.Subscribe( OnIssueListChanged ));
         }
 
         private void OnModelStateChanged( CurrentState state ) {
             LoadIssueList( state );
+        }
+
+        private void OnIssueListChanged( EntitySourceChange change ) {
+            LoadIssueList( mModelState.CurrentState );
         }
 
         private void LoadIssueList( CurrentState forState ) {
@@ -39,8 +49,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
         }
 
         public void Dispose() {
-            mModelStateSubscription?.Dispose();
-            mModelStateSubscription = null;
+            mSubscriptions.Clear();
         }
     }
 }

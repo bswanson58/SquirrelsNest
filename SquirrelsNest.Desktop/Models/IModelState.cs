@@ -6,6 +6,7 @@ namespace SquirrelsNest.Desktop.Models {
         void    SetProject( SnProject project );
         void    ClearProject();
 
-        IObservable<CurrentState> OnStateChange { get; }
+        CurrentState                CurrentState { get; }
+        IObservable<CurrentState>   OnStateChange { get; }
     }
 }

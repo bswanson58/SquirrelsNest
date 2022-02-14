@@ -11,6 +11,8 @@ namespace SquirrelsNest.Desktop.Models {
 
         public IObservable<CurrentState>        OnStateChange => mCurrentState.AsObservable();
 
+        public CurrentState                     CurrentState => ConstructState;
+
         public ModelState() {
             mCurrentState = new Subject<CurrentState>();
             mCurrentProject = Option<SnProject>.None;
@@ -28,8 +30,10 @@ namespace SquirrelsNest.Desktop.Models {
             NotifyState();
         }
 
+        private CurrentState ConstructState => new CurrentState( mCurrentProject );
+
         private void NotifyState() {
-            mCurrentState.OnNext( new CurrentState( mCurrentProject ));
+            mCurrentState.OnNext( ConstructState );
         }
     }
 }
