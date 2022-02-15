@@ -1,8 +1,10 @@
-﻿using LiteDB;
+﻿using System.Diagnostics;
+using LiteDB;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Platform;
 
 namespace SquirrelsNest.LiteDb.Dto {
+    [DebuggerDisplay("{" + nameof( Version ) + "}")]
     internal class DbRelease : DbBase {
         public  string      Version { get; set;}
         public  string      Description { get; set; }

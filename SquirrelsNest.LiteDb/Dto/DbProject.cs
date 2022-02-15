@@ -35,7 +35,7 @@ namespace SquirrelsNest.LiteDb.Dto {
                 RepositoryUrl = project.RepositoryUrl,
                 IssuePrefix = project.IssuePrefix,
                 NextIssueNumber = project.NextIssueNumber,
-                Releases = new List<DbRelease>( project.Releases.Select( DbRelease.From))
+                Releases = new List<DbRelease>( project.Releases.Select( DbRelease.From ))
             };
         }
 
