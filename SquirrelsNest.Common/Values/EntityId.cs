@@ -1,6 +1,8 @@
-﻿using LanguageExt;
+﻿using System.Diagnostics;
+using LanguageExt;
 
 namespace SquirrelsNest.Common.Values {
+    [DebuggerDisplay("Id:{" + nameof( Value ) + "}")]
     public class EntityId : IEquatable<EntityId> {
         internal static EntityId Default => new ( "default" );
 
