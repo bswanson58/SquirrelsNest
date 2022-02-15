@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using FluentAssertions;
 using SquirrelsNest.Common.Values;
 using Xunit;
@@ -43,6 +44,20 @@ namespace SquirrelsNest.Common.Tests.Types {
             var _ = sut.Some( entity => sutEntityId = entity );
 
             sutEntityId.Should().BeEquivalentTo( sutEntityId, "EntityId should allow conversion to string." );
+        }
+
+        [Fact]
+        public void EqualityTest() {
+            var entityId = "entity-1";
+            var entity1 = EntityId.For( entityId );
+            var entity2 = EntityId.For( entityId );
+            var e1 = entity1.AsEnumerable().First();
+            var e2 = entity2.AsEnumerable().First();
+
+            var equal = e1 == e2;
+
+            e1.Equals( e2 ).Should().BeTrue( "Entities should be equal if their values are equal" );
+            equal.Should().BeTrue( "Entities with equal values should be equal" );
         }
     }
 }
