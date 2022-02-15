@@ -28,7 +28,7 @@ namespace SquirrelsNest.LiteDb.Providers {
         public Either<Error, SnProject> AddProject( SnProject project ) => Add( project );
         public Either<Error, Unit> UpdateProject( SnProject project ) => Update( project );
         public Either<Error, Unit> DeleteProject( SnProject project ) => Delete( project );
-        public Either<Error, SnProject> GetProject( EntityId projectId ) => Get( projectId, nameof( DbProject.EntityId ));
+        public Either<Error, SnProject> GetProject( EntityId projectId ) => Get( projectId );
         public Either<Error, IEnumerable<SnProject>> GetProjects() => GetEnumerable();
     }
 }

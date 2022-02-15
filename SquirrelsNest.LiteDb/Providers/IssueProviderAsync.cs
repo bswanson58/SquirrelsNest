@@ -25,7 +25,7 @@ namespace SquirrelsNest.LiteDb.Providers {
         }
 
         public new Task<Either<Error, SnIssue>> GetIssue( EntityId issueId ) {
-            return Task.Run( () => Get( issueId, nameof( DbIssue.EntityId )));
+            return Task.Run( () => Get( issueId ));
         }
 
         public new Task<Either<Error, IEnumerable<SnIssue>>> GetIssues() {

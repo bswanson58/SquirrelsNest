@@ -23,7 +23,7 @@ namespace SquirrelsNest.LiteDb.Providers {
         public Either<Error, SnIssue> AddIssue( SnIssue issue ) => Add( issue );
         public Either<Error, Unit> UpdateIssue( SnIssue issue ) => Update( issue );
         public Either<Error, Unit> DeleteIssue( SnIssue issue ) => Delete( issue );
-        public Either<Error, SnIssue> GetIssue( EntityId issueId ) => Get( issueId, nameof( DbIssue.EntityId ));
+        public Either<Error, SnIssue> GetIssue( EntityId issueId ) => Get( issueId );
         public Either<Error, IEnumerable<SnIssue>> GetIssues() => GetEnumerable();
 
         public Either<Error, IEnumerable<SnIssue>> GetIssues( SnProject forProject ) {

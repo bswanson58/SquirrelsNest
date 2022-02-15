@@ -51,9 +51,9 @@ namespace SquirrelsNest.LiteDb.Providers {
             return retValue;
         }
 
-        protected Either<Error, TEntity> Get( EntityId entityId, string dbIdName ) {
+        protected Either<Error, TEntity> Get( EntityId entityId ) {
             return ValidateString( entityId )
-                .Bind( _ => FindEntity( Query.EQ( dbIdName, entityId.Value )))
+                .Bind( _ => FindEntity( Query.EQ( nameof( DbBase.EntityId ), entityId.Value )))
                 .Map( dbEntity => mConvertFromDbEntity( dbEntity ));
         }
 
