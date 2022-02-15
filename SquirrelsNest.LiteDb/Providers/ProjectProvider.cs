@@ -18,6 +18,10 @@ namespace SquirrelsNest.LiteDb.Providers {
         protected override Either<Error, LiteDatabase> InitializeDatabase( LiteDatabase db ) {
             BsonMapper.Global.Entity<DbProject>().Id( e => e.Id );
 
+            var products = db.GetCollection<SnProject>( DbCollectionNames.ProjectCollection );
+
+            products.Include (x => x.Releases );
+
             return base.InitializeDatabase( db );
         }
 
