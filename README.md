@@ -1,0 +1,2 @@
+# SquirrelsNest
+An issue tracker.
