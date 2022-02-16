@@ -3,6 +3,7 @@
         // ReSharper disable InconsistentNaming
         public const string ComponentCollection     = "Components";
         public const string IssueCollection         = "Issues";
+        public const string IssueTypeCollection     = "IssueTypes";
         public const string ProjectCollection       = "Projects";
         public const string ReleaseCollection       = "Releases";
         public const string WorkflowStateCollection = "WorkflowStates";
