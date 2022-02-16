@@ -10,15 +10,17 @@ namespace SquirrelsNest.Common.Entities {
         public  EntityId    Project { get; }
         public  int         IssueNumber {  get; }
         public  DateOnly    EntryDate { get; }
+        public  EntityId    ReleaseId { get; }
 
         // the serializable constructor
-        public SnIssue( string entityId, string dbId, string title, string description, string projectId, int issueNumber, DateOnly entryDate )
+        public SnIssue( string entityId, string dbId, string title, string description, string projectId, int issueNumber, DateOnly entryDate, EntityId releaseId )
             : base( entityId, dbId ) {
-            Project = CreateOrThrowId( projectId );
+            Project = EntityId.CreateIdOrThrow( projectId );
             Title = title;
             Description = description;
             IssueNumber = issueNumber;
             EntryDate = entryDate;
+            ReleaseId = releaseId;
         }
 
         public SnIssue( string title, int issueNumber, EntityId projectId ) :
@@ -27,10 +29,11 @@ namespace SquirrelsNest.Common.Entities {
 
             Title = title;
             IssueNumber = issueNumber;
-            Project = CreateOrThrowId( projectId );
+            Project = EntityId.CreateIdOrThrow( projectId );
 
             Description = String.Empty;
             EntryDate = DateTimeProvider.Instance.CurrentDate;
+            ReleaseId = EntityId.Default;
         }
 
         public SnIssue With( string ? title = null, string ? description = null ) {
@@ -40,17 +43,14 @@ namespace SquirrelsNest.Common.Entities {
                 description ?? Description,
                 Project,
                 IssueNumber,
-                EntryDate );
+                EntryDate,
+                ReleaseId );
         }
 
-        private EntityId CreateOrThrowId( string entityId ) {
-            var id = EntityId.For( entityId );
+        public SnIssue With( SnRelease release ) {
+            if( release == null ) throw new ApplicationException( "Release for issue cannot be null" );
 
-            if( id.IsNone ) {
-                throw new ApplicationException( "entity ID could not be created" );
-            }
-
-            return  id.AsEnumerable().First();
+            return new SnIssue( EntityId, DbId, Title, Description, Project, IssueNumber, EntryDate, release.EntityId );
         }
     }
 }

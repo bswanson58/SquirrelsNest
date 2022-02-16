@@ -44,7 +44,8 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
         [Fact]
         public void IssueCanBeStored() {
             using var sut = CreateSut();
-            var issue = new SnIssue( ObjectId.NewObjectId().ToString(), String.Empty, "Title", "Description", "ProjectID", 2, DateTimeProvider.Instance.CurrentDate );
+            var issue = new SnIssue( ObjectId.NewObjectId().ToString(), String.Empty, "Title", "Description", "ProjectID", 2, 
+                                     DateTimeProvider.Instance.CurrentDate, EntityId.Default );
 
             var result = sut.AddIssue( issue );
 
