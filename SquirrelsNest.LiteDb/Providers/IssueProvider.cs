@@ -28,7 +28,7 @@ namespace SquirrelsNest.LiteDb.Providers {
 
         public Either<Error, IEnumerable<SnIssue>> GetIssues( SnProject forProject ) {
             return GetList()
-                .Map( issueList => issueList.Where( LiteDB.Query.EQ( nameof( DbIssue.Project ), forProject.EntityId.Value )))
+                .Map( issueList => issueList.Where( LiteDB.Query.EQ( nameof( DbIssue.ProjectId ), forProject.EntityId.Value )))
                 .Map( issueList => issueList.ToEnumerable())
                 .Map( entityList => from entity in entityList select entity.ToEntity());
         }

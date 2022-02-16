@@ -6,18 +6,20 @@ namespace SquirrelsNest.LiteDb.Dto {
     internal class DbIssue : DbBase {
         public  string      Title { get; set; }
         public  string      Description { get; set; }
-        public  string      Project { get; set; }
+        public  string      ProjectId { get; set; }
         public  int         IssueNumber {  get; set; }
         public  DateOnly    EntryDate { get; set; }
         public  string      ReleaseId { get; set; }
+        public  string      WorkflowStateId { get; set; }
 
         public DbIssue() {
             Title = String.Empty;
             Description = String.Empty;
-            Project = String.Empty;
+            ProjectId = Common.Values.EntityId.Default;
             IssueNumber = 0;
             EntryDate = DateTimeProvider.Instance.CurrentDate;
             ReleaseId = Common.Values.EntityId.Default;
+            WorkflowStateId = Common.Values.EntityId.Default;
         }
 
         public static DbIssue From( SnIssue issue ) {
@@ -28,15 +30,18 @@ namespace SquirrelsNest.LiteDb.Dto {
                 Id = String.IsNullOrWhiteSpace( issue.DbId ) ? ObjectId.NewObjectId() : new ObjectId( issue.DbId ),
                 Title = issue.Title,
                 Description = issue.Description,
-                Project = issue.Project,
+                ProjectId = issue.ProjectId,
                 IssueNumber = issue.IssueNumber,
                 EntryDate = issue.EntryDate,
-                ReleaseId = issue.ReleaseId
+                ReleaseId = issue.ReleaseId,
+                WorkflowStateId = issue.WorkflowStateId
             };
         }
 
         public SnIssue ToEntity() {
-            return new SnIssue( EntityId, Id.ToString(), Title, Description, Project, IssueNumber, EntryDate, Common.Values.EntityId.CreateIdOrThrow( ReleaseId ));
+            return new SnIssue( EntityId, Id.ToString(), Title, Description, ProjectId, IssueNumber, EntryDate,
+                                Common.Values.EntityId.CreateIdOrThrow( ReleaseId ), 
+                                Common.Values.EntityId.CreateIdOrThrow( WorkflowStateId ));
         }
     }
 }
