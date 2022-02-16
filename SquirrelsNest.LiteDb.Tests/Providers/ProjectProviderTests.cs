@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using FluentAssertions;
@@ -44,8 +43,7 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
         [Fact]
         public void ProjectCanBeStored() {
             using var sut = CreateSut();
-            var project = new SnProject( ObjectId.NewObjectId().ToString(), String.Empty, "Name", "description", DateTimeProvider.Instance.CurrentDate, "repository", "prefix", 1, 
-                                         new List<SnRelease>() );
+            var project = new SnProject( ObjectId.NewObjectId().ToString(), String.Empty, "Name", "description", DateTimeProvider.Instance.CurrentDate, "repository", "prefix", 1 );
 
             var result = sut.AddProject( project );
 

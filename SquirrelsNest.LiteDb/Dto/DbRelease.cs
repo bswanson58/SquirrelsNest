@@ -6,6 +6,7 @@ using SquirrelsNest.Common.Platform;
 namespace SquirrelsNest.LiteDb.Dto {
     [DebuggerDisplay("{" + nameof( Version ) + "}")]
     internal class DbRelease : DbBase {
+        public  string      ProjectId { get; set; }
         public  string      Version { get; set;}
         public  string      Description { get; set; }
         public  string      RepositoryLabel { get; set; }
@@ -16,6 +17,7 @@ namespace SquirrelsNest.LiteDb.Dto {
             Description = String.Empty;
             RepositoryLabel = String.Empty;
             ReleaseDate = DateTimeProvider.Instance.CurrentDate;
+            ProjectId = Common.Values.EntityId.Default;
         }
 
         public static DbRelease From( SnRelease release ) {
@@ -30,7 +32,7 @@ namespace SquirrelsNest.LiteDb.Dto {
         }
 
         public SnRelease ToEntity() {
-            return new SnRelease( EntityId, Id.ToString(), Version, Description, RepositoryLabel, ReleaseDate );
+            return new SnRelease( EntityId, Id.ToString(), ProjectId, Version, Description, RepositoryLabel, ReleaseDate );
         }
     }
 }

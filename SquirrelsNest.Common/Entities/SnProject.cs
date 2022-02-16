@@ -1,5 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using SquirrelsNest.Common.Platform;
 
 namespace SquirrelsNest.Common.Entities {
@@ -12,12 +11,9 @@ namespace SquirrelsNest.Common.Entities {
         public  string          IssuePrefix { get; }
         public  int             NextIssueNumber { get; }
 
-        public  ImmutableList<SnRelease>    Releases { get; }
+        public  string          DebugName => $"Project: '{Name}' ({IssuePrefix})";
 
-        public  string      DebugName => $"Project: '{Name}' ({IssuePrefix})";
-
-        public SnProject( string entityId, string dbId, string name, string description, DateOnly inception, string repository, string issuePrefix, int nextIssueNumber, 
-                          IEnumerable<SnRelease> releases ) :
+        public SnProject( string entityId, string dbId, string name, string description, DateOnly inception, string repository, string issuePrefix, int nextIssueNumber ) :
             base( entityId, dbId ) {
             Name = name;
             Description = description;
@@ -25,7 +21,6 @@ namespace SquirrelsNest.Common.Entities {
             RepositoryUrl = repository;
             IssuePrefix = issuePrefix;
             NextIssueNumber = nextIssueNumber;
-            Releases = ImmutableList.Create( releases.ToArray());
         }
 
         public SnProject( string name, string issuePrefix ) :
@@ -38,7 +33,6 @@ namespace SquirrelsNest.Common.Entities {
             RepositoryUrl = String.Empty;
             IssuePrefix = issuePrefix;
             NextIssueNumber = 100;
-            Releases = ImmutableList.Create<SnRelease>();
             Inception = DateTimeProvider.Instance.CurrentDate;
         }
 
@@ -50,24 +44,11 @@ namespace SquirrelsNest.Common.Entities {
                 Inception, 
                 repository ?? RepositoryUrl, 
                 issuePrefix ?? IssuePrefix, 
-                NextIssueNumber,
-                Releases );
+                NextIssueNumber );
         }
 
         public SnProject WithNextIssueNumber() {
-            return new SnProject( EntityId, DbId, Name, Description, Inception, RepositoryUrl, IssuePrefix, NextIssueNumber + 1, Releases );
-        }
-
-        public SnProject WithReleaseAdded( SnRelease release ) {
-            if( Releases.FirstOrDefault( r => r.EntityId.Equals( release.EntityId )) != null ) throw new ApplicationException( "Release to be added exists." );
-
-            return new SnProject( EntityId, DbId, Name, Description, Inception, RepositoryUrl, IssuePrefix, NextIssueNumber + 1, Releases.Add( release ));
-        }
-
-        public SnProject WithReleaseRemoved( SnRelease release ) {
-            if(!Releases.Contains( release )) throw new ApplicationException( "Project does not contain release to be removed." );
-
-            return new SnProject( EntityId, DbId, Name, Description, Inception, RepositoryUrl, IssuePrefix, NextIssueNumber + 1, Releases.Remove( release ));
+            return new SnProject( EntityId, DbId, Name, Description, Inception, RepositoryUrl, IssuePrefix, NextIssueNumber + 1 );
         }
     }
 }

@@ -10,7 +10,6 @@ namespace SquirrelsNest.LiteDb.Dto {
         public  string          RepositoryUrl { get; set; }
         public  string          IssuePrefix { get; set; }
         public  int             NextIssueNumber { get; set; }
-        public  List<DbRelease> Releases { get; set; }
 
         public DbProject() {
             Name = String.Empty;
@@ -18,7 +17,6 @@ namespace SquirrelsNest.LiteDb.Dto {
             RepositoryUrl = String.Empty;
             IssuePrefix = String.Empty;
             NextIssueNumber = 1;
-            Releases = new List<DbRelease>();
 
             Inception = DateTimeProvider.Instance.CurrentDate;
         }
@@ -35,13 +33,11 @@ namespace SquirrelsNest.LiteDb.Dto {
                 RepositoryUrl = project.RepositoryUrl,
                 IssuePrefix = project.IssuePrefix,
                 NextIssueNumber = project.NextIssueNumber,
-                Releases = new List<DbRelease>( project.Releases.Select( DbRelease.From ))
             };
         }
 
         public SnProject ToEntity() {
-            return new SnProject( EntityId, Id.ToString(), Name, Description, Inception, RepositoryUrl, IssuePrefix, NextIssueNumber,
-                                  Releases.Select( r => r.ToEntity()));
+            return new SnProject( EntityId, Id.ToString(), Name, Description, Inception, RepositoryUrl, IssuePrefix, NextIssueNumber );
         }
     }
 }
