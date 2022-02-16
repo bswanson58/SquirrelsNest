@@ -44,6 +44,8 @@ namespace SquirrelsNest.Common.Entities {
         }
 
         public SnRelease For( SnProject project ) {
+            if( project == null ) throw new ArgumentNullException( nameof( project ),  "Releases cannot be set to a null project" );
+
             return new SnRelease( EntityId, DbId, project.EntityId, Version, Description, RepositoryLabel, ReleaseDate );
         }
     }
