@@ -11,6 +11,7 @@ namespace SquirrelsNest.LiteDb {
             builder.RegisterType<IssueProviderAsync>().As<IIssueProvider>().SingleInstance();
             builder.RegisterType<ProjectProviderAsync>().As<IProjectProvider>().SingleInstance();
             builder.RegisterType<ReleaseProviderAsync>().As<IReleaseProvider>().SingleInstance();
+            builder.RegisterType<WorkflowStateProviderAsync>().As<IWorkflowStateProvider>().SingleInstance();
         }
     }
 }
