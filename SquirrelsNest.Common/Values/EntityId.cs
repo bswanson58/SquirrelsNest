@@ -4,11 +4,9 @@ using LanguageExt;
 namespace SquirrelsNest.Common.Values {
     [DebuggerDisplay("Id:{" + nameof( Value ) + "}")]
     public class EntityId : IEquatable<EntityId> {
-        internal static EntityId Default => new ( "default" );
+        public  string Value { get; }
 
-        public string Value { get; }
-
-        public static implicit operator string( EntityId issueId ) => issueId.Value;
+        public  static implicit operator string( EntityId issueId ) => issueId.Value;
 
         private EntityId( string value ) {
             if( !IsValid( value ) ) {
@@ -22,9 +20,22 @@ namespace SquirrelsNest.Common.Values {
             return !String.IsNullOrWhiteSpace( value );
         }
 
+        public static EntityId Default => new ( "default" );
+
         public static Option<EntityId> For( string value ) =>
-            IsValid( value ) ? Option<EntityId>.Some( new EntityId( value ) ) :
+            IsValid( value ) ? 
+                Option<EntityId>.Some( new EntityId( value ) ) :
                 Option<EntityId>.None;
+
+        public static EntityId CreateIdOrThrow( string entityId ) {
+            var id = For( entityId );
+
+            if( id.IsNone ) {
+                throw new ApplicationException( "entity ID could not be created" );
+            }
+
+            return id.AsEnumerable().First();
+        }
 
         // Equality:
         public override bool Equals( object? obj ) => Equals( obj as EntityId );
