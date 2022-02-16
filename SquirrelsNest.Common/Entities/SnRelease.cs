@@ -20,6 +20,8 @@ namespace SquirrelsNest.Common.Entities {
 
         public SnRelease( string version )
             : base( String.Empty ) {
+            if( String.IsNullOrWhiteSpace( version )) throw new ApplicationException( "Version names cannot be empty" );
+
             Version = version;
 
             Description = String.Empty;
