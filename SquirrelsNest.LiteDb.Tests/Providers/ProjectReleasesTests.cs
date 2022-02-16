@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using FluentAssertions;
@@ -16,6 +17,7 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
     public class ProjectReleasesTests : IDisposable {
         private readonly IEnvironment           mEnvironment;
         private readonly IApplicationConstants  mConstants;
+        private readonly List<SnRelease>        mReleases;
 
         private string      TestDirectory => Path.GetTempPath();
         private string      DatabaseFile => Path.Combine( mEnvironment.DatabaseDirectory(), mConstants.DatabaseFileName );
@@ -29,18 +31,30 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
             mConstants = Substitute.For<IApplicationConstants>();
             mConstants.DatabaseFileName.Returns( "Project.DB" );
 
+            mReleases = new List<SnRelease>();
+
             DeleteDatabase();
         }
 
         private ProjectProvider CreateSut() {
+            AddSomeReleases();
+
             return new ProjectProvider( new DatabaseProvider( mEnvironment, mConstants ));
+        }
+
+        private void AddSomeReleases() {
+            using var releaseProvider = new ReleaseProvider( new DatabaseProvider( mEnvironment, mConstants ));
+
+            releaseProvider.AddRelease( new SnRelease( "release 1" )).Do( release => mReleases.Add( release ));
+            releaseProvider.AddRelease( new SnRelease( "release 2" )).Do( release => mReleases.Add( release ));
+            releaseProvider.AddRelease( new SnRelease( "release 3" )).Do( release => mReleases.Add( release ));
         }
 
         [Fact]
         public void ProjectCanAddRelease() {
-            var project = new SnProject( "project name", "prefix" );
-            var release = new SnRelease( "version 1" );
             using var sut = CreateSut();
+            var project = new SnProject( "project name", "prefix" );
+            var release = mReleases[1];
             project = project.WithReleaseAdded( release );
 
             sut.AddProject( project ).Do( p => project = p );
@@ -53,10 +67,10 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
 
         [Fact]
         public void ProjectCanHaveMultipleReleases() {
-            var project = new SnProject( "project name", "prefix" );
-            var release1 = new SnRelease( "version 1" );
-            var release2 = new SnRelease( "version 2" );
             using var sut = CreateSut();
+            var project = new SnProject( "project name", "prefix" );
+            var release1 = mReleases[0];
+            var release2 = mReleases[1];
             project = project.WithReleaseAdded( release1 );
             project = project.WithReleaseAdded( release2 );
 
@@ -70,21 +84,21 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
 
         [Fact]
         public void ProjectCannotHaveSameReleaseAdded() {
+            AddSomeReleases();
             var project = new SnProject( "project name", "prefix" );
-            var release1 = new SnRelease( "version 1" );
-            var release2 = release1.With( version: "version 2" );
+            var release1 = mReleases[0];
 
             project = project.WithReleaseAdded( release1 );
 
-            Assert.Throws<ApplicationException>(() => project = project.WithReleaseAdded( release2 ));
+            Assert.Throws<ApplicationException>(() => project = project.WithReleaseAdded( release1 ));
         }
 
         [Fact]
         public void ProjectCanHaveReleaseDeleted() {
-            var project = new SnProject( "project name", "prefix" );
-            var release1 = new SnRelease( "version 1" );
-            var release2 = new SnRelease( "version 2" );
             using var sut = CreateSut();
+            var project = new SnProject( "project name", "prefix" );
+            var release1 = mReleases[1];
+            var release2 = mReleases[0];
             project = project.WithReleaseAdded( release1 );
             project = project.WithReleaseAdded( release2 );
 
@@ -100,10 +114,10 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
 
         [Fact]
         public void ProjectThrowsIfCanNotRemoveRelease() {
-            var project = new SnProject( "project name", "prefix" );
-            var release1 = new SnRelease( "version 1" );
-            var release2 = new SnRelease( "version 2" );
             using var sut = CreateSut();
+            var project = new SnProject( "project name", "prefix" );
+            var release1 = mReleases[1];
+            var release2 = mReleases[2];
             project = project.WithReleaseAdded( release1 );
             project = project.WithReleaseAdded( release2 );
 
@@ -111,25 +125,6 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
             sut.AddProject( project ).Do( p => project = p );
 
             Assert.Throws<ApplicationException>(() => project.WithReleaseRemoved( release1 ));
-        }
-
-        [Fact]
-        public void ProjectCanHaveReleaseUpdated() {
-            var project = new SnProject( "project name", "prefix" );
-            var release1 = new SnRelease( "version 1" );
-            var release2 = new SnRelease( "version 2" );
-            using var sut = CreateSut();
-            project = project.WithReleaseAdded( release1 );
-            project = project.WithReleaseAdded( release2 );
-
-            sut.AddProject( project ).Do( p => project = p );
-            project = project.WithReleaseUpdated( project.Releases.First().With( version: "Version 3" ));
-            sut.UpdateProject( project );
-            var result = sut.GetProject( project.EntityId );
-
-            result.IfLeft( error => error.Should().BeNull( $"{error.Message}" ));
-            result.IfRight( p => p.Should().BeEquivalentTo( project, "Project can have release updated" ));
-            result.IfRight( p => p.Releases.Count.Should().Be( 2, "Project should have 2 releases" ));
         }
 
         private void DeleteDatabase() {

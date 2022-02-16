@@ -69,13 +69,5 @@ namespace SquirrelsNest.Common.Entities {
 
             return new SnProject( EntityId, DbId, Name, Description, Inception, RepositoryUrl, IssuePrefix, NextIssueNumber + 1, Releases.Remove( release ));
         }
-
-        public SnProject WithReleaseUpdated( SnRelease release ) {
-            var currentValue = Releases.FirstOrDefault( r => r.EntityId.Equals( release.EntityId ));
-
-            if( currentValue == null ) throw new ApplicationException( "Current release cannot be located for replacement" );
-
-            return new SnProject( EntityId, DbId, Name, Description, Inception, RepositoryUrl, IssuePrefix, NextIssueNumber + 1, Releases.Replace( currentValue, release ));
-        }
     }
 }

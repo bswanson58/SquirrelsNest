@@ -17,8 +17,13 @@ namespace SquirrelsNest.LiteDb.Providers {
 
         protected override Either<Error, LiteDatabase> InitializeDatabase( LiteDatabase db ) {
             BsonMapper.Global.Entity<DbProject>().Id( e => e.Id );
+            BsonMapper.Global.Entity<DbProject>().DbRef( p => p.Releases, DbCollectionNames.ReleaseCollection );
             
             return base.InitializeDatabase( db );
+        }
+
+        protected override ILiteCollection<DbProject> Include( ILiteCollection<DbProject> list ) {
+            return list.Include( p => p.Releases );
         }
 
         public Either<Error, SnProject> AddProject( SnProject project ) => Add( project );
