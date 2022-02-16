@@ -52,12 +52,6 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
             result.IsRight.Should().BeTrue( "issues should be addable" );
         }
 
-        private void DeleteDatabase() {
-            if( File.Exists( DatabaseFile )) {
-                File.Delete( DatabaseFile );
-            }
-        }
-
         [Fact]
         public void NewIssueCanBeRetrieved() {
             var issue = new SnIssue( "title", 1, EntityId.Default );
@@ -134,6 +128,12 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
 
             result.IfLeft( error => error.Should().BeNull( $"{error.Message} occurred while getting issue list" ));
             result.IfRight( enumerator => enumerator.Count().Should().Be( 4, "4 issues were added" ));
+        }
+
+        private void DeleteDatabase() {
+            if( File.Exists( DatabaseFile )) {
+                File.Delete( DatabaseFile );
+            }
         }
 
         public void Dispose() {
