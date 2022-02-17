@@ -43,6 +43,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
         }
 
         protected override void OnAccept() {
+            ValidateAllProperties();
+
             if(!HasErrors ) {
                 var issueType = mIssueState ?? new SnIssueType( Name );
 

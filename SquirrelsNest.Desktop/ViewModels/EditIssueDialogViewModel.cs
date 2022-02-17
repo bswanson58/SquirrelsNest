@@ -51,6 +51,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
         }
 
         protected override void OnAccept() {
+            ValidateAllProperties();
+
             if((!HasErrors ) &&
                ( mProject != null )) {
                 var issue = mIssue ?? new SnIssue( IssueTitle, mProject.NextIssueNumber, mProject.EntityId );

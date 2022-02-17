@@ -29,10 +29,6 @@ namespace SquirrelsNest.Desktop.ViewModels {
                 Name = mProject.Name;
                 IssuePrefix = mProject.IssuePrefix;
                 Description = mProject.Description;
-
-                OnPropertyChanged( nameof( Name ));
-                OnPropertyChanged( nameof( IssuePrefix ));
-                OnPropertyChanged( nameof( Description ));
             }
         }
 
@@ -58,6 +54,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
         }
 
         protected override void OnAccept() {
+            ValidateAllProperties();
+
             if(!HasErrors ) {
                 var project = mProject ?? new SnProject( Name, IssuePrefix );
 
