@@ -34,8 +34,6 @@ namespace SquirrelsNest.Desktop.ViewModels {
                 OnPropertyChanged( nameof( IssuePrefix ));
                 OnPropertyChanged( nameof( Description ));
             }
-
-            ValidateAllProperties();
         }
 
         [Required( ErrorMessage = "Name is required" )]
