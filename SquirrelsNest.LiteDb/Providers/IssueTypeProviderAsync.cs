@@ -4,7 +4,6 @@ using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Values;
 using SquirrelsNest.LiteDb.Database;
-using SquirrelsNest.LiteDb.Dto;
 
 namespace SquirrelsNest.LiteDb.Providers {
     internal class IssueTypeProviderAsync : IssueTypeProvider, IIssueTypeProvider {
@@ -17,11 +16,11 @@ namespace SquirrelsNest.LiteDb.Providers {
         }
 
         public new Task<Either<Error, Unit>> UpdateIssue( SnIssueType issue ) {
-            return Task.Run( () => UpdateIssue( issue ));
+            return Task.Run( () => base.UpdateIssue( issue ));
         }
 
         public new Task<Either<Error, Unit>> DeleteIssue( SnIssueType issue ) {
-            return Task.Run( () => DeleteIssue( issue ));
+            return Task.Run( () => base.DeleteIssue( issue ));
         }
 
         public new Task<Either<Error, SnIssueType>> GetIssue( EntityId issueId ) {
@@ -33,7 +32,7 @@ namespace SquirrelsNest.LiteDb.Providers {
         }
 
         public new Task<Either<Error, IEnumerable<SnIssueType>>> GetIssues( SnProject forProject ) {
-            return Task.Run( () => GetIssues( forProject ));
+            return Task.Run( () => base.GetIssues( forProject ));
         }
     }
 }
