@@ -5,25 +5,35 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:viewModelLocator="clr-namespace:MvvmSupport.ViewModelLocator;assembly=MvvmSupport"
              xmlns:viewModels="clr-namespace:SquirrelsNest.Desktop.ViewModels"
+             xmlns:entities="clr-namespace:SquirrelsNest.Common.Entities;assembly=SquirrelsNest.Common"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              viewModelLocator:ViewModelLocator.AutoWireViewModel="True"
              d:DataContext="{d:DesignInstance viewModels:ProjectListViewModel, IsDesignTimeCreatable=False}">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="10"/>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="10"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="10"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="1" Style="{StaticResource ControlTitleStyle}" Text="Projects:"/>
+    <UserControl.Resources>
+        <DataTemplate x:Key="ProjectTemplate" DataType="entities:SnProject">
+            <TextBlock Style="{StaticResource ListViewTextStyle}" Text="{Binding Name}"/>
+        </DataTemplate>
+    </UserControl.Resources>
 
-        <ListBox Grid.Row="3"/>
+    <GroupBox Style="{StaticResource SectionBorderStyle}">
+        <GroupBox.Header>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource ControlTitleStyle}" Text=" Projects " />
+            </StackPanel>
+        </GroupBox.Header>
 
-        <Button Grid.Row="5" HorizontalAlignment="Left" Style="{StaticResource GeneralButtonStyle}" Content="New Project"/>
-    </Grid>
+        <Grid Margin="0,5,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <ListBox Grid.Row="0" ItemsSource="{Binding ProjectList}" ItemTemplate="{StaticResource ProjectTemplate}" SelectedItem="{Binding CurrentProject}"/>
+
+            <Button Grid.Row="2" HorizontalAlignment="Left" Style="{StaticResource GeneralButtonStyle}" Content="New Project" Command="{Binding CreateProject}"/>
+        </Grid>
+    </GroupBox>
 </UserControl>

@@ -9,18 +9,23 @@
              d:DesignHeight="450" d:DesignWidth="800"
              viewModelLocator:ViewModelLocator.AutoWireViewModel="True"
              d:DataContext="{d:DesignInstance viewModels:ReleasesViewModel, IsDesignTimeCreatable=False}">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
-        </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0" Orientation="Vertical">
-            <TextBlock Style="{StaticResource ControlTitleStyle}" Text="Releases:"/>
+    <GroupBox Style="{StaticResource SectionBorderStyle}">
+        <GroupBox.Header>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource ControlTitleStyle}" Text=" Releases " />
+            </StackPanel>
+        </GroupBox.Header>
 
-            <ListBox/>
-        </StackPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-        <Button Grid.Column="1" VerticalAlignment="Bottom" Style="{StaticResource GeneralButtonStyle}" Content="New Release..."/>
-    </Grid>
+            <ListBox Grid.Column="0"/>
+
+            <Button Grid.Column="1" VerticalAlignment="Bottom" Style="{StaticResource GeneralButtonStyle}" Content="New Release..."/>
+        </Grid>
+    </GroupBox>
 </UserControl>
