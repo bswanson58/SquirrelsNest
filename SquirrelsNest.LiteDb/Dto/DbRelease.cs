@@ -24,6 +24,7 @@ namespace SquirrelsNest.LiteDb.Dto {
             return new DbRelease {
                 EntityId = release.EntityId,
                 Id = String.IsNullOrWhiteSpace( release.DbId ) ? ObjectId.NewObjectId() : new ObjectId( release.DbId ),
+                ProjectId = release.ProjectId,
                 Version = release.Version,
                 Description = release.Description,
                 RepositoryLabel = release.RepositoryLabel,

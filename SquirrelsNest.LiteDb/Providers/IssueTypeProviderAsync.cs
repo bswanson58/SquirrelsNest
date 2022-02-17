@@ -33,10 +33,7 @@ namespace SquirrelsNest.LiteDb.Providers {
         }
 
         public new Task<Either<Error, IEnumerable<SnIssueType>>> GetIssues( SnProject forProject ) {
-            return Task.Run(() => GetList()
-                .Map( issueList => issueList.Where( LiteDB.Query.EQ( nameof( DbIssueType.ProjectId ), forProject.EntityId.Value )))
-                .Map( issueList => issueList.ToEnumerable())
-                .Map( entityList => from entity in entityList select entity.ToEntity()));
+            return Task.Run( () => GetIssues( forProject ));
         }
     }
 }

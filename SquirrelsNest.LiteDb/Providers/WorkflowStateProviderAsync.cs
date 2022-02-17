@@ -30,5 +30,9 @@ namespace SquirrelsNest.LiteDb.Providers {
         public new Task<Either<Error, IEnumerable<SnWorkflowState>>> GetStates() {
             return Task.Run(() => base.GetStates());
         }
+
+        public new Task<Either<Error, IEnumerable<SnWorkflowState>>> GetStates( SnProject forProject ) {
+            return Task.Run(() => base.GetStates( forProject ));
+        }
     }
 }

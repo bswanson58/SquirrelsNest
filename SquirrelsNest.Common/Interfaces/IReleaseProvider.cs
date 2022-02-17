@@ -11,5 +11,6 @@ namespace SquirrelsNest.Common.Interfaces {
 
         Task<Either<Error, SnRelease>>                  GetRelease( EntityId releaseId );
         Task<Either<Error, IEnumerable<SnRelease>>>     GetReleases();
+        Task<Either<Error, IEnumerable<SnRelease>>>     GetReleases( SnProject forProject );
     }
 }

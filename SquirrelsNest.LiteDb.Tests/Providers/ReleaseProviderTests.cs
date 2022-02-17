@@ -127,6 +127,28 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
             result.IfLeft( error => error.Should().BeNull( $"{error.Message} occurred while getting release list" ));
             result.IfRight( enumerator => enumerator.Count().Should().Be( 4, "4 releases were added" ));
         }
+
+        [Fact]
+        public void ReleasesCanBeListedByProject() {
+            var project1 = new SnProject( "project1", "P1" );
+            var project2 = new SnProject( "project2", "P2" );
+            var release1 = new SnRelease( "release 1" ).For( project1 );
+            var release2 = new SnRelease( "release 2" ).For( project1 ).With( description: "description2" );
+            var release3 = new SnRelease( "release 3" ).For( project2 ).With( description: "description3" );
+            var release4 = new SnRelease( "release 4" ).For( project1 );
+            using var sut = CreateSut();
+
+            sut.AddRelease( release1 );
+            sut.AddRelease( release2 );
+            sut.AddRelease( release3 );
+            sut.AddRelease( release4 );
+
+            var result = sut.GetReleases( project1 );
+
+            result.IfLeft( error => error.Should().BeNull( $"{error.Message} occurred while getting issue type list" ));
+            result.IfRight( enumerator => enumerator.Count().Should().Be( 3, "3 releases are associated with project1" ));
+        }
+
         private void DeleteDatabase() {
             if( File.Exists( DatabaseFile )) {
                 File.Delete( DatabaseFile );

@@ -111,6 +111,27 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
             result.IfRight( enumerator => enumerator.Count().Should().Be( 4, "4 workflow states were added" ));
         }
 
+        [Fact]
+        public void StatesCanBeListedByProject() {
+            var project1 = new SnProject( "project1", "P1" );
+            var project2 = new SnProject( "project2", "P2" );
+            var state1 = new SnWorkflowState( "state 1" ).For( project1 );
+            var state2 = new SnWorkflowState( "state 2" ).For( project1 ).With( description: "description2" );
+            var state3 = new SnWorkflowState( "state 3" ).For( project2 ).With( description: "description3" );
+            var state4 = new SnWorkflowState( "state 4" ).For( project1 );
+            using var sut = CreateSut();
+
+            sut.AddState( state1 );
+            sut.AddState( state2 );
+            sut.AddState( state3 );
+            sut.AddState( state4 );
+
+            var result = sut.GetStates( project1 );
+
+            result.IfLeft( error => error.Should().BeNull( $"{error.Message} occurred while getting issue type list" ));
+            result.IfRight( enumerator => enumerator.Count().Should().Be( 3, "3 states are associated with project1" ));
+        }
+
         private void DeleteDatabase() {
             if( File.Exists( DatabaseFile )) {
                 File.Delete( DatabaseFile );

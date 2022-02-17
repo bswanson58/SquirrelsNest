@@ -12,7 +12,7 @@ namespace SquirrelsNest.LiteDb.Providers {
         }
 
         public new Task<Either<Error, SnRelease>> AddRelease( SnRelease release ) {
-            return Task.Run(()=> base.AddRelease( release ));
+            return Task.Run(() => base.AddRelease( release ));
         }
 
         public new Task<Either<Error, Unit>> UpdateRelease( SnRelease release ) {
@@ -29,6 +29,10 @@ namespace SquirrelsNest.LiteDb.Providers {
 
         public new Task<Either<Error, IEnumerable<SnRelease>>> GetReleases() {
             return Task.Run(() => base.GetReleases());
+        }
+
+        public new Task<Either<Error, IEnumerable<SnRelease>>> GetReleases( SnProject forProject ) {
+            return Task.Run(() => base.GetReleases( forProject ));
         }
     }
 }

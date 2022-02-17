@@ -26,5 +26,12 @@ namespace SquirrelsNest.LiteDb.Providers {
         public Either<Error, Unit> DeleteRelease( SnRelease release ) => Delete( release );
         public Either<Error, SnRelease> GetRelease( EntityId releaseId ) => Get( releaseId );
         public Either<Error, IEnumerable<SnRelease>> GetReleases() => GetEnumerable();
+
+        public Either<Error, IEnumerable<SnRelease>> GetReleases( SnProject forProject ) {
+            return GetList()
+                .Map( issueList => issueList.Where( LiteDB.Query.EQ( nameof( DbRelease.ProjectId ), forProject.EntityId.Value )))
+                .Map( issueList => issueList.ToEnumerable())
+                .Map( entityList => from entity in entityList select entity.ToEntity());
+        }
     }
 }

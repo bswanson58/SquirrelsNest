@@ -30,5 +30,11 @@ namespace SquirrelsNest.Common.Entities {
                 name ?? Name,
                 description ?? Description );
         }
+
+        public SnIssueType For( SnProject project ) {
+            if( project == null ) throw new ArgumentNullException( nameof( project ),  "IssueTypes cannot be set to a null project" );
+
+            return new SnIssueType( EntityId, DbId, project.EntityId, Name, Description );
+        }
     }
 }

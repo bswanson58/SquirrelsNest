@@ -112,6 +112,27 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
             result.IfRight( enumerator => enumerator.Count().Should().Be( 4, "4 issue types were added" ));
         }
 
+        [Fact]
+        public void IssueTypesCanBeListedByProject() {
+            var project1 = new SnProject( "project1", "P1" );
+            var project2 = new SnProject( "project2", "P1" );
+            var issue1 = new SnIssueType( "issue1" ).For( project1 );
+            var issue2 = new SnIssueType( "issue2" ).For( project1 ).With( description: "description2" );
+            var issue3 = new SnIssueType( "issue3" ).For( project2 ).With( description: "description3" );
+            var issue4 = new SnIssueType( "issue4" ).For( project1 );
+            using var sut = CreateSut();
+
+            sut.AddIssue( issue1 );
+            sut.AddIssue( issue2 );
+            sut.AddIssue( issue3 );
+            sut.AddIssue( issue4 );
+
+            var result = sut.GetIssues( project1 );
+
+            result.IfLeft( error => error.Should().BeNull( $"{error.Message} occurred while getting issue type list" ));
+            result.IfRight( enumerator => enumerator.Count().Should().Be( 3, "3 issue types are associated with project1" ));
+        }
+
         private void DeleteDatabase() {
             if( File.Exists( DatabaseFile )) {
                 File.Delete( DatabaseFile );

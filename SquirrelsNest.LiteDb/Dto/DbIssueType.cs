@@ -18,6 +18,7 @@ namespace SquirrelsNest.LiteDb.Dto {
         public static DbIssueType From( SnIssueType issue ) {
             return new DbIssueType {
                 EntityId = issue.EntityId,
+                ProjectId = issue.ProjectId,
                 Id = String.IsNullOrWhiteSpace( issue.DbId ) ? ObjectId.NewObjectId() : new ObjectId( issue.DbId ),
                 Name = issue.Name,
                 Description = issue.Description

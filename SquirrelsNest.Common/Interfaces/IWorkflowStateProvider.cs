@@ -11,5 +11,6 @@ namespace SquirrelsNest.Common.Interfaces {
 
         Task<Either<Error, SnWorkflowState>>                GetState( EntityId stateId );
         Task<Either<Error, IEnumerable<SnWorkflowState>>>   GetStates();
+        Task<Either<Error, IEnumerable<SnWorkflowState>>>   GetStates( SnProject forProject );
     }
 }
