@@ -12,12 +12,6 @@
              d:DataContext="{d:DesignInstance viewModels:ShellViewModel, IsDesignTimeCreatable=False}">
 
     <Grid Margin="10">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="4*"/>
-        </Grid.ColumnDefinitions>
-
-        <views:IssueListFilterView Grid.Column="0"/>
-        <views:IssueListView Grid.Column="1"/>
+        <views:ProjectManagementView/>
     </Grid>
 </UserControl>
