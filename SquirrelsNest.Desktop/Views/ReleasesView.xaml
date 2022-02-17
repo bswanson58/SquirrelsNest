@@ -5,10 +5,20 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:viewModelLocator="clr-namespace:MvvmSupport.ViewModelLocator;assembly=MvvmSupport"
              xmlns:viewModels="clr-namespace:SquirrelsNest.Desktop.ViewModels"
+             xmlns:entities="clr-namespace:SquirrelsNest.Common.Entities;assembly=SquirrelsNest.Common"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              viewModelLocator:ViewModelLocator.AutoWireViewModel="True"
              d:DataContext="{d:DesignInstance viewModels:ReleasesViewModel, IsDesignTimeCreatable=False}">
+
+    <UserControl.Resources>
+        <DataTemplate x:Key="ReleaseTemplate" DataType="entities:SnRelease">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Style="{StaticResource ListViewTextStyle}" Text="{Binding Version}"/>
+                <TextBlock Style="{StaticResource ListViewSubTextStyle}" Margin="5,0,0,0" Text="{Binding Description}"/>
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
 
     <GroupBox Style="{StaticResource SectionBorderStyle}">
         <GroupBox.Header>
@@ -23,9 +33,9 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <ListBox Grid.Column="0"/>
+            <ListBox Grid.Column="0" ItemsSource="{Binding ReleaseList}" ItemTemplate="{StaticResource ReleaseTemplate}"/>
 
-            <Button Grid.Column="1" VerticalAlignment="Bottom" Style="{StaticResource GeneralButtonStyle}" Content="New Release..."/>
+            <Button Grid.Column="1" VerticalAlignment="Bottom" Style="{StaticResource GeneralButtonStyle}" Content="New Release..." Command="{Binding CreateRelease}"/>
         </Grid>
     </GroupBox>
 </UserControl>

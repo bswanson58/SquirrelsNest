@@ -17,7 +17,10 @@ namespace SquirrelsNest.Desktop {
             builder.RegisterType<DialogServiceContainer>().As<IDialogServiceContainer>().SingleInstance();
 
             builder.RegisterDialog<EditIssueDialog>();
+            builder.RegisterDialog<EditIssueTypeDialog>();
             builder.RegisterDialog<EditProjectDialog>();
+            builder.RegisterDialog<EditReleaseDialog>();
+            builder.RegisterDialog<EditWorkflowStepDialog>();
         }
     }
 }

@@ -11,6 +11,7 @@ using SquirrelsNest.Desktop.Models;
 using SquirrelsNest.Desktop.Views;
 
 namespace SquirrelsNest.Desktop.ViewModels {
+    // ReSharper disable once ClassNeverInstantiated.Global
     internal class WorkflowStepsViewModel : ObservableObject, IDisposable {
         private readonly IWorkflowStateProvider mStateProvider;
         private readonly IDialogService         mDialogService;
