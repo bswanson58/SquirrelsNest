@@ -11,15 +11,17 @@ namespace SquirrelsNest.Common.Entities {
         public  int         IssueNumber {  get; }
         public  DateOnly    EntryDate { get; }
         public  EntityId    IssueTypeId {  get; }
+        public  EntityId    ComponentId { get; } 
         public  EntityId    ReleaseId { get; }
         public  EntityId    WorkflowStateId { get; }
 
         // the serializable constructor
         public SnIssue( string entityId, string dbId, string title, string description, string projectId, int issueNumber, DateOnly entryDate, 
-                        EntityId issueTypeId, EntityId releaseId, EntityId workflowStateId )
+                        EntityId issueTypeId, EntityId componentId, EntityId releaseId, EntityId workflowStateId )
             : base( entityId, dbId ) {
             ProjectId = EntityId.CreateIdOrThrow( projectId );
             IssueTypeId = EntityId.CreateIdOrThrow( issueTypeId );
+            ComponentId = EntityId.CreateIdOrThrow( componentId );
             Title = title;
             Description = description;
             IssueNumber = issueNumber;
@@ -39,6 +41,7 @@ namespace SquirrelsNest.Common.Entities {
             Description = String.Empty;
             EntryDate = DateTimeProvider.Instance.CurrentDate;
             IssueTypeId = EntityId.Default;
+            ComponentId = EntityId.Default;
             ReleaseId = EntityId.Default;
             WorkflowStateId = EntityId.Default;
         }
@@ -52,6 +55,7 @@ namespace SquirrelsNest.Common.Entities {
                 IssueNumber,
                 EntryDate,
                 IssueTypeId,
+                ComponentId,
                 ReleaseId,
                 WorkflowStateId );
         }
@@ -59,19 +63,25 @@ namespace SquirrelsNest.Common.Entities {
         public SnIssue With( SnRelease release ) {
             if( release == null ) throw new ApplicationException( "Release for issue cannot be null" );
 
-            return new SnIssue( EntityId, DbId, Title, Description, ProjectId, IssueNumber, EntryDate, IssueTypeId, release.EntityId, WorkflowStateId );
+            return new SnIssue( EntityId, DbId, Title, Description, ProjectId, IssueNumber, EntryDate, IssueTypeId, ComponentId, release.EntityId, WorkflowStateId );
         }
 
         public SnIssue With( SnWorkflowState state ) {
             if( state == null ) throw new ArgumentNullException( nameof( state ), "Workflow state for issue cannot be null" );
 
-            return new SnIssue( EntityId, DbId, Title, Description, ProjectId, IssueNumber, EntryDate, IssueTypeId, ReleaseId, state.EntityId );
+            return new SnIssue( EntityId, DbId, Title, Description, ProjectId, IssueNumber, EntryDate, IssueTypeId, ComponentId, ReleaseId, state.EntityId );
         }
 
         public SnIssue With( SnIssueType type ) {
             if( type == null ) throw new ArgumentNullException( nameof( type ), "IssueType for issue cannot be null" );
 
-            return new SnIssue( EntityId, DbId, Title, Description, ProjectId, IssueNumber, EntryDate, type.EntityId, ReleaseId, WorkflowStateId );
+            return new SnIssue( EntityId, DbId, Title, Description, ProjectId, IssueNumber, EntryDate, type.EntityId, ComponentId, ReleaseId, WorkflowStateId );
+        }
+
+        public SnIssue With( SnComponent component ) {
+            if( component == null ) throw new ArgumentNullException( nameof( component ), "Component for issue cannot be null" );
+
+            return new SnIssue( EntityId, DbId, Title, Description, ProjectId, IssueNumber, EntryDate, IssueTypeId, component.EntityId, ReleaseId, WorkflowStateId );
         }
     }
 }

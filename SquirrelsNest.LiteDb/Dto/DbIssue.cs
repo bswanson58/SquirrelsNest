@@ -10,6 +10,7 @@ namespace SquirrelsNest.LiteDb.Dto {
         public  int         IssueNumber {  get; set; }
         public  DateOnly    EntryDate { get; set; }
         public  string      IssueTypeId { get; set; }
+        public  string      ComponentId { get; set; }
         public  string      ReleaseId { get; set; }
         public  string      WorkflowStateId { get; set; }
 
@@ -20,6 +21,7 @@ namespace SquirrelsNest.LiteDb.Dto {
             IssueNumber = 0;
             EntryDate = DateTimeProvider.Instance.CurrentDate;
             IssueTypeId = Common.Values.EntityId.Default;
+            ComponentId = Common.Values.EntityId.Default;
             ReleaseId = Common.Values.EntityId.Default;
             WorkflowStateId = Common.Values.EntityId.Default;
         }
@@ -36,6 +38,7 @@ namespace SquirrelsNest.LiteDb.Dto {
                 IssueNumber = issue.IssueNumber,
                 EntryDate = issue.EntryDate,
                 IssueTypeId = issue.IssueTypeId,
+                ComponentId = issue.ComponentId,
                 ReleaseId = issue.ReleaseId,
                 WorkflowStateId = issue.WorkflowStateId
             };
@@ -43,7 +46,8 @@ namespace SquirrelsNest.LiteDb.Dto {
 
         public SnIssue ToEntity() {
             return new SnIssue( EntityId, Id.ToString(), Title, Description, ProjectId, IssueNumber, EntryDate,
-                                Common.Values.EntityId.CreateIdOrThrow( IssueTypeId ), 
+                                Common.Values.EntityId.CreateIdOrThrow( IssueTypeId ),
+                                Common.Values.EntityId.CreateIdOrThrow( ComponentId ), 
                                 Common.Values.EntityId.CreateIdOrThrow( ReleaseId ), 
                                 Common.Values.EntityId.CreateIdOrThrow( WorkflowStateId ));
         }
