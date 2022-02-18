@@ -3,7 +3,6 @@ using System.Windows;
 using LanguageExt;
 using LanguageExt.SomeHelp;
 using MvvmSupport;
-using MvvmSupport.ViewModelLocator;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Core;
 using SquirrelsNest.Desktop.Ioc;
@@ -32,9 +31,9 @@ namespace SquirrelsNest.Desktop {
                 .RegisterModule<CoreModule>()
                 .RegisterModule<LiteDbModule>()
                 .RegisterViewModels( Assembly.GetExecutingAssembly())
+                .RegisterSynchronizationContext()
+                .RegisterViewModelLocator()
                 .BuildDependencies();
-
-            ViewModelLocationProvider.SetDefaultViewModelFactory( vm => mContainer.Resolve( vm ));
 
             mLog = mContainer.Resolve<IApplicationLog>().ToSome();
             mLog.Do( log => log.ApplicationStarting());

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Reactive.Disposables;
+using System.Reactive.Linq;
+using System.Threading;
 using LanguageExt.Common;
 using MoreLinq;
 using SquirrelsNest.Common.Entities;
@@ -19,7 +21,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
         public  ObservableCollection<SnIssue>   IssueList { get; }
 
-        public IssueListViewModel( IModelState modelState, IIssueProvider issueProvider, ILog log ) {
+        public IssueListViewModel( IModelState modelState, IIssueProvider issueProvider, ILog log, SynchronizationContext context ) {
             mIssueProvider = issueProvider;
             mModelState = modelState;
             mLog = log;
@@ -27,8 +29,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
             mSubscriptions = new CompositeDisposable();
             IssueList = new ObservableCollection<SnIssue>();
 
-            mSubscriptions.Add( modelState.OnStateChange.Subscribe( OnModelStateChanged ));
-            mSubscriptions.Add( mIssueProvider.OnEntitySourceChange.Subscribe( OnIssueListChanged ));
+            mSubscriptions.Add( modelState.OnStateChange.ObserveOn( context ).Subscribe( OnModelStateChanged ));
+            mSubscriptions.Add( mIssueProvider.OnEntitySourceChange.ObserveOn( context ).Subscribe( OnIssueListChanged ));
         }
 
         private void OnModelStateChanged( CurrentState state ) {
