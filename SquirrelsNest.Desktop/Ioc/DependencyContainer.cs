@@ -14,15 +14,13 @@ namespace SquirrelsNest.Desktop.Ioc {
             mBuilder = new ContainerBuilder();
         }
 
-        public IDependencyContainer BuildDependencies() {
+        public void BuildDependencies() {
             if( mRootScope != null ) {
                 mRootScope.Dispose();
                 mRootScope = null;
             }
 
             mRootScope = mBuilder.Build();
-
-            return this;
         }
 
         public IDependencyContainer RegisterModule( IModule module ) {

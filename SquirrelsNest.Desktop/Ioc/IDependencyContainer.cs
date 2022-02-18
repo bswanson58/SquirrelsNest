@@ -12,8 +12,7 @@ namespace SquirrelsNest.Desktop.Ioc {
         IDependencyContainer    RegisterSynchronizationContext();
         IDependencyContainer    RegisterViewModelLocator();
 
-        IDependencyContainer    BuildDependencies();
-
+        void    BuildDependencies();
         void    Stop();
 
         object  Resolve( Type t );
