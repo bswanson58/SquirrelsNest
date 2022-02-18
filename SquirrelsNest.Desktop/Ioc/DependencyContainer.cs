@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Reflection;
+using System.Threading;
 using Autofac;
 using Autofac.Core;
+using MvvmSupport.ViewModelLocator;
 
 namespace SquirrelsNest.Desktop.Ioc {
     public class DependencyContainer : IDependencyContainer {
@@ -24,9 +26,7 @@ namespace SquirrelsNest.Desktop.Ioc {
         }
 
         public IDependencyContainer RegisterModule( IModule module ) {
-            if( mRootScope != null ) {
-                throw new ApplicationException( "All registrations must occur before building dependencies" );
-            }
+            InsureScopeIsNotBuilt();
 
             mBuilder.RegisterModule( module );
 
@@ -34,9 +34,7 @@ namespace SquirrelsNest.Desktop.Ioc {
         }
 
         public IDependencyContainer RegisterModule<T>() where T: IModule, new() {
-            if( mRootScope != null ) {
-                throw new ApplicationException( "All registrations must occur before building dependencies" );
-            }
+            InsureScopeIsNotBuilt();
 
             mBuilder.RegisterModule<T>();
 
@@ -44,22 +42,20 @@ namespace SquirrelsNest.Desktop.Ioc {
         }
 
         public IDependencyContainer RegisterViewModels( Assembly forAssembly ) {
-            if( mRootScope != null ) {
-                throw new ApplicationException( "All registrations must occur before building dependencies" );
-            }
+            InsureScopeIsNotBuilt();
 
-            mBuilder.RegisterAssemblyTypes( forAssembly )
+            mBuilder
+                .RegisterAssemblyTypes( forAssembly )
                 .Where( t => t.Name.EndsWith( "ViewModel" ));
 
             return this;
         }
 
         public IDependencyContainer RegisterAsInterfaces( Assembly forAssembly, string classNameSuffix ) {
-            if( mRootScope != null ) {
-                throw new ApplicationException( "All registrations must occur before building dependencies" );
-            }
+            InsureScopeIsNotBuilt();
 
-            mBuilder.RegisterAssemblyTypes( forAssembly )
+            mBuilder
+                .RegisterAssemblyTypes( forAssembly )
                 .Where( t => t.Name.EndsWith( classNameSuffix ))
                 .SingleInstance()
                 .AsImplementedInterfaces();
@@ -68,13 +64,43 @@ namespace SquirrelsNest.Desktop.Ioc {
         }
 
         public IDependencyContainer RegisterDialog( Type viewType, string viewName ) {
-            if( mRootScope != null ) {
-                throw new ApplicationException( "All registrations must occur before building dependencies" );
-            }
+            InsureScopeIsNotBuilt();
 
             mBuilder.RegisterType( viewType ).Named( viewName, typeof( object ));
 
             return this;
+        }
+
+        public IDependencyContainer RegisterSynchronizationContext() {
+            InsureScopeIsNotBuilt();
+
+            if( SynchronizationContext.Current == null ) {
+                throw new ApplicationException( "A null SynchronizationContext can not be registered" );
+            }
+
+            mBuilder.RegisterInstance( SynchronizationContext.Current );
+
+            return this;
+        }
+
+        public IDependencyContainer RegisterViewModelLocator() {
+            ViewModelLocationProvider.SetDefaultViewModelFactory( CreateViewModel );
+
+            return this;
+        }
+
+        private object CreateViewModel( Type vmType ) {
+            if( mRootScope == null ) {
+                throw new ApplicationException( "Context has not been built before attempting to resolve a view model" );
+            }
+
+            return mRootScope.Resolve( vmType );
+        }
+
+        private void InsureScopeIsNotBuilt() {
+            if( mRootScope != null ) {
+                throw new ApplicationException( "All registrations must occur before building dependencies" );
+            }
         }
 
         public void Stop() {

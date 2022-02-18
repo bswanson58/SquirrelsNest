@@ -9,6 +9,9 @@ namespace SquirrelsNest.Desktop.Ioc {
         IDependencyContainer    RegisterViewModels( Assembly forAssembly );
         IDependencyContainer    RegisterAsInterfaces( Assembly forAssembly, string classNameSuffix );
         IDependencyContainer    RegisterDialog( Type viewType, string viewName );
+        IDependencyContainer    RegisterSynchronizationContext();
+        IDependencyContainer    RegisterViewModelLocator();
+
         IDependencyContainer    BuildDependencies();
 
         void    Stop();
