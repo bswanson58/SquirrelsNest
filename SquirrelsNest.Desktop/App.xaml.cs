@@ -7,6 +7,7 @@ using MvvmSupport.ViewModelLocator;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Core;
 using SquirrelsNest.Desktop.Ioc;
+using SquirrelsNest.Desktop.Views;
 using SquirrelsNest.LiteDb;
 
 namespace SquirrelsNest.Desktop {

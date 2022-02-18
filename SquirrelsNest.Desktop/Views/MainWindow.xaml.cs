@@ -3,7 +3,7 @@ using System.ComponentModel;
 using SquirrelsNest.Desktop.Platform;
 using SquirrelsNest.Desktop.Properties;
 
-namespace SquirrelsNest.Desktop {
+namespace SquirrelsNest.Desktop.Views {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
