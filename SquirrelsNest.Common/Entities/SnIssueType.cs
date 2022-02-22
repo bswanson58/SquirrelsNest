@@ -37,7 +37,9 @@ namespace SquirrelsNest.Common.Entities {
             return new SnIssueType( EntityId, DbId, project.EntityId, Name, Description );
         }
 
-        public static SnIssueType Default =>
-            new SnIssueType( EntityId.Default, String.Empty, EntityId.Default, "Unspecified", String.Empty );
+        private static SnIssueType ? mDefault;
+
+        public static SnIssueType Default => 
+            mDefault ??= new SnIssueType( EntityId.Default, String.Empty, EntityId.Default, "Unspecified", String.Empty );
     }
 }
