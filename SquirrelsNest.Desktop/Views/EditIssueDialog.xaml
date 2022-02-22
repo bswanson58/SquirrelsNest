@@ -7,6 +7,7 @@
              xmlns:viewModels="clr-namespace:SquirrelsNest.Desktop.ViewModels"
              xmlns:dialogService="clr-namespace:MvvmSupport.DialogService;assembly=MvvmSupport"
              xmlns:adorners="http://gu.se/Adorners"
+             xmlns:entities="clr-namespace:SquirrelsNest.Common.Entities;assembly=SquirrelsNest.Common"
              mc:Ignorable="d" 
              Height="250" Width="400"
              viewModelLocator:ViewModelLocator.AutoWireViewModel="True"
@@ -22,6 +23,10 @@
     </dialogService:Dialog.WindowStyle>
 
     <UserControl.Resources>
+        <DataTemplate x:Key="IssueTypeTemplate" DataType="{x:Type entities:SnIssueType}">
+            <TextBlock Style="{StaticResource ListViewTextStyle}" Text="{Binding Name}"/>
+        </DataTemplate>
+
         <Style x:Key="ErrorToolTip" TargetType="TextBox">
             <Style.Triggers>
                 <Trigger Property="Validation.HasError" Value="True">
@@ -33,6 +38,7 @@
 
     <Grid Margin="10" FocusManager.FocusedElement="{Binding ElementName=_firstFocus}">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -67,9 +73,14 @@
                      Text="{Binding Description, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
         </StackPanel>
 
-        <TextBlock Grid.Row="4" Style="{StaticResource ControlTitleStyle}" Text="{Binding EntryInfo}"/>
+        <StackPanel Grid.Row="3" Margin="0,5,0,0" Orientation="Horizontal">
+            <TextBlock Style="{StaticResource ControlTitleStyle}" VerticalAlignment="Center" Margin="0,0,5,0" Text="Issue Type:"/>
+            <ComboBox Width="200" ItemsSource="{Binding IssueTypes}" SelectedItem="{Binding CurrentIssueType}" ItemTemplate="{StaticResource IssueTypeTemplate}"/>
+        </StackPanel>
 
-        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right">
+        <TextBlock Grid.Row="5" Style="{StaticResource ControlTitleStyle}" Text="{Binding EntryInfo}"/>
+
+        <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Width="70" Margin="10,0" Style="{StaticResource GeneralButtonStyle}" Content="OK" Command="{Binding AcceptCommand}" IsDefault="True"/>
             <Button Width="70" Style="{StaticResource GeneralButtonStyle}" Content="Cancel" Command="{Binding CancelCommand}" IsCancel="True"/>
         </StackPanel>

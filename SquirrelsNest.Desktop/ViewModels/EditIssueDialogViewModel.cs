@@ -1,25 +1,37 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using MoreLinq;
 using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
+using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Desktop.Support;
 
 namespace SquirrelsNest.Desktop.ViewModels {
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class EditIssueDialogViewModel : DialogAwareBase {
-        public  const string        cIssueParameter = "issue";
-        public  const string        cProjectParameter = "project";
+        private readonly IIssueTypeProvider mIssueTypeProvider;
 
-        private SnIssue ?           mIssue;
-        private SnProject ?         mProject;
-        private string              mTitle;
-        private string              mDescription;
+        public  const string                cIssueParameter = "issue";
+        public  const string                cProjectParameter = "project";
 
-        public  string              EntryInfo { get; private set; }
+        private SnIssue ?                   mIssue;
+        private SnProject ?                 mProject;
+        private string                      mTitle;
+        private string                      mDescription;
+        private SnIssueType                 mCurrentIssueType;
 
-        public EditIssueDialogViewModel() {
+        public  ObservableCollection<SnIssueType>   IssueTypes { get; }
+        public  string                              EntryInfo { get; private set; }
+
+        public EditIssueDialogViewModel( IIssueTypeProvider issueTypeProvider ) {
+            mIssueTypeProvider = issueTypeProvider;
+
             mTitle = String.Empty;
             mDescription = String.Empty;
+            IssueTypes = new ObservableCollection<SnIssueType>();
+            mCurrentIssueType = SnIssueType.Default;
 
             SetTitle( "Issue Properties" );
             EntryInfo = String.Empty;
@@ -40,6 +52,12 @@ namespace SquirrelsNest.Desktop.ViewModels {
                 EntryInfo = $"Entered on {mIssue.EntryDate.ToShortDateString()}";
                 OnPropertyChanged( nameof( EntryInfo ));
             }
+
+            mIssueTypeProvider.GetIssues().Result
+                .Map( list => list.OrderBy( it => it.Name ))
+                .Map( list => Enumerable.Append( list, SnIssueType.Default ))
+                .Do( list => list.ForEach( it => IssueTypes.Add( it )))
+                .Do( _ => CurrentIssueType = IssueTypes.First( it => it.EntityId.Equals( mIssue?.IssueTypeId )));
         }
 
         [Required( ErrorMessage = "Issue title is required" )]
@@ -55,6 +73,11 @@ namespace SquirrelsNest.Desktop.ViewModels {
             set => SetProperty( ref mDescription, value, true );
         }
 
+        public SnIssueType CurrentIssueType {
+            get => mCurrentIssueType;
+            set => SetProperty( ref mCurrentIssueType, value, true );
+        }
+
         protected override void OnAccept() {
             ValidateAllProperties();
 
@@ -62,7 +85,9 @@ namespace SquirrelsNest.Desktop.ViewModels {
                ( mProject != null )) {
                 var issue = mIssue ?? new SnIssue( IssueTitle, mProject.NextIssueNumber, mProject.EntityId );
 
-                issue = issue.With( title: IssueTitle, description: Description );
+                issue = issue
+                    .With( title: IssueTitle, description: Description )
+                    .With( CurrentIssueType );
 
                 RaiseRequestClose( 
                     new DialogResult( ButtonResult.Ok, 
