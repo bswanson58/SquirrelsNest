@@ -5,23 +5,36 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:viewModels="clr-namespace:SquirrelsNest.Desktop.ViewModels"
              xmlns:viewModelLocator="clr-namespace:MvvmSupport.ViewModelLocator;assembly=MvvmSupport"
-             xmlns:entities="clr-namespace:SquirrelsNest.Common.Entities;assembly=SquirrelsNest.Common"
+             xmlns:uiModels="clr-namespace:SquirrelsNest.Desktop.ViewModels.UiModels"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              viewModelLocator:ViewModelLocator.AutoWireViewModel="True"
              d:DataContext="{d:DesignInstance viewModels:IssueListViewModel, IsDesignTimeCreatable=False}">
 
     <UserControl.Resources>
-        <DataTemplate x:Key="IssueTemplate" DataType="entities:SnIssue">
-            <Grid>
+        <DataTemplate x:Key="IssueTemplate" DataType="uiModels:UiIssue">
+            <Grid Background="Transparent">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Row="0" Style="{StaticResource ListViewTextStyle}" Text="{Binding Title}"/>
-                <TextBlock Grid.Row="1" Style="{StaticResource ListViewSubTextStyle}" Text="{Binding Description}"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource ListViewTextStyle}" Text="{Binding Title}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Margin="5,0,0,0" Style="{StaticResource ListViewSubTextStyle}" Text="{Binding Description}"/>
+
+                <Button x:Name="TrackEdit" Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Margin="5,0" HorizontalAlignment="Right" Width="17" Height="15" 
+                        Padding="1" BorderThickness="0" Background="Transparent" Opacity="0" Cursor="Hand" Focusable="False"
+                        Command="{Binding Edit}" Content="{StaticResource Image:Edit}" ToolTip="Edit Issue Properties" />
             </Grid>
+            <DataTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="TrackEdit" Property="Opacity" Value="1"/>
+                </Trigger>
+            </DataTemplate.Triggers>
         </DataTemplate>
     </UserControl.Resources>
 

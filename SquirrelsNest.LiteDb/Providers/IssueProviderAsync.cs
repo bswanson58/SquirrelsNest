@@ -17,11 +17,11 @@ namespace SquirrelsNest.LiteDb.Providers {
         }
 
         public new Task<Either<Error, Unit>> UpdateIssue( SnIssue issue ) {
-            return Task.Run( () => UpdateIssue( issue ));
+            return Task.Run( () => base.UpdateIssue( issue ));
         }
 
         public new Task<Either<Error, Unit>> DeleteIssue( SnIssue issue ) {
-            return Task.Run( () => DeleteIssue( issue ));
+            return Task.Run( () => base.DeleteIssue( issue ));
         }
 
         public new Task<Either<Error, SnIssue>> GetIssue( EntityId issueId ) {
