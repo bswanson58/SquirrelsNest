@@ -15,12 +15,14 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private string              mTitle;
         private string              mDescription;
 
+        public  string              EntryInfo { get; private set; }
+
         public EditIssueDialogViewModel() {
             mTitle = String.Empty;
             mDescription = String.Empty;
 
             SetTitle( "Issue Properties" );
-
+            EntryInfo = String.Empty;
         }
 
         public override void OnDialogOpened( IDialogParameters parameters ) {
@@ -34,6 +36,9 @@ namespace SquirrelsNest.Desktop.ViewModels {
             if( mIssue != null ) {
                 IssueTitle = mIssue.Title;
                 Description = mIssue.Description;
+
+                EntryInfo = $"Entered on {mIssue.EntryDate.ToShortDateString()}";
+                OnPropertyChanged( nameof( EntryInfo ));
             }
         }
 
