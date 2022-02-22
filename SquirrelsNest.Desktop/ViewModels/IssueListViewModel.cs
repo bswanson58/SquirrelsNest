@@ -56,13 +56,13 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
             forProject.ToEither( new Error())
                 .BindAsync( project => mIssueProvider.GetIssues( project )).Result
-                    .Match( list => list.ForEach( i => IssueList.Add( new UiIssue( i, OnEditIssue ))),
+                    .Match( list => list.ForEach( i => IssueList.Add( new UiIssue( forProject.AsEnumerable().First(), i, OnEditIssue ))),
                             error => mLog.LogError( error ));
         }
 
         private void OnEditIssue( UiIssue uiIssue ) {
             if( mCurrentProject.IsSome ) {
-                var parameters = new DialogParameters{{ EditIssueDialogViewModel.cProjectParameter, mCurrentProject.AsEnumerable().FirstOrDefault()! }, 
+                var parameters = new DialogParameters{{ EditIssueDialogViewModel.cProjectParameter, mCurrentProject.AsEnumerable().First() }, 
                                                       { EditIssueDialogViewModel.cIssueParameter, uiIssue.Issue }};
 
                 mDialogService.ShowDialog( nameof( EditIssueDialog ), parameters, result => {

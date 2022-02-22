@@ -13,7 +13,7 @@
 
     <UserControl.Resources>
         <DataTemplate x:Key="IssueTemplate" DataType="uiModels:UiIssue">
-            <Grid Background="Transparent">
+            <Grid Margin="0,0,0,5" Background="Transparent">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -23,8 +23,13 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource ListViewTextStyle}" Text="{Binding Title}"/>
-                <TextBlock Grid.Row="1" Grid.Column="0" Margin="5,0,0,0" Style="{StaticResource ListViewSubTextStyle}" Text="{Binding Description}"/>
+                <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                    <TextBlock Opacity="0.6" Style="{StaticResource ListViewTextStyle}" Text="("/>
+                    <TextBlock Opacity="0.6" Style="{StaticResource ListViewTextStyle}" Text="{Binding IssueNumber}"/>
+                    <TextBlock Opacity="0.6" Style="{StaticResource ListViewTextStyle}" Text=")"/>
+                    <TextBlock Margin="5,0,0,0" Style="{StaticResource ListViewTextStyle}" Text="{Binding Title}"/>
+                </StackPanel>
+                <TextBlock Grid.Row="1" Grid.Column="0" Margin="8,0,0,0" Style="{StaticResource ListViewSubTextStyle}" Text="{Binding Description}"/>
 
                 <Button x:Name="TrackEdit" Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Margin="5,0" HorizontalAlignment="Right" Width="17" Height="15" 
                         Padding="1" BorderThickness="0" Background="Transparent" Opacity="0" Cursor="Hand" Focusable="False"

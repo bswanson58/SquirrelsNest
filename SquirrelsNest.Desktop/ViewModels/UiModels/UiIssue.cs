@@ -8,12 +8,16 @@ namespace SquirrelsNest.Desktop.ViewModels.UiModels {
         private readonly Action<UiIssue>    mOnEdit;
 
         public  SnIssue             Issue { get; }
+        public  SnProject           Project { get; }
+
+        public  string              IssueNumber => $"{Project.IssuePrefix}-{Issue.IssueNumber}";
         public  string              Title => Issue.Title;
         public  string              Description => Issue.Description;
 
         public  IRelayCommand       Edit { get; }
 
-        public UiIssue( SnIssue issue, Action<UiIssue> onEdit ) {
+        public UiIssue( SnProject project, SnIssue issue, Action<UiIssue> onEdit ) {
+            Project = project;
             Issue = issue;
             mOnEdit = onEdit;
 
