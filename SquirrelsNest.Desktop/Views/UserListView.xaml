@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="SquirrelsNest.Desktop.Views.UserListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:viewModelLocator="clr-namespace:MvvmSupport.ViewModelLocator;assembly=MvvmSupport"
+             xmlns:viewModels="clr-namespace:SquirrelsNest.Desktop.ViewModels"
+             xmlns:entities="clr-namespace:SquirrelsNest.Common.Entities;assembly=SquirrelsNest.Common"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             viewModelLocator:ViewModelLocator.AutoWireViewModel="True"
+             d:DataContext="{d:DesignInstance viewModels:UserListViewModel, IsDesignTimeCreatable=False}">
+
+    <UserControl.Resources>
+        <DataTemplate x:Key="UserTemplate" DataType="{x:Type entities:SnUser}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource ListViewTextStyle}" Text="{Binding LoginName}"/>
+                <TextBlock Style="{StaticResource ListViewTextStyle}" Text=" ("/>
+                <TextBlock Style="{StaticResource ListViewTextStyle}" Text="{Binding Name}"/>
+                <TextBlock Style="{StaticResource ListViewTextStyle}" Text=")"/>
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <GroupBox Style="{StaticResource SectionBorderStyle}">
+        <GroupBox.Header>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource ControlTitleStyle}" Text=" Users " />
+            </StackPanel>
+        </GroupBox.Header>
+
+        <Grid Margin="0,5,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <ListBox Grid.Row="0" ItemsSource="{Binding UserList}" ItemTemplate="{StaticResource UserTemplate}" SelectedItem="{Binding CurrentUser}"/>
+
+            <Button Grid.Row="2" HorizontalAlignment="Left" Style="{StaticResource GeneralButtonStyle}" Content="New User" Command="{Binding CreateUser}"/>
+        </Grid>
+    </GroupBox>
+</UserControl>

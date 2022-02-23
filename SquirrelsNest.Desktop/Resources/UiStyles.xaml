@@ -66,10 +66,19 @@
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     </Style>
 
-    <Style x:Key="EmptyListTextStyle" TargetType="TextBlock">
+    <Style x:Key="EmptyListTextStyle" TargetType="{x:Type TextBox}">
         <Setter Property="FontSize" Value="18"/>
         <Setter Property="Foreground" Value="{StaticResource BorderTextColor}"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- Validation information for text boxes -->
+    <Style x:Key="ErrorToolTip" TargetType="{x:Type TextBox}">
+        <Style.Triggers>
+            <Trigger Property="Validation.HasError" Value="True">
+                <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <!-- Removes the white border around the GroupBox border -->
