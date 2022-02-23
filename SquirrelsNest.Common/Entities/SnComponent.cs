@@ -40,6 +40,6 @@ namespace SquirrelsNest.Common.Entities {
         private static SnComponent ? mDefaultComponent;
 
         public static SnComponent Default =>
-            mDefaultComponent ??= new SnComponent( "Unspecified" );
+            mDefaultComponent ??= new SnComponent( EntityId.Default, String.Empty, EntityId.Default, "Unspecified", String.Empty );
     }
 }

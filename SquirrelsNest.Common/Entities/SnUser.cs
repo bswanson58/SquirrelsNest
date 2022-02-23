@@ -25,6 +25,6 @@ namespace SquirrelsNest.Common.Entities {
         private static SnUser ? mDefaultUser;
 
         public static SnUser Default =>
-            mDefaultUser ??= new SnUser( "Unspecified" );
+            mDefaultUser ??= new SnUser( Values.EntityId.Default, String.Empty, "Unspecified", "Unspecified" );
     }
 }
