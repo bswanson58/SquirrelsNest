@@ -38,14 +38,6 @@
         <DataTemplate x:Key="UserTemplate" DataType="{x:Type entities:SnUser}">
             <TextBlock Style="{StaticResource ListViewTextStyle}" Text="{Binding Name}"/>
         </DataTemplate>
-        
-        <Style x:Key="ErrorToolTip" TargetType="TextBox">
-            <Style.Triggers>
-                <Trigger Property="Validation.HasError" Value="True">
-                    <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
     </UserControl.Resources>
 
     <Grid Margin="10" FocusManager.FocusedElement="{Binding ElementName=_firstFocus}">
