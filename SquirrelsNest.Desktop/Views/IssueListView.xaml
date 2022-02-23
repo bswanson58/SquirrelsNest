@@ -38,12 +38,14 @@
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="3*"/>
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Grid.Column="0" HorizontalAlignment="Center" Style="{StaticResource ControlTitleStyle}" Text="{Binding IssueType.Name}"/>
                     <TextBlock Grid.Column="1" HorizontalAlignment="Center" Style="{StaticResource ControlTitleStyle}" Text="{Binding State.Name}"/>
                     <TextBlock Grid.Column="2" HorizontalAlignment="Center" Style="{StaticResource ControlTitleStyle}" Text="{Binding Component.Name}"/>
+                    <TextBlock Grid.Column="3" HorizontalAlignment="Center" Style="{StaticResource ControlTitleStyle}" Text="{Binding AssignedUser.Name}"/>
                 </Grid>
 
                 <Button x:Name="TrackEdit" Grid.Row="0" Grid.RowSpan="3" Grid.Column="1" Margin="5,0" HorizontalAlignment="Right" Width="17" Height="15" 

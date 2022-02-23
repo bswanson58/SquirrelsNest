@@ -8,13 +8,15 @@ namespace SquirrelsNest.Core.CompositeBuilders {
         private readonly IIssueTypeProvider         mIssueTypeProvider;
         private readonly IComponentProvider         mComponentProvider;
         private readonly IWorkflowStateProvider     mStateProvider;
+        private readonly IUserProvider              mUserProvider;
 
         public IssueBuilder( IProjectProvider projectProvider, IIssueTypeProvider issueTypeProvider, IWorkflowStateProvider stateProvider,
-                             IComponentProvider componentProvider ) {
+                             IComponentProvider componentProvider, IUserProvider userProvider ) {
             mProjectProvider = projectProvider;
             mIssueTypeProvider = issueTypeProvider;
             mStateProvider = stateProvider;
             mComponentProvider = componentProvider;
+            mUserProvider = userProvider;
         }
 
         private SnProject GetProject( SnIssue forIssue ) {
@@ -41,6 +43,18 @@ namespace SquirrelsNest.Core.CompositeBuilders {
                 .IfLeft( SnComponent.Default );
         }
 
+        private SnUser GetEntryUser( SnIssue forIssue ) {
+            return mUserProvider
+                .GetUser( forIssue.EnteredById ).Result
+                .IfLeft( SnUser.Default );
+        }
+
+        private SnUser GetAssignedUser( SnIssue forIssue ) {
+            return mUserProvider
+                .GetUser( forIssue.AssignedToId ).Result
+                .IfLeft( SnUser.Default );
+        }
+
         public CompositeIssue BuildCompositeIssue( SnIssue forIssue ) {
             if( forIssue == null ) {
                 throw new ArgumentNullException( nameof( forIssue ));
@@ -50,8 +64,10 @@ namespace SquirrelsNest.Core.CompositeBuilders {
                 GetProject( forIssue ),
                 forIssue,
                 GetIssueType( forIssue ),
+                GetEntryUser( forIssue ),
                 GetComponent( forIssue ),
-                GetState( forIssue ));
+                GetState( forIssue ),
+                GetAssignedUser( forIssue ));
         }
     }
 }

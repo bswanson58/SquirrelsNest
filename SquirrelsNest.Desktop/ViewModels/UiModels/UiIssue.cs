@@ -13,6 +13,7 @@ namespace SquirrelsNest.Desktop.ViewModels.UiModels {
         public  SnIssueType         IssueType => mCompositeIssue.IssueType;
         public  SnComponent         Component => mCompositeIssue.Component;
         public  SnWorkflowState     State => mCompositeIssue.State;
+        public  SnUser              AssignedUser => mCompositeIssue.AssignedTo;
 
         public  string              IssueNumber => $"{mCompositeIssue.Project.IssuePrefix}-{Issue.IssueNumber}";
         public  string              Title => Issue.Title;
