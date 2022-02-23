@@ -5,7 +5,6 @@ using System.Linq;
 using MoreLinq;
 using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
-using SquirrelsNest.Common.Values;
 using SquirrelsNest.Core.CompositeBuilders;
 using SquirrelsNest.Desktop.Support;
 
@@ -20,15 +19,20 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private string                      mTitle;
         private string                      mDescription;
         private SnIssueType                 mCurrentIssueType;
+        private SnWorkflowState             mCurrentState;
 
-        public  ObservableCollection<SnIssueType>   IssueTypes { get; }
-        public  string                              EntryInfo { get; private set; }
+        public  ObservableCollection<SnIssueType>       IssueTypes { get; }
+        public  ObservableCollection<SnWorkflowState>   WorkflowStates { get; }
+
+        public  string                      EntryInfo { get; private set; }
 
         public EditIssueDialogViewModel() {
             mTitle = String.Empty;
             mDescription = String.Empty;
             IssueTypes = new ObservableCollection<SnIssueType>();
+            WorkflowStates = new ObservableCollection<SnWorkflowState>();
             mCurrentIssueType = SnIssueType.Default;
+            mCurrentState = SnWorkflowState.Default;
 
             SetTitle( "Issue Properties" );
             EntryInfo = String.Empty;
@@ -51,14 +55,32 @@ namespace SquirrelsNest.Desktop.ViewModels {
             }
 
             BuildEntityLists( mProject );
-
-            CurrentIssueType = IssueTypes.FirstOrDefault( it => it.EntityId.Equals( mIssue != null ? mIssue.IssueTypeId : EntityId.Default )) ?? SnIssueType.Default;
+            if( mIssue != null ) {
+                SetEntityStates( mIssue );
+            }
+            else {
+                SetDefaultStates();
+            }
         }
 
         private void BuildEntityLists( CompositeProject project ) {
             IssueTypes.Clear();
             project.IssueTypes.OrderBy( it => it.Name ).ForEach( IssueTypes.Add );
             IssueTypes.Add( SnIssueType.Default );
+
+            WorkflowStates.Clear();
+            project.WorkflowStates.OrderBy( s => s.Name ).ForEach( WorkflowStates.Add );
+            WorkflowStates.Add( SnWorkflowState.Default );
+        }
+
+        private void SetEntityStates( SnIssue forIssue ) {
+            CurrentIssueType = IssueTypes.First( it => it.EntityId.Equals( forIssue.IssueTypeId ));
+            CurrentState = WorkflowStates.First( s => s.EntityId.Equals( forIssue.WorkflowStateId ));
+        }
+
+        private void SetDefaultStates() {
+            CurrentIssueType = SnIssueType.Default;
+            CurrentState = SnWorkflowState.Default;
         }
 
         [Required( ErrorMessage = "Issue title is required" )]
@@ -79,6 +101,11 @@ namespace SquirrelsNest.Desktop.ViewModels {
             set => SetProperty( ref mCurrentIssueType, value, true );
         }
 
+        public SnWorkflowState CurrentState {
+            get => mCurrentState;
+            set => SetProperty( ref mCurrentState, value, true );
+        }
+
         protected override void OnAccept() {
             ValidateAllProperties();
 
@@ -88,7 +115,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
                 issue = issue
                     .With( title: IssueTitle, description: Description )
-                    .With( CurrentIssueType );
+                    .With( CurrentIssueType )
+                    .With( CurrentState );
 
                 RaiseRequestClose( 
                     new DialogResult( ButtonResult.Ok, 
