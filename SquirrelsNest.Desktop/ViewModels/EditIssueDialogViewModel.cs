@@ -5,8 +5,6 @@ using System.Linq;
 using MoreLinq;
 using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
-using SquirrelsNest.Common.Interfaces;
-using SquirrelsNest.Common.Logging;
 using SquirrelsNest.Common.Values;
 using SquirrelsNest.Core.CompositeBuilders;
 using SquirrelsNest.Desktop.Support;
@@ -14,9 +12,6 @@ using SquirrelsNest.Desktop.Support;
 namespace SquirrelsNest.Desktop.ViewModels {
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class EditIssueDialogViewModel : DialogAwareBase {
-        private readonly IIssueTypeProvider mIssueTypeProvider;
-        private readonly ILog               mLog;
-
         public  const string                cIssueParameter = "issue";
         public  const string                cProjectParameter = "project";
 
@@ -29,10 +24,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
         public  ObservableCollection<SnIssueType>   IssueTypes { get; }
         public  string                              EntryInfo { get; private set; }
 
-        public EditIssueDialogViewModel( IIssueTypeProvider issueTypeProvider, ILog log ) {
-            mIssueTypeProvider = issueTypeProvider;
-            mLog = log;
-
+        public EditIssueDialogViewModel() {
             mTitle = String.Empty;
             mDescription = String.Empty;
             IssueTypes = new ObservableCollection<SnIssueType>();
@@ -58,14 +50,15 @@ namespace SquirrelsNest.Desktop.ViewModels {
                 OnPropertyChanged( nameof( EntryInfo ));
             }
 
-            mIssueTypeProvider
-                .GetIssues( mProject.Project ).Result
-                .Map( list => list.OrderBy( it => it.Name ))
-                .Map( list => Enumerable.Append( list, SnIssueType.Default ))
-                .Do( list => list.ForEach( it => IssueTypes.Add( it )))
-                .IfLeft( e => mLog.LogError( e ));
+            BuildEntityLists( mProject );
 
             CurrentIssueType = IssueTypes.FirstOrDefault( it => it.EntityId.Equals( mIssue != null ? mIssue.IssueTypeId : EntityId.Default )) ?? SnIssueType.Default;
+        }
+
+        private void BuildEntityLists( CompositeProject project ) {
+            IssueTypes.Clear();
+            project.IssueTypes.OrderBy( it => it.Name ).ForEach( IssueTypes.Add );
+            IssueTypes.Add( SnIssueType.Default );
         }
 
         [Required( ErrorMessage = "Issue title is required" )]
