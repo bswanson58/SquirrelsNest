@@ -21,6 +21,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
     internal class IssueListViewModel : IDisposable {
         // ReSharper disable once CollectionNeverQueried.Local
         private readonly CompositeDisposable    mSubscriptions;
+        private readonly IProjectBuilder        mProjectBuilder;
         private readonly IIssueProvider         mIssueProvider;
         private readonly IIssueBuilder          mIssueBuilder;
         private readonly IModelState            mModelState;
@@ -31,11 +32,12 @@ namespace SquirrelsNest.Desktop.ViewModels {
         public  ObservableCollection<UiIssue>   IssueList { get; }
 
         public IssueListViewModel( IModelState modelState, IIssueProvider issueProvider, IIssueBuilder issueBuilder,
-                                   ILog log, SynchronizationContext context, IDialogService dialogService ) {
+                                   ILog log, SynchronizationContext context, IDialogService dialogService, IProjectBuilder projectBuilder ) {
             mIssueProvider = issueProvider;
             mModelState = modelState;
             mLog = log;
             mDialogService = dialogService;
+            mProjectBuilder = projectBuilder;
             mIssueBuilder = issueBuilder;
 
             mSubscriptions = new CompositeDisposable();
@@ -72,7 +74,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
         private void OnEditIssue( UiIssue uiIssue ) {
             if( mCurrentProject.IsSome ) {
-                var parameters = new DialogParameters{{ EditIssueDialogViewModel.cProjectParameter, mCurrentProject.AsEnumerable().First() }, 
+                var project = mProjectBuilder.BuildCompositeProject( mCurrentProject.AsEnumerable().First());
+                var parameters = new DialogParameters{{ EditIssueDialogViewModel.cProjectParameter, project }, 
                                                       { EditIssueDialogViewModel.cIssueParameter, uiIssue.Issue }};
 
                 mDialogService.ShowDialog( nameof( EditIssueDialog ), parameters, result => {

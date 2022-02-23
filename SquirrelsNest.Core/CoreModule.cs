@@ -11,6 +11,7 @@ namespace SquirrelsNest.Core {
             builder.RegisterType<ApplicationEnvironment>().As<IEnvironment>();
 
             builder.RegisterType<IssueBuilder>().As<IIssueBuilder>().SingleInstance();
+            builder.RegisterType<ProjectBuilder>().As<IProjectBuilder>().SingleInstance();
         }
     }
 }

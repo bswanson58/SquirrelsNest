@@ -8,6 +8,7 @@ using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Logging;
 using SquirrelsNest.Common.Values;
+using SquirrelsNest.Core.CompositeBuilders;
 using SquirrelsNest.Desktop.Support;
 
 namespace SquirrelsNest.Desktop.ViewModels {
@@ -20,7 +21,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
         public  const string                cProjectParameter = "project";
 
         private SnIssue ?                   mIssue;
-        private SnProject ?                 mProject;
+        private CompositeProject ?          mProject;
         private string                      mTitle;
         private string                      mDescription;
         private SnIssueType                 mCurrentIssueType;
@@ -43,7 +44,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
         public override void OnDialogOpened( IDialogParameters parameters ) {
             mIssue = parameters.GetValue<SnIssue>( cIssueParameter );
-            mProject = parameters.GetValue<SnProject>( cProjectParameter );
+            mProject = parameters.GetValue<CompositeProject>( cProjectParameter );
 
             if( mProject == null ) {
                 throw new ApplicationException( "A project parameter is required" );
@@ -58,7 +59,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
             }
 
             mIssueTypeProvider
-                .GetIssues( mProject ).Result
+                .GetIssues( mProject.Project ).Result
                 .Map( list => list.OrderBy( it => it.Name ))
                 .Map( list => Enumerable.Append( list, SnIssueType.Default ))
                 .Do( list => list.ForEach( it => IssueTypes.Add( it )))
@@ -90,7 +91,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
             if((!HasErrors ) &&
                ( mProject != null )) {
-                var issue = mIssue ?? new SnIssue( IssueTitle, mProject.NextIssueNumber, mProject.EntityId );
+                var issue = mIssue ?? new SnIssue( IssueTitle, mProject.Project.NextIssueNumber, mProject.Project.EntityId );
 
                 issue = issue
                     .With( title: IssueTitle, description: Description )
