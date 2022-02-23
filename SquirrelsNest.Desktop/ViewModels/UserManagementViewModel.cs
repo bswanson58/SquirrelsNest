@@ -2,6 +2,6 @@
 
 namespace SquirrelsNest.Desktop.ViewModels {
     // ReSharper disable once ClassNeverInstantiated.Global
-    internal class ProjectManagementViewModel : ObservableObject {
+    internal class UserManagementViewModel : ObservableObject {
     }
 }

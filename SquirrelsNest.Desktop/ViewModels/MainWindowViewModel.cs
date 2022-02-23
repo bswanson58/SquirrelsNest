@@ -6,6 +6,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
     internal class MainWindowViewModel : ObservableObject {
         private readonly IssuesViewModel            mIssuesViewModel;
         private readonly ProjectManagementViewModel mProjectsViewModel;
+        private readonly UserManagementViewModel    mUsersViewModel;
         private ObservableObject                    mContentViewModel;
 
         public  IRelayCommand       IssuesLayout { get; }
@@ -13,9 +14,10 @@ namespace SquirrelsNest.Desktop.ViewModels {
         public  IRelayCommand       UsersLayout { get; }
         public  IRelayCommand       OptionsLayout { get; }
 
-        public MainWindowViewModel( IssuesViewModel issuesVm, ProjectManagementViewModel projectsViewModel ) {
+        public MainWindowViewModel( IssuesViewModel issuesVm, ProjectManagementViewModel projectsViewModel, UserManagementViewModel usersViewModel ) {
             mIssuesViewModel = issuesVm;
             mProjectsViewModel = projectsViewModel;
+            mUsersViewModel = usersViewModel;
 
             IssuesLayout = new RelayCommand( OnIssuesLayout );
             ProjectsLayout = new RelayCommand( OnProjectsLayout );
@@ -38,7 +40,10 @@ namespace SquirrelsNest.Desktop.ViewModels {
             ContentViewModel = mProjectsViewModel;
         }
 
-        private void OnUsersLayout() { }
+        private void OnUsersLayout() {
+            ContentViewModel = mUsersViewModel;
+        }
+
         private void OnOptionsLayout() { }
     }
 }

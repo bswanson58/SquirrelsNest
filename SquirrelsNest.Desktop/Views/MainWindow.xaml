@@ -28,8 +28,13 @@
         <DataTemplate DataType="{x:Type viewModels:IssuesViewModel}">
             <views:IssuesView/>
         </DataTemplate>
+
         <DataTemplate DataType="{x:Type viewModels:ProjectManagementViewModel}">
             <views:ProjectManagementView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModels:UserManagementViewModel}">
+            <views:UserManagementView/>
         </DataTemplate>
 
     </Window.Resources>
