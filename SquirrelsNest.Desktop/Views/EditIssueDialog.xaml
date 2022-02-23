@@ -9,7 +9,7 @@
              xmlns:adorners="http://gu.se/Adorners"
              xmlns:entities="clr-namespace:SquirrelsNest.Common.Entities;assembly=SquirrelsNest.Common"
              mc:Ignorable="d" 
-             Height="250" Width="400"
+             Height="350" Width="600"
              viewModelLocator:ViewModelLocator.AutoWireViewModel="True"
              d:DataContext="{d:DesignInstance viewModels:EditIssueDialogViewModel, IsDesignTimeCreatable=False}">
 
@@ -31,6 +31,14 @@
             <TextBlock Style="{StaticResource ListViewTextStyle}" Text="{Binding Name}"/>
         </DataTemplate>
 
+        <DataTemplate x:Key="ComponentTemplate" DataType="{x:Type entities:SnComponent}">
+            <TextBlock Style="{StaticResource ListViewTextStyle}" Text="{Binding Name}"/>
+        </DataTemplate>
+
+        <DataTemplate x:Key="UserTemplate" DataType="{x:Type entities:SnUser}">
+            <TextBlock Style="{StaticResource ListViewTextStyle}" Text="{Binding Name}"/>
+        </DataTemplate>
+        
         <Style x:Key="ErrorToolTip" TargetType="TextBox">
             <Style.Triggers>
                 <Trigger Property="Validation.HasError" Value="True">
@@ -42,6 +50,8 @@
 
     <Grid Margin="10" FocusManager.FocusedElement="{Binding ElementName=_firstFocus}">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -88,9 +98,19 @@
             <ComboBox Width="200" ItemsSource="{Binding WorkflowStates}" SelectedItem="{Binding CurrentState}" ItemTemplate="{StaticResource StateTemplate}"/>
         </StackPanel>
 
-        <TextBlock Grid.Row="6" Style="{StaticResource ControlTitleStyle}" Text="{Binding EntryInfo}"/>
+        <StackPanel Grid.Row="5" Margin="0,5,0,0" Orientation="Horizontal">
+            <TextBlock Style="{StaticResource ControlTitleStyle}" VerticalAlignment="Center" Margin="0,0,5,0" Text="Component:"/>
+            <ComboBox Width="200" ItemsSource="{Binding Components}" SelectedItem="{Binding CurrentComponent}" ItemTemplate="{StaticResource ComponentTemplate}"/>
+        </StackPanel>
 
-        <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Right">
+        <StackPanel Grid.Row="6" Margin="0,5,0,0" Orientation="Horizontal">
+            <TextBlock Style="{StaticResource ControlTitleStyle}" VerticalAlignment="Center" Margin="0,0,5,0" Text="Assigned To:"/>
+            <ComboBox Width="200" ItemsSource="{Binding Users}" SelectedItem="{Binding AssignedUser}" ItemTemplate="{StaticResource UserTemplate}"/>
+        </StackPanel>
+        
+        <TextBlock Grid.Row="8" Style="{StaticResource ControlTitleStyle}" Text="{Binding EntryInfo}"/>
+
+        <StackPanel Grid.Row="9" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Width="70" Margin="10,0" Style="{StaticResource GeneralButtonStyle}" Content="OK" Command="{Binding AcceptCommand}" IsDefault="True"/>
             <Button Width="70" Style="{StaticResource GeneralButtonStyle}" Content="Cancel" Command="{Binding CancelCommand}" IsCancel="True"/>
         </StackPanel>
