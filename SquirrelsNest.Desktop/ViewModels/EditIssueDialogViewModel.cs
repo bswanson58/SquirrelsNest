@@ -58,29 +58,23 @@ namespace SquirrelsNest.Desktop.ViewModels {
             if( mIssue != null ) {
                 SetEntityStates( mIssue );
             }
-            else {
-                SetDefaultStates();
-            }
         }
 
         private void BuildEntityLists( CompositeProject project ) {
             IssueTypes.Clear();
             project.IssueTypes.OrderBy( it => it.Name ).ForEach( IssueTypes.Add );
             IssueTypes.Add( SnIssueType.Default );
+            CurrentIssueType = SnIssueType.Default;
 
             WorkflowStates.Clear();
             project.WorkflowStates.OrderBy( s => s.Name ).ForEach( WorkflowStates.Add );
             WorkflowStates.Add( SnWorkflowState.Default );
+            CurrentState = SnWorkflowState.Default;
         }
 
         private void SetEntityStates( SnIssue forIssue ) {
             CurrentIssueType = IssueTypes.First( it => it.EntityId.Equals( forIssue.IssueTypeId ));
             CurrentState = WorkflowStates.First( s => s.EntityId.Equals( forIssue.WorkflowStateId ));
-        }
-
-        private void SetDefaultStates() {
-            CurrentIssueType = SnIssueType.Default;
-            CurrentState = SnWorkflowState.Default;
         }
 
         [Required( ErrorMessage = "Issue title is required" )]
