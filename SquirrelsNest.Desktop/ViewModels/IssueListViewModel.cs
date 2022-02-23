@@ -11,6 +11,7 @@ using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Logging;
+using SquirrelsNest.Core.Interfaces;
 using SquirrelsNest.Desktop.Models;
 using SquirrelsNest.Desktop.ViewModels.UiModels;
 using SquirrelsNest.Desktop.Views;
@@ -21,7 +22,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
         // ReSharper disable once CollectionNeverQueried.Local
         private readonly CompositeDisposable    mSubscriptions;
         private readonly IIssueProvider         mIssueProvider;
-        private readonly IIssueTypeProvider     mIssueTypeProvider;
+        private readonly IIssueBuilder          mIssueBuilder;
         private readonly IModelState            mModelState;
         private readonly IDialogService         mDialogService;
         private readonly ILog                   mLog;
@@ -29,13 +30,13 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
         public  ObservableCollection<UiIssue>   IssueList { get; }
 
-        public IssueListViewModel( IModelState modelState, IIssueProvider issueProvider, IIssueTypeProvider issueTypeProvider,
+        public IssueListViewModel( IModelState modelState, IIssueProvider issueProvider, IIssueBuilder issueBuilder,
                                    ILog log, SynchronizationContext context, IDialogService dialogService ) {
             mIssueProvider = issueProvider;
             mModelState = modelState;
             mLog = log;
             mDialogService = dialogService;
-            mIssueTypeProvider = issueTypeProvider;
+            mIssueBuilder = issueBuilder;
 
             mSubscriptions = new CompositeDisposable();
             IssueList = new ObservableCollection<UiIssue>();
@@ -65,16 +66,10 @@ namespace SquirrelsNest.Desktop.ViewModels {
                         error => mLog.LogError( error ));
         }
 
-        private SnIssueType GetIssueType( SnIssue issue ) {
-            return mIssueTypeProvider
-                .GetIssue( issue.IssueTypeId ).Result
-                .IfLeft( SnIssueType.Default );
-        }
-
         private Option<UiIssue> BuildIssue( SnIssue issue ) {
             return mCurrentProject
-                .Map( project => ( Project: project, IssueType: GetIssueType( issue )))
-                .Map( t => new UiIssue( t.Project, issue, t.IssueType, OnEditIssue ));
+                .Map( project => ( Project: project, Composite: mIssueBuilder.BuildCompositeIssue( issue )))
+                .Map( t => new UiIssue( t.Project, t.Composite, OnEditIssue ));
         }
 
         private void OnEditIssue( UiIssue uiIssue ) {
