@@ -3,7 +3,7 @@ using SquirrelsNest.Common.Platform;
 using SquirrelsNest.Common.Values;
 
 namespace SquirrelsNest.Common.Entities {
-    [DebuggerDisplay("Issue = {" + nameof( Title ) + "}")]
+    [DebuggerDisplay("Issue: {" + nameof( Title ) + "}")]
     public class SnIssue : EntityBase {
         public  string      Title { get; }
         public  string      Description { get; }

@@ -2,7 +2,7 @@
 using SquirrelsNest.Common.Values;
 
 namespace SquirrelsNest.Common.Entities {
-    [DebuggerDisplay("{" + nameof( Name ) + "}")]
+    [DebuggerDisplay("State: {" + nameof( Name ) + "}")]
     public class SnWorkflowState : EntityBase {
         public  EntityId    ProjectId { get; }
         public  string      Name { get; }

@@ -2,7 +2,7 @@
 using SquirrelsNest.Common.Values;
 
 namespace SquirrelsNest.Common.Entities {
-    [DebuggerDisplay("{" + nameof( Name ) + "}")]
+    [DebuggerDisplay("Type: {" + nameof( Name ) + "}")]
     public class SnIssueType :EntityBase {
         public  EntityId        ProjectId { get; }
         public  string          Name { get; }
