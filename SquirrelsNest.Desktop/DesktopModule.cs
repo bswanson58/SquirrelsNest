@@ -20,6 +20,7 @@ namespace SquirrelsNest.Desktop {
 
             builder.RegisterDialog<EditIssueDialog>();
             builder.RegisterDialog<EditIssueTypeDialog>();
+            builder.RegisterDialog<EditComponentDialog>();
             builder.RegisterDialog<EditProjectDialog>();
             builder.RegisterDialog<EditReleaseDialog>();
             builder.RegisterDialog<EditWorkflowStepDialog>();

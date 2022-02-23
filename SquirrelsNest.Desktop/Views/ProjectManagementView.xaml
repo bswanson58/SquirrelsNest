@@ -24,11 +24,13 @@
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
 
             <views:WorkflowStepsView Grid.Row="0"/>
-            <views:IssueTypeView Grid.Row="1"/>
-            <views:ReleasesView Grid.Row="2"/>
+            <views:ComponentsView Grid.Row="1"/>
+            <views:IssueTypeView Grid.Row="2"/>
+            <views:ReleasesView Grid.Row="3"/>
         </Grid>
     </Grid>
 </UserControl>
