@@ -7,13 +7,15 @@ namespace SquirrelsNest.Core.CompositeBuilders {
         private readonly IIssueTypeProvider     mTypeProvider;
         private readonly IComponentProvider     mComponentProvider;
         private readonly IWorkflowStateProvider mStateProvider;
+        private readonly IReleaseProvider       mReleaseProvider;
         private readonly IUserProvider          mUserProvider;
 
         public ProjectBuilder( IIssueTypeProvider typeProvider, IWorkflowStateProvider stateProvider, IComponentProvider componentProvider,
-                               IUserProvider userProvider ) {
+                               IReleaseProvider releaseProvider, IUserProvider userProvider ) {
             mTypeProvider = typeProvider;
             mStateProvider = stateProvider;
             mComponentProvider = componentProvider;
+            mReleaseProvider = releaseProvider;
             mUserProvider = userProvider;
         }
 
@@ -35,6 +37,12 @@ namespace SquirrelsNest.Core.CompositeBuilders {
                 .IfLeft( new List<SnWorkflowState>());
         }
 
+        private IEnumerable<SnRelease> GetReleases( SnProject forProject ) {
+            return mReleaseProvider
+                .GetReleases( forProject ).Result
+                .IfLeft( new List<SnRelease>());
+        }
+
         private IEnumerable<SnUser> GetUsers() {
             return mUserProvider
                 .GetUsers().Result
@@ -52,6 +60,7 @@ namespace SquirrelsNest.Core.CompositeBuilders {
                     GetIssueTypes( forProject ),
                     GetComponents( forProject ),
                     GetWorkflowStates( forProject ),
+                    GetReleases( forProject ),
                     GetUsers());
         }
     }

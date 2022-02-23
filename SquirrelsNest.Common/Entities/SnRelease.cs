@@ -2,7 +2,7 @@
 using SquirrelsNest.Common.Platform;
 
 namespace SquirrelsNest.Common.Entities {
-    [DebuggerDisplay("Release = {" + nameof( Version ) + "}")]
+    [DebuggerDisplay("Release: {" + nameof( Version ) + "}")]
     public class SnRelease : EntityBase {
         public  string      ProjectId { get; }
         public  string      Version { get; }
@@ -48,5 +48,12 @@ namespace SquirrelsNest.Common.Entities {
 
             return new SnRelease( EntityId, DbId, project.EntityId, Version, Description, RepositoryLabel, ReleaseDate );
         }
+
+        private static SnRelease ? mDefaultRelease;
+
+        public static SnRelease Default =>
+            mDefaultRelease ??= new SnRelease( Values.EntityId.Default, String.Empty, Values.EntityId.Default, "Unspecified", 
+                                               String.Empty, String.Empty, DateTimeProvider.Instance.CurrentDate );
+
     }
 }
