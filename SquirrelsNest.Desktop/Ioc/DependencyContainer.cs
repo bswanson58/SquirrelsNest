@@ -20,7 +20,7 @@ namespace SquirrelsNest.Desktop.Ioc {
                 mRootScope = null;
             }
 
-            mRootScope = mBuilder.Build();
+            mRootScope = mBuilder.Build().BeginLifetimeScope();
         }
 
         public IDependencyContainer RegisterModule( IModule module ) {
