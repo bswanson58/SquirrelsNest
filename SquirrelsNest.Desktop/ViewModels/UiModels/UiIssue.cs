@@ -9,6 +9,7 @@ namespace SquirrelsNest.Desktop.ViewModels.UiModels {
 
         public  SnIssue             Issue { get; }
         public  SnProject           Project { get; }
+        public  SnIssueType         IssueType { get; }
 
         public  string              IssueNumber => $"{Project.IssuePrefix}-{Issue.IssueNumber}";
         public  string              Title => Issue.Title;
@@ -16,9 +17,10 @@ namespace SquirrelsNest.Desktop.ViewModels.UiModels {
 
         public  IRelayCommand       Edit { get; }
 
-        public UiIssue( SnProject project, SnIssue issue, Action<UiIssue> onEdit ) {
+        public UiIssue( SnProject project, SnIssue issue, SnIssueType issueType, Action<UiIssue> onEdit ) {
             Project = project;
             Issue = issue;
+            IssueType = issueType;
             mOnEdit = onEdit;
 
             Edit = new RelayCommand( OnEdit );

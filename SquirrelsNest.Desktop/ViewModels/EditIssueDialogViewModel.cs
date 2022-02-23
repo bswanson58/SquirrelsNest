@@ -6,12 +6,15 @@ using MoreLinq;
 using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
+using SquirrelsNest.Common.Logging;
+using SquirrelsNest.Common.Values;
 using SquirrelsNest.Desktop.Support;
 
 namespace SquirrelsNest.Desktop.ViewModels {
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class EditIssueDialogViewModel : DialogAwareBase {
         private readonly IIssueTypeProvider mIssueTypeProvider;
+        private readonly ILog               mLog;
 
         public  const string                cIssueParameter = "issue";
         public  const string                cProjectParameter = "project";
@@ -25,8 +28,9 @@ namespace SquirrelsNest.Desktop.ViewModels {
         public  ObservableCollection<SnIssueType>   IssueTypes { get; }
         public  string                              EntryInfo { get; private set; }
 
-        public EditIssueDialogViewModel( IIssueTypeProvider issueTypeProvider ) {
+        public EditIssueDialogViewModel( IIssueTypeProvider issueTypeProvider, ILog log ) {
             mIssueTypeProvider = issueTypeProvider;
+            mLog = log;
 
             mTitle = String.Empty;
             mDescription = String.Empty;
@@ -53,11 +57,14 @@ namespace SquirrelsNest.Desktop.ViewModels {
                 OnPropertyChanged( nameof( EntryInfo ));
             }
 
-            mIssueTypeProvider.GetIssues().Result
+            mIssueTypeProvider
+                .GetIssues( mProject ).Result
                 .Map( list => list.OrderBy( it => it.Name ))
                 .Map( list => Enumerable.Append( list, SnIssueType.Default ))
                 .Do( list => list.ForEach( it => IssueTypes.Add( it )))
-                .Do( _ => CurrentIssueType = IssueTypes.First( it => it.EntityId.Equals( mIssue?.IssueTypeId )));
+                .IfLeft( e => mLog.LogError( e ));
+
+            CurrentIssueType = IssueTypes.FirstOrDefault( it => it.EntityId.Equals( mIssue != null ? mIssue.IssueTypeId : EntityId.Default )) ?? SnIssueType.Default;
         }
 
         [Required( ErrorMessage = "Issue title is required" )]

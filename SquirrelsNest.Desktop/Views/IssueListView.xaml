@@ -17,6 +17,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -29,9 +30,21 @@
                     <TextBlock Opacity="0.6" Style="{StaticResource ListViewTextStyle}" Text=")"/>
                     <TextBlock Margin="5,0,0,0" Style="{StaticResource ListViewTextStyle}" Text="{Binding Title}"/>
                 </StackPanel>
+
                 <TextBlock Grid.Row="1" Grid.Column="0" Margin="8,0,0,0" Style="{StaticResource ListViewSubTextStyle}" Text="{Binding Description}"/>
 
-                <Button x:Name="TrackEdit" Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Margin="5,0" HorizontalAlignment="Right" Width="17" Height="15" 
+                <Grid Grid.Row="2" Grid.Column="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" HorizontalAlignment="Center" Style="{StaticResource ControlTitleStyle}" Text="{Binding IssueType.Name}"/>
+                </Grid>
+
+                <Button x:Name="TrackEdit" Grid.Row="0" Grid.RowSpan="3" Grid.Column="1" Margin="5,0" HorizontalAlignment="Right" Width="17" Height="15" 
                         Padding="1" BorderThickness="0" Background="Transparent" Opacity="0" Cursor="Hand" Focusable="False"
                         Command="{Binding Edit}" Content="{StaticResource Image:Edit}" ToolTip="Edit Issue Properties" />
             </Grid>
