@@ -27,6 +27,10 @@
             <TextBlock Style="{StaticResource ListViewTextStyle}" Text="{Binding Name}"/>
         </DataTemplate>
 
+        <DataTemplate x:Key="StateTemplate" DataType="{x:Type entities:SnWorkflowState}">
+            <TextBlock Style="{StaticResource ListViewTextStyle}" Text="{Binding Name}"/>
+        </DataTemplate>
+
         <Style x:Key="ErrorToolTip" TargetType="TextBox">
             <Style.Triggers>
                 <Trigger Property="Validation.HasError" Value="True">
@@ -38,6 +42,7 @@
 
     <Grid Margin="10" FocusManager.FocusedElement="{Binding ElementName=_firstFocus}">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -73,14 +78,19 @@
                      Text="{Binding Description, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="3" Margin="0,5,0,0" Orientation="Horizontal">
+        <StackPanel Grid.Row="3" Margin="0,8,0,0" Orientation="Horizontal">
             <TextBlock Style="{StaticResource ControlTitleStyle}" VerticalAlignment="Center" Margin="0,0,5,0" Text="Issue Type:"/>
             <ComboBox Width="200" ItemsSource="{Binding IssueTypes}" SelectedItem="{Binding CurrentIssueType}" ItemTemplate="{StaticResource IssueTypeTemplate}"/>
         </StackPanel>
 
-        <TextBlock Grid.Row="5" Style="{StaticResource ControlTitleStyle}" Text="{Binding EntryInfo}"/>
+        <StackPanel Grid.Row="4" Margin="0,5,0,0" Orientation="Horizontal">
+            <TextBlock Style="{StaticResource ControlTitleStyle}" VerticalAlignment="Center" Margin="0,0,5,0" Text="Workflow State:"/>
+            <ComboBox Width="200" ItemsSource="{Binding WorkflowStates}" SelectedItem="{Binding CurrentState}" ItemTemplate="{StaticResource StateTemplate}"/>
+        </StackPanel>
 
-        <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Right">
+        <TextBlock Grid.Row="6" Style="{StaticResource ControlTitleStyle}" Text="{Binding EntryInfo}"/>
+
+        <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Width="70" Margin="10,0" Style="{StaticResource GeneralButtonStyle}" Content="OK" Command="{Binding AcceptCommand}" IsDefault="True"/>
             <Button Width="70" Style="{StaticResource GeneralButtonStyle}" Content="Cancel" Command="{Binding CancelCommand}" IsCancel="True"/>
         </StackPanel>
