@@ -36,5 +36,10 @@ namespace SquirrelsNest.Common.Entities {
 
             return new SnComponent( EntityId, DbId, project.EntityId, Name, Description );
         }
+
+        private static SnComponent ? mDefaultComponent;
+
+        public static SnComponent Default =>
+            mDefaultComponent ??= new SnComponent( "Unspecified" );
     }
 }

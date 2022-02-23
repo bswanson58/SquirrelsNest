@@ -11,6 +11,7 @@ namespace SquirrelsNest.Desktop.ViewModels.UiModels {
 
         public  SnIssue             Issue => mCompositeIssue.Issue;
         public  SnIssueType         IssueType => mCompositeIssue.IssueType;
+        public  SnComponent         Component => mCompositeIssue.Component;
         public  SnWorkflowState     State => mCompositeIssue.State;
 
         public  string              IssueNumber => $"{mCompositeIssue.Project.IssuePrefix}-{Issue.IssueNumber}";
