@@ -8,6 +8,8 @@ using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Logging;
+using SquirrelsNest.Core.CompositeBuilders;
+using SquirrelsNest.Core.Interfaces;
 using SquirrelsNest.Desktop.Models;
 using SquirrelsNest.Desktop.Views;
 
@@ -15,6 +17,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class IssueListFilterViewModel : ObservableObject {
         private readonly IProjectProvider       mProjectProvider;
+        private readonly IProjectBuilder        mProjectBuilder;
         private readonly IIssueProvider         mIssueProvider;
         private readonly IDialogService         mDialogService;
         private readonly IModelState            mModelState;
@@ -25,11 +28,13 @@ namespace SquirrelsNest.Desktop.ViewModels {
         public  IRelayCommand                   CreateProject { get; }
         public  IRelayCommand                   CreateIssue { get; }
 
-        public IssueListFilterViewModel( IProjectProvider projects, IModelState modelState, IIssueProvider issueProvider, IDialogService dialogService, ILog log ) {
+        public IssueListFilterViewModel( IProjectProvider projects, IModelState modelState, IIssueProvider issueProvider, IProjectBuilder projectBuilder,
+                                         IDialogService dialogService, ILog log ) {
             mProjectProvider = projects;
             mModelState = modelState;
             mDialogService = dialogService;
             mLog = log;
+            mProjectBuilder = projectBuilder;
             mIssueProvider = issueProvider;
 
             ProjectList = new ObservableCollection<SnProject>();
@@ -92,12 +97,12 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
         private void OnCreateIssue() {
             if( mCurrentProject != null ) {
-                var parameters = new DialogParameters{{ EditIssueDialogViewModel.cProjectParameter, mCurrentProject }};
+                var parameters = new DialogParameters{{ EditIssueDialogViewModel.cProjectParameter, mProjectBuilder.BuildCompositeProject( mCurrentProject )}};
 
                 mDialogService.ShowDialog( nameof( EditIssueDialog ), parameters, result => {
                     if( result.Result == ButtonResult.Ok ) {
                         var issue = result.Parameters.GetValue<SnIssue>( EditIssueDialogViewModel.cIssueParameter );
-                        var project = result.Parameters.GetValue<SnProject>( EditIssueDialogViewModel.cProjectParameter );
+                        var project = result.Parameters.GetValue<CompositeProject>( EditIssueDialogViewModel.cProjectParameter );
 
                         if( issue == null ) throw new ApplicationException( "Issue was not returned when editing issue" );
                         if( project == null ) throw new ApplicationException( "Project was not returned when editing issue" );
@@ -106,7 +111,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
                             .AddIssue( issue ).Result
                             .Match( _ => {
                                         mProjectProvider
-                                            .UpdateProject( project.WithNextIssueNumber()).Result
+                                            .UpdateProject( project.Project.WithNextIssueNumber()).Result
                                                 .IfLeft( error => mLog.LogError( error ));
                                     },
                                     error => mLog.LogError( error ));
