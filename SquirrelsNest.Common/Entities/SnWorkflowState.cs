@@ -43,5 +43,10 @@ namespace SquirrelsNest.Common.Entities {
 
             return new SnWorkflowState( EntityId, DbId, project.EntityId, Name, Description, IsInitialState, IsTerminalState );
         }
+
+        private static SnWorkflowState ? mDefaultState;
+
+        public static SnWorkflowState Default =>
+            mDefaultState ??= new SnWorkflowState( "Unspecified" );
     }
 }
