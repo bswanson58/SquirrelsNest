@@ -47,6 +47,6 @@ namespace SquirrelsNest.Common.Entities {
         private static SnWorkflowState ? mDefaultState;
 
         public static SnWorkflowState Default =>
-            mDefaultState ??= new SnWorkflowState( "Unspecified" );
+            mDefaultState ??= new SnWorkflowState( EntityId.Default, String.Empty, EntityId.Default, "Unspecified", String.Empty, false, false );
     }
 }
