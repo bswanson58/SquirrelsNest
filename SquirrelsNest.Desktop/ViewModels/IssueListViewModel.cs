@@ -62,14 +62,12 @@ namespace SquirrelsNest.Desktop.ViewModels {
                 .ToEither( new Error())
                 .BindAsync( project => mIssueProvider.GetIssues( project )).Result
                 .Map( list => from i in list select BuildIssue( i ))
-                .Match( list => list.ForEach( oi => oi.Do( i => IssueList.Add( i ))),
+                .Match( list => list.ForEach( i => IssueList.Add( i )),
                         error => mLog.LogError( error ));
         }
 
-        private Option<UiIssue> BuildIssue( SnIssue issue ) {
-            return mCurrentProject
-                .Map( project => ( Project: project, Composite: mIssueBuilder.BuildCompositeIssue( issue )))
-                .Map( t => new UiIssue( t.Project, t.Composite, OnEditIssue ));
+        private UiIssue BuildIssue( SnIssue issue ) { 
+            return new UiIssue( mIssueBuilder.BuildCompositeIssue( issue ), OnEditIssue );
         }
 
         private void OnEditIssue( UiIssue uiIssue ) {

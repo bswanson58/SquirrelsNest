@@ -50,5 +50,10 @@ namespace SquirrelsNest.Common.Entities {
         public SnProject WithNextIssueNumber() {
             return new SnProject( EntityId, DbId, Name, Description, Inception, RepositoryUrl, IssuePrefix, NextIssueNumber + 1 );
         }
+
+        private static SnProject ? mDefault;
+
+        public static SnProject Default => 
+            mDefault ??= new SnProject( "Unspecified", "?" );
     }
 }

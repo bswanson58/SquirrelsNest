@@ -10,17 +10,15 @@ namespace SquirrelsNest.Desktop.ViewModels.UiModels {
         private readonly CompositeIssue     mCompositeIssue;
 
         public  SnIssue             Issue => mCompositeIssue.Issue;
-        public  SnProject           Project { get; }
         public  SnIssueType         IssueType => mCompositeIssue.IssueType;
 
-        public  string              IssueNumber => $"{Project.IssuePrefix}-{Issue.IssueNumber}";
+        public  string              IssueNumber => $"{mCompositeIssue.Project.IssuePrefix}-{Issue.IssueNumber}";
         public  string              Title => Issue.Title;
         public  string              Description => Issue.Description;
 
         public  IRelayCommand       Edit { get; }
 
-        public UiIssue( SnProject project, CompositeIssue compositeIssue, Action<UiIssue> onEdit ) {
-            Project = project;
+        public UiIssue( CompositeIssue compositeIssue, Action<UiIssue> onEdit ) {
             mCompositeIssue = compositeIssue;
             mOnEdit = onEdit;
 
