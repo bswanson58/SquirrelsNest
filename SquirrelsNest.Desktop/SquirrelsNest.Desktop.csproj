@@ -9,6 +9,7 @@
     <Copyright>Copyright © 2010-2022 Secret Squirrel Software</Copyright>
     <Company>Secret Squirrel Software</Company>
 	<Version>0.1.0.1</Version>
+	<SourceRevisionId>build$([System.DateTime]::Now.ToString("yyyy-MM-ddTHH:mm:ss:fffZ"))</SourceRevisionId>
   </PropertyGroup>
 
   <ItemGroup>
