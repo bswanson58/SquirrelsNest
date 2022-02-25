@@ -2,17 +2,21 @@
 using System.Text.Json;
 
 namespace SquirrelsNest.Desktop.Preferences {
-    public interface IFileWriter<T> {
-        T       Load( string filePath );
-        void    Save( string filePath, T toSave );
+    public interface IFileWriter {
+        T       Load<T>( string filePath ) where T : new();
+        void    Save<T>( string filePath, T toSave );
     }
 
-    public class FileWriter<T> : IFileWriter<T> where T : new() {
-        public T Load( string filePath ) => 
-            JsonSerializer.Deserialize<T>( File.ReadAllText( filePath )) ?? new T();
+    public class FileWriter : IFileWriter {
+        public T Load<T>( string filePath ) where T: new() {
+            if(!File.Exists( filePath )) {
+                return new T();
+            }
 
-        public void Save( string filePath, T settings ) => 
+            return JsonSerializer.Deserialize<T>( File.ReadAllText( filePath )) ?? new T();
+        } 
+
+        public void Save<T>( string filePath, T settings ) => 
             File.WriteAllText( filePath, JsonSerializer.Serialize( settings ));
     }
-
 }
