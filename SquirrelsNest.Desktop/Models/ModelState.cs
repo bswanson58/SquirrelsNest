@@ -6,34 +6,56 @@ using SquirrelsNest.Common.Entities;
 
 namespace SquirrelsNest.Desktop.Models {
     internal class ModelState : IModelState {
-        private readonly BehaviorSubject<CurrentState>  mCurrentState;
+        private readonly BehaviorSubject<CurrentState>  mProjectState;
+        private readonly BehaviorSubject<CurrentState>  mUserState;
         private Option<SnProject>                       mCurrentProject;
+        private SnUser                                  mCurrentUser;
 
-        public IObservable<CurrentState>                OnStateChange => mCurrentState.AsObservable();
+        public IObservable<CurrentState>                OnStateChange => mProjectState.AsObservable();
+        public IObservable<CurrentState>                OnUserChange => mUserState.AsObservable();
 
         public CurrentState                             CurrentState => ConstructState;
 
         public ModelState() {
-            mCurrentState = new BehaviorSubject<CurrentState>( ConstructState );
             mCurrentProject = Option<SnProject>.None;
+            mCurrentUser = SnUser.Default;
+
+            mProjectState = new BehaviorSubject<CurrentState>( ConstructState );
+            mUserState = new BehaviorSubject<CurrentState>( ConstructState );
         }
 
         public void SetProject( SnProject project ) {
             mCurrentProject = project;
 
-            NotifyState();
+            NotifyProjectState();
         }
 
         public void ClearProject() {
             mCurrentProject = Option<SnProject>.None;
 
-            NotifyState();
+            NotifyProjectState();
         }
 
-        private CurrentState ConstructState => new CurrentState( mCurrentProject );
+        public void SetUser( SnUser user ) {
+            mCurrentUser = user;
 
-        private void NotifyState() {
-            mCurrentState.OnNext( ConstructState );
+            NotifyUserState();
+        }
+
+        public void ClearUser() {
+            mCurrentUser = SnUser.Default;
+
+            NotifyUserState();
+        }
+
+        private CurrentState ConstructState => new CurrentState( mCurrentProject, mCurrentUser );
+
+        private void NotifyProjectState() {
+            mProjectState.OnNext( ConstructState );
+        }
+
+        private void NotifyUserState() {
+            mUserState.OnNext( ConstructState );
         }
     }
 }

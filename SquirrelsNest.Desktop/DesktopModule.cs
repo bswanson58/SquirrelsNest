@@ -22,6 +22,7 @@ namespace SquirrelsNest.Desktop {
             // Preference classes
             builder.RegisterType<Preferences<AppState>>().As<IPreferences<AppState>>().SingleInstance();
 
+            builder.RegisterType<Startup>().SingleInstance();
             builder.RegisterType<ModelState>().As<IModelState>().SingleInstance();
 
             // Dialog support classes
