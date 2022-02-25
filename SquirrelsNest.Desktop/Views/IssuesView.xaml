@@ -16,7 +16,16 @@
             <ColumnDefinition Width="4*"/>
         </Grid.ColumnDefinitions>
 
-        <views:IssueListFilterView Grid.Column="0"/>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <views:CurrentUserView Grid.Row="0"></views:CurrentUserView>
+            <views:IssueListFilterView Grid.Row="1"/>
+        </Grid>
+
         <views:IssueListView Grid.Column="1"/>
     </Grid>
 </UserControl>
