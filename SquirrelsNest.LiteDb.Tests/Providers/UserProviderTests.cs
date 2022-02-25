@@ -96,6 +96,16 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
         }
 
         [Fact]
+        public void EmptyDatabaseReturnsEmptyUserList() {
+            using var sut = CreateSut();
+
+            var result = sut.GetUsers();
+
+            result.IfLeft( error => error.Should().BeNull( $"{error.Message} occurred retrieving empty list" ));
+            result.IfRight( list => list.Length().Should().Be( 0, "list should be empty" ));
+        }
+
+        [Fact]
         public void UsersCanBeListed() {
             using var sut = CreateSut();
 
