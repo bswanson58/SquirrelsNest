@@ -55,7 +55,7 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
         [Fact]
         public void IssueStoredWithUserReturnsUser() {
             using var sut = CreateSut();
-            var user = new SnUser( "entity id", String.Empty, "userLogin", "user name" );
+            var user = new SnUser( "entity id", String.Empty, "userLogin", "user name", "email" );
             var issue = new SnIssue( "title", 3, EntityId.Default ).With( enteredBy: user.EntityId );
             sut.AddIssue( issue ).Do( i => issue = i );
 
@@ -81,7 +81,7 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
         [Fact]
         public void IssueStoredWithAssignedReturnsAssigned() {
             using var sut = CreateSut();
-            var user = new SnUser( "entity id", String.Empty, "userLogin", "user name" );
+            var user = new SnUser( "entity id", String.Empty, "userLogin", "user name", "email" );
             var issue = new SnIssue( "title", 3, EntityId.Default ).With( assignedTo: user.EntityId );
             sut.AddIssue( issue ).Do( i => issue = i );
 

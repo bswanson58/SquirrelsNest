@@ -37,7 +37,7 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
         [Fact]
         public void UserCanBeStored() {
             using var sut = CreateSut();
-            var user = new SnUser( ObjectId.NewObjectId().ToString(), String.Empty, "loginName", "User Name" );
+            var user = new SnUser( ObjectId.NewObjectId().ToString(), String.Empty, "loginName", "User Name", "email" );
 
             var result = sut.AddUser( user );
 
@@ -47,7 +47,7 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
 
         [Fact]
         public void NewUserCanBeRetrieved() {
-            var user = new SnUser( "User" );
+            var user = new SnUser( "User", "email" );
             using var sut = CreateSut();
 
             sut.AddUser( user );
@@ -59,7 +59,7 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
 
         [Fact]
         public void UserShouldUpdateSuccessfully() {
-            var user = new SnUser( "user" );
+            var user = new SnUser( "user", "email" );
             using var sut = CreateSut();
 
             sut.AddUser( user ).Do( e => user = e );
@@ -71,7 +71,7 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
 
         [Fact]
         public void UserShouldBeUpdated() {
-            var user = new SnUser( "user" );
+            var user = new SnUser( "user", "email" );
             using var sut = CreateSut();
 
             sut.AddUser( user ).Do( e => user = e );
@@ -85,7 +85,7 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
 
         [Fact]
         public void UserCanBeDeleted() {
-            var user = new SnUser( "user1" );
+            var user = new SnUser( "user1", "email" );
             using var sut = CreateSut();
 
             sut.AddUser( user ).Do( e => user = e );
@@ -109,10 +109,10 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
         public void UsersCanBeListed() {
             using var sut = CreateSut();
 
-            sut.AddUser( new SnUser( "one" ));
-            sut.AddUser( new SnUser( "two" ));
-            sut.AddUser( new SnUser( "three" ));
-            sut.AddUser( new SnUser( "four" ));
+            sut.AddUser( new SnUser( "one", "email" ));
+            sut.AddUser( new SnUser( "two", "email" ));
+            sut.AddUser( new SnUser( "three", "email" ));
+            sut.AddUser( new SnUser( "four", "email" ));
 
             var result = sut.GetUsers();
 

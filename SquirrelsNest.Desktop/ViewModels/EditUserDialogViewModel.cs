@@ -12,12 +12,14 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private SnUser ?        mUser;
         private string          mUserName;
         private string          mLoginName;
+        private string          mEmail;
 
         public EditUserDialogViewModel() {
             SetTitle( "User Properties" );
 
             mUserName = String.Empty;
             mLoginName = String.Empty;
+            mEmail = String.Empty;
         }
 
         public override void OnDialogOpened( IDialogParameters parameters ) {
@@ -42,11 +44,18 @@ namespace SquirrelsNest.Desktop.ViewModels {
             set => SetProperty( ref mLoginName, value, true );
         }
 
+        [EmailAddress]
+        [Required( ErrorMessage = "Email address is required")]
+        public string Email {
+            get => mEmail;
+            set => SetProperty( ref mEmail, value, true );
+        }
+
         protected override void OnAccept() {
             ValidateAllProperties();
 
             if(!HasErrors ) {
-                var release = mUser ?? new SnUser( LoginName );
+                var release = mUser ?? new SnUser( LoginName, Email );
 
                 release = release.With( displayName: Name );
 

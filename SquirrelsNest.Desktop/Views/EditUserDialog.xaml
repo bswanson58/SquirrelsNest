@@ -34,6 +34,8 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="5"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -50,6 +52,10 @@
             <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource ControlTitleStyle}" 
                        Text="Display Name:"/>
             <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+
+            <TextBlock Grid.Row="4" Grid.Column="0" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource ControlTitleStyle}" 
+                       Text="Email:"/>
+            <TextBox Grid.Row="4" Grid.Column="2" Text="{Binding Email, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
         </Grid>
 
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
