@@ -1,8 +1,10 @@
 ﻿using Autofac;
+using FluentValidation;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Core.CompositeBuilders;
 using SquirrelsNest.Core.Environment;
 using SquirrelsNest.Core.Interfaces;
+using SquirrelsNest.Core.Validators;
 
 namespace SquirrelsNest.Core {
     public class CoreModule : Module {
@@ -12,6 +14,8 @@ namespace SquirrelsNest.Core {
 
             builder.RegisterType<IssueBuilder>().As<IIssueBuilder>().SingleInstance();
             builder.RegisterType<ProjectBuilder>().As<IProjectBuilder>().SingleInstance();
+
+            builder.RegisterType<CompositeProjectValidator>().As<IValidator<CompositeProject>>();
         }
     }
 }
