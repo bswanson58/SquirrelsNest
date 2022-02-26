@@ -22,6 +22,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
         public  ObservableCollection<SnWorkflowState>   StateList { get; }
 
         public  IRelayCommand                   CreateState { get; }
+        public  IRelayCommand<SnWorkflowState>  EditState { get; }
 
         public WorkflowStepsViewModel( IWorkflowStateProvider stateProvider, IModelState modelState, IDialogService dialogService, ILog log ) {
             mStateProvider = stateProvider;
@@ -30,6 +31,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
             StateList = new ObservableCollection<SnWorkflowState>();
             CreateState = new RelayCommand( OnCreateState );
+            EditState = new RelayCommand<SnWorkflowState>( OnEditState );
 
             mStateSubscription = modelState.OnStateChange.Subscribe( OnStateChanged);
         }
@@ -63,6 +65,26 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
                         mStateProvider
                             .AddState( state.For( mCurrentProject )).Result
+                            .Match( _ => LoadStates( mCurrentProject ),
+                                error => mLog.LogError( error ));
+                    }
+                });
+            }
+        }
+
+        private void OnEditState( SnWorkflowState ? editState ) {
+            if(( mCurrentProject != null ) &&
+               ( editState != null )) {
+                var parameters = new DialogParameters {{ EditWorkflowStepDialogViewModel.cStateParameter, editState }};
+
+                mDialogService.ShowDialog( nameof( EditWorkflowStepDialog ), parameters, result => {
+                    if( result.Result == ButtonResult.Ok ) {
+                        var state = result.Parameters.GetValue<SnWorkflowState>( EditWorkflowStepDialogViewModel.cStateParameter );
+
+                        if( state == null ) throw new ApplicationException( "SnWorkflowState was not returned when editing issue" );
+
+                        mStateProvider
+                            .UpdateState( state.For( mCurrentProject )).Result
                             .Match( _ => LoadStates( mCurrentProject ),
                                 error => mLog.LogError( error ));
                     }

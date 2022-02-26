@@ -5,6 +5,7 @@ using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Desktop.Support;
 
 namespace SquirrelsNest.Desktop.ViewModels {
+    // ReSharper disable once ClassNeverInstantiated.Global
     internal class EditWorkflowStepDialogViewModel : DialogAwareBase {
         public  const string            cStateParameter = "state";
 
@@ -29,8 +30,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
             mWorkflowState = parameters.GetValue<SnWorkflowState>( cStateParameter );
 
             if( mWorkflowState != null ) {
-                mWorkflowDescription = mWorkflowState.Description;
-                mWorkflowName = mWorkflowState.Name;
+                Description = mWorkflowState.Description;
+                Name = mWorkflowState.Name;
                 IsInitialState = mWorkflowState.IsInitialState;
                 IsFinalState = mWorkflowState.IsFinalState;
                 IsTerminalState = mWorkflowState.IsTerminalState;
