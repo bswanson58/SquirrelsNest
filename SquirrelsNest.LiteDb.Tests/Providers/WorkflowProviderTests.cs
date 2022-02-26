@@ -37,7 +37,7 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
         [Fact]
         public void StateCanBeStored() {
             using var sut = CreateSut();
-            var state = new SnWorkflowState( ObjectId.NewObjectId().ToString(), String.Empty, "project ID", "state name", "Description", false, true );
+            var state = new SnWorkflowState( ObjectId.NewObjectId().ToString(), String.Empty, "project ID", "state name", "Description", false, false, true );
 
             var result = sut.AddState( state );
 

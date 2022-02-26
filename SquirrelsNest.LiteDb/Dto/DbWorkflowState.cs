@@ -9,6 +9,7 @@ namespace SquirrelsNest.LiteDb.Dto {
         public  string      Name { get; set; }
         public  string      Description { get; set; }
         public  bool        IsInitialState { get; set; }
+        public  bool        IsFinalState { get; set; }
         public  bool        IsTerminalState { get; set; }
 
         protected DbWorkflowState() {
@@ -16,6 +17,7 @@ namespace SquirrelsNest.LiteDb.Dto {
             Name = String.Empty;
             Description = String.Empty;
             IsInitialState = false;
+            IsFinalState = false;
             IsTerminalState = false;
         }
 
@@ -27,12 +29,13 @@ namespace SquirrelsNest.LiteDb.Dto {
                 ProjectId = state.ProjectId,
                 Description = state.Description,
                 IsInitialState = state.IsInitialState,
+                IsFinalState = state.IsFinalState,
                 IsTerminalState = state.IsTerminalState
             };
         }
 
         public SnWorkflowState ToEntity() {
-            return new SnWorkflowState( EntityId, Id.ToString(), ProjectId, Name, Description, IsInitialState, IsTerminalState );
+            return new SnWorkflowState( EntityId, Id.ToString(), ProjectId, Name, Description, IsInitialState, IsFinalState, IsTerminalState );
         }
     }
 }
