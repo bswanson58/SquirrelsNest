@@ -6,6 +6,8 @@ using System.Reactive.Linq;
 using System.Threading;
 using LanguageExt;
 using LanguageExt.Common;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.Input;
 using MoreLinq;
 using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
@@ -18,9 +20,9 @@ using SquirrelsNest.Desktop.Views;
 
 namespace SquirrelsNest.Desktop.ViewModels {
     // ReSharper disable once ClassNeverInstantiated.Global
-    internal class IssueListViewModel : IDisposable {
-        // ReSharper disable once CollectionNeverQueried.Local
+    internal class IssueListViewModel : ObservableObject, IDisposable {
         private readonly CompositeDisposable    mSubscriptions;
+        private readonly SynchronizationContext mContext;
         private readonly IProjectBuilder        mProjectBuilder;
         private readonly IIssueProvider         mIssueProvider;
         private readonly IIssueBuilder          mIssueBuilder;
@@ -29,7 +31,9 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private readonly ILog                   mLog;
         private Option<SnProject>               mCurrentProject;
 
+        public  string                          ProjectName { get; private set; }
         public  ObservableCollection<UiIssue>   IssueList { get; }
+        public  IRelayCommand<bool>             ViewDisplayed { get; }
 
         public IssueListViewModel( IModelState modelState, IIssueProvider issueProvider, IIssueBuilder issueBuilder,
                                    ILog log, SynchronizationContext context, IDialogService dialogService, IProjectBuilder projectBuilder ) {
@@ -39,16 +43,32 @@ namespace SquirrelsNest.Desktop.ViewModels {
             mDialogService = dialogService;
             mProjectBuilder = projectBuilder;
             mIssueBuilder = issueBuilder;
+            mContext = context;
 
             mSubscriptions = new CompositeDisposable();
             IssueList = new ObservableCollection<UiIssue>();
+            ProjectName = String.Empty;
+            ViewDisplayed = new RelayCommand<bool>( OnViewDisplayed );
+        }
 
-            mSubscriptions.Add( modelState.OnStateChange.ObserveOn( context ).Subscribe( OnModelStateChanged ));
-            mSubscriptions.Add( mIssueProvider.OnEntitySourceChange.ObserveOn( context ).Subscribe( OnIssueListChanged ));
+        private void OnViewDisplayed( bool isLoading ) {
+            if( isLoading ) {
+                mSubscriptions.Add( mModelState.OnStateChange.ObserveOn( mContext ).Subscribe( OnModelStateChanged ));
+                mSubscriptions.Add( mIssueProvider.OnEntitySourceChange.ObserveOn( mContext ).Subscribe( OnIssueListChanged ));
+            }
+            else {
+                mSubscriptions.Dispose();
+            }
         }
 
         private void OnModelStateChanged( CurrentState state ) {
             mCurrentProject = state.Project;
+
+            mCurrentProject.Do( project => {
+                ProjectName = project.Name;
+
+                OnPropertyChanged( nameof( ProjectName ));
+            });
 
             LoadIssueList( state.Project );
         }
