@@ -8,7 +8,7 @@
              xmlns:dialogService="clr-namespace:MvvmSupport.DialogService;assembly=MvvmSupport"
              xmlns:adorners="http://gu.se/Adorners"
              mc:Ignorable="d" 
-             Height="200" Width="600"
+             Height="220" Width="600"
              viewModelLocator:ViewModelLocator.AutoWireViewModel="True"
              d:DataContext="{d:DesignInstance viewModels:EditWorkflowStepDialogViewModel, IsDesignTimeCreatable=False}">
 
@@ -51,6 +51,7 @@
 
         <StackPanel Grid.Row="2" Margin="0,5,0,0" Orientation="Vertical">
             <CheckBox Margin="5,10,0,0" Content="This state is an initial state" IsChecked="{Binding IsInitialState}"/>
+            <CheckBox Margin="5,5,0,0" Content="This state is the completed state" IsChecked="{Binding IsFinalState}"/>
             <CheckBox Margin="5,5,0,0" Content="This state is a terminal state" IsChecked="{Binding IsTerminalState}"/>
         </StackPanel>
 

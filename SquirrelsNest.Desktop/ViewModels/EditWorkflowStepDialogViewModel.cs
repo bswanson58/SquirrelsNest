@@ -13,6 +13,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private string                  mWorkflowDescription;
 
         public  bool                    IsInitialState { get; set; }
+        public  bool                    IsFinalState { get; set; }
         public  bool                    IsTerminalState { get; set; }
 
         public EditWorkflowStepDialogViewModel() {
@@ -31,6 +32,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
                 mWorkflowDescription = mWorkflowState.Description;
                 mWorkflowName = mWorkflowState.Name;
                 IsInitialState = mWorkflowState.IsInitialState;
+                IsFinalState = mWorkflowState.IsFinalState;
                 IsTerminalState = mWorkflowState.IsTerminalState;
             }
         }
@@ -54,7 +56,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
             if(!HasErrors ) {
                 var state = mWorkflowState ?? new SnWorkflowState( Name );
 
-                state = state.With( name: Name, description: Description, isInitialState: IsInitialState, isTerminalState: IsTerminalState );
+                state = state.With( name: Name, description: Description, isInitialState: IsInitialState, isFinalState: IsFinalState, isTerminalState: IsTerminalState );
 
                 RaiseRequestClose( new DialogResult( ButtonResult.Ok, new DialogParameters {{ cStateParameter, state }}));
             }
