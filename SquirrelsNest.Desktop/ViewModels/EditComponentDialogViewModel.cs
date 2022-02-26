@@ -26,6 +26,9 @@ namespace SquirrelsNest.Desktop.ViewModels {
             if( mComponent != null ) {
                 mComponentDescription = mComponent.Description;
                 mComponentName = mComponent.Name;
+
+                OnPropertyChanged( nameof( Description ));
+                OnPropertyChanged( nameof( Name ));
             }
         }
 

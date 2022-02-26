@@ -22,6 +22,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
         public  ObservableCollection<SnComponent>   ComponentList { get; }
 
         public  IRelayCommand                       CreateComponent { get; }
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        public  IRelayCommand<SnComponent>          EditComponent { get; }
 
         public ComponentsViewModel( IComponentProvider componentProvider, IModelState modelState, IDialogService dialogService, ILog log ) {
             mComponentProvider = componentProvider;
@@ -30,6 +32,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
             ComponentList = new ObservableCollection<SnComponent>();
             CreateComponent = new RelayCommand( OnCreateRelease );
+            EditComponent = new RelayCommand<SnComponent>( OnEditComponent );
 
             mStateSubscription = modelState.OnStateChange.Subscribe( OnStateChanged );
         }
@@ -65,6 +68,26 @@ namespace SquirrelsNest.Desktop.ViewModels {
                             .AddComponent( component.For( mCurrentProject )).Result
                             .Match( _ => LoadComponents( mCurrentProject ),
                                     error => mLog.LogError( error ));
+                    }
+                });
+            }
+        }
+
+        private void OnEditComponent( SnComponent ? editComponent ) {
+            if(( mCurrentProject != null ) &&
+               ( editComponent != null )) {
+                var parameters = new DialogParameters {{ EditComponentDialogViewModel.cComponentParameter, editComponent }};
+
+                mDialogService.ShowDialog( nameof( EditComponentDialog ), parameters, result => {
+                    if( result.Result == ButtonResult.Ok ) {
+                        var component = result.Parameters.GetValue<SnComponent>( EditComponentDialogViewModel.cComponentParameter );
+
+                        if( component == null ) throw new ApplicationException( "SnComponent was not returned when editing component" );
+
+                        mComponentProvider
+                            .UpdateComponent( component.For( mCurrentProject )).Result
+                            .Match( _ => LoadComponents( mCurrentProject ),
+                                error => mLog.LogError( error ));
                     }
                 });
             }
