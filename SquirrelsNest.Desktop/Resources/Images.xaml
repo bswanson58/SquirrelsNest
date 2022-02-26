@@ -19,7 +19,7 @@
 		</Canvas>
 	</Viewbox>
 
-    <Viewbox x:Key="Path_Folder" x:Shared="False">
+    <Viewbox x:Key="Image:Folder" x:Shared="False">
         <Canvas Width="202.000" Height="144.050">
             <Path Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType=Button}}"
                   Data="F1 M 0.000,135.550 L 0.000,30.530 C 0.000,25.850 3.810,22.040 8.490,22.040 L 88.600,22.040 L 193.510,22.040 C 198.190,22.040 202.000,25.850 202.000,30.530 L 202.000,135.560 C 202.000,140.240 198.190,144.050 193.510,144.050 L 8.480,144.050 C 3.800,144.040 0.000,140.230 0.000,135.550 Z M 5.670,18.040 L 10.780,2.100 C 11.180,0.840 12.340,0.000 13.660,0.000 L 75.110,0.000 C 76.430,0.000 77.590,0.840 77.990,2.100 L 83.100,18.040 L 8.480,18.040 L 5.670,18.040 Z"/>
