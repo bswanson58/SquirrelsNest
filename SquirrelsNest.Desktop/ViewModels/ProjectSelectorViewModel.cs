@@ -6,6 +6,7 @@ using System.Reactive.Linq;
 using System.Threading;
 using FluentValidation;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.Input;
 using MoreLinq;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
@@ -17,6 +18,7 @@ using SquirrelsNest.Desktop.Models;
 namespace SquirrelsNest.Desktop.ViewModels {
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class ProjectSelectorViewModel : ObservableObject, IDisposable {
+        private readonly SynchronizationContext         mContext;
         private readonly IModelState                    mModelState;
         private readonly IProjectProvider               mProjectProvider;
         private readonly IProjectBuilder                mProjectBuilder;
@@ -26,6 +28,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private CompositeProject ?                      mCurrentProject;
 
         public  ObservableCollection<CompositeProject>  ProjectList { get; }
+
+        public  IRelayCommand<bool>                     ViewDisplayed { get; }
         
         public ProjectSelectorViewModel( IModelState modelState, IProjectProvider projectProvider, IProjectBuilder projectBuilder,
                                          IValidator<CompositeProject> validator, ILog log, SynchronizationContext context ) {
@@ -33,15 +37,37 @@ namespace SquirrelsNest.Desktop.ViewModels {
             mProjectProvider = projectProvider;
             mProjectBuilder = projectBuilder;
             mValidator = validator;
+            mContext = context;
             mLog = log;
 
             ProjectList = new ObservableCollection<CompositeProject>();
             mSubscriptions = new CompositeDisposable();
 
-            LoadProjectList();
+            ViewDisplayed = new RelayCommand<bool>( OnViewDisplayed );
 
-            mSubscriptions.Add( mProjectProvider.OnEntitySourceChange.ObserveOn( context ).Subscribe( OnProjectsChanged ));
-            mSubscriptions.Add( mProjectBuilder.OnProjectPartsChanged.ObserveOn( context ).Subscribe( OnProjectsChanged ));
+            LoadProjectList();
+        }
+
+        private void OnViewDisplayed( bool isLoading ) {
+            if( isLoading ) {
+                mSubscriptions.Add( mModelState.OnStateChange.ObserveOn( mContext ).Subscribe( OnStateChanged ));
+                mSubscriptions.Add( mProjectProvider.OnEntitySourceChange.ObserveOn( mContext ).Subscribe( OnProjectsChanged ));
+                mSubscriptions.Add( mProjectBuilder.OnProjectPartsChanged.ObserveOn( mContext ).Subscribe( OnProjectsChanged ));
+            }
+            else {
+                mSubscriptions.Dispose();
+            }
+        }
+
+        private void OnStateChanged( CurrentState state ) {
+            state.Project
+                .Do( project => {
+                    if(!project.EntityId.Equals( mCurrentProject?.Project.EntityId )) {
+                        mCurrentProject = ProjectList.FirstOrDefault( p => p.Project.EntityId.Equals( project.EntityId ));
+
+                        OnPropertyChanged( nameof( CurrentProject ));
+                    }
+                });
         }
 
         private void OnProjectsChanged( EntitySourceChange change ) {
@@ -63,6 +89,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
         }
 
         private void LoadProjectList() {
+            var currentProject = mCurrentProject;
+
             ProjectList.Clear();
 
             mProjectProvider
@@ -72,7 +100,14 @@ namespace SquirrelsNest.Desktop.ViewModels {
                 .Match( list => list.ForEach( p => ProjectList.Add( p )),
                         error => mLog.LogError( error ));
 
-            CurrentProject = ProjectList.FirstOrDefault();
+            if( currentProject == null ) {
+                CurrentProject = ProjectList.FirstOrDefault();
+            }
+            else {
+                mCurrentProject = ProjectList.FirstOrDefault( p => p.Project.EntityId.Equals( currentProject.Project.EntityId ));
+
+                OnPropertyChanged( nameof( CurrentProject ));
+            }
         }
 
         public void Dispose() {

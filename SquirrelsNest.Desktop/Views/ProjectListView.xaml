@@ -6,10 +6,16 @@
              xmlns:viewModelLocator="clr-namespace:MvvmSupport.ViewModelLocator;assembly=MvvmSupport"
              xmlns:viewModels="clr-namespace:SquirrelsNest.Desktop.ViewModels"
              xmlns:entities="clr-namespace:SquirrelsNest.Common.Entities;assembly=SquirrelsNest.Common"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:behaviours="clr-namespace:SquirrelsNest.Desktop.Behaviours"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              viewModelLocator:ViewModelLocator.AutoWireViewModel="True"
              d:DataContext="{d:DesignInstance viewModels:ProjectListViewModel, IsDesignTimeCreatable=False}">
+
+    <b:Interaction.Behaviors>
+        <behaviours:ViewLoadedNotifier NotifyCommand="{Binding ViewDisplayed}"/>
+    </b:Interaction.Behaviors>
 
     <UserControl.Resources>
         <DataTemplate x:Key="ProjectTemplate" DataType="entities:SnProject">

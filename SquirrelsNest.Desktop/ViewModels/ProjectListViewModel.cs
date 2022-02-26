@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
+using System.Threading;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using MoreLinq;
@@ -14,41 +17,55 @@ using SquirrelsNest.Desktop.Views;
 namespace SquirrelsNest.Desktop.ViewModels {
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class ProjectListViewModel : ObservableObject, IDisposable {
-        private readonly IModelState        mModelState;
-        private readonly IProjectProvider   mProjectProvider;
-        private readonly IDialogService     mDialogService;
-        private readonly ILog               mLog;
-        private readonly IDisposable        mStateSubscription;
-        private SnProject ?                 mCurrentProject;
+        private readonly SynchronizationContext     mContext;
+        private readonly IModelState                mModelState;
+        private readonly IProjectProvider           mProjectProvider;
+        private readonly IDialogService             mDialogService;
+        private readonly ILog                       mLog;
+        private readonly CompositeDisposable        mSubscriptions;
+        private SnProject ?                         mCurrentProject;
 
-        public  ObservableCollection<SnProject>    ProjectList { get; }
+        public  ObservableCollection<SnProject>     ProjectList { get; }
         
-        public  IRelayCommand               CreateProject { get; }
+        public  IRelayCommand                       CreateProject { get; }
+        public  IRelayCommand<bool>                 ViewDisplayed { get; }
 
-        public ProjectListViewModel( IModelState modelState, IProjectProvider projectProvider, IDialogService dialogService, ILog log ) {
+        public ProjectListViewModel( IModelState modelState, IProjectProvider projectProvider, IDialogService dialogService, ILog log, SynchronizationContext context ) {
             mModelState = modelState;
             mProjectProvider = projectProvider;
             mDialogService = dialogService;
+            mContext = context;
             mLog = log;
 
+            mSubscriptions = new CompositeDisposable();
             ProjectList = new ObservableCollection<SnProject>();
             CreateProject = new RelayCommand( OnCreateProject );
+            ViewDisplayed = new RelayCommand<bool>( OnViewDisplayed );
 
             LoadProjectList();
+        }
 
-            mStateSubscription = mModelState.OnStateChange.Subscribe( OnStateChanged );
+        private void OnViewDisplayed( bool isLoaded ) {
+            if( isLoaded ) {
+                mSubscriptions.Add( mModelState.OnStateChange.ObserveOn( mContext ).Subscribe( OnStateChanged ));
+            }
+            else {
+                mSubscriptions.Dispose();
+            }
         }
 
         private void OnStateChanged( CurrentState state ) {
             state.Project
                 .Do( project => {
-                    mCurrentProject = ProjectList.FirstOrDefault( p => p.EntityId.Equals( project.EntityId ));
+                    if(!project.EntityId.Equals( mCurrentProject?.EntityId )) {
+                        mCurrentProject = ProjectList.FirstOrDefault( p => p.EntityId.Equals( project.EntityId ));
 
-                    OnPropertyChanged( nameof( CurrentProject ));
+                        OnPropertyChanged( nameof( CurrentProject ));
+                    }
                 });
         }
 
-        public SnProject ?  CurrentProject {
+        public SnProject ? CurrentProject {
             get => mCurrentProject;
             set {
                 SetProperty( ref mCurrentProject, value );
@@ -63,6 +80,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
         }
 
         private void LoadProjectList() {
+            var currentProject = mCurrentProject;
+
             ProjectList.Clear();
 
             mProjectProvider
@@ -70,7 +89,11 @@ namespace SquirrelsNest.Desktop.ViewModels {
                     .Match( list => list.ForEach( p => ProjectList.Add( p )),
                             error => mLog.LogError( error ));
 
-            CurrentProject = ProjectList.FirstOrDefault();
+            mCurrentProject = currentProject != null ? 
+                ProjectList.FirstOrDefault( p => p.EntityId.Equals( currentProject.EntityId )) : 
+                ProjectList.FirstOrDefault();
+
+            OnPropertyChanged( nameof( CurrentProject ));
         }
 
         private void OnCreateProject() {
@@ -95,7 +118,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
         public void Dispose() {
             mProjectProvider.Dispose();
-            mStateSubscription.Dispose();
+            mSubscriptions.Dispose();
         }
     }
 }
