@@ -9,7 +9,7 @@ namespace SquirrelsNest.LiteDb.Dto {
         public  DateOnly        Inception { get; set; }
         public  string          RepositoryUrl { get; set; }
         public  string          IssuePrefix { get; set; }
-        public  int             NextIssueNumber { get; set; }
+        public  uint            NextIssueNumber { get; set; }
 
         public DbProject() {
             Name = String.Empty;

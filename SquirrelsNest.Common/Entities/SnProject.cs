@@ -9,11 +9,12 @@ namespace SquirrelsNest.Common.Entities {
         public  DateOnly        Inception { get; }
         public  string          RepositoryUrl { get; }
         public  string          IssuePrefix { get; }
-        public  int             NextIssueNumber { get; }
+        public  uint            NextIssueNumber { get; }
 
         public  string          DebugName => $"Project: '{Name}' ({IssuePrefix})";
 
-        public SnProject( string entityId, string dbId, string name, string description, DateOnly inception, string repository, string issuePrefix, int nextIssueNumber ) :
+        public SnProject( string entityId, string dbId, string name, string description, DateOnly inception, string repository, string issuePrefix,
+                          uint nextIssueNumber ) :
             base( entityId, dbId ) {
             Name = name;
             Description = description;

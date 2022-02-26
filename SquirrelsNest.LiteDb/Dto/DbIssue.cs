@@ -7,7 +7,7 @@ namespace SquirrelsNest.LiteDb.Dto {
         public  string      Title { get; set; }
         public  string      Description { get; set; }
         public  string      ProjectId { get; set; }
-        public  int         IssueNumber {  get; set; }
+        public  uint        IssueNumber {  get; set; }
         public  DateOnly    EntryDate { get; set; }
         public  string      EnteredById { get; set; }
         public  string      IssueTypeId { get; set; }

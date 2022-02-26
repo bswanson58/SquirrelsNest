@@ -8,7 +8,7 @@ namespace SquirrelsNest.Common.Entities {
         public  string      Title { get; }
         public  string      Description { get; }
         public  EntityId    ProjectId { get; }
-        public  int         IssueNumber {  get; }
+        public  uint        IssueNumber {  get; }
         public  DateOnly    EntryDate { get; }
         public  EntityId    EnteredById { get; }
         public  EntityId    IssueTypeId {  get; }
@@ -18,7 +18,7 @@ namespace SquirrelsNest.Common.Entities {
         public  EntityId    AssignedToId { get; }
 
         // the serializable constructor
-        public SnIssue( string entityId, string dbId, string title, string description, string projectId, int issueNumber, DateOnly entryDate, 
+        public SnIssue( string entityId, string dbId, string title, string description, string projectId, uint issueNumber, DateOnly entryDate, 
                         EntityId enteredById, EntityId issueTypeId, EntityId componentId, EntityId releaseId, EntityId workflowStateId, EntityId assignedToId )
             : base( entityId, dbId ) {
             ProjectId = EntityId.CreateIdOrThrow( projectId );
@@ -34,7 +34,7 @@ namespace SquirrelsNest.Common.Entities {
             AssignedToId = assignedToId;
         }
 
-        public SnIssue( string title, int issueNumber, EntityId projectId ) :
+        public SnIssue( string title, uint issueNumber, EntityId projectId ) :
             base( String.Empty ) {
             if( String.IsNullOrWhiteSpace( title )) throw new ApplicationException( "Issue titles cannot be empty" );
 
