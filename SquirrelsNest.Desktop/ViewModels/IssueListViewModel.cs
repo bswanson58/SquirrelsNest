@@ -13,6 +13,7 @@ using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Logging;
+using SquirrelsNest.Core.Extensions;
 using SquirrelsNest.Core.Interfaces;
 using SquirrelsNest.Desktop.Models;
 using SquirrelsNest.Desktop.ViewModels.UiModels;
@@ -99,13 +100,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
             if( issue != null ) {
                 mCurrentProject.Do( snProject => {
                     var project = mProjectBuilder.BuildCompositeProject( snProject );
-                    var state = project.WorkflowStates.FirstOrDefault( s => s.EntityId.Equals( issue.State.EntityId ), SnWorkflowState.Default );
-                    var newState = state.IsFinalState || state.IsTerminalState ?
-                                        project.WorkflowStates.FirstOrDefault( s => s.IsInitialState, 
-                                            project.WorkflowStates.FirstOrDefault( SnWorkflowState.Default )) :
-                                        project.WorkflowStates.FirstOrDefault( s => s.IsFinalState, 
-                                            project.WorkflowStates.FirstOrDefault( s => s.IsTerminalState, SnWorkflowState.Default ));
-                    var newIssue = issue.Issue.With( newState );
+                    var newIssue = issue.Issue.ToggleCompletedState( project.WorkflowStates );
 
                     mIssueProvider
                         .UpdateIssue( newIssue ).Result
