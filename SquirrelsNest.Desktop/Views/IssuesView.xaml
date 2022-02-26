@@ -23,7 +23,7 @@
             </Grid.RowDefinitions>
 
             <views:CurrentUserView Grid.Row="0"></views:CurrentUserView>
-            <views:IssueListFilterView Grid.Row="1"/>
+            <views:ProjectSelectorView Grid.Row="1"/>
         </Grid>
 
         <views:IssueListView Grid.Column="1"/>
