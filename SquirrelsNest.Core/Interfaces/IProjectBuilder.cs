@@ -2,7 +2,9 @@
 using SquirrelsNest.Core.CompositeBuilders;
 
 namespace SquirrelsNest.Core.Interfaces {
-    public interface IProjectBuilder {
-        CompositeProject    BuildCompositeProject( SnProject forProject );
+    public interface IProjectBuilder : IDisposable {
+        CompositeProject                    BuildCompositeProject( SnProject forProject );
+
+        IObservable<EntitySourceChange>     OnProjectPartsChanged { get; }
     }
 }
