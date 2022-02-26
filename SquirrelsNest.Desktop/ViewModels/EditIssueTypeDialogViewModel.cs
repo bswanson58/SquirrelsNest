@@ -24,8 +24,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
             mIssueState = parameters.GetValue<SnIssueType>( cIssueTypeParameter );
 
             if( mIssueState != null ) {
-                mIssueTypeDescription = mIssueState.Description;
-                mIssueTypeName = mIssueState.Name;
+                Description = mIssueState.Description;
+                Name = mIssueState.Name;
             }
         }
 

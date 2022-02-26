@@ -22,6 +22,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
         public  ObservableCollection<SnIssueType> IssueTypeList { get; }
 
         public  IRelayCommand                   CreateIssueType { get; }
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        public  IRelayCommand<SnIssueType>      EditIssueType { get; }
 
         public IssueTypeViewModel( IIssueTypeProvider issueTypeProvider, IModelState modelState, IDialogService dialogService, ILog log ) {
             mIssueTypeProvider = issueTypeProvider;
@@ -30,6 +32,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
             IssueTypeList = new ObservableCollection<SnIssueType>();
             CreateIssueType = new RelayCommand( OnCreateIssueType );
+            EditIssueType = new RelayCommand<SnIssueType>( OnEditIssueType );
 
             mStateSubscription = modelState.OnStateChange.Subscribe( OnStateChanged );
         }
@@ -59,10 +62,30 @@ namespace SquirrelsNest.Desktop.ViewModels {
                     if( result.Result == ButtonResult.Ok ) {
                         var issueType = result.Parameters.GetValue<SnIssueType>( EditIssueTypeDialogViewModel.cIssueTypeParameter );
 
-                        if( issueType == null ) throw new ApplicationException( "SnWorkflowState was not returned when editing issue" );
+                        if( issueType == null ) throw new ApplicationException( "SnIssueType was not returned when editing issue" );
 
                         mIssueTypeProvider
                             .AddIssue( issueType.For( mCurrentProject )).Result
+                            .Match( _ => LoadIssueTypes( mCurrentProject ),
+                                error => mLog.LogError( error ));
+                    }
+                });
+            }
+        }
+
+        private void OnEditIssueType( SnIssueType ? editIssueType ) {
+            if(( mCurrentProject != null ) &&
+               ( editIssueType != null )) {
+                var parameters = new DialogParameters{{ EditIssueTypeDialogViewModel.cIssueTypeParameter, editIssueType }};
+
+                mDialogService.ShowDialog( nameof( EditIssueTypeDialog ), parameters, result => {
+                    if( result.Result == ButtonResult.Ok ) {
+                        var issueType = result.Parameters.GetValue<SnIssueType>( EditIssueTypeDialogViewModel.cIssueTypeParameter );
+
+                        if( issueType == null ) throw new ApplicationException( "SnIssueType was not returned when editing issue" );
+
+                        mIssueTypeProvider
+                            .UpdateIssue( issueType.For( mCurrentProject )).Result
                             .Match( _ => LoadIssueTypes( mCurrentProject ),
                                 error => mLog.LogError( error ));
                     }
