@@ -34,6 +34,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
         public  string                          ProjectName { get; private set; }
         public  ObservableCollection<UiIssue>   IssueList { get; }
         public  IRelayCommand<bool>             ViewDisplayed { get; }
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        public  IRelayCommand<UiIssue>          IssueCompleted { get; }
 
         public IssueListViewModel( IModelState modelState, IIssueProvider issueProvider, IIssueBuilder issueBuilder,
                                    ILog log, SynchronizationContext context, IDialogService dialogService, IProjectBuilder projectBuilder ) {
@@ -49,6 +51,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
             IssueList = new ObservableCollection<UiIssue>();
             ProjectName = String.Empty;
             ViewDisplayed = new RelayCommand<bool>( OnViewDisplayed );
+            IssueCompleted = new RelayCommand<UiIssue>( OnIssueCompleted );
         }
 
         private void OnViewDisplayed( bool isLoading ) {
@@ -90,6 +93,25 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
         private UiIssue BuildIssue( SnIssue issue ) { 
             return new UiIssue( mIssueBuilder.BuildCompositeIssue( issue ), OnEditIssue );
+        }
+
+        private void OnIssueCompleted( UiIssue ? issue ) {
+            if( issue != null ) {
+                mCurrentProject.Do( snProject => {
+                    var project = mProjectBuilder.BuildCompositeProject( snProject );
+                    var state = project.WorkflowStates.FirstOrDefault( s => s.EntityId.Equals( issue.State.EntityId ), SnWorkflowState.Default );
+                    var newState = state.IsFinalState || state.IsTerminalState ?
+                                        project.WorkflowStates.FirstOrDefault( s => s.IsInitialState, 
+                                            project.WorkflowStates.FirstOrDefault( SnWorkflowState.Default )) :
+                                        project.WorkflowStates.FirstOrDefault( s => s.IsFinalState, 
+                                            project.WorkflowStates.FirstOrDefault( s => s.IsTerminalState, SnWorkflowState.Default ));
+                    var newIssue = issue.Issue.With( newState );
+
+                    mIssueProvider
+                        .UpdateIssue( newIssue ).Result
+                        .IfLeft( error => mLog.LogError( error ));
+                });
+            }
         }
 
         private void OnEditIssue( UiIssue uiIssue ) {
