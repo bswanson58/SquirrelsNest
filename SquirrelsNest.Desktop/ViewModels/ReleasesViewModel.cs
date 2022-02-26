@@ -22,6 +22,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
         public  ObservableCollection<SnRelease> ReleaseList { get; }
 
         public  IRelayCommand                   CreateRelease { get; }
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        public  IRelayCommand<SnRelease>        EditRelease { get; }
 
         public ReleasesViewModel( IReleaseProvider releaseProvider, IModelState modelState, IDialogService dialogService, ILog log ) {
             mReleaseProvider = releaseProvider;
@@ -30,6 +32,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
             ReleaseList = new ObservableCollection<SnRelease>();
             CreateRelease = new RelayCommand( OnCreateRelease );
+            EditRelease = new RelayCommand<SnRelease>( OnEditRelease );
 
             mStateSubscription = modelState.OnStateChange.Subscribe( OnStateChanged );
         }
@@ -63,6 +66,26 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
                         mReleaseProvider
                             .AddRelease( release.For( mCurrentProject )).Result
+                            .Match( _ => LoadReleases( mCurrentProject ),
+                                error => mLog.LogError( error ));
+                    }
+                });
+            }
+        }
+
+        private void OnEditRelease( SnRelease ? editRelease ) {
+            if(( mCurrentProject != null ) &&
+               ( editRelease != null ) ) {
+                var parameters = new DialogParameters{{ EditReleaseDialogViewModel.cReleaseParameter, editRelease }};
+
+                mDialogService.ShowDialog( nameof( EditReleaseDialog ), parameters, result => {
+                    if( result.Result == ButtonResult.Ok ) {
+                        var release = result.Parameters.GetValue<SnRelease>( EditReleaseDialogViewModel.cReleaseParameter );
+
+                        if( release == null ) throw new ApplicationException( "SnRelease was not returned when editing issue" );
+
+                        mReleaseProvider
+                            .UpdateRelease( release.For( mCurrentProject )).Result
                             .Match( _ => LoadReleases( mCurrentProject ),
                                 error => mLog.LogError( error ));
                     }

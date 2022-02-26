@@ -24,8 +24,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
             mRelease = parameters.GetValue<SnRelease>( cReleaseParameter );
 
             if( mRelease != null ) {
-                mReleaseDescription = mRelease.Description;
-                mReleaseName = mRelease.Version;
+                Description = mRelease.Description;
+                Name = mRelease.Version;
             }
         }
 
