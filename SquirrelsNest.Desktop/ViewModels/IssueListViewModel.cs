@@ -30,7 +30,10 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private readonly IModelState            mModelState;
         private readonly IDialogService         mDialogService;
         private readonly ILog                   mLog;
+        private SnUser                          mCurrentUser;
         private Option<SnProject>               mCurrentProject;
+        private bool                            mDisplayIssuesForAllUsers;
+        private bool                            mDisplayFinalizedIssues;
 
         public  string                          ProjectName { get; private set; }
         public  ObservableCollection<UiIssue>   IssueList { get; }
@@ -47,12 +50,33 @@ namespace SquirrelsNest.Desktop.ViewModels {
             mProjectBuilder = projectBuilder;
             mIssueBuilder = issueBuilder;
             mContext = context;
+            mCurrentUser = SnUser.Default;
+            mDisplayIssuesForAllUsers = true;
+            mDisplayFinalizedIssues = true;
 
             mSubscriptions = new CompositeDisposable();
             IssueList = new ObservableCollection<UiIssue>();
             ProjectName = String.Empty;
             ViewDisplayed = new RelayCommand<bool>( OnViewDisplayed );
             IssueCompleted = new RelayCommand<UiIssue>( OnIssueCompleted );
+        }
+
+        public bool ShowCompletedIssues {
+            get => mDisplayFinalizedIssues;
+            set {
+                SetProperty( ref mDisplayFinalizedIssues, value );
+
+                LoadIssueList();
+            }
+        }
+
+        public bool ShowAssignedIssues {
+            get => !mDisplayIssuesForAllUsers;
+            set {
+                SetProperty( ref mDisplayIssuesForAllUsers, !value );
+
+                LoadIssueList();
+            }
         }
 
         private void OnViewDisplayed( bool isLoading ) {
@@ -67,6 +91,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
         private void OnModelStateChanged( CurrentState state ) {
             mCurrentProject = state.Project;
+            mCurrentUser = state.User;
 
             mCurrentProject.Do( project => {
                 ProjectName = project.Name;
@@ -74,20 +99,29 @@ namespace SquirrelsNest.Desktop.ViewModels {
                 OnPropertyChanged( nameof( ProjectName ));
             });
 
-            LoadIssueList( state.Project );
+            LoadIssueList();
         }
 
         private void OnIssueListChanged( EntitySourceChange change ) {
-            LoadIssueList( mModelState.CurrentState.Project );
+            LoadIssueList();
         }
 
-        private void LoadIssueList( Option<SnProject> forProject ) {
+        private bool ShouldIssueBeDisplayed( UiIssue issue ) {
+            var forUser = mDisplayIssuesForAllUsers || issue.AssignedUser.EntityId.Equals( mCurrentUser.EntityId );
+            var isActive = mDisplayFinalizedIssues || !issue.IsFinalized;
+
+            return forUser && isActive;
+        }
+
+        private void LoadIssueList() {
             IssueList.Clear();
 
-            forProject
+            mCurrentProject
                 .ToEither( new Error())
                 .BindAsync( project => mIssueProvider.GetIssues( project )).Result
                 .Map( list => from i in list select BuildIssue( i ))
+                .Map( list => from i in list where ShouldIssueBeDisplayed( i ) select i )
+                .Map( list => from i in list orderby i.IsFinalized, i.IssueNumber select i )
                 .Match( list => list.ForEach( i => IssueList.Add( i )),
                         error => mLog.LogError( error ));
         }
@@ -123,7 +157,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
                         mIssueProvider
                             .UpdateIssue( issue ).Result
-                            .Match( _ => LoadIssueList( mCurrentProject ),
+                            .Match( _ => LoadIssueList(),
                                     error => mLog.LogError( error ));
                     }
                 });

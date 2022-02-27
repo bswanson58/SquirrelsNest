@@ -39,9 +39,9 @@
 
                 <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
                     <TextBlock Opacity="0.6" Style="{StaticResource ListViewTextStyle}" Text="("/>
-                    <TextBlock Opacity="0.6" Style="{StaticResource ListViewTextStyle}" Text="{Binding IssueNumber}"/>
+                    <TextBlock x:Name="IssueNumber" Opacity="0.6" Style="{StaticResource ListViewTextStyle}" Text="{Binding IssueNumber}"/>
                     <TextBlock Opacity="0.6" Style="{StaticResource ListViewTextStyle}" Text=")"/>
-                    <TextBlock Margin="5,0,0,0" Style="{StaticResource ListViewTextStyle}" Text="{Binding Title}"/>
+                    <TextBlock x:Name="IssueTitle" Margin="5,0,0,0" Style="{StaticResource ListViewTextStyle}" Text="{Binding Title}"/>
                 </StackPanel>
 
                 <TextBlock Grid.Row="1" Grid.Column="1" Margin="8,0,0,0" Style="{StaticResource ListViewSubTextStyle}" Text="{Binding Description}"/>
@@ -70,17 +70,28 @@
                     <Setter TargetName="Edit" Property="Opacity" Value="1"/>
                     <Setter TargetName="Completed" Property="Opacity" Value="1"/>
                 </Trigger>
+                <DataTrigger Binding="{Binding IsFinalized}" Value="True">
+                    <Setter TargetName="IssueNumber" Property="TextDecorations" Value="Strikethrough"/>
+                    <Setter TargetName="IssueTitle" Property="Opacity" Value="0.6"/>
+                </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid Margin="0,0,0,10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Margin="5" Style="{StaticResource MediumTitleStyle}" Text="{Binding ProjectName}"/>
+
         <ListView Grid.Row="1" Margin="15,0" ItemsSource="{Binding IssueList}" ItemTemplate="{StaticResource IssueTemplate}"/>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <CheckBox Margin="25,0,0,0" Content="Show Completed Issues" IsChecked="{Binding ShowCompletedIssues}"/>
+            <CheckBox Margin="25,0,0,0" Content="Show Only My Issues" IsChecked="{Binding ShowAssignedIssues}"/>
+        </StackPanel>
     </Grid>
 </UserControl>

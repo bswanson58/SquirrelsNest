@@ -19,6 +19,8 @@ namespace SquirrelsNest.Desktop.ViewModels.UiModels {
         public  string              Title => Issue.Title;
         public  string              Description => Issue.Description;
 
+        public  bool                IsFinalized => State.IsTerminalState || State.IsFinalState;
+
         public  IRelayCommand       Edit { get; }
 
         public UiIssue( CompositeIssue compositeIssue, Action<UiIssue> onEdit ) {
