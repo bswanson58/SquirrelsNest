@@ -40,6 +40,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
         public  IRelayCommand<bool>             ViewDisplayed { get; }
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public  IRelayCommand<UiIssue>          IssueCompleted { get; }
+        public  IRelayCommand                   CreateIssue { get; }
 
         public IssueListViewModel( IModelState modelState, IIssueProvider issueProvider, IIssueBuilder issueBuilder,
                                    ILog log, SynchronizationContext context, IDialogService dialogService, IProjectBuilder projectBuilder ) {
@@ -59,6 +60,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
             ProjectName = String.Empty;
             ViewDisplayed = new RelayCommand<bool>( OnViewDisplayed );
             IssueCompleted = new RelayCommand<UiIssue>( OnIssueCompleted );
+            CreateIssue = new RelayCommand( OnCreateIssue );
         }
 
         public bool ShowCompletedIssues {
@@ -139,6 +141,26 @@ namespace SquirrelsNest.Desktop.ViewModels {
                     mIssueProvider
                         .UpdateIssue( newIssue ).Result
                         .IfLeft( error => mLog.LogError( error ));
+                });
+            }
+        }
+
+        private void OnCreateIssue() {
+            if( mCurrentProject.IsSome ) {
+                var project = mProjectBuilder.BuildCompositeProject( mCurrentProject.AsEnumerable().First());
+                var parameters = new DialogParameters{{ EditIssueDialogViewModel.cProjectParameter, project }};
+
+                mDialogService.ShowDialog( nameof( EditIssueDialog ), parameters, result => {
+                    if( result.Result == ButtonResult.Ok ) {
+                        var issue = result.Parameters.GetValue<SnIssue>( EditIssueDialogViewModel.cIssueParameter );
+
+                        if( issue == null ) throw new ApplicationException( "Issue was not returned when editing issue" );
+
+                        mIssueProvider
+                            .AddIssue( issue ).Result
+                            .Match( _ => LoadIssueList(),
+                                error => mLog.LogError( error ));
+                    }
                 });
             }
         }

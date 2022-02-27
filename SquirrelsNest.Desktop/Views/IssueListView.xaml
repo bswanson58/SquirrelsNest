@@ -85,7 +85,9 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Margin="5" Style="{StaticResource MediumTitleStyle}" Text="{Binding ProjectName}"/>
+        <TextBlock Grid.Row="0" Margin="5" Style="{StaticResource MediumTitleStyle}" VerticalAlignment="Center" Text="{Binding ProjectName}"/>
+        <Button Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0" Style="{StaticResource GeneralButtonStyle}"
+                Content="New Issue" Command="{Binding CreateIssue}" ToolTip="Add a new issue"/>
 
         <ListView Grid.Row="1" Margin="15,0" ItemsSource="{Binding IssueList}" ItemTemplate="{StaticResource IssueTemplate}"/>
 
