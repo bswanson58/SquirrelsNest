@@ -19,7 +19,10 @@
 
     <UserControl.Resources>
         <DataTemplate x:Key="ProjectTemplate" DataType="{x:Type compositeBuilders:CompositeProject}">
-            <TextBlock Text="{Binding Project.Name}"/>
+            <StackPanel Orientation="Vertical" Margin="5">
+                <TextBlock Style="{StaticResource ListViewTextStyle}" Text="{Binding Project.Name}"/>
+                <TextBlock Style="{StaticResource ListViewSubTextStyle}" Margin="5,0,0,0" Text="{Binding Project.Description}"/>
+            </StackPanel>
         </DataTemplate>
     </UserControl.Resources>
 

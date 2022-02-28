@@ -23,7 +23,6 @@
                 <TextBlock Style="{StaticResource ListViewTextStyle}" Text="{Binding Name}"/>
                 <TextBlock Style="{StaticResource ListViewSubTextStyle}" Margin="5,0,0,0" Text="{Binding Description}"/>
             </StackPanel>
-
         </DataTemplate>
     </UserControl.Resources>
 
