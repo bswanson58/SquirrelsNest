@@ -61,11 +61,9 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private void OnStateChanged( CurrentState state ) {
             state.Project
                 .Do( project => {
-                    if(!project.EntityId.Equals( mCurrentProject?.EntityId )) {
-                        mCurrentProject = ProjectList.FirstOrDefault( p => p.EntityId.Equals( project.EntityId ));
+                    mCurrentProject = ProjectList.FirstOrDefault( p => p.EntityId.Equals( project.EntityId ));
 
-                        OnPropertyChanged( nameof( CurrentProject ));
-                    }
+                    OnPropertyChanged( nameof( CurrentProject ));
                 });
         }
 
@@ -74,13 +72,9 @@ namespace SquirrelsNest.Desktop.ViewModels {
             set {
                 SetProperty( ref mCurrentProject, value );
 
-                if( mIsActive ) {
-                    if( mCurrentProject != null ) {
-                        mModelState.SetProject( mCurrentProject );
-                    }
-                    else {
-                        mModelState.ClearProject();
-                    }
+                if(( mIsActive ) &&
+                   ( mCurrentProject != null )) {
+                    mModelState.SetProject( mCurrentProject );
                 }
             }
         }
@@ -112,11 +106,9 @@ namespace SquirrelsNest.Desktop.ViewModels {
                     if( editedProject != null ) {
                         mProjectProvider
                             .AddProject( editedProject ).Result
+                            .Do( project => mModelState.SetProject( project ))
                             .Do( _ => LoadProjectList())
-                            .Do( _ => mModelState.SetProject( editedProject ))
                             .IfLeft( error => mLog.LogError( error ));
-
-                        mModelState.SetProject( editedProject );
                     }
                 }
             });
