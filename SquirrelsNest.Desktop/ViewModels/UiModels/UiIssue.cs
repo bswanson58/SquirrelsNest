@@ -1,12 +1,9 @@
-﻿using System;
-using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Mvvm.Input;
+﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Core.CompositeBuilders;
 
 namespace SquirrelsNest.Desktop.ViewModels.UiModels {
     internal class UiIssue : ObservableObject {
-        private readonly Action<UiIssue>    mOnEdit;
         private readonly CompositeIssue     mCompositeIssue;
 
         public  SnIssue             Issue => mCompositeIssue.Issue;
@@ -21,17 +18,8 @@ namespace SquirrelsNest.Desktop.ViewModels.UiModels {
 
         public  bool                IsFinalized => State.IsTerminalState || State.IsFinalState;
 
-        public  IRelayCommand       Edit { get; }
-
-        public UiIssue( CompositeIssue compositeIssue, Action<UiIssue> onEdit ) {
+        public UiIssue( CompositeIssue compositeIssue ) {
             mCompositeIssue = compositeIssue;
-            mOnEdit = onEdit;
-
-            Edit = new RelayCommand( OnEdit );
-        }
-
-        private void OnEdit() {
-            mOnEdit( this );
         }
     }
 }

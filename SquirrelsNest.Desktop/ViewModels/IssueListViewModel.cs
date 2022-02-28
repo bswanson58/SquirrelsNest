@@ -39,9 +39,13 @@ namespace SquirrelsNest.Desktop.ViewModels {
         public  string                          ProjectName { get; private set; }
         public  ObservableCollection<UiIssue>   IssueList { get; }
         public  IRelayCommand<bool>             ViewDisplayed { get; }
-        // ReSharper disable once UnusedAutoPropertyAccessor.Global
-        public  IRelayCommand<UiIssue>          IssueCompleted { get; }
         public  IRelayCommand                   CreateIssue { get; }
+
+        // ReSharper disable UnusedAutoPropertyAccessor.Global
+        public  IRelayCommand<UiIssue>          IssueCompleted { get; }
+        public  IRelayCommand<UiIssue>          EditIssue {  get; }
+        public  IRelayCommand<UiIssue>          DeleteIssue {  get; }
+        // ReSharper restore UnusedAutoPropertyAccessor.Global
 
         public IssueListViewModel( IModelState modelState, IProjectProvider projectProvider, IIssueProvider issueProvider, IIssueBuilder issueBuilder,
                                    ILog log, SynchronizationContext context, IDialogService dialogService, IProjectBuilder projectBuilder ) {
@@ -61,8 +65,11 @@ namespace SquirrelsNest.Desktop.ViewModels {
             IssueList = new ObservableCollection<UiIssue>();
             ProjectName = String.Empty;
             ViewDisplayed = new RelayCommand<bool>( OnViewDisplayed );
-            IssueCompleted = new RelayCommand<UiIssue>( OnIssueCompleted );
             CreateIssue = new RelayCommand( OnCreateIssue );
+
+            IssueCompleted = new RelayCommand<UiIssue>( OnIssueCompleted );
+            EditIssue = new RelayCommand<UiIssue>( OnEditIssue );
+            DeleteIssue = new RelayCommand<UiIssue>( OnDeleteIssue );
         }
 
         public bool ShowCompletedIssues {
@@ -131,7 +138,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
         }
 
         private UiIssue BuildIssue( SnIssue issue ) { 
-            return new UiIssue( mIssueBuilder.BuildCompositeIssue( issue ), OnEditIssue );
+            return new UiIssue( mIssueBuilder.BuildCompositeIssue( issue ));
         }
 
         private void OnIssueCompleted( UiIssue ? issue ) {
@@ -172,8 +179,9 @@ namespace SquirrelsNest.Desktop.ViewModels {
             }
         }
 
-        private void OnEditIssue( UiIssue uiIssue ) {
-            if( mCurrentProject.IsSome ) {
+        private void OnEditIssue( UiIssue ?  uiIssue ) {
+            if(( mCurrentProject.IsSome ) &&
+               ( uiIssue != null )) {
                 var project = mProjectBuilder.BuildCompositeProject( mCurrentProject.AsEnumerable().First());
                 var parameters = new DialogParameters{{ EditIssueDialogViewModel.cProjectParameter, project },
                                                       { EditIssueDialogViewModel.cUserParameter, mCurrentUser },
@@ -187,6 +195,20 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
                         mIssueProvider
                             .UpdateIssue( issue ).Result
+                            .Match( _ => LoadIssueList(),
+                                    error => mLog.LogError( error ));
+                    }
+                });
+            }
+        }
+
+        private void OnDeleteIssue( UiIssue ? issue ) {
+            if( issue != null ) {
+                var parameters = new DialogParameters{{ ConfirmationDialogViewModel.cConfirmationText, $"Would you like to delete issue {issue.IssueNumber}?" }};
+
+                mDialogService.ShowDialog( nameof( ConfirmationDialog ), parameters, result => {
+                    if( result.Result == ButtonResult.Ok ) {
+                        mIssueProvider.DeleteIssue( issue.Issue ).Result
                             .Match( _ => LoadIssueList(),
                                     error => mLog.LogError( error ));
                     }
