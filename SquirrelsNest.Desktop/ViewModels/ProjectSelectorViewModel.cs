@@ -81,14 +81,12 @@ namespace SquirrelsNest.Desktop.ViewModels {
         public CompositeProject ?  CurrentProject {
             get => mCurrentProject;
             set {
-                SetProperty( ref mCurrentProject, value );
+                if( value != null ) {
+                    SetProperty( ref mCurrentProject, value );
 
-                if( mIsActive ) {
-                    if( mCurrentProject != null ) {
-                        mModelState.SetProject( mCurrentProject.Project );
-                    }
-                    else {
-                        mModelState.ClearProject();
+                    if(( mIsActive ) &&
+                       (!value.Project.EntityId.Equals( mCurrentProject?.Project.EntityId ))) {
+                        mModelState.SetProject( mCurrentProject!.Project );
                     }
                 }
             }
