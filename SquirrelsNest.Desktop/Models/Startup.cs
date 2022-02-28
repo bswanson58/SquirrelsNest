@@ -4,30 +4,66 @@ using LanguageExt;
 using LanguageExt.Common;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
+using SquirrelsNest.Common.Logging;
 using SquirrelsNest.Common.Values;
 using SquirrelsNest.Desktop.Preferences;
 using SquirrelsNest.Desktop.Views;
 
 namespace SquirrelsNest.Desktop.Models {
     internal class Startup {
+        private readonly IProjectProvider       mProjectProvider;
         private readonly IUserProvider          mUserProvider;
         private readonly IModelState            mModelState;
         private readonly IApplicationLog        mLog;
         private readonly IPreferences<AppState> mAppState;
+        private Action                          mClosingAction;
 
-        public Startup( IModelState modelState, IUserProvider userProvider, IPreferences<AppState> appState, IApplicationLog log ) {
+        public Startup( IModelState modelState, IProjectProvider projectProvider, IUserProvider userProvider, IPreferences<AppState> appState, IApplicationLog log ) {
             mModelState = modelState;
             mLog = log;
+            mProjectProvider = projectProvider;
             mUserProvider = userProvider;
             mAppState = appState;
+            mClosingAction = () => { };
         }
 
         public void StartApplication( Action onClose ) {
+            mClosingAction = onClose;
+
             mLog.ApplicationStarting();
 
             EstablishCurrentUser( mAppState );
+            EstablishCurrentProject( mAppState );
 
-            ShowMainWindow( onClose );
+            ShowMainWindow( OnClosing );
+        }
+
+        private void OnClosing() {
+            mModelState.CurrentState.Project
+                .Do( project => mAppState.Save( mAppState.Current.With( projectId: project.EntityId )));
+
+            mClosingAction();
+        }
+
+        private void EstablishCurrentProject( IPreferences<AppState> appState ) {
+            var currentState = appState.Current;
+
+            if( currentState.ProjectId != EntityId.Default ) {
+                EntityId.For( currentState.ProjectId )
+                    .Bind( projectId => mProjectProvider.GetProject( projectId ).Result )
+                    .Iter( p => mModelState.SetProject( p.Right ));
+            }
+            else {
+                mProjectProvider.GetProjects().Result
+                    .Match( list => {
+                            var firstProject = list.FirstOrDefault( SnProject.Default );
+
+                            if(!firstProject.EntityId.Equals( EntityId.Default )) {
+                                mModelState.SetProject( firstProject );
+                            }
+                        },
+                        error => mLog.LogError( error ));
+            }
         }
 
         private void EstablishCurrentUser( IPreferences<AppState> appState ) {
