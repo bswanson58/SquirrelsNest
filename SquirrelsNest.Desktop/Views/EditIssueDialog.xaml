@@ -46,63 +46,90 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="Issue Properties:"/>
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <TextBlock Margin="0,0,0,10" Style="{StaticResource ControlTitleStyle}" Text="Issue Properties for "/>
+            <TextBlock Margin="0,0,0,10" Style="{StaticResource ControlTitleStyle}" Text="{Binding IssueNumber}"/>
+        </StackPanel>
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="3"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="5"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Style="{StaticResource ControlTitleStyle}" Text="Title:"/>
-            <TextBox Grid.Row="0" Grid.Column="2" Style="{StaticResource ErrorToolTip}" HorizontalAlignment="Left" Width="200" x:Name="_firstFocus"
+            <TextBlock Grid.Column="0" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center"
+                       Style="{StaticResource ControlTitleStyle}" Text="Title:"/>
+
+            <TextBox Grid.Column="1" Style="{StaticResource ErrorToolTip}" HorizontalAlignment="Stretch" x:Name="_firstFocus"
                      Text="{Binding IssueTitle, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                      adorners:Watermark.Text="  enter issue title" adorners:Watermark.VisibleWhen="Empty"/>
         </Grid>
 
         <StackPanel Grid.Row="2" Margin="0,5,0,0" Orientation="Vertical">
             <TextBlock Margin="0,0,0,3" Style="{StaticResource ControlTitleStyle}" Text="Description:"/>
-            <TextBox Height="50" TextWrapping="Wrap" AcceptsReturn="True" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
+            <TextBox Height="50" TextWrapping="Wrap" Margin="10,0,0,0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
                      Text="{Binding Description, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="3" Margin="0,8,0,0" Orientation="Horizontal">
-            <TextBlock Style="{StaticResource ControlTitleStyle}" VerticalAlignment="Center" Margin="0,0,5,0" Text="Issue Type:"/>
-            <ComboBox Width="200" ItemsSource="{Binding IssueTypes}" SelectedItem="{Binding CurrentIssueType}" ItemTemplate="{StaticResource IssueTypeTemplate}"/>
-        </StackPanel>
+        <Grid Grid.Row="3" Margin="5,15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Row="4" Margin="0,5,0,0" Orientation="Horizontal">
-            <TextBlock Style="{StaticResource ControlTitleStyle}" VerticalAlignment="Center" Margin="0,0,5,0" Text="Workflow State:"/>
-            <ComboBox Width="200" ItemsSource="{Binding WorkflowStates}" SelectedItem="{Binding CurrentState}" ItemTemplate="{StaticResource StateTemplate}"/>
-        </StackPanel>
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Row="5" Margin="0,5,0,0" Orientation="Horizontal">
-            <TextBlock Style="{StaticResource ControlTitleStyle}" VerticalAlignment="Center" Margin="0,0,5,0" Text="Component:"/>
-            <ComboBox Width="200" ItemsSource="{Binding Components}" SelectedItem="{Binding CurrentComponent}" ItemTemplate="{StaticResource ComponentTemplate}"/>
-        </StackPanel>
+                <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource ControlTitleStyle}" VerticalAlignment="Center" HorizontalAlignment="Right"
+                           Margin="0,0,5,0" Text="Issue Type:"/>
+                <ComboBox Grid.Row="0" Grid.Column="1" Style="{StaticResource GeneralComboStyle}"
+                          ItemsSource="{Binding IssueTypes}" SelectedItem="{Binding CurrentIssueType}" ItemTemplate="{StaticResource IssueTypeTemplate}"/>
 
-        <StackPanel Grid.Row="6" Margin="0,5,0,0" Orientation="Horizontal">
-            <TextBlock Style="{StaticResource ControlTitleStyle}" VerticalAlignment="Center" Margin="0,0,5,0" Text="Assigned To:"/>
-            <ComboBox Width="200" ItemsSource="{Binding Users}" SelectedItem="{Binding AssignedUser}" ItemTemplate="{StaticResource UserTemplate}"/>
-        </StackPanel>
+                <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource ControlTitleStyle}" VerticalAlignment="Center" HorizontalAlignment="Right"
+                           Margin="0,0,5,0" Text="Component:"/>
+                <ComboBox Grid.Row="2" Grid.Column="1" Style="{StaticResource GeneralComboStyle}"
+                          ItemsSource="{Binding Components}" SelectedItem="{Binding CurrentComponent}" ItemTemplate="{StaticResource ComponentTemplate}"/>
+            </Grid>
+
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource ControlTitleStyle}" VerticalAlignment="Center" HorizontalAlignment="Right"
+                           Margin="0,0,5,0" Text="Workflow State:"/>
+                <ComboBox Grid.Row="0" Grid.Column="1" Style="{StaticResource GeneralComboStyle}"
+                          ItemsSource="{Binding WorkflowStates}" SelectedItem="{Binding CurrentState}" ItemTemplate="{StaticResource StateTemplate}"/>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource ControlTitleStyle}" VerticalAlignment="Center" HorizontalAlignment="Right"
+                           Margin="0,0,5,0" Text="Assigned To:"/>
+                <ComboBox Grid.Row="2" Grid.Column="1" Style="{StaticResource GeneralComboStyle}"
+                          ItemsSource="{Binding Users}" SelectedItem="{Binding AssignedUser}" ItemTemplate="{StaticResource UserTemplate}"/>
+            </Grid>
+        </Grid>
         
-        <TextBlock Grid.Row="8" Style="{StaticResource ControlTitleStyle}" Text="{Binding EntryInfo}"/>
+        <TextBlock Grid.Row="5" Style="{StaticResource ControlTitleStyle}" Text="{Binding EntryInfo}"/>
 
-        <StackPanel Grid.Row="9" Orientation="Horizontal" HorizontalAlignment="Right">
+        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Width="70" Margin="10,0" Style="{StaticResource GeneralButtonStyle}" Content="OK" Command="{Binding AcceptCommand}" IsDefault="True"/>
             <Button Width="70" Style="{StaticResource GeneralButtonStyle}" Content="Cancel" Command="{Binding CancelCommand}" IsCancel="True"/>
         </StackPanel>

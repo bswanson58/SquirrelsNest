@@ -148,7 +148,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private void OnCreateIssue() {
             if( mCurrentProject.IsSome ) {
                 var project = mProjectBuilder.BuildCompositeProject( mCurrentProject.AsEnumerable().First());
-                var parameters = new DialogParameters{{ EditIssueDialogViewModel.cProjectParameter, project }};
+                var parameters = new DialogParameters {{ EditIssueDialogViewModel.cProjectParameter, project },     
+                                                       { EditIssueDialogViewModel.cUserParameter, mCurrentUser }};
 
                 mDialogService.ShowDialog( nameof( EditIssueDialog ), parameters, result => {
                     if( result.Result == ButtonResult.Ok ) {
@@ -168,7 +169,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private void OnEditIssue( UiIssue uiIssue ) {
             if( mCurrentProject.IsSome ) {
                 var project = mProjectBuilder.BuildCompositeProject( mCurrentProject.AsEnumerable().First());
-                var parameters = new DialogParameters{{ EditIssueDialogViewModel.cProjectParameter, project }, 
+                var parameters = new DialogParameters{{ EditIssueDialogViewModel.cProjectParameter, project },
+                                                      { EditIssueDialogViewModel.cUserParameter, mCurrentUser },
                                                       { EditIssueDialogViewModel.cIssueParameter, uiIssue.Issue }};
 
                 mDialogService.ShowDialog( nameof( EditIssueDialog ), parameters, result => {

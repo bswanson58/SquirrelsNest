@@ -5,6 +5,8 @@ using System.Linq;
 using MoreLinq;
 using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
+using SquirrelsNest.Common.Platform;
+using SquirrelsNest.Common.Values;
 using SquirrelsNest.Core.CompositeBuilders;
 using SquirrelsNest.Desktop.Support;
 
@@ -13,6 +15,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
     internal class EditIssueDialogViewModel : DialogAwareBase {
         public  const string                cIssueParameter = "issue";
         public  const string                cProjectParameter = "project";
+        public  const string                cUserParameter = "user";
 
         private SnIssue ?                   mIssue;
         private CompositeProject ?          mProject;
@@ -22,6 +25,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private SnWorkflowState             mCurrentState;
         private SnComponent                 mCurrentComponent;
         private SnUser                      mAssignedUser;
+        private SnUser ?                    mCurrentUser;
 
         public  ObservableCollection<SnIssueType>       IssueTypes { get; }
         public  ObservableCollection<SnWorkflowState>   WorkflowStates { get; }
@@ -29,6 +33,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
         public  ObservableCollection<SnUser>            Users { get; }
 
         public  string                      EntryInfo { get; private set; }
+        public  string                      IssueNumber { get; private set; }
 
         public EditIssueDialogViewModel() {
             mTitle = String.Empty;
@@ -41,26 +46,43 @@ namespace SquirrelsNest.Desktop.ViewModels {
             mCurrentState = SnWorkflowState.Default;
             mCurrentComponent = SnComponent.Default;
             mAssignedUser = SnUser.Default;
+            mCurrentUser = SnUser.Default;
 
             SetTitle( "Issue Properties" );
             EntryInfo = String.Empty;
+            IssueNumber = String.Empty;
         }
 
         public override void OnDialogOpened( IDialogParameters parameters ) {
             mIssue = parameters.GetValue<SnIssue>( cIssueParameter );
             mProject = parameters.GetValue<CompositeProject>( cProjectParameter );
+            mCurrentUser = parameters.GetValue<SnUser>( cUserParameter );
 
             if( mProject == null ) {
                 throw new ApplicationException( "A project parameter is required" );
             }
+            if( mCurrentUser == null ) {
+                throw new ApplicationException( "A user parameter is required" );
+            }
+
+            EntryInfo = $"Entered on {DateTimeProvider.Instance.CurrentDate.ToShortDateString()} by {mCurrentUser.Name}";        
+            IssueNumber = $"{mProject.Project.IssuePrefix}-{mProject.Project.NextIssueNumber}";
 
             if( mIssue != null ) {
                 IssueTitle = mIssue.Title;
                 Description = mIssue.Description;
 
-                EntryInfo = $"Entered on {mIssue.EntryDate.ToShortDateString()}";
-                OnPropertyChanged( nameof( EntryInfo ));
+                var assignedTo = mProject.Users.FirstOrDefault( u => u.EntityId.Equals( mIssue.EnteredById ), SnUser.Default );
+                
+                EntryInfo = assignedTo.EntityId != EntityId.Default ? 
+                    $"Entered on {mIssue.EntryDate.ToShortDateString()} by {assignedTo.Name}" : 
+                    $"Entered on {mIssue.EntryDate.ToShortDateString()}";
+
+                IssueNumber = $"{mProject.Project.IssuePrefix}-{mIssue.IssueNumber}";
             }
+
+            OnPropertyChanged( nameof( EntryInfo ));
+            OnPropertyChanged( nameof( IssueNumber ));
 
             BuildEntityLists( mProject );
             if( mIssue != null ) {
@@ -140,7 +162,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
                 var issue = mIssue ?? new SnIssue( IssueTitle, mProject.Project.NextIssueNumber, mProject.Project.EntityId );
 
                 issue = issue
-                    .With( title: IssueTitle, description: Description, assignedTo: AssignedUser.EntityId )
+                    .With( title: IssueTitle, description: Description, assignedTo: AssignedUser.EntityId, enteredBy: mCurrentUser?.EntityId )
                     .With( CurrentIssueType )
                     .With( CurrentState )
                     .With( CurrentComponent );
