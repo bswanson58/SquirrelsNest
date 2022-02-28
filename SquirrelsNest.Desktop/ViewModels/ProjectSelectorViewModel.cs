@@ -26,6 +26,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private readonly ILog                           mLog;
         private readonly CompositeDisposable            mSubscriptions;
         private CompositeProject ?                      mCurrentProject;
+        private bool                                    mIsActive;
 
         public  ObservableCollection<CompositeProject>  ProjectList { get; }
 
@@ -39,6 +40,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
             mValidator = validator;
             mContext = context;
             mLog = log;
+            mIsActive = false;
 
             ProjectList = new ObservableCollection<CompositeProject>();
             mSubscriptions = new CompositeDisposable();
@@ -55,8 +57,10 @@ namespace SquirrelsNest.Desktop.ViewModels {
                 mSubscriptions.Add( mProjectBuilder.OnProjectPartsChanged.ObserveOn( mContext ).Subscribe( OnProjectsChanged ));
             }
             else {
-                mSubscriptions.Dispose();
+                mSubscriptions.Clear();
             }
+
+            mIsActive = isLoading;
         }
 
         private void OnStateChanged( CurrentState state ) {
@@ -79,11 +83,13 @@ namespace SquirrelsNest.Desktop.ViewModels {
             set {
                 SetProperty( ref mCurrentProject, value );
 
-                if( mCurrentProject != null ) {
-                    mModelState.SetProject( mCurrentProject.Project );
-                }
-                else {
-                    mModelState.ClearProject();
+                if( mIsActive ) {
+                    if( mCurrentProject != null ) {
+                        mModelState.SetProject( mCurrentProject.Project );
+                    }
+                    else {
+                        mModelState.ClearProject();
+                    }
                 }
             }
         }
@@ -100,14 +106,9 @@ namespace SquirrelsNest.Desktop.ViewModels {
                 .Match( list => list.ForEach( p => ProjectList.Add( p )),
                         error => mLog.LogError( error ));
 
-            if( currentProject == null ) {
-                CurrentProject = ProjectList.FirstOrDefault();
-            }
-            else {
-                mCurrentProject = ProjectList.FirstOrDefault( p => p.Project.EntityId.Equals( currentProject.Project.EntityId ));
-
-                OnPropertyChanged( nameof( CurrentProject ));
-            }
+            CurrentProject = currentProject == null ? 
+                ProjectList.FirstOrDefault() : 
+                ProjectList.FirstOrDefault( p => p.Project.EntityId.Equals( currentProject.Project.EntityId ));
         }
 
         public void Dispose() {

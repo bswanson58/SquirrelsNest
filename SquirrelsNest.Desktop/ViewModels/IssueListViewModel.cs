@@ -89,7 +89,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
                 mSubscriptions.Add( mIssueProvider.OnEntitySourceChange.ObserveOn( mContext ).Subscribe( OnIssueListChanged ));
             }
             else {
-                mSubscriptions.Dispose();
+                mSubscriptions.Clear();
             }
         }
 
@@ -195,7 +195,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
         }
 
         public void Dispose() {
-            mSubscriptions.Clear();
+            mSubscriptions.Dispose();
         }
     }
 }

@@ -24,6 +24,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private readonly ILog                       mLog;
         private readonly CompositeDisposable        mSubscriptions;
         private SnProject ?                         mCurrentProject;
+        private bool                                mIsActive;
 
         public  ObservableCollection<SnProject>     ProjectList { get; }
         
@@ -36,6 +37,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
             mDialogService = dialogService;
             mContext = context;
             mLog = log;
+            mIsActive = false;
 
             mSubscriptions = new CompositeDisposable();
             ProjectList = new ObservableCollection<SnProject>();
@@ -50,8 +52,10 @@ namespace SquirrelsNest.Desktop.ViewModels {
                 mSubscriptions.Add( mModelState.OnStateChange.ObserveOn( mContext ).Subscribe( OnStateChanged ));
             }
             else {
-                mSubscriptions.Dispose();
+                mSubscriptions.Clear();
             }
+
+            mIsActive = isLoaded;
         }
 
         private void OnStateChanged( CurrentState state ) {
@@ -70,11 +74,13 @@ namespace SquirrelsNest.Desktop.ViewModels {
             set {
                 SetProperty( ref mCurrentProject, value );
 
-                if( mCurrentProject != null ) {
-                    mModelState.SetProject( mCurrentProject );
-                }
-                else {
-                    mModelState.ClearProject();
+                if( mIsActive ) {
+                    if( mCurrentProject != null ) {
+                        mModelState.SetProject( mCurrentProject );
+                    }
+                    else {
+                        mModelState.ClearProject();
+                    }
                 }
             }
         }
