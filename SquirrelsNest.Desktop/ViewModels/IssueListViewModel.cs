@@ -156,8 +156,9 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
         private void OnCreateIssue() {
             if( mCurrentProject.IsSome ) {
-                var project = mProjectBuilder.BuildCompositeProject( mCurrentProject.AsEnumerable().First());
-                var parameters = new DialogParameters {{ EditIssueDialogViewModel.cProjectParameter, project },     
+                var project = mCurrentProject.AsEnumerable().First();
+                var composite = mProjectBuilder.BuildCompositeProject( project );
+                var parameters = new DialogParameters {{ EditIssueDialogViewModel.cProjectParameter, composite },     
                                                        { EditIssueDialogViewModel.cUserParameter, mCurrentUser }};
 
                 mDialogService.ShowDialog( nameof( EditIssueDialog ), parameters, result => {
@@ -166,11 +167,14 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
                         if( issue == null ) throw new ApplicationException( "Issue was not returned when editing issue" );
 
+                        project = project.WithNextIssueNumber();
+
                         mIssueProvider
                             .AddIssue( issue ).Result
                             .Match( _ => {
                                     mProjectProvider
-                                        .UpdateProject( project.Project.WithNextIssueNumber()).Result
+                                        .UpdateProject( project ).Result
+                                        .Do( _ => mCurrentProject = project  )
                                         .IfLeft( error => mLog.LogError( error ));
                                 },
                                 error => mLog.LogError( error ));
