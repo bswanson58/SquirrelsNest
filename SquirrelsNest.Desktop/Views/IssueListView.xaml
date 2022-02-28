@@ -89,7 +89,7 @@
         <Button Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0" Style="{StaticResource GeneralButtonStyle}"
                 Content="New Issue" Command="{Binding CreateIssue}" ToolTip="Add a new issue"/>
 
-        <ListView Grid.Row="1" Margin="15,0" ItemsSource="{Binding IssueList}" ItemTemplate="{StaticResource IssueTemplate}"/>
+        <ListView Grid.Row="1" Margin="15,5" ItemsSource="{Binding IssueList}" ItemTemplate="{StaticResource IssueTemplate}"/>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal">
             <CheckBox Margin="25,0,0,0" Content="Show Completed Issues" IsChecked="{Binding ShowCompletedIssues}"/>
