@@ -25,6 +25,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private readonly CompositeDisposable    mSubscriptions;
         private readonly SynchronizationContext mContext;
         private readonly IProjectBuilder        mProjectBuilder;
+        private readonly IProjectProvider       mProjectProvider;
         private readonly IIssueProvider         mIssueProvider;
         private readonly IIssueBuilder          mIssueBuilder;
         private readonly IModelState            mModelState;
@@ -42,9 +43,10 @@ namespace SquirrelsNest.Desktop.ViewModels {
         public  IRelayCommand<UiIssue>          IssueCompleted { get; }
         public  IRelayCommand                   CreateIssue { get; }
 
-        public IssueListViewModel( IModelState modelState, IIssueProvider issueProvider, IIssueBuilder issueBuilder,
+        public IssueListViewModel( IModelState modelState, IProjectProvider projectProvider, IIssueProvider issueProvider, IIssueBuilder issueBuilder,
                                    ILog log, SynchronizationContext context, IDialogService dialogService, IProjectBuilder projectBuilder ) {
             mIssueProvider = issueProvider;
+            mProjectProvider = projectProvider;
             mModelState = modelState;
             mLog = log;
             mDialogService = dialogService;
@@ -159,7 +161,11 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
                         mIssueProvider
                             .AddIssue( issue ).Result
-                            .Match( _ => LoadIssueList(),
+                            .Match( _ => {
+                                    mProjectProvider
+                                        .UpdateProject( project.Project.WithNextIssueNumber()).Result
+                                        .IfLeft( error => mLog.LogError( error ));
+                                },
                                 error => mLog.LogError( error ));
                     }
                 });
