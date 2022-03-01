@@ -22,8 +22,10 @@ namespace SquirrelsNest.Desktop.ViewModels {
         public  ObservableCollection<SnComponent>   ComponentList { get; }
 
         public  IRelayCommand                       CreateComponent { get; }
-        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        // ReSharper disable UnusedAutoPropertyAccessor.Global
         public  IRelayCommand<SnComponent>          EditComponent { get; }
+        public  IRelayCommand<SnComponent>          DeleteComponent { get; }
+        // ReSharper restore UnusedAutoPropertyAccessor.Global
 
         public ComponentsViewModel( IComponentProvider componentProvider, IModelState modelState, IDialogService dialogService, ILog log ) {
             mComponentProvider = componentProvider;
@@ -33,25 +35,28 @@ namespace SquirrelsNest.Desktop.ViewModels {
             ComponentList = new ObservableCollection<SnComponent>();
             CreateComponent = new RelayCommand( OnCreateRelease );
             EditComponent = new RelayCommand<SnComponent>( OnEditComponent );
+            DeleteComponent = new RelayCommand<SnComponent>( OnDeleteComponent );
 
             mStateSubscription = modelState.OnStateChange.Subscribe( OnStateChanged );
         }
 
         private void OnStateChanged( CurrentState state ) {
             state.Project.Do( project => {
-                LoadComponents( project );
-
                 mCurrentProject = project;
+
+                LoadComponents();
             });
         }
 
-        private void LoadComponents( SnProject forProject ) {
-            ComponentList.Clear();
+        private void LoadComponents() {
+            if( mCurrentProject != null ) {
+                ComponentList.Clear();
 
-            mComponentProvider
-                .GetComponents( forProject ).Result
-                .Match( list => list.ForEach( p => ComponentList.Add( p )),
+                mComponentProvider
+                    .GetComponents( mCurrentProject ).Result
+                    .Match( list => list.ForEach( p => ComponentList.Add( p )),
                         error => mLog.LogError( error ));
+            }
         }
 
         private void OnCreateRelease() {
@@ -66,7 +71,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
                         mComponentProvider
                             .AddComponent( component.For( mCurrentProject )).Result
-                            .Match( _ => LoadComponents( mCurrentProject ),
+                            .Match( _ => LoadComponents(),
                                     error => mLog.LogError( error ));
                     }
                 });
@@ -86,7 +91,23 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
                         mComponentProvider
                             .UpdateComponent( component.For( mCurrentProject )).Result
-                            .Match( _ => LoadComponents( mCurrentProject ),
+                            .Match( _ => LoadComponents(),
+                                error => mLog.LogError( error ));
+                    }
+                });
+            }
+        }
+
+        private void OnDeleteComponent( SnComponent ? component ) {
+            if( component != null ) {
+                var parameters = new DialogParameters {
+                    { ConfirmationDialogViewModel.cConfirmationText, $"Would you like to delete component named '{component.Name}'?" }
+                };
+
+                mDialogService.ShowDialog( nameof( ConfirmationDialog ), parameters, result => {
+                    if( result.Result == ButtonResult.Ok ) {
+                        mComponentProvider.DeleteComponent( component ).Result
+                            .Match( _ => LoadComponents(),
                                 error => mLog.LogError( error ));
                     }
                 });

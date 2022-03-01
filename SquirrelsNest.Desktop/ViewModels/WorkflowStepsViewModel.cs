@@ -22,7 +22,10 @@ namespace SquirrelsNest.Desktop.ViewModels {
         public  ObservableCollection<SnWorkflowState>   StateList { get; }
 
         public  IRelayCommand                   CreateState { get; }
+        // ReSharper disable UnusedAutoPropertyAccessor.Global
         public  IRelayCommand<SnWorkflowState>  EditState { get; }
+        public  IRelayCommand<SnWorkflowState>  DeleteState { get; }
+        // ReSharper restore UnusedAutoPropertyAccessor.Global
 
         public WorkflowStepsViewModel( IWorkflowStateProvider stateProvider, IModelState modelState, IDialogService dialogService, ILog log ) {
             mStateProvider = stateProvider;
@@ -32,25 +35,28 @@ namespace SquirrelsNest.Desktop.ViewModels {
             StateList = new ObservableCollection<SnWorkflowState>();
             CreateState = new RelayCommand( OnCreateState );
             EditState = new RelayCommand<SnWorkflowState>( OnEditState );
+            DeleteState = new RelayCommand<SnWorkflowState>( OnDeleteState );
 
             mStateSubscription = modelState.OnStateChange.Subscribe( OnStateChanged);
         }
 
         private void OnStateChanged( CurrentState state ) {
             state.Project.Do( project => {
-                LoadStates( project );
-
                 mCurrentProject = project;
+
+                LoadStates();
             });
         }
 
-        private void LoadStates( SnProject forProject ) {
-            StateList.Clear();
+        private void LoadStates() {
+            if( mCurrentProject != null ) {
+                StateList.Clear();
 
-            mStateProvider
-                .GetStates( forProject ).Result
+                mStateProvider
+                    .GetStates( mCurrentProject ).Result
                     .Match( list => list.ForEach( p => StateList.Add( p )),
-                            error => mLog.LogError( error ));
+                        error => mLog.LogError( error ));
+            }
         }
 
         private void OnCreateState() {
@@ -65,7 +71,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
                         mStateProvider
                             .AddState( state.For( mCurrentProject )).Result
-                            .Match( _ => LoadStates( mCurrentProject ),
+                            .Match( _ => LoadStates(),
                                 error => mLog.LogError( error ));
                     }
                 });
@@ -85,7 +91,23 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
                         mStateProvider
                             .UpdateState( state.For( mCurrentProject )).Result
-                            .Match( _ => LoadStates( mCurrentProject ),
+                            .Match( _ => LoadStates(),
+                                error => mLog.LogError( error ));
+                    }
+                });
+            }
+        }
+
+        private void OnDeleteState( SnWorkflowState ? state ) {
+            if( state != null ) {
+                var parameters = new DialogParameters {
+                    { ConfirmationDialogViewModel.cConfirmationText, $"Would you like to delete the state named '{state.Name}'?" }
+                };
+
+                mDialogService.ShowDialog( nameof( ConfirmationDialog ), parameters, result => {
+                    if( result.Result == ButtonResult.Ok ) {
+                        mStateProvider.DeleteState( state ).Result
+                            .Match( _ => LoadStates(),
                                 error => mLog.LogError( error ));
                     }
                 });

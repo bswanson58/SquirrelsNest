@@ -24,16 +24,23 @@
                     <TextBlock Style="{StaticResource ListViewSubTextStyle}" Margin="5,0,0,0" Text="{Binding Description}"/>
                 </StackPanel>
 
-                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
-                <Button x:Name="Edit" Grid.Column="1" Margin="5,0" HorizontalAlignment="Right" Width="17" Height="15" 
-                    Padding="1" BorderThickness="0" Background="Transparent" Opacity="0" Cursor="Hand" Focusable="False"
-                    Command="{Binding Path=DataContext.EditState, RelativeSource={RelativeSource AncestorType={x:Type GroupBox}}}" CommandParameter="{Binding}"
-                    Content="{StaticResource Image:Edit}" ToolTip="Edit Workflow State Properties" />
+                <StackPanel x:Name="StateCommands"  Grid.Column="1" Margin="0,0,10,0" Opacity="0"
+                            VerticalAlignment="Center" Orientation="Horizontal">
+                    <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                    <Button Margin="5,0" HorizontalAlignment="Right" Width="17" Height="15" Padding="1" BorderThickness="0" Background="Transparent" 
+                            Cursor="Hand" Focusable="False" Content="{StaticResource Image:Edit}" ToolTip="Edit Workflow State Properties"
+                            Command="{Binding Path=DataContext.EditState, RelativeSource={RelativeSource AncestorType={x:Type GroupBox}}}" CommandParameter="{Binding}"/>
+
+                    <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                    <Button Margin="5,0" HorizontalAlignment="Right" Width="17" Height="15" Padding="1" BorderThickness="0" Background="Transparent" 
+                            Cursor="Hand" Focusable="False" Content="{StaticResource Image:Delete}" ToolTip="Delete Workflow State"
+                            Command="{Binding Path=DataContext.DeleteState, RelativeSource={RelativeSource AncestorType={x:Type GroupBox}}}" CommandParameter="{Binding}"/>
+                </StackPanel>
             </Grid>
 
             <DataTemplate.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter TargetName="Edit" Property="Opacity" Value="1"/>
+                    <Setter TargetName="StateCommands" Property="Opacity" Value="1"/>
                 </Trigger>
             </DataTemplate.Triggers>
         </DataTemplate>

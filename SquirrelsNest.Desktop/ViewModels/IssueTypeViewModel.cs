@@ -12,7 +12,7 @@ using SquirrelsNest.Desktop.Views;
 
 namespace SquirrelsNest.Desktop.ViewModels {
     // ReSharper disable once ClassNeverInstantiated.Global
-    internal class IssueTypeViewModel : ObservableObject {
+    internal class IssueTypeViewModel : ObservableObject, IDisposable {
         private readonly IIssueTypeProvider mIssueTypeProvider;
         private readonly IDialogService     mDialogService;
         private readonly IDisposable        mStateSubscription;
@@ -22,8 +22,10 @@ namespace SquirrelsNest.Desktop.ViewModels {
         public  ObservableCollection<SnIssueType> IssueTypeList { get; }
 
         public  IRelayCommand                   CreateIssueType { get; }
-        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        // ReSharper disable UnusedAutoPropertyAccessor.Global
         public  IRelayCommand<SnIssueType>      EditIssueType { get; }
+        public  IRelayCommand<SnIssueType>      DeleteIssueType { get; }
+        // ReSharper restore UnusedAutoPropertyAccessor.Global
 
         public IssueTypeViewModel( IIssueTypeProvider issueTypeProvider, IModelState modelState, IDialogService dialogService, ILog log ) {
             mIssueTypeProvider = issueTypeProvider;
@@ -33,25 +35,28 @@ namespace SquirrelsNest.Desktop.ViewModels {
             IssueTypeList = new ObservableCollection<SnIssueType>();
             CreateIssueType = new RelayCommand( OnCreateIssueType );
             EditIssueType = new RelayCommand<SnIssueType>( OnEditIssueType );
+            DeleteIssueType = new RelayCommand<SnIssueType>( OnDeleteIssueType );
 
             mStateSubscription = modelState.OnStateChange.Subscribe( OnStateChanged );
         }
 
         private void OnStateChanged( CurrentState state ) {
             state.Project.Do( project => {
-                LoadIssueTypes( project );
-
                 mCurrentProject = project;
+
+                LoadIssueTypes();
             });
         }
 
-        private void LoadIssueTypes( SnProject forProject ) {
-            IssueTypeList.Clear();
+        private void LoadIssueTypes() {
+            if( mCurrentProject != null ) {
+                IssueTypeList.Clear();
 
-            mIssueTypeProvider
-                .GetIssues( forProject ).Result
-                .Match( list => list.ForEach( p => IssueTypeList.Add( p )),
-                    error => mLog.LogError( error ));
+                mIssueTypeProvider
+                    .GetIssues( mCurrentProject ).Result
+                    .Match( list => list.ForEach( p => IssueTypeList.Add( p )),
+                        error => mLog.LogError( error ));
+            }
         }
 
         private void OnCreateIssueType() {
@@ -66,7 +71,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
                         mIssueTypeProvider
                             .AddIssue( issueType.For( mCurrentProject )).Result
-                            .Match( _ => LoadIssueTypes( mCurrentProject ),
+                            .Match( _ => LoadIssueTypes(),
                                 error => mLog.LogError( error ));
                     }
                 });
@@ -86,7 +91,23 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
                         mIssueTypeProvider
                             .UpdateIssue( issueType.For( mCurrentProject )).Result
-                            .Match( _ => LoadIssueTypes( mCurrentProject ),
+                            .Match( _ => LoadIssueTypes(),
+                                error => mLog.LogError( error ));
+                    }
+                });
+            }
+        }
+
+        private void OnDeleteIssueType( SnIssueType ? issueType ) {
+            if( issueType != null ) {
+                var parameters = new DialogParameters {
+                    { ConfirmationDialogViewModel.cConfirmationText, $"Would you like to delete the issue type named '{issueType.Name}'?" }
+                };
+
+                mDialogService.ShowDialog( nameof( ConfirmationDialog ), parameters, result => {
+                    if( result.Result == ButtonResult.Ok ) {
+                        mIssueTypeProvider.DeleteIssue( issueType ).Result
+                            .Match( _ => LoadIssueTypes(),
                                 error => mLog.LogError( error ));
                     }
                 });

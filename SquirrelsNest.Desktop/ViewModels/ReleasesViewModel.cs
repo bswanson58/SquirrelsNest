@@ -22,8 +22,10 @@ namespace SquirrelsNest.Desktop.ViewModels {
         public  ObservableCollection<SnRelease> ReleaseList { get; }
 
         public  IRelayCommand                   CreateRelease { get; }
-        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        // ReSharper disable UnusedAutoPropertyAccessor.Global
         public  IRelayCommand<SnRelease>        EditRelease { get; }
+        public  IRelayCommand<SnRelease>        DeleteRelease { get; }
+        // ReSharper restore UnusedAutoPropertyAccessor.Global
 
         public ReleasesViewModel( IReleaseProvider releaseProvider, IModelState modelState, IDialogService dialogService, ILog log ) {
             mReleaseProvider = releaseProvider;
@@ -33,25 +35,28 @@ namespace SquirrelsNest.Desktop.ViewModels {
             ReleaseList = new ObservableCollection<SnRelease>();
             CreateRelease = new RelayCommand( OnCreateRelease );
             EditRelease = new RelayCommand<SnRelease>( OnEditRelease );
+            DeleteRelease = new RelayCommand<SnRelease>( OnDeleteRelease );
 
             mStateSubscription = modelState.OnStateChange.Subscribe( OnStateChanged );
         }
 
         private void OnStateChanged( CurrentState state ) {
             state.Project.Do( project => {
-                LoadReleases( project );
-
                 mCurrentProject = project;
+
+                LoadReleases();
             });
         }
 
-        private void LoadReleases( SnProject forProject ) {
-            ReleaseList.Clear();
+        private void LoadReleases() {
+            if( mCurrentProject != null ) {
+                ReleaseList.Clear();
 
-            mReleaseProvider
-                .GetReleases( forProject ).Result
-                .Match( list => list.ForEach( p => ReleaseList.Add( p )),
-                    error => mLog.LogError( error ));
+                mReleaseProvider
+                    .GetReleases( mCurrentProject ).Result
+                    .Match( list => list.ForEach( p => ReleaseList.Add( p )),
+                        error => mLog.LogError( error ));
+            }
         }
 
         private void OnCreateRelease() {
@@ -66,7 +71,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
                         mReleaseProvider
                             .AddRelease( release.For( mCurrentProject )).Result
-                            .Match( _ => LoadReleases( mCurrentProject ),
+                            .Match( _ => LoadReleases(),
                                 error => mLog.LogError( error ));
                     }
                 });
@@ -86,7 +91,23 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
                         mReleaseProvider
                             .UpdateRelease( release.For( mCurrentProject )).Result
-                            .Match( _ => LoadReleases( mCurrentProject ),
+                            .Match( _ => LoadReleases(),
+                                error => mLog.LogError( error ));
+                    }
+                });
+            }
+        }
+
+        private void OnDeleteRelease( SnRelease ? release ) {
+            if( release != null ) {
+                var parameters = new DialogParameters {
+                    { ConfirmationDialogViewModel.cConfirmationText, $"Would you like to delete the release named '{release.Version}'?" }
+                };
+
+                mDialogService.ShowDialog( nameof( ConfirmationDialog ), parameters, result => {
+                    if( result.Result == ButtonResult.Ok ) {
+                        mReleaseProvider.DeleteRelease( release ).Result
+                            .Match( _ => LoadReleases(),
                                 error => mLog.LogError( error ));
                     }
                 });
