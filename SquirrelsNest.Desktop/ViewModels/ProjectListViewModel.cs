@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
-using MoreLinq;
 using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Logging;
 using SquirrelsNest.Desktop.Models;
+using SquirrelsNest.Desktop.Platform;
 using SquirrelsNest.Desktop.Views;
 
 namespace SquirrelsNest.Desktop.ViewModels {
@@ -24,9 +23,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private readonly ILog                       mLog;
         private readonly CompositeDisposable        mSubscriptions;
         private SnProject ?                         mCurrentProject;
-        private bool                                mIsActive;
 
-        public  ObservableCollection<SnProject>     ProjectList { get; }
+        public  RangeCollection<SnProject>          ProjectList { get; }
         
         public  IRelayCommand                       CreateProject { get; }
         public  IRelayCommand<bool>                 ViewDisplayed { get; }
@@ -37,10 +35,9 @@ namespace SquirrelsNest.Desktop.ViewModels {
             mDialogService = dialogService;
             mContext = context;
             mLog = log;
-            mIsActive = false;
 
             mSubscriptions = new CompositeDisposable();
-            ProjectList = new ObservableCollection<SnProject>();
+            ProjectList = new RangeCollection<SnProject>();
             CreateProject = new RelayCommand( OnCreateProject );
             ViewDisplayed = new RelayCommand<bool>( OnViewDisplayed );
 
@@ -54,8 +51,6 @@ namespace SquirrelsNest.Desktop.ViewModels {
             else {
                 mSubscriptions.Clear();
             }
-
-            mIsActive = isLoaded;
         }
 
         private void OnStateChanged( CurrentState state ) {
@@ -70,11 +65,12 @@ namespace SquirrelsNest.Desktop.ViewModels {
         public SnProject ? CurrentProject {
             get => mCurrentProject;
             set {
-                SetProperty( ref mCurrentProject, value );
+                if( value != null ) {
+                    SetProperty( ref mCurrentProject, value );
 
-                if(( mIsActive ) &&
-                   ( mCurrentProject != null )) {
-                    mModelState.SetProject( mCurrentProject );
+                    if( mCurrentProject != null ) {
+                        mModelState.SetProject( mCurrentProject );
+                    }
                 }
             }
         }
@@ -82,17 +78,14 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private void LoadProjectList() {
             var currentProject = mCurrentProject;
 
-            ProjectList.Clear();
-
             mProjectProvider
                 .GetProjects().Result
-                    .Match( list => list.ForEach( p => ProjectList.Add( p )),
+                .Match( list => ProjectList.Reset( list ),
                             error => mLog.LogError( error ));
 
             mCurrentProject = currentProject != null ? 
                 ProjectList.FirstOrDefault( p => p.EntityId.Equals( currentProject.EntityId )) : 
                 ProjectList.FirstOrDefault();
-
             OnPropertyChanged( nameof( CurrentProject ));
         }
 
@@ -106,8 +99,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
                     if( editedProject != null ) {
                         mProjectProvider
                             .AddProject( editedProject ).Result
-                            .Do( project => mModelState.SetProject( project ))
                             .Do( _ => LoadProjectList())
+                            .Do( project => mModelState.SetProject( project ))
                             .IfLeft( error => mLog.LogError( error ));
                     }
                 }

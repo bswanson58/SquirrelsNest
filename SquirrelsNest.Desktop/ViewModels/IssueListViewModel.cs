@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -16,6 +15,7 @@ using SquirrelsNest.Common.Logging;
 using SquirrelsNest.Core.Extensions;
 using SquirrelsNest.Core.Interfaces;
 using SquirrelsNest.Desktop.Models;
+using SquirrelsNest.Desktop.Platform;
 using SquirrelsNest.Desktop.ViewModels.UiModels;
 using SquirrelsNest.Desktop.Views;
 
@@ -37,7 +37,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private bool                            mDisplayFinalizedIssues;
 
         public  string                          ProjectName { get; private set; }
-        public  ObservableCollection<UiIssue>   IssueList { get; }
+        public  RangeCollection<UiIssue>        IssueList { get; }
         public  IRelayCommand<bool>             ViewDisplayed { get; }
         public  IRelayCommand                   CreateIssue { get; }
 
@@ -62,7 +62,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
             mDisplayFinalizedIssues = true;
 
             mSubscriptions = new CompositeDisposable();
-            IssueList = new ObservableCollection<UiIssue>();
+            IssueList = new RangeCollection<UiIssue>();
             ProjectName = String.Empty;
             ViewDisplayed = new RelayCommand<bool>( OnViewDisplayed );
             CreateIssue = new RelayCommand( OnCreateIssue );
@@ -125,15 +125,13 @@ namespace SquirrelsNest.Desktop.ViewModels {
         }
 
         private void LoadIssueList() {
-            IssueList.Clear();
-
             mCurrentProject
                 .ToEither( new Error())
                 .BindAsync( project => mIssueProvider.GetIssues( project )).Result
                 .Map( list => from i in list select BuildIssue( i ))
                 .Map( list => from i in list where ShouldIssueBeDisplayed( i ) select i )
                 .Map( list => from i in list orderby i.IsFinalized, i.IssueNumber select i )
-                .Match( list => list.ForEach( i => IssueList.Add( i )),
+                .Match( list => IssueList.Reset( list ),
                         error => mLog.LogError( error ));
         }
 
