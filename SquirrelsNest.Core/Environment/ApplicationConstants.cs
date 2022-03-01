@@ -6,9 +6,11 @@ namespace SquirrelsNest.Core.Environment {
         public string  CompanyName              => "Secret Squirrel Software";
 
         public string  ConfigurationDirectory   => "Configuration";
-
+        public string  TemplateDirectory        => "Templates";
         public string  DatabaseDirectory        => "Database";
-        public string  DatabaseFileName         => "SquirrelsNestDB";
         public string  LogFileDirectory         => "Logs";
+
+        public string  DatabaseFileName         => "SquirrelsNestDB";
+        public string  ProjectTemplateExtension => ".pt";
     }
 }

@@ -1,0 +1,46 @@
+{
+  "Name": "Basic Project",
+  "Description": "A basic project definition",
+  "IssueTypes": [
+    {
+      "Name": "Feature",
+      "Description": "A feature to be added to the product"
+    },
+    {
+      "Name": "Defect",
+      "Description": "An incorrect operation of the product"
+    }
+  ],
+  "Components": [
+    {
+      "Name": "User Interface",
+      "Description": "The user interface of the product"
+    },
+    {
+      "Name": "Database",
+      "Description": "The database component"
+    },
+    {
+      "Name": "Core",
+      "Description": "The model structure of the product"
+    }
+  ],
+  "WorkflowSteps": [
+    {
+      "Name": "Submitted",
+      "Description": "The issue has been submitted"
+    },
+    {
+      "Name": "Assigned",
+      "Description": "The issue has been assigned"
+    },
+    {
+      "Name": "Completed",
+      "Description": "The issue has been completed"
+    },
+    {
+      "Name": "Rejected",
+      "Description": "The issue has been rejected and will not be completed"
+    }
+  ]
+}

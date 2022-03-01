@@ -1,11 +1,14 @@
 ﻿namespace SquirrelsNest.Common.Interfaces {
     public interface IApplicationConstants {
         string  ApplicationName { get; }
-        String  CompanyName { get; }
+        string  CompanyName { get; }
 
-        String  ConfigurationDirectory { get; }
-        String  DatabaseDirectory { get; }
-        String  DatabaseFileName { get; }
-        String  LogFileDirectory { get; }
+        string  ConfigurationDirectory { get; }
+        string  DatabaseDirectory { get; }
+        string  LogFileDirectory { get; }
+        string  TemplateDirectory { get; }
+
+        string  DatabaseFileName { get; }
+        string  ProjectTemplateExtension { get; }
     }
 }

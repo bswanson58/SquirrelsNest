@@ -95,9 +95,9 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private void OnCreateProject() {
             var parameters = new DialogParameters();
 
-            mDialogService.ShowDialog( nameof( EditProjectDialog ), parameters, result => {
+            mDialogService.ShowDialog( nameof( CreateProjectDialog ), parameters, result => {
                 if( result.Result == ButtonResult.Ok ) {
-                    var editedProject = result.Parameters.GetValue<SnProject>( EditProjectDialogViewModel.cProject );
+                    var editedProject = result.Parameters.GetValue<SnProject>( CreateProjectDialogViewModel.cProject );
 
                     if( editedProject != null ) {
                         mProjectProvider

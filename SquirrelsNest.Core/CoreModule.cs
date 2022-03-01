@@ -5,6 +5,7 @@ using SquirrelsNest.Core.CompositeBuilders;
 using SquirrelsNest.Core.Environment;
 using SquirrelsNest.Core.Interfaces;
 using SquirrelsNest.Core.Platform;
+using SquirrelsNest.Core.ProjectTemplates;
 using SquirrelsNest.Core.Validators;
 
 namespace SquirrelsNest.Core {
@@ -17,6 +18,8 @@ namespace SquirrelsNest.Core {
 
             builder.RegisterType<IssueBuilder>().As<IIssueBuilder>().SingleInstance();
             builder.RegisterType<ProjectBuilder>().As<IProjectBuilder>().SingleInstance();
+
+            builder.RegisterType<ProjectCreator>().As<IProjectCreator>().InstancePerDependency();
 
             builder.RegisterType<CompositeProjectValidator>().As<IValidator<CompositeProject>>();
         }

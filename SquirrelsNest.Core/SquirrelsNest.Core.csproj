@@ -11,11 +11,16 @@
     <PackageReference Include="Autofac" Version="6.3.0" />
     <PackageReference Include="FluentValidation" Version="10.3.6" />
     <PackageReference Include="LanguageExt.Core" Version="4.0.3" />
+    <PackageReference Include="morelinq" Version="3.3.2" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SquirrelsNest.Common\SquirrelsNest.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ProjectTemplates\Templates\" />
   </ItemGroup>
 
 </Project>

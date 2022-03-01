@@ -25,7 +25,7 @@ namespace SquirrelsNest.Core.Environment {
                 Directory.CreateDirectory( retValue );
             }
 
-            return( retValue );
+            return retValue;
         }
 
         public string DatabaseDirectory() {
@@ -35,7 +35,7 @@ namespace SquirrelsNest.Core.Environment {
                 Directory.CreateDirectory( retValue );
             }
 
-            return( retValue );
+            return retValue;
         }
 
         public string LogFileDirectory() {
@@ -45,7 +45,7 @@ namespace SquirrelsNest.Core.Environment {
                 Directory.CreateDirectory( retValue );
             }
 
-            return( retValue );
+            return retValue;
         }
 
         public string PreferencesDirectory() {
@@ -55,7 +55,17 @@ namespace SquirrelsNest.Core.Environment {
                 Directory.CreateDirectory( retValue );
             }
 
-            return( retValue );
+            return retValue;
+        }
+
+        public string TemplateDirectory() {
+            var retValue = Path.Combine( ApplicationDirectory(), mApplicationConstants.TemplateDirectory );
+
+            if(!Directory.Exists( retValue )) {
+                Directory.CreateDirectory( retValue );
+            }
+
+            return retValue;
         }
     }
 }

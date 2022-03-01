@@ -1,0 +1,79 @@
+﻿<UserControl x:Class="SquirrelsNest.Desktop.Views.CreateProjectDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:viewModelLocator="clr-namespace:MvvmSupport.ViewModelLocator;assembly=MvvmSupport"
+             xmlns:viewModels="clr-namespace:SquirrelsNest.Desktop.ViewModels"
+             xmlns:dialogService="clr-namespace:MvvmSupport.DialogService;assembly=MvvmSupport"
+             xmlns:adorners="http://gu.se/Adorners"
+             xmlns:projectTemplates="clr-namespace:SquirrelsNest.Core.ProjectTemplates;assembly=SquirrelsNest.Core"
+             mc:Ignorable="d" 
+             Height="250" Width="600"
+             viewModelLocator:ViewModelLocator.AutoWireViewModel="True"
+             d:DataContext="{d:DesignInstance viewModels:CreateProjectDialogViewModel, IsDesignTimeCreatable=False}">
+
+    <dialogService:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="dialogService:Dialog.WindowStartupLocation" Value="CenterOwner" />
+            <Setter Property="ResizeMode" Value="NoResize"/>
+            <Setter Property="ShowInTaskbar" Value="False"/>
+            <Setter Property="SizeToContent" Value="WidthAndHeight"/>
+        </Style>
+    </dialogService:Dialog.WindowStyle>
+
+    <UserControl.Resources>
+        <DataTemplate x:Key="ProjectTemplate" DataType="{x:Type projectTemplates:IProjectTemplate}">
+            <TextBlock Text="{Binding Name}"/>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid Margin="10" FocusManager.FocusedElement="{Binding ElementName=_firstFocus}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="3"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Style="{StaticResource ControlTitleStyle}" Text="Name:"/>
+            <TextBox Grid.Row="0" Grid.Column="2" Style="{StaticResource ErrorToolTip}" HorizontalAlignment="Left" Width="200" x:Name="_firstFocus"
+                     Text="{Binding Name, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                     adorners:Watermark.Text="  enter project name" adorners:Watermark.VisibleWhen="Empty"/>
+
+            <TextBlock Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" Style="{StaticResource ControlTitleStyle}" Text="Issue Prefix:"/>
+            <TextBox Grid.Row="2" Grid.Column="2" Width="50" Style="{StaticResource ErrorToolTip}" HorizontalAlignment="Left"
+                     Text="{Binding IssuePrefix, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+        </Grid>
+
+        <StackPanel Grid.Row="1" Margin="0,5,0,0" Orientation="Vertical">
+            <TextBlock Margin="0,0,0,3" Style="{StaticResource ControlTitleStyle}" Text="Description:"/>
+            <TextBox Height="50" TextWrapping="Wrap" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
+                     Text="{Binding Description, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Margin="0,15,0,0" Orientation="Horizontal">
+            <TextBlock Style="{StaticResource ControlTitleStyle}" VerticalAlignment="Center" Text="Use Project Template:"/>
+            <ComboBox Style="{StaticResource GeneralComboStyle}" VerticalAlignment="Center" Margin="5,0,0,0" Width="250"
+                      ItemsSource="{Binding ProjectTemplates}" ItemTemplate="{StaticResource ProjectTemplate}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Width="70" Margin="10,0" Style="{StaticResource GeneralButtonStyle}" Content="OK" Command="{Binding AcceptCommand}" IsDefault="True"/>
+            <Button Width="70" Style="{StaticResource GeneralButtonStyle}" Content="Cancel" Command="{Binding CancelCommand}" IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

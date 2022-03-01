@@ -7,5 +7,6 @@
         string      DatabaseDirectory();
         string		LogFileDirectory();
         string		PreferencesDirectory();
+        string      TemplateDirectory();
     }
 }
