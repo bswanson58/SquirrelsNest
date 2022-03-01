@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using SquirrelsNest.Common.Interfaces;
+using SquirrelsNest.Core.Platform;
 
 namespace SquirrelsNest.Desktop.Preferences {
     public interface IPreferencesHandler {

@@ -17,7 +17,6 @@ namespace SquirrelsNest.Desktop {
             builder.RegisterType<PlatformLog>().As<ILog>().As<IApplicationLog>().SingleInstance();
 
             // Preferences support classes
-            builder.RegisterType<FileWriter>().As<IFileWriter>().SingleInstance();
             builder.RegisterType<PreferencesHandler>().As<IPreferencesHandler>().SingleInstance();
             // Preference classes
             builder.RegisterType<Preferences<AppState>>().As<IPreferences<AppState>>().SingleInstance();

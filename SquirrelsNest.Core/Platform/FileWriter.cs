@@ -1,7 +1,6 @@
-﻿using System.IO;
-using System.Text.Json;
+﻿using System.Text.Json;
 
-namespace SquirrelsNest.Desktop.Preferences {
+namespace SquirrelsNest.Core.Platform {
     public interface IFileWriter {
         T       Load<T>( string filePath ) where T : new();
         void    Save<T>( string filePath, T toSave );
