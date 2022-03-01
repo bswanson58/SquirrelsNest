@@ -11,7 +11,7 @@
              viewModelLocator:ViewModelLocator.AutoWireViewModel="True"
              d:DataContext="{d:DesignInstance viewModels:ProjectManagementViewModel, IsDesignTimeCreatable=False}">
 
-    <Grid>
+    <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="3*"/>
@@ -19,18 +19,29 @@
 
         <views:ProjectListView Grid.Column="0"/>
 
-        <Grid Grid.Column="1" Margin="10,0,0,0">
+        <Grid Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
 
-            <views:WorkflowStepsView Grid.Row="0"/>
-            <views:ComponentsView Grid.Row="1"/>
-            <views:IssueTypeView Grid.Row="2"/>
-            <views:ReleasesView Grid.Row="3"/>
+            <Grid Grid.Row="1" Margin="10,0,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+
+                <views:IssueTypeView Grid.Row="0" Grid.Column="0"/>
+                <views:WorkflowStepsView Grid.Row="2" Grid.Column="0"/>
+                <views:ComponentsView Grid.Row="0" Grid.Column="2"/>
+                <views:ReleasesView Grid.Row="2" Grid.Column="2"/>
+            </Grid>
         </Grid>
     </Grid>
 </UserControl>

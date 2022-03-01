@@ -19,7 +19,7 @@
 
     <UserControl.Resources>
         <DataTemplate x:Key="ProjectTemplate" DataType="entities:SnProject">
-            <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Vertical" Margin="5">
                 <TextBlock Style="{StaticResource ListViewTextStyle}" Text="{Binding Name}"/>
                 <TextBlock Style="{StaticResource ListViewSubTextStyle}" Margin="5,0,0,0" Text="{Binding Description}"/>
             </StackPanel>
@@ -42,7 +42,7 @@
 
             <ListBox Grid.Row="0" ItemsSource="{Binding ProjectList}" ItemTemplate="{StaticResource ProjectTemplate}" SelectedItem="{Binding CurrentProject}"/>
 
-            <Button Grid.Row="2" HorizontalAlignment="Left" Style="{StaticResource GeneralButtonStyle}" Content="New Project" Command="{Binding CreateProject}"/>
+            <Button Grid.Row="2" HorizontalAlignment="Right" Style="{StaticResource GeneralButtonStyle}" Content="New Project" Command="{Binding CreateProject}"/>
         </Grid>
     </GroupBox>
 </UserControl>

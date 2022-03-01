@@ -36,7 +36,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0" Margin="0,0,5,0" HorizontalAlignment="Right" Style="{StaticResource ControlTitleStyle}" Text="Release Name:"/>
+            <TextBlock Grid.Column="0" Margin="0,0,5,0" HorizontalAlignment="Right" Style="{StaticResource ControlTitleStyle}" Text="Type Name:"/>
             <TextBox Grid.Column="2" Style="{StaticResource ErrorToolTip}" HorizontalAlignment="Left" Width="200" x:Name="_firstFocus"
                      Text="{Binding Name, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                      adorners:Watermark.Text="  enter issue type name" adorners:Watermark.VisibleWhen="Empty"/>

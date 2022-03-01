@@ -49,12 +49,13 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="10"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
             <ListBox Grid.Column="0" ItemsSource="{Binding ReleaseList}" ItemTemplate="{StaticResource ReleaseTemplate}"/>
 
-            <Button Grid.Column="1" VerticalAlignment="Bottom" Style="{StaticResource GeneralButtonStyle}" Content="New Release..." Command="{Binding CreateRelease}"/>
+            <Button Grid.Column="2" VerticalAlignment="Bottom" Style="{StaticResource GeneralButtonStyle}" Content="New Release" Command="{Binding CreateRelease}"/>
         </Grid>
     </GroupBox>
 </UserControl>
