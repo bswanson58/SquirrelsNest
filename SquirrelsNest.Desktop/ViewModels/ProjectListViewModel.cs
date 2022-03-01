@@ -28,6 +28,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
         
         public  IRelayCommand                       CreateProject { get; }
         public  IRelayCommand<bool>                 ViewDisplayed { get; }
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        public  IRelayCommand<SnProject>            EditProject { get; }
 
         public ProjectListViewModel( IModelState modelState, IProjectProvider projectProvider, IDialogService dialogService, ILog log, SynchronizationContext context ) {
             mModelState = modelState;
@@ -40,6 +42,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
             ProjectList = new RangeCollection<SnProject>();
             CreateProject = new RelayCommand( OnCreateProject );
             ViewDisplayed = new RelayCommand<bool>( OnViewDisplayed );
+            EditProject = new RelayCommand<SnProject>( OnEditProject );
 
             LoadProjectList();
         }
@@ -105,6 +108,26 @@ namespace SquirrelsNest.Desktop.ViewModels {
                     }
                 }
             });
+        }
+
+        private void OnEditProject( SnProject ? project ) {
+            if( project != null ) {
+                var parameters = new DialogParameters{{ EditProjectDialogViewModel.cProject, project }};
+
+                mDialogService.ShowDialog( nameof( EditProjectDialog ), parameters, result => {
+                    if( result.Result == ButtonResult.Ok ) {
+                        var editedProject = result.Parameters.GetValue<SnProject>( EditProjectDialogViewModel.cProject );
+
+                        if( editedProject != null ) {
+                            mProjectProvider
+                                .UpdateProject( editedProject ).Result
+                                .Do( _ => LoadProjectList())
+//                                .Do( project => mModelState.SetProject( project ))
+                                .IfLeft( error => mLog.LogError( error ));
+                        }
+                    }
+                });
+            }
         }
 
         public void Dispose() {

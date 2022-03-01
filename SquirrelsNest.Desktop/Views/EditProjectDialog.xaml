@@ -8,7 +8,7 @@
              xmlns:dialogService="clr-namespace:MvvmSupport.DialogService;assembly=MvvmSupport"
              xmlns:adorners="http://gu.se/Adorners"
              mc:Ignorable="d" 
-             Height="250" Width="400"
+             Height="250" Width="600"
              viewModelLocator:ViewModelLocator.AutoWireViewModel="True"
              d:DataContext="{d:DesignInstance viewModels:EditProjectDialogViewModel, IsDesignTimeCreatable=False}">
 

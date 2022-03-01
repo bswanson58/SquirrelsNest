@@ -19,10 +19,30 @@
 
     <UserControl.Resources>
         <DataTemplate x:Key="ProjectTemplate" DataType="entities:SnProject">
-            <StackPanel Orientation="Vertical" Margin="5">
-                <TextBlock Style="{StaticResource ListViewTextStyle}" Text="{Binding Name}"/>
-                <TextBlock Style="{StaticResource ListViewSubTextStyle}" Margin="5,0,0,0" Text="{Binding Description}"/>
-            </StackPanel>
+            <Grid Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Vertical">
+                    <TextBlock Style="{StaticResource ListViewTextStyle}" Text="{Binding Name}"/>
+                    <TextBlock Style="{StaticResource ListViewSubTextStyle}" Margin="5,0,0,0" Text="{Binding Description}"/>
+                </StackPanel>
+
+                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                <Button x:Name="Edit" Grid.Column="1" Margin="5,0" HorizontalAlignment="Right" Width="17" Height="15" 
+                        Padding="1" BorderThickness="0" Background="Transparent" Opacity="0" Cursor="Hand" Focusable="False"
+                        Command="{Binding Path=DataContext.EditProject, RelativeSource={RelativeSource AncestorType={x:Type GroupBox}}}" CommandParameter="{Binding}"
+                        Content="{StaticResource Image:Edit}" ToolTip="Edit Project Properties" />
+            </Grid>
+
+            <DataTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="Edit" Property="Opacity" Value="1"/>
+                </Trigger>
+            </DataTemplate.Triggers>
+
         </DataTemplate>
     </UserControl.Resources>
 
