@@ -19,7 +19,8 @@ namespace SquirrelsNest.Core {
             builder.RegisterType<IssueBuilder>().As<IIssueBuilder>().SingleInstance();
             builder.RegisterType<ProjectBuilder>().As<IProjectBuilder>().SingleInstance();
 
-            builder.RegisterType<ProjectCreator>().As<IProjectCreator>().InstancePerDependency();
+            builder.RegisterType<ProjectTemplateSerializer>().As<IProjectTemplateSerializer>().InstancePerDependency();
+            builder.RegisterType<ProjectTemplateManager>().As<IProjectTemplateManager>().InstancePerDependency();
 
             builder.RegisterType<CompositeProjectValidator>().As<IValidator<CompositeProject>>();
         }
