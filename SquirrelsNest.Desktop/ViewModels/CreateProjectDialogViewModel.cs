@@ -11,20 +11,20 @@ namespace SquirrelsNest.Desktop.ViewModels {
     internal class CreateProjectDialogViewModel : DialogAwareBase {
         public  const string    cProject = "project";
 
-        private readonly IProjectCreator    mProjectCreator;
+        private readonly IProjectTemplateManager    mProjectTemplateManager;
         private SnProject ?                 mProject;
         private string                      mName;
         private string                      mIssuePrefix;
         private string                      mDescription;
 
-        public  RangeCollection<IProjectTemplate>   ProjectTemplates { get; }
+        public  RangeCollection<ProjectTemplate>   ProjectTemplates { get; }
 
-        public CreateProjectDialogViewModel( IProjectCreator projectCreator ) {
-            mProjectCreator = projectCreator;
+        public CreateProjectDialogViewModel( IProjectTemplateManager projectTemplateManager ) {
+            mProjectTemplateManager = projectTemplateManager;
 
             SetTitle( "Project Properties");
 
-            ProjectTemplates = new RangeCollection<IProjectTemplate>();
+            ProjectTemplates = new RangeCollection<ProjectTemplate>();
 
             mName = String.Empty;
             mIssuePrefix = String.Empty;
@@ -40,7 +40,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
                 Description = mProject.Description;
             }
 
-            ProjectTemplates.Reset( mProjectCreator.GetAvailableTemplates());
+            ProjectTemplates.Reset( mProjectTemplateManager.GetAvailableTemplates());
         }
 
         [Required( ErrorMessage = "Name is required" )]

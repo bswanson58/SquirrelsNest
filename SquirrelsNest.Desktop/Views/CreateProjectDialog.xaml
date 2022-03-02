@@ -23,8 +23,8 @@
     </dialogService:Dialog.WindowStyle>
 
     <UserControl.Resources>
-        <DataTemplate x:Key="ProjectTemplate" DataType="{x:Type projectTemplates:IProjectTemplate}">
-            <TextBlock Text="{Binding Name}"/>
+        <DataTemplate x:Key="ProjectTemplate" DataType="{x:Type projectTemplates:ProjectTemplate}">
+            <TextBlock Text="{Binding TemplateName}"/>
         </DataTemplate>
     </UserControl.Resources>
 
