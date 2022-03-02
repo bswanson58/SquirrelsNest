@@ -1,21 +1,32 @@
 ﻿using System.Text.Json;
+using LanguageExt;
+using LanguageExt.Common;
 
 namespace SquirrelsNest.Core.Platform {
     public interface IFileWriter {
-        T       Load<T>( string filePath ) where T : new();
-        void    Save<T>( string filePath, T toSave );
+        Either<Error, T>        Load<T>( string filePath ) where T : new();
+        Either<Error, Unit>     Save<T>( string filePath, T toSave );
     }
 
     public class FileWriter : IFileWriter {
-        public T Load<T>( string filePath ) where T: new() {
+        public Either<Error, T> Load<T>( string filePath ) where T : new() {
             if(!File.Exists( filePath )) {
                 return new T();
             }
 
-            return JsonSerializer.Deserialize<T>( File.ReadAllText( filePath )) ?? new T();
-        } 
+            return 
+                Prelude.Try( () => JsonSerializer.Deserialize<T>( File.ReadAllText( filePath )) ?? new T())
+                    .ToEither( Error.New );
+        }
 
-        public void Save<T>( string filePath, T settings ) => 
-            File.WriteAllText( filePath, JsonSerializer.Serialize( settings ));
+        public Either<Error, Unit> Save<T>( string filePath, T toSave ) {
+            return 
+                Prelude.Try( () => {
+                    File.WriteAllText( filePath, JsonSerializer.Serialize( toSave, new JsonSerializerOptions { WriteIndented = true }));
+
+                    return Unit.Default;
+                })
+                .ToEither( Error.New );
+        }
     }
 }

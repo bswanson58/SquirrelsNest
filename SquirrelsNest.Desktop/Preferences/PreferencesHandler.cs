@@ -32,7 +32,8 @@ namespace SquirrelsNest.Desktop.Preferences {
             try {
                 var path = GetFilePath( fileName );
 
-                retValue = mFileWriter.Load<T>( path );
+                mFileWriter.Load<T>( path )
+                    .Do( result => retValue = result );
             }
             catch( Exception ex ) {
                 mLog.LogException( $"Loading preferences from {fileName}", ex );
