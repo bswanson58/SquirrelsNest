@@ -46,7 +46,10 @@
     </Style>
 
     <Style x:Key="PathButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-        <Setter Property="Padding" Value="5"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Focusable" Value="False"/>
     </Style>
 
     <Style x:Key="GeneralComboStyle" TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
