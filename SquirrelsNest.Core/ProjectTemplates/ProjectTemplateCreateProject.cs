@@ -51,13 +51,13 @@ namespace SquirrelsNest.Core.ProjectTemplates {
             return mProjectProvider.AddProject( CreateSnProject()).Result;
         }
 
-        public Either<Error, Unit> CreateProject( ProjectTemplate template, ProjectParameters parameters ) {
+        public Either<Error, SnProject> CreateProject( ProjectTemplate template, ProjectParameters parameters ) {
             return 
                 from project in CreateNewProject( parameters )
                 from c in CreateComponents( template.Components, project )
                 from i in CreateIssueTypes( template.IssueTypes, project )
                 from w in CreateWorkflowSteps( template.WorkflowSteps, project )
-                select Unit.Default;
+                select project;
         }
 
     }
