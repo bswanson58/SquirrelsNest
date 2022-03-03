@@ -2,25 +2,29 @@
 using System.Reactive.Linq;
 using System.Threading;
 using Microsoft.Toolkit.Mvvm.Input;
+using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Logging;
 using SquirrelsNest.Core.ProjectTemplates;
 using SquirrelsNest.Desktop.Models;
+using SquirrelsNest.Desktop.Views;
 
 namespace SquirrelsNest.Desktop.ViewModels {
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class ProjectPropertiesViewModel : IDisposable {
         private readonly IProjectTemplateManager    mTemplateManager;
+        private readonly IDialogService             mDialogService;
         private readonly IDisposable                mStateSubscription;
         private readonly ILog                       mLog;
         private SnProject ?                         mCurrentProject;
 
         public  IRelayCommand                       CreateTemplate { get; }
 
-        public ProjectPropertiesViewModel( IModelState modelState, IProjectTemplateManager templateManager, ILog log,
-                                           SynchronizationContext context ) {
+        public ProjectPropertiesViewModel( IModelState modelState, IProjectTemplateManager templateManager, IDialogService dialogService,
+                                           ILog log, SynchronizationContext context ) {
             mLog = log;
+            mDialogService = dialogService;
             mTemplateManager = templateManager;
 
             CreateTemplate = new RelayCommand( OnCreateTemplate );
@@ -36,10 +40,19 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
         private void OnCreateTemplate() {
             if( mCurrentProject != null ) {
-                var templateParameters = new TemplateParameters{ TemplateName = "My Template", TemplateDescription = "Some description" };
+                var parameters = new DialogParameters{{ EditProjectParametersDialogViewModel.cTemplate, new TemplateParameters() }};
 
-                mTemplateManager.CreateTemplate( mCurrentProject, templateParameters )
-                    .IfLeft( error => mLog.LogError( error ));
+                mDialogService.ShowDialog( nameof( EditProjectParametersDialog ), parameters, result => {
+                    if( result.Result == ButtonResult.Ok ) {
+                        var template = result.Parameters.GetValue<TemplateParameters>( EditProjectParametersDialogViewModel.cTemplate );
+
+                        if( template == null ) throw new ApplicationException( "Dialog did not return template parameters." );
+
+                        mTemplateManager
+                            .CreateTemplate( mCurrentProject, template )
+                            .IfLeft( error => mLog.LogError( error ));
+                    }
+                });
             }
         }
 
