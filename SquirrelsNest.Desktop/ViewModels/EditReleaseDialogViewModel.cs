@@ -25,7 +25,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
             if( mRelease != null ) {
                 Description = mRelease.Description;
-                Name = mRelease.Version;
+                Name = mRelease.Name;
             }
         }
 
@@ -48,7 +48,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
             if(!HasErrors ) {
                 var release = mRelease ?? new SnRelease( Name );
 
-                release = release.With( version: Name, description: Description );
+                release = release.With( name: Name, description: Description );
 
                 RaiseRequestClose( new DialogResult( ButtonResult.Ok, new DialogParameters {{ cReleaseParameter, release }}));
             }

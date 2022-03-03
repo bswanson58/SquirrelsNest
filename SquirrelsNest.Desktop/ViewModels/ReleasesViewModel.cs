@@ -101,7 +101,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private void OnDeleteRelease( SnRelease ? release ) {
             if( release != null ) {
                 var parameters = new DialogParameters {
-                    { ConfirmationDialogViewModel.cConfirmationText, $"Would you like to delete the release named '{release.Version}'?" }
+                    { ConfirmationDialogViewModel.cConfirmationText, $"Would you like to delete the release named '{release.Name}'?" }
                 };
 
                 mDialogService.ShowDialog( nameof( ConfirmationDialog ), parameters, result => {

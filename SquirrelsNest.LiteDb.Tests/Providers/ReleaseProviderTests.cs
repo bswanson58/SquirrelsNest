@@ -42,7 +42,7 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
         [Fact]
         public void ReleaseCanBeStored() {
             using var sut = CreateSut();
-            var release = new SnRelease( ObjectId.NewObjectId().ToString(), String.Empty, "project ID", "Version", "Description", "Repository Label", DateTimeProvider.Instance.CurrentDate );
+            var release = new SnRelease( ObjectId.NewObjectId().ToString(), String.Empty, "project ID", "Name", "Description", "Repository Label", DateTimeProvider.Instance.CurrentDate );
 
             var result = sut.AddRelease( release );
 
@@ -118,9 +118,9 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
             using var sut = CreateSut();
 
             sut.AddRelease( release );
-            sut.AddRelease( release.With( version: "two" ));
-            sut.AddRelease( release.With( version: "three" ));
-            sut.AddRelease( release.With( version: "four" ).With( description: "description" ));
+            sut.AddRelease( release.With( name: "two" ));
+            sut.AddRelease( release.With( name: "three" ));
+            sut.AddRelease( release.With( name: "four" ).With( description: "description" ));
 
             var result = sut.GetReleases();
 
