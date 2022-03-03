@@ -16,7 +16,7 @@ namespace SquirrelsNest.Desktop.ViewModels.UiModels {
         public  string              Title => Issue.Title;
         public  string              Description => Issue.Description;
 
-        public  bool                IsFinalized => State.IsTerminalState || State.IsFinalState;
+        public  bool                IsFinalized => State.Category == StateCategory.Completed || State.Category == StateCategory.Terminal;
 
         public UiIssue( CompositeIssue compositeIssue ) {
             mCompositeIssue = compositeIssue;

@@ -32,10 +32,7 @@ namespace SquirrelsNest.Core.ProjectTemplates {
         private Either<Error, IEnumerable<SnWorkflowState>> CreateWorkflowSteps( IEnumerable<WorkflowStepDescription> states, SnProject forProject ) {
             SnWorkflowState CreateWorkflowState( WorkflowStepDescription fromDescription ) =>
                 new SnWorkflowState( fromDescription.Name )
-                    .With( description: fromDescription.Description, 
-                           isFinalState: fromDescription.IsFinalState,
-                           isInitialState: fromDescription.IsInitialState,
-                           isTerminalState: fromDescription.IsTerminalState )
+                    .With( description: fromDescription.Description, category: fromDescription.Category )
                     .For( forProject );
 
             Either<Error, SnWorkflowState> AddWorkflowState( WorkflowStepDescription entityDescription ) =>

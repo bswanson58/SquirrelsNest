@@ -37,7 +37,7 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
         [Fact]
         public void StateCanBeStored() {
             using var sut = CreateSut();
-            var state = new SnWorkflowState( ObjectId.NewObjectId().ToString(), String.Empty, "project ID", "state name", "Description", false, false, true );
+            var state = new SnWorkflowState( ObjectId.NewObjectId().ToString(), String.Empty, "project ID", "state name", "Description", StateCategory.Intermediate );
 
             var result = sut.AddState( state );
 
@@ -47,7 +47,7 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
 
         [Fact]
         public void NewStateCanBeRetrieved() {
-            var state = new SnWorkflowState( "state" ).With( description: "state description", isInitialState: true, isTerminalState: true );
+            var state = new SnWorkflowState( "state" ).With( description: "state description", category: StateCategory.Completed );
             using var sut = CreateSut();
 
             sut.AddState( state );

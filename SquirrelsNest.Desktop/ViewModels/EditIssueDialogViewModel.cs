@@ -100,7 +100,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
             project.WorkflowStates.OrderBy( s => s.Name ).ForEach( WorkflowStates.Add );
             WorkflowStates.Add( SnWorkflowState.Default );
             CurrentState = mProject != null ? 
-                mProject.WorkflowStates.FirstOrDefault( s => s.IsInitialState, SnWorkflowState.Default ) : 
+                mProject.WorkflowStates.FirstOrDefault( s => s.Category == StateCategory.Initial, SnWorkflowState.Default ) : 
                 SnWorkflowState.Default;
 
             Components.Clear();

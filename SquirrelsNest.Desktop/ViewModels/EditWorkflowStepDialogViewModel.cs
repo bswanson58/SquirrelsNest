@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Desktop.Support;
@@ -12,18 +14,19 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private SnWorkflowState ?       mWorkflowState;
         private string                  mWorkflowName;
         private string                  mWorkflowDescription;
+        private StateCategory ?         mCurrentStateCategory;
 
-        public  bool                    IsInitialState { get; set; }
-        public  bool                    IsFinalState { get; set; }
-        public  bool                    IsTerminalState { get; set; }
+        public  ObservableCollection<StateCategory> StateCategories { get; }
+
 
         public EditWorkflowStepDialogViewModel() {
             SetTitle( "Workflow State Properties" );
 
             mWorkflowName = String.Empty;
             mWorkflowDescription = String.Empty;
-            IsInitialState = false;
-            IsTerminalState = false;
+            mCurrentStateCategory = StateCategory.Initial;
+
+            StateCategories = new ObservableCollection<StateCategory>( Enum.GetValues( typeof( StateCategory )).Cast<StateCategory>());
         }
 
         public override void OnDialogOpened( IDialogParameters parameters ) {
@@ -32,9 +35,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
             if( mWorkflowState != null ) {
                 Description = mWorkflowState.Description;
                 Name = mWorkflowState.Name;
-                IsInitialState = mWorkflowState.IsInitialState;
-                IsFinalState = mWorkflowState.IsFinalState;
-                IsTerminalState = mWorkflowState.IsTerminalState;
+                CurrentStateCategory = mWorkflowState.Category;
             }
         }
 
@@ -51,13 +52,18 @@ namespace SquirrelsNest.Desktop.ViewModels {
             set => SetProperty( ref mWorkflowDescription, value, true );
         }
 
+        public StateCategory ? CurrentStateCategory {
+            get => mCurrentStateCategory;
+            set => SetProperty( ref mCurrentStateCategory, value, true );
+        }
+
         protected override void OnAccept() {
             ValidateAllProperties();
 
             if(!HasErrors ) {
                 var state = mWorkflowState ?? new SnWorkflowState( Name );
 
-                state = state.With( name: Name, description: Description, isInitialState: IsInitialState, isFinalState: IsFinalState, isTerminalState: IsTerminalState );
+                state = state.With( name: Name, description: Description, category: CurrentStateCategory );
 
                 RaiseRequestClose( new DialogResult( ButtonResult.Ok, new DialogParameters {{ cStateParameter, state }}));
             }

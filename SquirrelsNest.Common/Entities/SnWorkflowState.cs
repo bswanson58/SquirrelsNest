@@ -2,23 +2,26 @@
 using SquirrelsNest.Common.Values;
 
 namespace SquirrelsNest.Common.Entities {
+    public enum StateCategory {
+        Intermediate = 0,
+        Initial = 1,
+        Terminal = 2,
+        Completed = 3
+    }
+
     [DebuggerDisplay("State: {" + nameof( Name ) + "}")]
     public class SnWorkflowState : EntityBase {
-        public  EntityId    ProjectId { get; }
-        public  string      Name { get; }
-        public  string      Description { get; }
-        public  bool        IsInitialState { get; }
-        public  bool        IsFinalState { get; }
-        public  bool        IsTerminalState { get; }
+        public  EntityId        ProjectId { get; }
+        public  string          Name { get; }
+        public  string          Description { get; }
+        public  StateCategory   Category { get; }
 
-        public SnWorkflowState( string entityId, string dbId, string projectId, string name, string description, bool isInitial, bool isFinal, bool isTerminal ) :
+        public SnWorkflowState( string entityId, string dbId, string projectId, string name, string description, StateCategory category ) :
             base( entityId, dbId ) {
             ProjectId = EntityId.CreateIdOrThrow( projectId );
             Name = name;
             Description = description;
-            IsInitialState = isInitial;
-            IsFinalState = isFinal;
-            IsTerminalState = isTerminal;
+            Category = category;
         }
 
         public SnWorkflowState( string name ) :
@@ -28,31 +31,26 @@ namespace SquirrelsNest.Common.Entities {
             ProjectId = EntityId.Default;
             Name = name;
             Description = String.Empty;
-            IsInitialState = false;
-            IsTerminalState = false;
-            IsFinalState = false;
+            Category = StateCategory.Initial;
         }
 
-        public SnWorkflowState With( string ? name = null, string ? description = null, bool ? 
-                                     isInitialState = null, bool ? isFinalState = false, bool ? isTerminalState = null ) {
+        public SnWorkflowState With( string ? name = null, string ? description = null, StateCategory ? category = null ) {
             return new SnWorkflowState( 
                 EntityId, DbId, ProjectId,
                 name ?? Name,
                 description ?? Description,
-                isInitialState ?? IsInitialState,
-                isFinalState ?? IsFinalState,
-                isTerminalState ?? IsTerminalState );
+                category ?? Category );
         }
 
         public SnWorkflowState For( SnProject project ) {
             if( project == null ) throw new ArgumentNullException( nameof( project ),  "Workflow states cannot be set to a null project" );
 
-            return new SnWorkflowState( EntityId, DbId, project.EntityId, Name, Description, IsInitialState, IsFinalState, IsTerminalState );
+            return new SnWorkflowState( EntityId, DbId, project.EntityId, Name, Description, Category );
         }
 
         private static SnWorkflowState ? mDefaultState;
 
         public static SnWorkflowState Default =>
-            mDefaultState ??= new SnWorkflowState( EntityId.Default, String.Empty, EntityId.Default, "Unspecified", String.Empty, false, false, false );
+            mDefaultState ??= new SnWorkflowState( EntityId.Default, String.Empty, EntityId.Default, "Unspecified", String.Empty, StateCategory.Intermediate );
     }
 }

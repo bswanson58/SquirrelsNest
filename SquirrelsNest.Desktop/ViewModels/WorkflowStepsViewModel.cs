@@ -23,9 +23,11 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
         public  IRelayCommand                   CreateState { get; }
         // ReSharper disable UnusedAutoPropertyAccessor.Global
+        // ReSharper disable MemberCanBePrivate.Global
         public  IRelayCommand<SnWorkflowState>  EditState { get; }
         public  IRelayCommand<SnWorkflowState>  DeleteState { get; }
         // ReSharper restore UnusedAutoPropertyAccessor.Global
+        // ReSharper restore MemberCanBePrivate.Global
 
         public WorkflowStepsViewModel( IWorkflowStateProvider stateProvider, IModelState modelState, IDialogService dialogService, ILog log ) {
             mStateProvider = stateProvider;

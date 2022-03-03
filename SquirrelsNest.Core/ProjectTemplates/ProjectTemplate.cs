@@ -29,17 +29,13 @@ namespace SquirrelsNest.Core.ProjectTemplates {
 
     [DebuggerDisplay("Workflow: {" + nameof( Name ) + "}")]
     public class WorkflowStepDescription : EntityDescription {
-        public  bool        IsInitialState { get; set; }
-        public  bool        IsFinalState { get; set; }
-        public  bool        IsTerminalState { get;  set; }
+        public  StateCategory   Category { get; set; }
 
         internal static WorkflowStepDescription From( SnWorkflowState state ) =>
             new () {
                 Name = state.Name,
                 Description = state.Description,
-                IsInitialState = state.IsInitialState,
-                IsTerminalState = state.IsTerminalState,
-                IsFinalState = state.IsFinalState
+                Category = state.Category
             };
     }
 
