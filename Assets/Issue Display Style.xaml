@@ -1,0 +1,28 @@
+<!-- Created with Ai->XAML Export Plug-In Version 0.4 (PC/64) -->
+<!-- By Mike Swanson (http://blog.mikeswanson.com/)           -->
+
+<Viewbox Width="74.287" Height="30.446"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<Canvas Width="74.287" Height="30.446">
+
+  <Canvas>
+
+  <!-- Layer 1/<Line> -->
+  <Path StrokeThickness="5.0" Stroke="#ff221e1f" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeMiterLimit="1.0" Data="F1 M 36.787,3.103 L 71.787,3.343"/>
+
+  <!-- Layer 1/<Line> -->
+  <Path StrokeThickness="5.0" Stroke="#ff221e1f" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeMiterLimit="1.0" Data="F1 M 36.787,15.120 L 66.787,15.326"/>
+
+  <!-- Layer 1/<Line> -->
+  <Path StrokeThickness="5.0" Stroke="#ff221e1f" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeMiterLimit="1.0" Data="F1 M 36.787,27.120 L 66.787,27.326"/>
+
+  <!-- Layer 1/<Path> -->
+  <Path StrokeThickness="5.0" Stroke="#ff221e1f" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeMiterLimit="1.0" Data="F1 M 36.787,27.201"/>
+
+  <!-- Layer 1/<Ellipse> -->
+  <Path StrokeThickness="5.0" Stroke="#ff221e1f" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeMiterLimit="1.0" Data="F1 M 27.946,15.223 C 27.946,22.250 22.250,27.946 15.223,27.946 C 8.196,27.946 2.500,22.250 2.500,15.223 C 2.500,8.196 8.196,2.500 15.223,2.500 C 22.250,2.500 27.946,8.196 27.946,15.223 Z"/>
+
+  </Canvas>
+</Canvas>
+</Viewbox>

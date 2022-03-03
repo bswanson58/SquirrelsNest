@@ -58,6 +58,20 @@
         </Canvas>
     </Viewbox>
 
+	<Viewbox x:Key="Image:IssueDisplayStyle" x:Shared="False">
+        <Canvas Width="94.287" Height="38.310">
+            <Path Stroke="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType=Button}}"
+                  StrokeThickness="5.0" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeMiterLimit="1.0" Data="F1 M 36.787,3.103 L 71.787,3.343"/>
+            <Path Stroke="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType=Button}}"
+                  StrokeThickness="5.0" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeMiterLimit="1.0" Data="F1 M 36.787,15.120 L 66.787,15.326"/>
+            <Path Stroke="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType=Button}}"
+                  StrokeThickness="5.0" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeMiterLimit="1.0" Data="F1 M 36.787,27.120 L 66.787,27.326"/>
+            <Path Stroke="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType=Button}}"
+                  StrokeThickness="5.0" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeMiterLimit="1.0" Data="F1 M 36.787,27.201"/>
+            <Path Stroke="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType=Button}}"
+                  StrokeThickness="5.0" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeMiterLimit="1.0" Data="F1 M 27.946,15.223 C 27.946,22.250 22.250,27.946 15.223,27.946 C 8.196,27.946 2.500,22.250 2.500,15.223 C 2.500,8.196 8.196,2.500 15.223,2.500 C 22.250,2.500 27.946,8.196 27.946,15.223 Z"/>
+        </Canvas>
+    </Viewbox>
 <!--
 	<Viewbox x:Key="Path_Configure" x:Shared="False">
 		<Canvas Width="73.041"

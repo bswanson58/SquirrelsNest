@@ -7,7 +7,6 @@ using LanguageExt;
 using LanguageExt.Common;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
-using MoreLinq;
 using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
@@ -18,6 +17,7 @@ using SquirrelsNest.Desktop.Models;
 using SquirrelsNest.Desktop.Platform;
 using SquirrelsNest.Desktop.ViewModels.UiModels;
 using SquirrelsNest.Desktop.Views;
+using SquirrelsNest.Desktop.Views.ViewSupport;
 
 namespace SquirrelsNest.Desktop.ViewModels {
     // ReSharper disable once ClassNeverInstantiated.Global
@@ -41,6 +41,9 @@ namespace SquirrelsNest.Desktop.ViewModels {
         public  IRelayCommand<bool>             ViewDisplayed { get; }
         public  IRelayCommand                   CreateIssue { get; }
 
+        public  IssueViewStyle ?                 DisplayStyle { get; private set; }
+        public  IRelayCommand                   ToggleDisplayStyle { get; }
+
         // ReSharper disable UnusedAutoPropertyAccessor.Global
         public  IRelayCommand<UiIssue>          IssueCompleted { get; }
         public  IRelayCommand<UiIssue>          EditIssue {  get; }
@@ -60,12 +63,14 @@ namespace SquirrelsNest.Desktop.ViewModels {
             mCurrentUser = SnUser.Default;
             mDisplayIssuesForAllUsers = true;
             mDisplayFinalizedIssues = true;
+            DisplayStyle = IssueViewStyle.Everything;
 
             mSubscriptions = new CompositeDisposable();
             IssueList = new RangeCollection<UiIssue>();
             ProjectName = String.Empty;
             ViewDisplayed = new RelayCommand<bool>( OnViewDisplayed );
             CreateIssue = new RelayCommand( OnCreateIssue );
+            ToggleDisplayStyle = new RelayCommand( OnToggleDisplayStyle );
 
             IssueCompleted = new RelayCommand<UiIssue>( OnIssueCompleted );
             EditIssue = new RelayCommand<UiIssue>( OnEditIssue );
@@ -88,6 +93,18 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
                 LoadIssueList();
             }
+        }
+
+        private void OnToggleDisplayStyle() {
+            DisplayStyle = DisplayStyle switch {
+                IssueViewStyle.Everything => IssueViewStyle.TitleEntities,
+                IssueViewStyle.TitleEntities => IssueViewStyle.TitleDescription,
+                IssueViewStyle.TitleDescription => IssueViewStyle.TitleOnly,
+                IssueViewStyle.TitleOnly => IssueViewStyle.Everything,
+                _ => IssueViewStyle.Everything
+            };
+
+            IssueList.AddRange( Array.Empty<UiIssue>());
         }
 
         private void OnViewDisplayed( bool isLoading ) {

@@ -8,6 +8,7 @@
              xmlns:uiModels="clr-namespace:SquirrelsNest.Desktop.ViewModels.UiModels"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:behaviours="clr-namespace:SquirrelsNest.Desktop.Behaviours"
+             xmlns:viewSupport="clr-namespace:SquirrelsNest.Desktop.Views.ViewSupport"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              viewModelLocator:ViewModelLocator.AutoWireViewModel="True"
@@ -18,8 +19,8 @@
     </b:Interaction.Behaviors>
 
     <UserControl.Resources>
-        <DataTemplate x:Key="IssueTemplate" DataType="uiModels:UiIssue">
-            <Grid Margin="0,0,0,5" Background="Transparent">
+        <DataTemplate x:Key="IssueTemplate-Everything" DataType="uiModels:UiIssue">
+            <Grid Margin="0,2" Background="Transparent">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -33,8 +34,7 @@
 
                 <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                 <Button x:Name="Completed" Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Margin="5,0,10,0" Height="30" Width="30" VerticalAlignment="Center"
-                        Style="{StaticResource PathButtonStyle}" BorderThickness="0" Padding="0" Background="Transparent" Opacity="0.03" Focusable="False"
-                        Content="{StaticResource Image:UncheckedIssue}"
+                        Style="{StaticResource PathButtonStyle}" Opacity="0.03" Content="{StaticResource Image:UncheckedIssue}"
                         Command="{Binding Path=DataContext.IssueCompleted, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}" CommandParameter="{Binding}"/>
 
                 <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
@@ -85,6 +85,175 @@
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
+
+        <DataTemplate x:Key="IssueTemplate-TitleDescription" DataType="uiModels:UiIssue">
+            <Grid Margin="0,2" Background="Transparent">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                <Button x:Name="Completed" Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Margin="5,0,10,0" Height="20" Width="20" VerticalAlignment="Center"
+                        Style="{StaticResource PathButtonStyle}" Opacity="0.03" Content="{StaticResource Image:UncheckedIssue}"
+                        Command="{Binding Path=DataContext.IssueCompleted, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}" CommandParameter="{Binding}"/>
+
+                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                    <TextBlock Opacity="0.6" Style="{StaticResource ListViewTextStyle}" Text="("/>
+                    <TextBlock x:Name="IssueNumber" Opacity="0.6" Style="{StaticResource ListViewTextStyle}" Text="{Binding IssueNumber}"/>
+                    <TextBlock Opacity="0.6" Style="{StaticResource ListViewTextStyle}" Text=")"/>
+                    <TextBlock x:Name="IssueTitle" Margin="5,0,0,0" Style="{StaticResource ListViewTextStyle}" Text="{Binding Title}"/>
+                </StackPanel>
+
+                <TextBlock Grid.Row="1" Grid.Column="1" Margin="8,0,0,0" Style="{StaticResource ListViewSubTextStyle}" Text="{Binding Description}"/>
+
+                <StackPanel x:Name="IssueCommands"  Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Margin="0,0,10,0" Opacity="0"
+                            VerticalAlignment="Center" Orientation="Horizontal">
+                    <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                    <Button Margin="5,0" HorizontalAlignment="Right" Width="17" Height="15" Padding="1" BorderThickness="0" Background="Transparent" 
+                            Cursor="Hand" Focusable="False" Content="{StaticResource Image:Edit}" ToolTip="Edit Issue Properties"
+                            Command="{Binding Path=DataContext.EditIssue, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}" CommandParameter="{Binding}"/>
+
+                    <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                    <Button Margin="5,0" HorizontalAlignment="Right" Width="17" Height="15" Padding="1" BorderThickness="0" Background="Transparent" 
+                            Cursor="Hand" Focusable="False" Content="{StaticResource Image:Delete}" ToolTip="Delete Issue"
+                            Command="{Binding Path=DataContext.DeleteIssue, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}" CommandParameter="{Binding}"/>
+                </StackPanel>
+            </Grid>
+            <DataTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="IssueCommands" Property="Opacity" Value="1"/>
+                    <Setter TargetName="Completed" Property="Opacity" Value="1"/>
+                </Trigger>
+                <DataTrigger Binding="{Binding IsFinalized}" Value="True">
+                    <Setter TargetName="IssueNumber" Property="TextDecorations" Value="Strikethrough"/>
+                    <Setter TargetName="IssueTitle" Property="Opacity" Value="0.6"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <DataTemplate x:Key="IssueTemplate-TitleEntities" DataType="uiModels:UiIssue">
+            <Grid Margin="0,2" Background="Transparent">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                <Button x:Name="Completed" Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Margin="5,0,10,0" Height="20" Width="20" VerticalAlignment="Center"
+                        Style="{StaticResource PathButtonStyle}" Opacity="0.03" Content="{StaticResource Image:UncheckedIssue}"
+                        Command="{Binding Path=DataContext.IssueCompleted, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}" CommandParameter="{Binding}"/>
+
+                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                    <TextBlock Opacity="0.6" Style="{StaticResource ListViewTextStyle}" Text="("/>
+                    <TextBlock x:Name="IssueNumber" Opacity="0.6" Style="{StaticResource ListViewTextStyle}" Text="{Binding IssueNumber}"/>
+                    <TextBlock Opacity="0.6" Style="{StaticResource ListViewTextStyle}" Text=")"/>
+                    <TextBlock x:Name="IssueTitle" Margin="5,0,0,0" Style="{StaticResource ListViewTextStyle}" Text="{Binding Title}"/>
+                </StackPanel>
+
+                <Grid Grid.Row="1" Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" HorizontalAlignment="Center" Style="{StaticResource ControlTitleStyle}" Text="{Binding IssueType.Name}"/>
+                    <TextBlock Grid.Column="1" HorizontalAlignment="Center" Style="{StaticResource ControlTitleStyle}" Text="{Binding State.Name}"/>
+                    <TextBlock Grid.Column="2" HorizontalAlignment="Center" Style="{StaticResource ControlTitleStyle}" Text="{Binding Component.Name}"/>
+                    <TextBlock Grid.Column="3" HorizontalAlignment="Center" Style="{StaticResource ControlTitleStyle}" Text="{Binding AssignedUser.Name}"/>
+                </Grid>
+
+                <StackPanel x:Name="IssueCommands"  Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Margin="0,0,10,0" Opacity="0"
+                            VerticalAlignment="Center" Orientation="Horizontal">
+                    <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                    <Button Margin="5,0" HorizontalAlignment="Right" Width="17" Height="15" Padding="1" BorderThickness="0" Background="Transparent" 
+                            Cursor="Hand" Focusable="False" Content="{StaticResource Image:Edit}" ToolTip="Edit Issue Properties"
+                            Command="{Binding Path=DataContext.EditIssue, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}" CommandParameter="{Binding}"/>
+
+                    <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                    <Button Margin="5,0" HorizontalAlignment="Right" Width="17" Height="15" Padding="1" BorderThickness="0" Background="Transparent" 
+                            Cursor="Hand" Focusable="False" Content="{StaticResource Image:Delete}" ToolTip="Delete Issue"
+                            Command="{Binding Path=DataContext.DeleteIssue, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}" CommandParameter="{Binding}"/>
+                </StackPanel>
+            </Grid>
+            <DataTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="IssueCommands" Property="Opacity" Value="1"/>
+                    <Setter TargetName="Completed" Property="Opacity" Value="1"/>
+                </Trigger>
+                <DataTrigger Binding="{Binding IsFinalized}" Value="True">
+                    <Setter TargetName="IssueNumber" Property="TextDecorations" Value="Strikethrough"/>
+                    <Setter TargetName="IssueTitle" Property="Opacity" Value="0.6"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <DataTemplate x:Key="IssueTemplate-TitleOnly" DataType="uiModels:UiIssue">
+            <Grid Background="Transparent">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                <Button x:Name="Completed" Grid.Row="0" Grid.Column="0" Margin="5,0,10,0" Height="15" Width="15" VerticalAlignment="Center"
+                        Style="{StaticResource PathButtonStyle}" Opacity="0.03" Content="{StaticResource Image:UncheckedIssue}"
+                        Command="{Binding Path=DataContext.IssueCompleted, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}" CommandParameter="{Binding}"/>
+
+                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Opacity="0.6" Style="{StaticResource ListViewTextStyle}" Text="("/>
+                    <TextBlock x:Name="IssueNumber" Opacity="0.6" Style="{StaticResource ListViewTextStyle}" Text="{Binding IssueNumber}"/>
+                    <TextBlock Opacity="0.6" Style="{StaticResource ListViewTextStyle}" Text=")"/>
+                    <TextBlock x:Name="IssueTitle" Margin="5,0,0,0" Style="{StaticResource ListViewTextStyle}" Text="{Binding Title}"/>
+                </StackPanel>
+
+                <StackPanel x:Name="IssueCommands" Grid.Column="2" Margin="0,0,10,0" Opacity="0"
+                            VerticalAlignment="Center" Orientation="Horizontal">
+                    <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                    <Button Margin="5,0" HorizontalAlignment="Right" Width="17" Height="15" Padding="1" BorderThickness="0" Background="Transparent" 
+                            Cursor="Hand" Focusable="False" Content="{StaticResource Image:Edit}" ToolTip="Edit Issue Properties"
+                            Command="{Binding Path=DataContext.EditIssue, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}" CommandParameter="{Binding}"/>
+
+                    <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                    <Button Margin="5,0" HorizontalAlignment="Right" Width="17" Height="15" Padding="1" BorderThickness="0" Background="Transparent" 
+                            Cursor="Hand" Focusable="False" Content="{StaticResource Image:Delete}" ToolTip="Delete Issue"
+                            Command="{Binding Path=DataContext.DeleteIssue, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}" CommandParameter="{Binding}"/>
+                </StackPanel>
+            </Grid>
+            <DataTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="IssueCommands" Property="Opacity" Value="1"/>
+                    <Setter TargetName="Completed" Property="Opacity" Value="1"/>
+                </Trigger>
+                <DataTrigger Binding="{Binding IsFinalized}" Value="True">
+                    <Setter TargetName="IssueNumber" Property="TextDecorations" Value="Strikethrough"/>
+                    <Setter TargetName="IssueTitle" Property="Opacity" Value="0.6"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <viewSupport:IssueListTemplateSelector x:Key="IssueTemplateSelector"
+                                               EverythingTemplate="{StaticResource IssueTemplate-Everything}"
+                                               TitleDescriptionTemplate="{StaticResource IssueTemplate-TitleDescription}"
+                                               TitleEntitiesTemplate="{StaticResource IssueTemplate-TitleEntities}"
+                                               TitleOnlyTemplate="{StaticResource IssueTemplate-TitleOnly}"/>
     </UserControl.Resources>
 
     <Grid Margin="0,0,0,10">
@@ -95,10 +264,15 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Margin="5" Style="{StaticResource MediumTitleStyle}" VerticalAlignment="Center" Text="{Binding ProjectName}"/>
-        <Button Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0" Style="{StaticResource GeneralButtonStyle}"
-                Content="New Issue" Command="{Binding CreateIssue}" ToolTip="Add a new issue"/>
 
-        <ListView Grid.Row="1" Margin="15,5" ItemsSource="{Binding IssueList}" ItemTemplate="{StaticResource IssueTemplate}"/>
+        <StackPanel Grid.Row="0" HorizontalAlignment="Right" Orientation="Horizontal">
+            <Button VerticalAlignment="Center" Margin="0,3,10,0" Style="{StaticResource PathButtonStyle}" Width="45" Opacity="0.7"
+                    Content="{StaticResource Image:IssueDisplayStyle}" Command="{Binding ToggleDisplayStyle}" ToolTip="Toggle display style"/>
+            <Button VerticalAlignment="Center" Margin="0,0,10,0" Style="{StaticResource GeneralButtonStyle}"
+                    Content="New Issue" Command="{Binding CreateIssue}" ToolTip="Add a new issue"/>
+        </StackPanel>
+
+        <ListView Grid.Row="1" Margin="15,5" ItemsSource="{Binding IssueList}" ItemTemplateSelector="{StaticResource IssueTemplateSelector}"/>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal">
             <CheckBox Margin="25,0,0,0" Content="Show Completed Issues" IsChecked="{Binding ShowCompletedIssues}"/>
