@@ -9,7 +9,7 @@
              xmlns:adorners="http://gu.se/Adorners"
              xmlns:projectTemplates="clr-namespace:SquirrelsNest.Core.ProjectTemplates;assembly=SquirrelsNest.Core"
              mc:Ignorable="d" 
-             Height="250" Width="600"
+             Height="260" Width="600"
              viewModelLocator:ViewModelLocator.AutoWireViewModel="True"
              d:DataContext="{d:DesignInstance viewModels:CreateProjectDialogViewModel, IsDesignTimeCreatable=False}">
 
@@ -65,10 +65,12 @@
                      Text="{Binding Description, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="2" Margin="0,15,0,0" Orientation="Horizontal">
+        <StackPanel Grid.Row="2" Margin="0,15,0,0" Orientation="Vertical">
             <TextBlock Style="{StaticResource ControlTitleStyle}" VerticalAlignment="Center" Text="Use Project Template:"/>
-            <ComboBox Style="{StaticResource GeneralComboStyle}" VerticalAlignment="Center" Margin="5,0,0,0" Width="250"
-                      ItemsSource="{Binding ProjectTemplates}" ItemTemplate="{StaticResource ProjectTemplate}"/>
+            <ComboBox Style="{StaticResource GeneralComboStyle}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,3,0,0" 
+                      Width="250" ItemsSource="{Binding ProjectTemplates}" ItemTemplate="{StaticResource ProjectTemplate}"
+                      SelectedItem="{Binding CurrentTemplate}"/>
+            <TextBlock Style="{StaticResource ControlTitleStyle}" Margin="8,5,0,0" Text="{Binding TemplateDescription}"/>
         </StackPanel>
 
         <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">

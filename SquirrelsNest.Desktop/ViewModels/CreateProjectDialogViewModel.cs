@@ -9,15 +9,18 @@ using SquirrelsNest.Desktop.Support;
 namespace SquirrelsNest.Desktop.ViewModels {
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class CreateProjectDialogViewModel : DialogAwareBase {
-        public  const string    cProject = "project";
+        public  const string                        cProject = "project";
+        public  const string                        cTemplate = "template";
 
         private readonly IProjectTemplateManager    mProjectTemplateManager;
-        private SnProject ?                 mProject;
-        private string                      mName;
-        private string                      mIssuePrefix;
-        private string                      mDescription;
+        private SnProject ?                         mProject;
+        private string                              mName;
+        private string                              mIssuePrefix;
+        private string                              mDescription;
+        private ProjectTemplate ?                   mCurrentTemplate;
 
-        public  RangeCollection<ProjectTemplate>   ProjectTemplates { get; }
+        public  RangeCollection<ProjectTemplate>    ProjectTemplates { get; }
+        public  string                              TemplateDescription => mCurrentTemplate != null ? mCurrentTemplate.TemplateDescription : String.Empty;
 
         public CreateProjectDialogViewModel( IProjectTemplateManager projectTemplateManager ) {
             mProjectTemplateManager = projectTemplateManager;
@@ -29,6 +32,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
             mName = String.Empty;
             mIssuePrefix = String.Empty;
             mDescription = String.Empty;
+            mCurrentTemplate = null;
         }
 
         public override void OnDialogOpened( IDialogParameters parameters ) {
@@ -64,15 +68,28 @@ namespace SquirrelsNest.Desktop.ViewModels {
             set => SetProperty( ref mDescription, value, true );
         }
 
+        public ProjectTemplate ?  CurrentTemplate {
+            get => mCurrentTemplate;
+            set {
+                SetProperty( ref mCurrentTemplate, value, true );
+
+                OnPropertyChanged( nameof( TemplateDescription ));
+            }
+        }
+
         protected override void OnAccept() {
             ValidateAllProperties();
 
             if(!HasErrors ) {
                 var project = mProject ?? new SnProject( Name, IssuePrefix );
+                var parameters = new DialogParameters {
+                    { cProject, project.With( name: Name, description: Description, issuePrefix: IssuePrefix ) }};
 
-                project = project.With( name: Name, description: Description, issuePrefix: IssuePrefix );
+                if( mCurrentTemplate != null ) {
+                    parameters.Add( cTemplate, mCurrentTemplate );
+                }
 
-                RaiseRequestClose( new DialogResult( ButtonResult.Ok, new DialogParameters {{ cProject, project }}));
+                RaiseRequestClose( new DialogResult( ButtonResult.Ok, parameters ));
             }
         }
     }

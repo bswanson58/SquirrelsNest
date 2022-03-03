@@ -9,6 +9,7 @@ using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Logging;
+using SquirrelsNest.Core.ProjectTemplates;
 using SquirrelsNest.Desktop.Models;
 using SquirrelsNest.Desktop.Platform;
 using SquirrelsNest.Desktop.Views;
@@ -19,6 +20,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private readonly SynchronizationContext     mContext;
         private readonly IModelState                mModelState;
         private readonly IProjectProvider           mProjectProvider;
+        private readonly IProjectTemplateManager    mTemplateManager;
         private readonly IDialogService             mDialogService;
         private readonly ILog                       mLog;
         private readonly CompositeDisposable        mSubscriptions;
@@ -31,9 +33,11 @@ namespace SquirrelsNest.Desktop.ViewModels {
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public  IRelayCommand<SnProject>            EditProject { get; }
 
-        public ProjectListViewModel( IModelState modelState, IProjectProvider projectProvider, IDialogService dialogService, ILog log, SynchronizationContext context ) {
+        public ProjectListViewModel( IModelState modelState, IProjectProvider projectProvider, IProjectTemplateManager templateManager,
+                                     IDialogService dialogService, ILog log, SynchronizationContext context ) {
             mModelState = modelState;
             mProjectProvider = projectProvider;
+            mTemplateManager = templateManager;
             mDialogService = dialogService;
             mContext = context;
             mLog = log;
@@ -98,8 +102,24 @@ namespace SquirrelsNest.Desktop.ViewModels {
             mDialogService.ShowDialog( nameof( CreateProjectDialog ), parameters, result => {
                 if( result.Result == ButtonResult.Ok ) {
                     var editedProject = result.Parameters.GetValue<SnProject>( CreateProjectDialogViewModel.cProject );
+                    var template = result.Parameters.GetValue<ProjectTemplate>( CreateProjectDialogViewModel.cTemplate );
 
-                    if( editedProject != null ) {
+                    if( editedProject == null ) throw new ApplicationException( "Dialog did not return a project" );
+
+                    if( template != null ) {
+                        var projectParameters = new ProjectParameters {
+                            ProjectName = editedProject.Name, 
+                            ProjectDescription = editedProject.Description, 
+                            ProjectPrefix = editedProject.IssuePrefix
+                        };
+
+                        mTemplateManager
+                            .CreateProject( template, projectParameters )
+                            .Do( _ => LoadProjectList())
+                            .Do( project => mModelState.SetProject( project ))
+                            .IfLeft( error => mLog.LogError( error ));
+                    }
+                    else {
                         mProjectProvider
                             .AddProject( editedProject ).Result
                             .Do( _ => LoadProjectList())
