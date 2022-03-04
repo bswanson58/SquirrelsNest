@@ -3,7 +3,7 @@ using LiteDB;
 using SquirrelsNest.Common.Entities;
 
 namespace SquirrelsNest.LiteDb.Dto {
-    [DebuggerDisplay("{" + nameof( Version ) + "}")]
+    [DebuggerDisplay("{" + nameof( Name ) + "}")]
     internal class DbUser : DbBase {
         public  string  Name { get; set; }
         public  string  LoginName { get; set; }
