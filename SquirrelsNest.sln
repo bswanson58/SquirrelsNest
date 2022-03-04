@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SquirrelsNest.LiteDb.Tests"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MvvmSupport", "MvvmSupport\MvvmSupport.csproj", "{1DF5A200-D23D-4813-B26A-C45B644BA1B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gravatar", "Gravatar\Gravatar.csproj", "{27FDA1B7-91EA-41B4-82E7-133C4EADB3FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gravatar", "Gravatar\Gravatar.csproj", "{27FDA1B7-91EA-41B4-82E7-133C4EADB3FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SquirrelsNest.EfDb", "SquirrelsNest.EfDb\SquirrelsNest.EfDb.csproj", "{5B92D9AA-D7D7-4CAB-8E82-AC6DC665B323}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -89,6 +91,14 @@ Global
 		{27FDA1B7-91EA-41B4-82E7-133C4EADB3FD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{27FDA1B7-91EA-41B4-82E7-133C4EADB3FD}.Release|x64.ActiveCfg = Release|x64
 		{27FDA1B7-91EA-41B4-82E7-133C4EADB3FD}.Release|x64.Build.0 = Release|x64
+		{5B92D9AA-D7D7-4CAB-8E82-AC6DC665B323}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B92D9AA-D7D7-4CAB-8E82-AC6DC665B323}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B92D9AA-D7D7-4CAB-8E82-AC6DC665B323}.Debug|x64.ActiveCfg = Debug|x64
+		{5B92D9AA-D7D7-4CAB-8E82-AC6DC665B323}.Debug|x64.Build.0 = Debug|x64
+		{5B92D9AA-D7D7-4CAB-8E82-AC6DC665B323}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B92D9AA-D7D7-4CAB-8E82-AC6DC665B323}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B92D9AA-D7D7-4CAB-8E82-AC6DC665B323}.Release|x64.ActiveCfg = Release|x64
+		{5B92D9AA-D7D7-4CAB-8E82-AC6DC665B323}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
