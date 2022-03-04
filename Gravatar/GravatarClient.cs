@@ -1,11 +1,11 @@
-﻿using System.IO;
-using System.Net.Http;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using Gravatar.Models;
 using Gravatar.Support;
 
 // ReSharper disable StringLiteralTypo
 // ReSharper disable IdentifierTypo
+
+// info at: https://en.gravatar.com/site/implement/
 
 namespace Gravatar {
     public enum GravatarDefaultImage {
