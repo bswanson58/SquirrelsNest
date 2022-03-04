@@ -15,6 +15,15 @@
         viewModelLocator:ViewModelLocator.AutoWireViewModel="True"
         d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel, IsDesignTimeCreatable=False}">
 
+    <mah:MetroWindow.IconTemplate>
+        <DataTemplate>
+            <Grid Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Margin="8,1,0,1"
+                  RenderOptions.EdgeMode="Aliased" RenderOptions.BitmapScalingMode="HighQuality">
+                <Image Source="/Resources/TitlebarIcon.ico"/>
+            </Grid>
+        </DataTemplate>
+    </mah:MetroWindow.IconTemplate>
+
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
             <Button Content="Issues" Command="{Binding IssuesLayout}" ToolTip="Issues"/>

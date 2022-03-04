@@ -10,7 +10,17 @@
     <Company>Secret Squirrel Software</Company>
 	<Version>0.1.0.1</Version>
 	<SourceRevisionId>build$([System.DateTime]::Now.ToString("yyyy-MM-ddTHH:mm:ss:fffZ"))</SourceRevisionId>
+	<ApplicationIcon>Resources\application.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\application.ico" />
+    <None Remove="Resources\TitlebarIcon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\application.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="6.3.0" />
@@ -49,7 +59,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Resources\" />
+    <Resource Include="Resources\application.ico" />
+    <Resource Include="Resources\TitlebarIcon.ico" />
   </ItemGroup>
 
 </Project>
