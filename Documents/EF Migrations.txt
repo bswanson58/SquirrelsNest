@@ -1,0 +1,7 @@
+from Package manager console:
+
+default project: SquirrelsNest.EfDb
+
+add-migration InitialMigration
+
+update-database
