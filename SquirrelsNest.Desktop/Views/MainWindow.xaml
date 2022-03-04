@@ -45,7 +45,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <ContentPresenter Grid.Row="0" Margin="10,10,10,0" Content="{Binding ContentViewModel}"/>
+        <ContentPresenter Grid.Row="0" Margin="10" Content="{Binding ContentViewModel}"/>
         <views:StatusView Grid.Row="1"/>
     </Grid>
 </mah:MetroWindow>

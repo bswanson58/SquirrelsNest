@@ -22,7 +22,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <views:CurrentUserView Grid.Row="0"></views:CurrentUserView>
+            <views:CurrentUserView Grid.Row="0"/>
             <views:ProjectSelectorView Grid.Row="1"/>
         </Grid>
 
