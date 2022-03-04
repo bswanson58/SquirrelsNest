@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Gravatar\Gravatar.csproj" />
     <ProjectReference Include="..\MvvmSupport\MvvmSupport.csproj" />
     <ProjectReference Include="..\SquirrelsNest.Common\SquirrelsNest.Common.csproj" />
     <ProjectReference Include="..\SquirrelsNest.Core\SquirrelsNest.Core.csproj" />

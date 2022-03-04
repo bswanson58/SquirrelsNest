@@ -1,4 +1,6 @@
-﻿using Autofac;
+﻿using System.Net.Http;
+using Autofac;
+using Gravatar;
 using MvvmSupport.DialogService;
 using MvvmSupport.Ioc;
 using SquirrelsNest.Common.Interfaces;
@@ -26,6 +28,10 @@ namespace SquirrelsNest.Desktop {
 
             // Dialog support classes
             builder.RegisterType<DialogServiceContainer>().As<IDialogServiceContainer>().SingleInstance();
+
+            // Gravatars library
+            builder.RegisterType<HttpClient>().InstancePerDependency();
+            builder.RegisterType<GravatarClient>().As<IGravatarClient>().SingleInstance();
 
             // Dialogs
             builder.RegisterDialog<ConfirmationDialog>();
