@@ -2,6 +2,10 @@
 using SquirrelsNest.EfDb.Dto;
 using SquirrelsNest.EfDb.Support;
 
+// The framework will set the DbSet properties appropriately:
+#pragma warning disable CS8618 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+
 namespace SquirrelsNest.EfDb {
     internal class SquirrelsNestDbContext : DbContext {
         public  DbSet<DbComponent>      Components { get; set; }
@@ -11,6 +15,9 @@ namespace SquirrelsNest.EfDb {
         public  DbSet<DbRelease>        Releases { get; set; }
         public  DbSet<DbUser>           Users { get; set; }
         public  DbSet<DbWorkflowState>  States { get; set; }
+
+        public SquirrelsNestDbContext( DbContextOptions options ) :
+            base( options  ) { }
 
         protected override void ConfigureConventions( ModelConfigurationBuilder configurationBuilder ) {
             base.ConfigureConventions( configurationBuilder );
@@ -22,14 +29,6 @@ namespace SquirrelsNest.EfDb {
             configurationBuilder.Properties<DateOnly?>()
                 .HaveConversion<NullableDateOnlyConverter>()
                 .HaveColumnType("date");
-        }
-
-        protected override void OnConfiguring( DbContextOptionsBuilder optionsBuilder ) {
-            optionsBuilder.UseSqlServer( @"Data Source=(localdb)\MSSQLLocalDB; Initial Catalog=SquirrelsNestDB" );
-
-            // Working with immutable entities will require entities to be replaced for updates and the
-            // application will not be changing the entities that are retrieved (and would be tracked).
-            optionsBuilder.UseQueryTrackingBehavior( QueryTrackingBehavior.NoTracking );
         }
     }
 }
