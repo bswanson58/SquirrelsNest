@@ -1,6 +1,10 @@
 ﻿using System.Diagnostics;
 using SquirrelsNest.Common.Entities;
 
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
+// ReSharper disable MemberCanBeProtected.Global
+
 namespace SquirrelsNest.EfDb.Dto {
     [DebuggerDisplay("{" + nameof( Name ) + "}")]
     internal class DbComponent : DbBase {

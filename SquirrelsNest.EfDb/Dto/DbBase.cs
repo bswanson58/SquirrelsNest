@@ -1,5 +1,8 @@
 ﻿using SquirrelsNest.EfDb.Extensions;
 
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
+// ReSharper disable MemberCanBeProtected.Global
+
 namespace SquirrelsNest.EfDb.Dto {
     internal class DbBase {
         public  int         Id { get; set; }
