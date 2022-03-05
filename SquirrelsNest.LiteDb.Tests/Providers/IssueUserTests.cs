@@ -5,9 +5,9 @@ using NSubstitute;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Values;
+using SquirrelsNest.DatabaseTests.Support;
 using SquirrelsNest.LiteDb.Database;
 using SquirrelsNest.LiteDb.Providers;
-using SquirrelsNest.LiteDb.Tests.Database;
 using Xunit;
 
 namespace SquirrelsNest.LiteDb.Tests.Providers {

@@ -3,6 +3,7 @@ using System.IO;
 using FluentAssertions;
 using NSubstitute;
 using SquirrelsNest.Common.Interfaces;
+using SquirrelsNest.DatabaseTests.Support;
 using SquirrelsNest.LiteDb.Database;
 using Xunit;
 

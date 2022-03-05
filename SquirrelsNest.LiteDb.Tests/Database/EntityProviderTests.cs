@@ -6,6 +6,7 @@ using LanguageExt.Common;
 using LiteDB;
 using NSubstitute;
 using SquirrelsNest.Common.Interfaces;
+using SquirrelsNest.DatabaseTests.Support;
 using SquirrelsNest.LiteDb.Database;
 using SquirrelsNest.LiteDb.Dto;
 using Xunit;

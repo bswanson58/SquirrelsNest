@@ -1,21 +1,12 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using SquirrelsNest.Common.Interfaces;
+﻿using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.DatabaseTests.Providers;
-using SquirrelsNest.EfDb.Context;
+using SquirrelsNest.DatabaseTests.Support;
 using SquirrelsNest.EfDb.Providers;
+using Xunit;
 
 namespace SquirrelsNest.EfDb.Tests.Providers {
-    internal class TestContextFactory : IContextFactory {
-        public SquirrelsNestDbContext ProvideContext() {
-            var options = new DbContextOptionsBuilder<SquirrelsNestDbContext>()
-                .UseInMemoryDatabase( "TestDB" );
-
-            return new SquirrelsNestDbContext( options.Options );
-        }
-    }
-
-    public class ComponentProviderTests : ComponentProviderTestSuite, IDisposable {
+    [Collection(nameof(SequentialCollection))]
+    public class ComponentProviderTests : ComponentProviderTestSuite {
         protected override IComponentProvider CreateSut() {
             return new ComponentProvider( new TestContextFactory());
         }
