@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SquirrelsNest.Common\SquirrelsNest.Common.csproj" />
+    <ProjectReference Include="..\SquirrelsNest.DatabaseTests\SquirrelsNest.DatabaseTests.csproj" />
     <ProjectReference Include="..\SquirrelsNest.LiteDb\SquirrelsNest.LiteDb.csproj" />
   </ItemGroup>
 
