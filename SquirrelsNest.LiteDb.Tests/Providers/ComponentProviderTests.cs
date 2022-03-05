@@ -129,7 +129,7 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
 
             var result = sut.GetComponents( project1 );
 
-            result.IfLeft( error => error.Should().BeNull( $"{error.Message} occurred while getting issue type list" ));
+            result.IfLeft( error => error.Should().BeNull( $"{error.Message} occurred while getting component list" ));
             result.IfRight( enumerator => enumerator.Count().Should().Be( 3, "3 components are associated with project1" ));
         }
 
