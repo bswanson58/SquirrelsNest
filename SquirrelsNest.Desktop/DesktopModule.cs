@@ -10,6 +10,7 @@ using SquirrelsNest.Desktop.Models;
 using SquirrelsNest.Desktop.Platform;
 using SquirrelsNest.Desktop.Preferences;
 using SquirrelsNest.Desktop.Views;
+using SquirrelsNest.EfDb.Context;
 
 namespace SquirrelsNest.Desktop {
     internal class DesktopModule : Module {
@@ -22,6 +23,7 @@ namespace SquirrelsNest.Desktop {
             builder.RegisterType<PreferencesHandler>().As<IPreferencesHandler>().SingleInstance();
             // Preference classes
             builder.RegisterType<Preferences<AppState>>().As<IPreferences<AppState>>().SingleInstance();
+            builder.RegisterType<Preferences<EfDatabaseConfiguration>>().As<IPreferences<EfDatabaseConfiguration>>();
 
             builder.RegisterType<Startup>().SingleInstance();
             builder.RegisterType<ModelState>().As<IModelState>().SingleInstance();

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SquirrelsNest.EfDb.Context;
 using SquirrelsNest.EfDb.Dto;
 using SquirrelsNest.EfDb.Support;
 
@@ -15,6 +16,9 @@ namespace SquirrelsNest.EfDb {
         public  DbSet<DbRelease>        Releases { get; set; }
         public  DbSet<DbUser>           Users { get; set; }
         public  DbSet<DbWorkflowState>  States { get; set; }
+
+        public SquirrelsNestDbContext( ConfigurationBuilder builder ) :
+            base( builder.Options()) { }
 
         public SquirrelsNestDbContext( DbContextOptions options ) :
             base( options  ) { }
