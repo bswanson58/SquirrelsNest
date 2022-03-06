@@ -1,11 +1,7 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using FluentAssertions;
-using LiteDB;
+﻿using System.IO;
 using NSubstitute;
-using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
+using SquirrelsNest.DatabaseTests.Providers;
 using SquirrelsNest.DatabaseTests.Support;
 using SquirrelsNest.LiteDb.Database;
 using SquirrelsNest.LiteDb.Providers;
@@ -13,7 +9,7 @@ using Xunit;
 
 namespace SquirrelsNest.LiteDb.Tests.Providers {
     [Collection(nameof(SequentialCollection))]
-    public class UserProviderTests : IDisposable {
+    public class UserProviderTests : UserProviderTestSuite {
         private readonly IEnvironment           mEnvironment;
         private readonly IApplicationConstants  mConstants;
 
@@ -26,108 +22,17 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
 
             mConstants = Substitute.For<IApplicationConstants>();
             mConstants.DatabaseFileName.Returns( "Project.DB" );
-
-            DeleteDatabase();
         }
 
-        private UserProvider CreateSut() {
-            return new UserProvider( new DatabaseProvider( mEnvironment, mConstants ));
+        protected override IUserProvider CreateSut() {
+            return new UserProviderAsync( new DatabaseProvider( mEnvironment, mConstants ));
         }
 
-        [Fact]
-        public void UserCanBeStored() {
-            using var sut = CreateSut();
-            var user = new SnUser( ObjectId.NewObjectId().ToString(), String.Empty, "loginName", "User Name", "email" );
 
-            var result = sut.AddUser( user );
-
-            result.IfLeft( error => error.Should().BeNull( $"{error.Message} occurred adding a user" ));
-            result.IsRight.Should().BeTrue( "users should be addable" );
-        }
-
-        [Fact]
-        public void NewUserCanBeRetrieved() {
-            var user = new SnUser( "User", "email" );
-            using var sut = CreateSut();
-
-            sut.AddUser( user );
-            var result = sut.GetUser( user.EntityId );
-
-            result.IfLeft( error => error.Should().BeNull( $"{error.Message} occurred retrieving a user" ));
-            result.Do( retrieved => retrieved.Should().BeEquivalentTo( user, option => option.Excluding( e => e.DbId ), "retrieved user should match stored user" ));
-        }
-
-        [Fact]
-        public void UserShouldUpdateSuccessfully() {
-            var user = new SnUser( "user", "email" );
-            using var sut = CreateSut();
-
-            sut.AddUser( user ).Do( e => user = e );
-            user = user.With( displayName: "user name" );
-            var result = sut.UpdateUser( user );
-
-            result.IfLeft( error => error.Should().BeNull( $"{error.Message} occurred updating user" ));
-        }
-
-        [Fact]
-        public void UserShouldBeUpdated() {
-            var user = new SnUser( "user", "email" );
-            using var sut = CreateSut();
-
-            sut.AddUser( user ).Do( e => user = e );
-            user = user.With( displayName: "different name" );
-            // ReSharper disable once AccessToDisposedClosure
-            var result = sut.UpdateUser( user ).Bind( _ => sut.GetUser( user.EntityId ));
-
-            result.IfLeft( error => error.Should().BeNull( "updating user should not cause error" ));
-            result.Do( retrieved => retrieved.Should().BeEquivalentTo( user, "retrieved user should match update" ));
-        }
-
-        [Fact]
-        public void UserCanBeDeleted() {
-            var user = new SnUser( "user1", "email" );
-            using var sut = CreateSut();
-
-            sut.AddUser( user ).Do( e => user = e );
-            var result = sut.DeleteUser( user );
-
-            result.IfLeft( error => error.Should().BeNull( $"{error.Message} during delete user" ));
-            result.IsRight.Should().BeTrue( "user should be deleted without error" );
-        }
-
-        [Fact]
-        public void EmptyDatabaseReturnsEmptyUserList() {
-            using var sut = CreateSut();
-
-            var result = sut.GetUsers();
-
-            result.IfLeft( error => error.Should().BeNull( $"{error.Message} occurred retrieving empty list" ));
-            result.IfRight( list => list.Length().Should().Be( 0, "list should be empty" ));
-        }
-
-        [Fact]
-        public void UsersCanBeListed() {
-            using var sut = CreateSut();
-
-            sut.AddUser( new SnUser( "one", "email" ));
-            sut.AddUser( new SnUser( "two", "email" ));
-            sut.AddUser( new SnUser( "three", "email" ));
-            sut.AddUser( new SnUser( "four", "email" ));
-
-            var result = sut.GetUsers();
-
-            result.IfLeft( error => error.Should().BeNull( $"{error.Message} occurred while getting user list" ));
-            result.IfRight( enumerator => enumerator.Count().Should().Be( 4, "4 users were added" ));
-        }
-
-        private void DeleteDatabase() {
+        protected override void DeleteDatabase() {
             if( File.Exists( DatabaseFile )) {
                 File.Delete( DatabaseFile );
             }
-        }
-
-        public void Dispose() {
-            DeleteDatabase();
         }
     }
 }
