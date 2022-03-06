@@ -1,9 +1,6 @@
-﻿namespace SquirrelsNest.Desktop.Preferences {
-    public interface IPreferences<T> where T : new() {
-        T       Current { get; }
-        void    Save( T preferences );
-    }
+﻿using SquirrelsNest.Common.Interfaces;
 
+namespace SquirrelsNest.Desktop.Preferences {
     public class Preferences<T> : IPreferences<T> where T : new() {
         private readonly IPreferencesHandler     mPreferences;
 
