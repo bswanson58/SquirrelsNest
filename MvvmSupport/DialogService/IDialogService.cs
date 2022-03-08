@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace MvvmSupport.DialogService {
     /// <summary>
@@ -13,6 +14,7 @@ namespace MvvmSupport.DialogService {
         /// <param name="parameters">The parameters to pass to the dialog.</param>
         /// <param name="callback">The action to perform when the dialog is closed.</param>
         void Show( string name, IDialogParameters parameters, Action<IDialogResult> callback );
+        void Show( string name, IDialogParameters parameters, Func<IDialogResult, Task> taskCallback );
 
         /// <summary>
         /// Shows a non-modal dialog.
@@ -22,6 +24,7 @@ namespace MvvmSupport.DialogService {
         /// <param name="callback">The action to perform when the dialog is closed.</param>
         /// <param name="windowName">The name of the hosting window registered with the IContainerRegistry.</param>
         void Show( string name, IDialogParameters parameters, Action<IDialogResult> callback, string windowName );
+        void Show( string name, IDialogParameters parameters, Func<IDialogResult, Task> taskCallback, string windowName );
 #endif
 
         /// <summary>
@@ -31,6 +34,7 @@ namespace MvvmSupport.DialogService {
         /// <param name="parameters">The parameters to pass to the dialog.</param>
         /// <param name="callback">The action to perform when the dialog is closed.</param>
         void ShowDialog( string name, IDialogParameters parameters, Action<IDialogResult> callback );
+        void ShowDialog( string name, IDialogParameters parameters, Func<IDialogResult, Task> taskCallback );
 
 
         /// <summary>
@@ -41,5 +45,6 @@ namespace MvvmSupport.DialogService {
         /// <param name="callback">The action to perform when the dialog is closed.</param>
         /// <param name="windowName">The name of the hosting window registered with the IContainerRegistry.</param>
         void ShowDialog( string name, IDialogParameters parameters, Action<IDialogResult> callback, string windowName );
+        void ShowDialog( string name, IDialogParameters parameters, Func<IDialogResult, Task> taskCallback, string windowName );
     }
 }

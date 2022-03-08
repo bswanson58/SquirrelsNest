@@ -42,7 +42,7 @@ namespace MvvmSupport.DialogService {
         /// </remarks>
         /// <param name="viewOrViewModel">The View or ViewModel.</param>
         [EditorBrowsable( EditorBrowsableState.Never )]
-        public static void AutowireViewModel( object viewOrViewModel ) {
+        public static void AutoWireViewModel( object viewOrViewModel ) {
             if( viewOrViewModel is FrameworkElement view && view.DataContext is null && ViewModelLocator.ViewModelLocator.GetAutoWireViewModel( view ) is null ) {
                 ViewModelLocator.ViewModelLocator.SetAutoWireViewModel( view, true );
             }
