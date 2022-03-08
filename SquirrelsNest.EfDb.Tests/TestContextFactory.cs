@@ -6,6 +6,7 @@ namespace SquirrelsNest.EfDb.Tests {
         public SquirrelsNestDbContext ProvideContext() {
             var options = new DbContextOptionsBuilder<SquirrelsNestDbContext>()
                 .UseInMemoryDatabase( "TestDB" );
+//                .UseSqlServer( "Server=(localdb)\\MSSQLLocalDB;Database=SquirrelsNestDB;Trusted_Connection=True;MultipleActiveResultSets=true" );
 
             return new SquirrelsNestDbContext( options.Options );
         }
