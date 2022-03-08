@@ -96,7 +96,7 @@ namespace SquirrelsNest.Desktop.Models {
         private async Task<Either<Error, SnUser>> GetUserOrDefault( Option<EntityId> userId ) {
             var dbUser = await userId.MapAsync( async id => await mUserProvider.GetUser( id ));
 
-            return dbUser.Map( user => user.EntityId.Equals( EntityId.Default ) ? SnUser.Default : user );
+            return dbUser.IfLeft( SnUser.Default );
         }
 
         private async Task<Either<Error, SnUser>> GetFirstUser() {
