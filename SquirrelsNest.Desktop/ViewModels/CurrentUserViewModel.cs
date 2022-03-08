@@ -18,7 +18,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
             mGravatarClient = gravatarClient;
             mCurrentUser = SnUser.Default;
 
-            mUserChangedSubscription = modelState.OnUserChange.Subscribe( OnUserChanged );
+            mUserChangedSubscription = modelState.OnStateChange.Subscribe( OnUserChanged );
             UserImage = Array.Empty<byte>();
         }
 

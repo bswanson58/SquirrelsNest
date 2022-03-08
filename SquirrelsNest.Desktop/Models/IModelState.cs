@@ -11,6 +11,5 @@ namespace SquirrelsNest.Desktop.Models {
 
         CurrentState                CurrentState { get; }
         IObservable<CurrentState>   OnStateChange { get; }
-        IObservable<CurrentState>   OnUserChange { get; }
     }
 }

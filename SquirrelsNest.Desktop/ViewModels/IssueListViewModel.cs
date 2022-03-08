@@ -168,10 +168,10 @@ namespace SquirrelsNest.Desktop.ViewModels {
         }
 
         private async Task LoadIssueList() {
-            ( await mCurrentProject.
-                ToEither( new Error())
-                .BindAsync( project => mIssueProvider.GetIssues( project ))
-                .BindAsync( CreateUiIssues ))
+            var issues = await mCurrentProject.ToEither( new Error())
+                .BindAsync( project => mIssueProvider.GetIssues( project ));
+            // this was broken into two parts to separate the awaits which caused a lock problem with LiteDB
+            ( await issues.BindAsync( CreateUiIssues ))
                 .Map( list => from i in list where ShouldIssueBeDisplayed( i ) select i )
                 .Map( list => from i in list orderby i.IsFinalized, i.IssueNumber select i )
                 .Match( list => IssueList.Reset( list ),
