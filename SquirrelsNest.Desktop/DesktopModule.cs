@@ -46,6 +46,7 @@ namespace SquirrelsNest.Desktop {
             builder.RegisterDialog<EditReleaseDialog>();
             builder.RegisterDialog<EditWorkflowStepDialog>();
             builder.RegisterDialog<EditUserDialog>();
+            builder.RegisterDialog<ExportProjectDialog>();
         }
     }
 }

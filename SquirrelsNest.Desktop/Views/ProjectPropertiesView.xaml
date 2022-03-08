@@ -10,7 +10,9 @@
              viewModelLocator:ViewModelLocator.AutoWireViewModel="True"
              d:DataContext="{d:DesignInstance viewModels:ProjectPropertiesViewModel, IsDesignTimeCreatable=False}">
     <Grid>
-        <Button Style="{StaticResource GeneralButtonStyle}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10"
-                Content="Create Template" Command="{Binding CreateTemplate}"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10">
+            <Button Style="{StaticResource GeneralButtonStyle}" Margin="10" Content="Create Template" Command="{Binding CreateTemplate}"/>
+            <Button Style="{StaticResource GeneralButtonStyle}" Margin="10" Content="Export Project" Command="{Binding ExportProject}"/>
+        </StackPanel>
     </Grid>
 </UserControl>
