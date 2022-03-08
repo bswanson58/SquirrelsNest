@@ -43,12 +43,13 @@ namespace Gravatar {
             }
 
             var uri = new Uri( $"{cGravatarUri}{email.CalculateMd5Hash()}.json" );
-            var response = await mHttpClient.GetFromJsonAsync<GravatarResponse>( uri );
+            var response = await mHttpClient.GetFromJsonAsync<GravatarResponse>( uri ).ConfigureAwait( false );
             var entry = response?.Entry.FirstOrDefault();
 
             return entry ?? new Entry();
         }
 
+        // ReSharper disable once CyclomaticComplexity
         private static string ImageParameters( GravatarDefaultImage style, bool forceDefault, uint imageSize ) {
             var sizeParam = imageSize > 0 ? $"s={imageSize}" : String.Empty;
 
@@ -82,12 +83,12 @@ namespace Gravatar {
 
             var retValue = new MemoryStream();
             var uri = new Uri($"{cGravatarUri}avatar/{email.CalculateMd5Hash()}{ImageParameters( defaultImage, forceDefault, imageSize )}");
-            using var response = await mHttpClient.GetAsync( uri );
+            using var response = await mHttpClient.GetAsync( uri ).ConfigureAwait( false );
 
             if( response.IsSuccessStatusCode ) {
-                await using var stream = await response.Content.ReadAsStreamAsync();
+                await using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait( false );
 
-                await stream.CopyToAsync( retValue, 8192 );
+                await stream.CopyToAsync( retValue, 8192 ).ConfigureAwait( false );
             }
 
             return retValue;

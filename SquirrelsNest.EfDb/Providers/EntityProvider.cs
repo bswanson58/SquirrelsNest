@@ -24,14 +24,14 @@ namespace SquirrelsNest.EfDb.Providers {
         protected abstract TEntity ConvertTo( TDatabase dto );
         protected abstract TDatabase ConvertFrom( TEntity entity );
 
-        public async Task<Either<Error, TEntity>> AddEntity( TEntity entity ) {
+        protected async Task<Either<Error, TEntity>> AddEntity( TEntity entity ) {
             try {
                 await using var context = mContextProvider.ProvideContext();
 
                 var retValue = ConvertFrom( entity );
 
-                await context.Set<TDatabase>().AddAsync( retValue );
-                await context.SaveChangesAsync();
+                await context.Set<TDatabase>().AddAsync( retValue ).ConfigureAwait( false );
+                await context.SaveChangesAsync().ConfigureAwait( false );
 
                 mChangeSubject.OnNext( EntitySourceChange.EntityInserted );
 
@@ -42,12 +42,12 @@ namespace SquirrelsNest.EfDb.Providers {
             }
         }
 
-        public async Task<Either<Error, Unit>> UpdateEntity( TEntity entity ) {
+        protected async Task<Either<Error, Unit>> UpdateEntity( TEntity entity ) {
             try {
                 await using var context = mContextProvider.ProvideContext();
 
                 context.Set<TDatabase>().Update( ConvertFrom( entity ));
-                await context.SaveChangesAsync();
+                await context.SaveChangesAsync().ConfigureAwait( false );
 
                 mChangeSubject.OnNext( EntitySourceChange.EntityUpdated );
 
@@ -58,12 +58,12 @@ namespace SquirrelsNest.EfDb.Providers {
             }
         }
 
-        public async Task<Either<Error, Unit>> DeleteEntity( TEntity entity ) {
+        protected async Task<Either<Error, Unit>> DeleteEntity( TEntity entity ) {
             try {
                 await using var context = mContextProvider.ProvideContext();
 
                 context.Set<TDatabase>().Remove( ConvertFrom( entity ));
-                await context.SaveChangesAsync();
+                await context.SaveChangesAsync().ConfigureAwait( false );
 
                 mChangeSubject.OnNext( EntitySourceChange.EntityDeleted );
 
@@ -74,11 +74,11 @@ namespace SquirrelsNest.EfDb.Providers {
             }
         }
 
-        public async Task<Either<Error, TEntity>> GetEntity( EntityId componentId ) {
+        protected async Task<Either<Error, TEntity>> GetEntity( EntityId componentId ) {
             try {
                 await using var context = mContextProvider.ProvideContext();
 
-                var dbComponent = await context.Set<TDatabase>().FirstOrDefaultAsync( c => c.EntityId.Equals( componentId ));
+                var dbComponent = await context.Set<TDatabase>().FirstOrDefaultAsync( c => c.EntityId.Equals( componentId )).ConfigureAwait( false );
 
                 return dbComponent != null ? 
                     ConvertTo( dbComponent ) : 
@@ -89,11 +89,11 @@ namespace SquirrelsNest.EfDb.Providers {
             }
         }
 
-        public async Task<Either<Error, IEnumerable<TEntity>>> GetEntities() {
+        protected async Task<Either<Error, IEnumerable<TEntity>>> GetEntities() {
             try {
                 await using var context = mContextProvider.ProvideContext();
 
-                var list = await context.Set<TDatabase>().ToListAsync();
+                var list = await context.Set<TDatabase>().ToListAsync().ConfigureAwait( false );
 
                 return list.Select( ConvertTo ).ToSeq();
             }
@@ -102,7 +102,7 @@ namespace SquirrelsNest.EfDb.Providers {
             }
         }
 
-        public async Task<Either<Error, IEnumerable<TEntity>>> GetEntities( Func<TDatabase, bool> predicate ) {
+        protected async Task<Either<Error, IEnumerable<TEntity>>> GetEntities( Func<TDatabase, bool> predicate ) {
             try {
                 await using var context = mContextProvider.ProvideContext();
 
