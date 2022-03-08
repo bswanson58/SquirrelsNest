@@ -3,6 +3,9 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using LanguageExt;
+using LanguageExt.Common;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using MvvmSupport.DialogService;
@@ -47,12 +50,12 @@ namespace SquirrelsNest.Desktop.ViewModels {
             CreateProject = new RelayCommand( OnCreateProject );
             ViewDisplayed = new RelayCommand<bool>( OnViewDisplayed );
             EditProject = new RelayCommand<SnProject>( OnEditProject );
-
-            LoadProjectList();
         }
 
-        private void OnViewDisplayed( bool isLoaded ) {
+        private async void OnViewDisplayed( bool isLoaded ) {
             if( isLoaded ) {
+                await LoadProjectList();
+
                 mSubscriptions.Add( mModelState.OnStateChange.ObserveOn( mContext ).Subscribe( OnStateChanged ));
             }
             else {
@@ -82,13 +85,13 @@ namespace SquirrelsNest.Desktop.ViewModels {
             }
         }
 
-        private void LoadProjectList() {
+        private async Task LoadProjectList() {
             var currentProject = mCurrentProject;
+            var projectList = await mProjectProvider.GetProjects();
 
-            mProjectProvider
-                .GetProjects().Result
+            projectList
                 .Match( list => ProjectList.Reset( list ),
-                            error => mLog.LogError( error ));
+                        error => mLog.LogError( error ));
 
             mCurrentProject = currentProject != null ? 
                 ProjectList.FirstOrDefault( p => p.EntityId.Equals( currentProject.EntityId )) : 
@@ -99,33 +102,33 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private void OnCreateProject() {
             var parameters = new DialogParameters();
 
-            mDialogService.ShowDialog( nameof( CreateProjectDialog ), parameters, result => {
+            mDialogService.ShowDialog( nameof( CreateProjectDialog ), parameters, async result => {
                 if( result.Result == ButtonResult.Ok ) {
                     var editedProject = result.Parameters.GetValue<SnProject>( CreateProjectDialogViewModel.cProject );
                     var template = result.Parameters.GetValue<ProjectTemplate>( CreateProjectDialogViewModel.cTemplate );
+                    Either<Error, SnProject> createdProject;
 
                     if( editedProject == null ) throw new ApplicationException( "Dialog did not return a project" );
 
                     if( template != null ) {
                         var projectParameters = new ProjectParameters {
-                            ProjectName = editedProject.Name, 
-                            ProjectDescription = editedProject.Description, 
-                            ProjectPrefix = editedProject.IssuePrefix
-                        };
+                                ProjectName = editedProject.Name, 
+                                ProjectDescription = editedProject.Description, 
+                                ProjectPrefix = editedProject.IssuePrefix
+                            };
 
-                        mTemplateManager
-                            .CreateProject( template, projectParameters )
-                            .Do( _ => LoadProjectList())
-                            .Do( project => mModelState.SetProject( project ))
-                            .IfLeft( error => mLog.LogError( error ));
+                        createdProject = await mTemplateManager.CreateProject( template, projectParameters );
                     }
                     else {
-                        mProjectProvider
-                            .AddProject( editedProject ).Result
-                            .Do( _ => LoadProjectList())
-                            .Do( project => mModelState.SetProject( project ))
-                            .IfLeft( error => mLog.LogError( error ));
+                        createdProject = await mProjectProvider.AddProject( editedProject );
                     }
+
+                    await LoadProjectList();
+
+                    createdProject
+                            .Do( p => mModelState.SetProject( p ))
+                            .IfLeft( error => mLog.LogError( error ));
+
                 }
             });
         }
@@ -134,16 +137,15 @@ namespace SquirrelsNest.Desktop.ViewModels {
             if( project != null ) {
                 var parameters = new DialogParameters{{ EditProjectDialogViewModel.cProject, project }};
 
-                mDialogService.ShowDialog( nameof( EditProjectDialog ), parameters, result => {
+                mDialogService.ShowDialog( nameof( EditProjectDialog ), parameters, async result => {
                     if( result.Result == ButtonResult.Ok ) {
                         var editedProject = result.Parameters.GetValue<SnProject>( EditProjectDialogViewModel.cProject );
 
                         if( editedProject != null ) {
-                            mProjectProvider
-                                .UpdateProject( editedProject ).Result
-                                .Do( _ => LoadProjectList())
-//                                .Do( project => mModelState.SetProject( project ))
-                                .IfLeft( error => mLog.LogError( error ));
+                            var error = await mProjectProvider.UpdateProject( editedProject );
+
+                            error.IfLeft( e => mLog.LogError( e ));
+                            await LoadProjectList();
                         }
                     }
                 });

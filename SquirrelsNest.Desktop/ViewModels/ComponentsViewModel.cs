@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using LanguageExt;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using MoreLinq;
@@ -7,6 +9,7 @@ using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Logging;
+using SquirrelsNest.Core.Extensions;
 using SquirrelsNest.Desktop.Models;
 using SquirrelsNest.Desktop.Views;
 
@@ -37,25 +40,30 @@ namespace SquirrelsNest.Desktop.ViewModels {
             EditComponent = new RelayCommand<SnComponent>( OnEditComponent );
             DeleteComponent = new RelayCommand<SnComponent>( OnDeleteComponent );
 
-            mStateSubscription = modelState.OnStateChange.Subscribe( OnStateChanged );
+            mStateSubscription = modelState.OnStateChange.SubscribeAsync( OnStateChanged, OnError );
         }
 
-        private void OnStateChanged( CurrentState state ) {
+        private async Task<Unit> OnStateChanged( CurrentState state ) {
             state.Project.Do( project => {
                 mCurrentProject = project;
-
-                LoadComponents();
             });
+
+            await LoadComponents();
+
+            return Unit.Default;
         }
 
-        private void LoadComponents() {
+        private void OnError( Exception ex ) {
+            mLog.LogException( $"During ModelStateChanged in {nameof( ComponentsViewModel )}", ex );
+        }
+
+        private async Task LoadComponents() {
             if( mCurrentProject != null ) {
                 ComponentList.Clear();
 
-                mComponentProvider
-                    .GetComponents( mCurrentProject ).Result
+                ( await mComponentProvider.GetComponents( mCurrentProject ))
                     .Match( list => list.ForEach( p => ComponentList.Add( p )),
-                        error => mLog.LogError( error ));
+                            error => mLog.LogError( error ));
             }
         }
 
@@ -63,16 +71,16 @@ namespace SquirrelsNest.Desktop.ViewModels {
             if( mCurrentProject != null ) {
                 var parameters = new DialogParameters();
 
-                mDialogService.ShowDialog( nameof( EditComponentDialog ), parameters, result => {
+                mDialogService.ShowDialog( nameof( EditComponentDialog ), parameters, async result => {
                     if( result.Result == ButtonResult.Ok ) {
                         var component = result.Parameters.GetValue<SnComponent>( EditComponentDialogViewModel.cComponentParameter );
 
                         if( component == null ) throw new ApplicationException( "SnComponent was not returned when editing component" );
 
-                        mComponentProvider
-                            .AddComponent( component.For( mCurrentProject )).Result
-                            .Match( _ => LoadComponents(),
-                                    error => mLog.LogError( error ));
+                        ( await mComponentProvider.AddComponent( component.For( mCurrentProject )))
+                            .IfLeft( error => mLog.LogError( error ));
+
+                        await LoadComponents();
                     }
                 });
             }
@@ -83,16 +91,16 @@ namespace SquirrelsNest.Desktop.ViewModels {
                ( editComponent != null )) {
                 var parameters = new DialogParameters {{ EditComponentDialogViewModel.cComponentParameter, editComponent }};
 
-                mDialogService.ShowDialog( nameof( EditComponentDialog ), parameters, result => {
+                mDialogService.ShowDialog( nameof( EditComponentDialog ), parameters, async result => {
                     if( result.Result == ButtonResult.Ok ) {
                         var component = result.Parameters.GetValue<SnComponent>( EditComponentDialogViewModel.cComponentParameter );
 
                         if( component == null ) throw new ApplicationException( "SnComponent was not returned when editing component" );
 
-                        mComponentProvider
-                            .UpdateComponent( component.For( mCurrentProject )).Result
-                            .Match( _ => LoadComponents(),
-                                error => mLog.LogError( error ));
+                        ( await mComponentProvider.UpdateComponent( component.For( mCurrentProject )))
+                            .IfLeft( error => mLog.LogError( error ));
+
+                        await LoadComponents();
                     }
                 });
             }
@@ -104,11 +112,12 @@ namespace SquirrelsNest.Desktop.ViewModels {
                     { ConfirmationDialogViewModel.cConfirmationText, $"Would you like to delete component named '{component.Name}'?" }
                 };
 
-                mDialogService.ShowDialog( nameof( ConfirmationDialog ), parameters, result => {
+                mDialogService.ShowDialog( nameof( ConfirmationDialog ), parameters, async result => {
                     if( result.Result == ButtonResult.Ok ) {
-                        mComponentProvider.DeleteComponent( component ).Result
-                            .Match( _ => LoadComponents(),
-                                error => mLog.LogError( error ));
+                        ( await mComponentProvider.DeleteComponent( component ))
+                            .IfLeft( error => mLog.LogError( error ));
+
+                        await LoadComponents();
                     }
                 });
             }

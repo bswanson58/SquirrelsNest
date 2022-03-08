@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using LanguageExt;
 using LanguageExt.Common;
 using SquirrelsNest.Common.Entities;
@@ -27,13 +28,13 @@ namespace SquirrelsNest.Desktop.Models {
             mClosingAction = () => { };
         }
 
-        public void StartApplication( Action onClose ) {
+        public async void StartApplication( Action onClose ) {
             mClosingAction = onClose;
 
             mLog.ApplicationStarting();
 
-            EstablishCurrentUser( mAppState );
-            EstablishCurrentProject( mAppState );
+            await EstablishCurrentUser( mAppState );
+            await EstablishCurrentProject( mAppState );
 
             ShowMainWindow( OnClosing );
         }
@@ -45,16 +46,21 @@ namespace SquirrelsNest.Desktop.Models {
             mClosingAction();
         }
 
-        private void EstablishCurrentProject( IPreferences<AppState> appState ) {
+        private async Task EstablishCurrentProject( IPreferences<AppState> appState ) {
             var currentState = appState.Current;
 
             if( currentState.ProjectId != EntityId.Default ) {
-                EntityId.For( currentState.ProjectId )
-                    .Bind( projectId => mProjectProvider.GetProject( projectId ).Result )
-                    .Iter( p => mModelState.SetProject( p.Right ));
+                var projectId = EntityId.For( currentState.ProjectId );
+                var project = await projectId.MapAsync( async p => await mProjectProvider.GetProject( p ));
+
+                project.Match( 
+                    p => mModelState.SetProject( p ),
+                    error => mLog.LogError( error ));
             }
             else {
-                mProjectProvider.GetProjects().Result
+                var projects = await  mProjectProvider.GetProjects();
+                
+                projects
                     .Match( list => {
                             var firstProject = list.FirstOrDefault( SnProject.Default );
 
@@ -66,13 +72,16 @@ namespace SquirrelsNest.Desktop.Models {
             }
         }
 
-        private void EstablishCurrentUser( IPreferences<AppState> appState ) {
+        private async Task EstablishCurrentUser( IPreferences<AppState> appState ) {
             var currentState = appState.Current;
             var currentUserId = EntityId.For( currentState.UserId );
+            var currentUser = await GetUserOrDefault( currentUserId );
+            var firstUser = await GetFirstUser();
+
             var bestUser =
-                from currentUser in GetUserOrDefault( currentUserId )
-                from firstUser in GetFirstUser()
-                select currentUser.EntityId.Equals( EntityId.Default ) ? firstUser : currentUser;
+                from c in currentUser
+                from f in firstUser
+                select c.EntityId.Equals( EntityId.Default ) ? f : c;
 
             bestUser.Do( 
                 user => {
@@ -84,22 +93,16 @@ namespace SquirrelsNest.Desktop.Models {
                 });
         }
 
-        private Either<Error, SnUser> GetUserOrDefault( Option<EntityId> userId ) {
-            var found = userId.Match( 
-                    Some: id => mUserProvider.GetUser( id ).Result,
-                    None: SnUser.Default );
+        private async Task<Either<Error, SnUser>> GetUserOrDefault( Option<EntityId> userId ) {
+            var dbUser = await userId.MapAsync( async id => await mUserProvider.GetUser( id ));
 
-            if( found.IsLeft ) {
-                return SnUser.Default;
-            }
-
-            return found;
+            return dbUser.Map( user => user.EntityId.Equals( EntityId.Default ) ? SnUser.Default : user );
         }
 
-        private Either<Error, SnUser> GetFirstUser() {
-            return mUserProvider
-                .GetUsers().Result
-                .Map( list => list.FirstOrDefault( SnUser.Default ));
+        private async Task<Either<Error, SnUser>> GetFirstUser() {
+            var userList = await mUserProvider.GetUsers();
+
+            return userList.Map( list => list.FirstOrDefault( SnUser.Default ));
         }
 
         private void ShowMainWindow( Action onClose ) {

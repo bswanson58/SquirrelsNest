@@ -1,4 +1,6 @@
-﻿using SquirrelsNest.Common.Entities;
+﻿using LanguageExt;
+using LanguageExt.Common;
+using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Core.Interfaces;
 
@@ -19,55 +21,25 @@ namespace SquirrelsNest.Core.CompositeBuilders {
             mUserProvider = userProvider;
         }
 
-        private SnProject GetProject( SnIssue forIssue ) {
-            return mProjectProvider
-                .GetProject( forIssue.ProjectId ).Result
-                .IfLeft( SnProject.Default );
-        }
-
-        private SnIssueType GetIssueType( SnIssue forIssue ) {
-            return mIssueTypeProvider
-                .GetIssue( forIssue.IssueTypeId ).Result
-                .IfLeft( SnIssueType.Default );
-        }
-
-        private SnWorkflowState GetState( SnIssue forIssue ) {
-            return mStateProvider
-                .GetState( forIssue.WorkflowStateId ).Result
-                .IfLeft( SnWorkflowState.Default );
-        }
-
-        private SnComponent GetComponent( SnIssue forIssue ) {
-            return mComponentProvider
-                .GetComponent( forIssue.ComponentId ).Result
-                .IfLeft( SnComponent.Default );
-        }
-
-        private SnUser GetEntryUser( SnIssue forIssue ) {
-            return mUserProvider
-                .GetUser( forIssue.EnteredById ).Result
-                .IfLeft( SnUser.Default );
-        }
-
-        private SnUser GetAssignedUser( SnIssue forIssue ) {
-            return mUserProvider
-                .GetUser( forIssue.AssignedToId ).Result
-                .IfLeft( SnUser.Default );
-        }
-
-        public CompositeIssue BuildCompositeIssue( SnIssue forIssue ) {
+        public async Task<Either<Error, CompositeIssue>> BuildCompositeIssue( SnIssue forIssue ) {
             if( forIssue == null ) {
                 throw new ArgumentNullException( nameof( forIssue ));
             }
 
-            return new CompositeIssue( 
-                GetProject( forIssue ),
-                forIssue,
-                GetIssueType( forIssue ),
-                GetEntryUser( forIssue ),
-                GetComponent( forIssue ),
-                GetState( forIssue ),
-                GetAssignedUser( forIssue ));
+            var project = ( await mProjectProvider.GetProject( forIssue.ProjectId ).ConfigureAwait( false ))
+                .IfLeft( SnProject.Default );
+            var issueType = ( await mIssueTypeProvider.GetIssue( forIssue.IssueTypeId ).ConfigureAwait( false ))
+                .IfLeft( SnIssueType.Default );
+            var component = ( await mComponentProvider.GetComponent( forIssue.ComponentId ).ConfigureAwait( false ))
+                .IfLeft( SnComponent.Default );
+            var state = ( await mStateProvider.GetState( forIssue.WorkflowStateId ).ConfigureAwait( false ))
+                .IfLeft( SnWorkflowState.Default );
+            var enteredBy = ( await mUserProvider.GetUser( forIssue.EnteredById ).ConfigureAwait( false ))
+                .IfLeft( SnUser.Default );
+            var assignedTo = ( await mUserProvider.GetUser( forIssue.AssignedToId ).ConfigureAwait( false ))
+                .IfLeft( SnUser.Default );
+            
+            return new CompositeIssue( project, forIssue, issueType, enteredBy, component, state, assignedTo );
         }
     }
 }

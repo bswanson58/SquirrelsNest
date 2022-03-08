@@ -42,14 +42,13 @@ namespace SquirrelsNest.Desktop.ViewModels {
             if( mCurrentProject != null ) {
                 var parameters = new DialogParameters{{ EditProjectParametersDialogViewModel.cTemplate, new TemplateParameters() }};
 
-                mDialogService.ShowDialog( nameof( EditProjectParametersDialog ), parameters, result => {
+                mDialogService.ShowDialog( nameof( EditProjectParametersDialog ), parameters, async result => {
                     if( result.Result == ButtonResult.Ok ) {
                         var template = result.Parameters.GetValue<TemplateParameters>( EditProjectParametersDialogViewModel.cTemplate );
 
                         if( template == null ) throw new ApplicationException( "Dialog did not return template parameters." );
 
-                        mTemplateManager
-                            .CreateTemplate( mCurrentProject, template )
+                        ( await mTemplateManager.CreateTemplate( mCurrentProject, template ))
                             .IfLeft( error => mLog.LogError( error ));
                     }
                 });

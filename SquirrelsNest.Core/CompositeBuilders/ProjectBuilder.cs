@@ -1,6 +1,8 @@
 ﻿using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using LanguageExt;
+using LanguageExt.Common;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Core.Interfaces;
@@ -38,49 +40,24 @@ namespace SquirrelsNest.Core.CompositeBuilders {
             mChangeSubject.OnNext( change );
         }
 
-        private IEnumerable<SnIssueType> GetIssueTypes( SnProject forProject ) {
-            return mTypeProvider
-                .GetIssues( forProject ).Result
-                .IfLeft( new List<SnIssueType>());
-        }
-
-        private IEnumerable<SnComponent> GetComponents( SnProject forProject ) {
-            return mComponentProvider
-                .GetComponents( forProject ).Result
-                .IfLeft( new List<SnComponent>());
-        }
-
-        private IEnumerable<SnWorkflowState> GetWorkflowStates( SnProject forProject ) {
-            return mStateProvider
-                .GetStates( forProject ).Result
-                .IfLeft( new List<SnWorkflowState>());
-        }
-
-        private IEnumerable<SnRelease> GetReleases( SnProject forProject ) {
-            return mReleaseProvider
-                .GetReleases( forProject ).Result
-                .IfLeft( new List<SnRelease>());
-        }
-
-        private IEnumerable<SnUser> GetUsers() {
-            return mUserProvider
-                .GetUsers().Result
-                .IfLeft( new List<SnUser>());
-        }
-
-        public CompositeProject BuildCompositeProject( SnProject forProject ) {
+        public async Task<Either<Error, CompositeProject>> BuildCompositeProject( SnProject forProject ) {
             if( forProject == null ) {
                 throw new ArgumentNullException( nameof( forProject ));
             }
 
+            var issueTypes = await mTypeProvider.GetIssues( forProject ).ConfigureAwait( false );
+            var components = await mComponentProvider.GetComponents( forProject ).ConfigureAwait( false );
+            var states = await mStateProvider.GetStates( forProject ).ConfigureAwait( false );
+            var releases = await mReleaseProvider.GetReleases( forProject ).ConfigureAwait( false );
+            var users = await mUserProvider.GetUsers().ConfigureAwait( false );
+            
             return 
-                new CompositeProject( 
-                    forProject,
-                    GetIssueTypes( forProject ),
-                    GetComponents( forProject ),
-                    GetWorkflowStates( forProject ),
-                    GetReleases( forProject ),
-                    GetUsers());
+                from it in issueTypes
+                from c in components
+                from s in states
+                from r in releases
+                from u in users
+                select new CompositeProject( forProject, it, c, s, r, u );
         }
 
         public void Dispose() {

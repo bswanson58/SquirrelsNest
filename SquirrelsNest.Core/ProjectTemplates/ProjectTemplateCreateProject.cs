@@ -5,57 +5,72 @@ using SquirrelsNest.Common.Entities;
 namespace SquirrelsNest.Core.ProjectTemplates {
     internal partial class ProjectTemplateManager {
 
-        private Either<Error, IEnumerable<SnComponent>> CreateComponents( IEnumerable<ComponentDescription> components, SnProject forProject ) {
+        private async Task<Either<Error, SnProject>> CreateComponents( IList<ComponentDescription> components, SnProject forProject ) {
             SnComponent CreateComponent( ComponentDescription fromDescription ) =>
                 new SnComponent( fromDescription.Name )
                     .With( description: fromDescription.Description )
                     .For( forProject );
 
-            Either<Error, SnComponent> AddComponent( ComponentDescription entityDescription ) =>
-                mComponentProvider.AddComponent( CreateComponent( entityDescription )).Result;
-                
-            return ( from component in components select AddComponent( component )).Sequence();
+            foreach( var component in components ) {
+                var retValue = await mComponentProvider.AddComponent( CreateComponent( component )).ConfigureAwait( false );
+
+                if( retValue.IsLeft ) {
+                    return retValue.Map( _ => forProject );
+                }
+            }
+
+            return forProject;
         }
 
-        private Either<Error, IEnumerable<SnIssueType>> CreateIssueTypes( IEnumerable<IssueTypeDescription> issueTypes, SnProject forProject ) {
+        private async Task<Either<Error, SnProject>> CreateIssueTypes( IEnumerable<IssueTypeDescription> issueTypes, SnProject forProject ) {
             SnIssueType CreateIssueType( IssueTypeDescription fromDescription ) =>
                 new SnIssueType( fromDescription.Name )
                     .With( description: fromDescription.Description )
                     .For( forProject );
 
-            Either<Error, SnIssueType> AddIssueType( IssueTypeDescription entityDescription ) =>
-                mIssueTypeProvider.AddIssue( CreateIssueType( entityDescription )).Result;
+            foreach( var issueType in issueTypes ) {
+                var retValue = await mIssueTypeProvider.AddIssue( CreateIssueType( issueType )).ConfigureAwait( false );
 
-            return ( from issueType in issueTypes select AddIssueType( issueType )).Sequence();
+                if( retValue.IsLeft ) {
+                    return retValue.Map( _ => forProject );
+                }
+            }
+
+            return forProject;
         }
 
-        private Either<Error, IEnumerable<SnWorkflowState>> CreateWorkflowSteps( IEnumerable<WorkflowStepDescription> states, SnProject forProject ) {
+        private async Task<Either<Error, SnProject>> CreateWorkflowSteps( IEnumerable<WorkflowStepDescription> states, SnProject forProject ) {
             SnWorkflowState CreateWorkflowState( WorkflowStepDescription fromDescription ) =>
                 new SnWorkflowState( fromDescription.Name )
                     .With( description: fromDescription.Description, category: fromDescription.Category )
                     .For( forProject );
 
-            Either<Error, SnWorkflowState> AddWorkflowState( WorkflowStepDescription entityDescription ) =>
-                mStateProvider.AddState( CreateWorkflowState( entityDescription )).Result;
+            foreach( var state in states ) {
+                var retValue = await mStateProvider.AddState( CreateWorkflowState( state )).ConfigureAwait( false );
 
-            return ( from state in states select AddWorkflowState( state )).Sequence();
+                if( retValue.IsLeft ) {
+                    return retValue.Map( _ => forProject );
+                }
+            }
+
+            return forProject;
         }
 
-        private Either<Error, SnProject> CreateNewProject( ProjectParameters parameters ) {
+        private Task<Either<Error, SnProject>> CreateNewProject( ProjectParameters parameters ) {
             SnProject CreateSnProject() =>
                 new SnProject( parameters.ProjectName, parameters.ProjectPrefix ).With( description: parameters.ProjectDescription );
 
-            return mProjectProvider.AddProject( CreateSnProject()).Result;
+            return mProjectProvider.AddProject( CreateSnProject());
         }
 
-        public Either<Error, SnProject> CreateProject( ProjectTemplate template, ProjectParameters parameters ) {
-            return 
-                from project in CreateNewProject( parameters )
-                from c in CreateComponents( template.Components, project )
-                from i in CreateIssueTypes( template.IssueTypes, project )
-                from w in CreateWorkflowSteps( template.WorkflowSteps, project )
-                select project;
-        }
+        public async Task<Either<Error, SnProject>> CreateProject( ProjectTemplate template, ProjectParameters parameters ) {
+            var project = await CreateNewProject( parameters ).ConfigureAwait( false );
 
+            return await project
+                    .BindAsync( p => CreateComponents( template.Components, p ))
+                    .BindAsync( p => CreateIssueTypes( template.IssueTypes, p ))
+                    .BindAsync( p => CreateWorkflowSteps( template.WorkflowSteps, p ))
+                    .ConfigureAwait( false );
+        }
     }
 }

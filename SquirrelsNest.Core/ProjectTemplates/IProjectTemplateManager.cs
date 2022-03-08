@@ -5,7 +5,7 @@ using SquirrelsNest.Common.Entities;
 namespace SquirrelsNest.Core.ProjectTemplates {
     public interface IProjectTemplateManager {
         IEnumerable<ProjectTemplate>    GetAvailableTemplates();
-        Either<Error, SnProject>        CreateProject( ProjectTemplate fromTemplate, ProjectParameters parameters );
-        Either<Error, Unit>             CreateTemplate( SnProject fromProject, TemplateParameters parameters );
+        Task<Either<Error, SnProject>>  CreateProject( ProjectTemplate fromTemplate, ProjectParameters parameters );
+        Task<Either<Error, Unit>>       CreateTemplate( SnProject fromProject, TemplateParameters parameters );
     }
 }

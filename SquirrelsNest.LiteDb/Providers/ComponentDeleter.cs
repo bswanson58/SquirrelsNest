@@ -13,19 +13,24 @@ namespace SquirrelsNest.LiteDb.Providers {
             mIssueProvider = issueProvider;
         }
 
-        private Either<Error, Unit> UpdateIssues( Seq<SnIssue> list ) {
-            return list
-                .Map( issue => mIssueProvider.UpdateIssue( issue ).Result )
-                .Sequence()
-                .Map( _ => Unit.Default );
+        private async Task<Either<Error, Unit>> UpdateIssues( IEnumerable<SnIssue> list ) {
+            foreach( var issue in list ) {
+                var result = await mIssueProvider.UpdateIssue( issue ).ConfigureAwait( false );
+
+                if( result.IsLeft ) {
+                    return result;
+                }
+            }
+
+            return Unit.Default;
         }
 
-        public new Either<Error, Unit> DeleteComponent( SnComponent component ) {
-            return mIssueProvider.GetIssues().Result
+        public new async Task<Either<Error, Unit>> DeleteComponent( SnComponent component ) {
+            var affected = ( await mIssueProvider.GetIssues().ConfigureAwait( false ))
                 .Map( list => from i in list where i.ComponentId.Equals( component.EntityId ) select i )
-                .Map( list => from i in list select i.With( SnComponent.Default ))
-                .Bind( list => UpdateIssues( list.ToSeq()))
-                .Do( _ => DeleteComponent( component ));
+                .Map( list => from i in list select i.With( SnComponent.Default ));
+
+            return await affected.BindAsync( UpdateIssues ).ConfigureAwait( false );
         }
     }
 }

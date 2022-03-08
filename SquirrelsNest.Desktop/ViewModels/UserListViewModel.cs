@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
+using LanguageExt;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using MoreLinq;
@@ -8,6 +10,7 @@ using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Logging;
+using SquirrelsNest.Core.Extensions;
 using SquirrelsNest.Desktop.Models;
 using SquirrelsNest.Desktop.Views;
 
@@ -34,27 +37,30 @@ namespace SquirrelsNest.Desktop.ViewModels {
             UserList = new ObservableCollection<SnUser>();
             CreateUser = new RelayCommand( OnCreateUser );
 
-            LoadUserList();
-
-            mStateSubscription = mModelState.OnStateChange.Subscribe( OnStateChanged );
+            mStateSubscription = mModelState.OnStateChange.SubscribeAsync( OnStateChanged, OnError );
         }
 
-        private void OnStateChanged( CurrentState state ) {
-            state.Project
-                .Do( project => {
-                    mCurrentUser = UserList.FirstOrDefault( p => p.EntityId.Equals( project.EntityId ));
+        private async Task<Unit> OnStateChanged( CurrentState state ) {
+            await LoadUserList();
 
-                    OnPropertyChanged( nameof( CurrentProject ));
-                });
+            mCurrentUser = UserList.FirstOrDefault( p => p.EntityId.Equals( state.User.EntityId ));
+
+            OnPropertyChanged( nameof( CurrentUser ));
+
+            return Unit.Default;
         }
 
-        public SnUser ?  CurrentProject {
+        private void OnError( Exception ex ) {
+            mLog.LogException( $"During ModelStateChanged in {nameof( UserListViewModel )}", ex );
+        }
+
+        public SnUser ? CurrentUser {
             get => mCurrentUser;
             set {
                 SetProperty( ref mCurrentUser, value );
 
                 if( mCurrentUser != null ) {
-//                    mModelState.SetProject( mCurrentUser );
+                    mModelState.SetUser( mCurrentUser );
                 }
                 else {
                     mModelState.ClearProject();
@@ -62,32 +68,28 @@ namespace SquirrelsNest.Desktop.ViewModels {
             }
         }
 
-        private void LoadUserList() {
+        private async Task LoadUserList() {
             UserList.Clear();
 
-            mUserProvider
-                .GetUsers().Result
-                    .Match( list => list.ForEach( p => UserList.Add( p )),
-                            error => mLog.LogError( error ));
+            ( await mUserProvider.GetUsers())
+                .Match( list => list.ForEach( p => UserList.Add( p )),
+                        error => mLog.LogError( error ));
 
-            CurrentProject = UserList.FirstOrDefault();
+            CurrentUser = UserList.FirstOrDefault();
         }
 
         private void OnCreateUser() {
             var parameters = new DialogParameters();
 
-            mDialogService.ShowDialog( nameof( EditUserDialog ), parameters, result => {
+            mDialogService.ShowDialog( nameof( EditUserDialog ), parameters, async result => {
                 if( result.Result == ButtonResult.Ok ) {
                     var editedUser = result.Parameters.GetValue<SnUser>( EditUserDialogViewModel.cUserParameter );
 
                     if( editedUser != null ) {
-                        mUserProvider
-                            .AddUser( editedUser ).Result
-                            .Do( _ => LoadUserList())
-//                            .Do( _ => mModelState.SetProject( editedUser ))
+                        ( await mUserProvider.AddUser( editedUser ))
                             .IfLeft( error => mLog.LogError( error ));
 
-//                        mModelState.SetProject( editedUser );
+                        await LoadUserList();
                     }
                 }
             });

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using LanguageExt;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using MoreLinq;
@@ -7,6 +9,7 @@ using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Logging;
+using SquirrelsNest.Core.Extensions;
 using SquirrelsNest.Desktop.Models;
 using SquirrelsNest.Desktop.Views;
 
@@ -39,23 +42,28 @@ namespace SquirrelsNest.Desktop.ViewModels {
             EditState = new RelayCommand<SnWorkflowState>( OnEditState );
             DeleteState = new RelayCommand<SnWorkflowState>( OnDeleteState );
 
-            mStateSubscription = modelState.OnStateChange.Subscribe( OnStateChanged);
+            mStateSubscription = modelState.OnStateChange.SubscribeAsync( OnStateChanged, OnError );
         }
 
-        private void OnStateChanged( CurrentState state ) {
+        private async Task<Unit> OnStateChanged( CurrentState state ) {
             state.Project.Do( project => {
                 mCurrentProject = project;
-
-                LoadStates();
             });
+
+            await LoadStates();
+
+            return Unit.Default;
         }
 
-        private void LoadStates() {
+        private void OnError( Exception ex ) {
+            mLog.LogException( $"During ModelStateChanged in {nameof( WorkflowStepsViewModel )}", ex );
+        }
+
+        private async Task LoadStates() {
             if( mCurrentProject != null ) {
                 StateList.Clear();
 
-                mStateProvider
-                    .GetStates( mCurrentProject ).Result
+                ( await mStateProvider.GetStates( mCurrentProject ))
                     .Match( list => list.ForEach( p => StateList.Add( p )),
                         error => mLog.LogError( error ));
             }
@@ -65,16 +73,16 @@ namespace SquirrelsNest.Desktop.ViewModels {
             if( mCurrentProject != null ) {
                 var parameters = new DialogParameters();
 
-                mDialogService.ShowDialog( nameof( EditWorkflowStepDialog ), parameters, result => {
+                mDialogService.ShowDialog( nameof( EditWorkflowStepDialog ), parameters, async result => {
                     if( result.Result == ButtonResult.Ok ) {
                         var state = result.Parameters.GetValue<SnWorkflowState>( EditWorkflowStepDialogViewModel.cStateParameter );
 
                         if( state == null ) throw new ApplicationException( "SnWorkflowState was not returned when editing issue" );
 
-                        mStateProvider
-                            .AddState( state.For( mCurrentProject )).Result
-                            .Match( _ => LoadStates(),
-                                error => mLog.LogError( error ));
+                        ( await mStateProvider.AddState( state.For( mCurrentProject )))
+                            .IfLeft( error => mLog.LogError( error ));
+
+                        await LoadStates();
                     }
                 });
             }
@@ -85,16 +93,16 @@ namespace SquirrelsNest.Desktop.ViewModels {
                ( editState != null )) {
                 var parameters = new DialogParameters {{ EditWorkflowStepDialogViewModel.cStateParameter, editState }};
 
-                mDialogService.ShowDialog( nameof( EditWorkflowStepDialog ), parameters, result => {
+                mDialogService.ShowDialog( nameof( EditWorkflowStepDialog ), parameters, async result => {
                     if( result.Result == ButtonResult.Ok ) {
                         var state = result.Parameters.GetValue<SnWorkflowState>( EditWorkflowStepDialogViewModel.cStateParameter );
 
                         if( state == null ) throw new ApplicationException( "SnWorkflowState was not returned when editing issue" );
 
-                        mStateProvider
-                            .UpdateState( state.For( mCurrentProject )).Result
-                            .Match( _ => LoadStates(),
-                                error => mLog.LogError( error ));
+                        ( await mStateProvider.UpdateState( state.For( mCurrentProject )))
+                            .IfLeft( error => mLog.LogError( error ));
+                        
+                        await LoadStates();
                     }
                 });
             }
@@ -106,11 +114,12 @@ namespace SquirrelsNest.Desktop.ViewModels {
                     { ConfirmationDialogViewModel.cConfirmationText, $"Would you like to delete the state named '{state.Name}'?" }
                 };
 
-                mDialogService.ShowDialog( nameof( ConfirmationDialog ), parameters, result => {
+                mDialogService.ShowDialog( nameof( ConfirmationDialog ), parameters, async result => {
                     if( result.Result == ButtonResult.Ok ) {
-                        mStateProvider.DeleteState( state ).Result
-                            .Match( _ => LoadStates(),
-                                error => mLog.LogError( error ));
+                        ( await mStateProvider.DeleteState( state ))
+                            .IfLeft( error => mLog.LogError( error ));
+
+                        await LoadStates();
                     }
                 });
             }

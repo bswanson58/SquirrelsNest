@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using LanguageExt;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using MoreLinq;
@@ -7,6 +9,7 @@ using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Logging;
+using SquirrelsNest.Core.Extensions;
 using SquirrelsNest.Desktop.Models;
 using SquirrelsNest.Desktop.Views;
 
@@ -37,25 +40,30 @@ namespace SquirrelsNest.Desktop.ViewModels {
             EditRelease = new RelayCommand<SnRelease>( OnEditRelease );
             DeleteRelease = new RelayCommand<SnRelease>( OnDeleteRelease );
 
-            mStateSubscription = modelState.OnStateChange.Subscribe( OnStateChanged );
+            mStateSubscription = modelState.OnStateChange.SubscribeAsync( OnStateChanged, OnError );
         }
 
-        private void OnStateChanged( CurrentState state ) {
-            state.Project.Do( project => {
-                mCurrentProject = project;
+        private async Task<Unit> OnStateChanged( CurrentState state ) {
+            state.Project.Do( project => mCurrentProject = project );
 
-                LoadReleases();
-            });
+            if( state.Project.IsSome ) {
+                await LoadReleases();
+            }
+
+            return Unit.Default;
         }
 
-        private void LoadReleases() {
+        private void OnError( Exception ex ) {
+            mLog.LogException( $"During ModelStateChanged in {nameof( ReleasesViewModel )}", ex );
+        }
+
+        private async Task LoadReleases() {
             if( mCurrentProject != null ) {
                 ReleaseList.Clear();
 
-                mReleaseProvider
-                    .GetReleases( mCurrentProject ).Result
+                ( await mReleaseProvider.GetReleases( mCurrentProject ))
                     .Match( list => list.ForEach( p => ReleaseList.Add( p )),
-                        error => mLog.LogError( error ));
+                            error => mLog.LogError( error ));
             }
         }
 
@@ -63,16 +71,16 @@ namespace SquirrelsNest.Desktop.ViewModels {
             if( mCurrentProject != null ) {
                 var parameters = new DialogParameters();
 
-                mDialogService.ShowDialog( nameof( EditReleaseDialog ), parameters, result => {
+                mDialogService.ShowDialog( nameof( EditReleaseDialog ), parameters, async result => {
                     if( result.Result == ButtonResult.Ok ) {
                         var release = result.Parameters.GetValue<SnRelease>( EditReleaseDialogViewModel.cReleaseParameter );
 
                         if( release == null ) throw new ApplicationException( "SnRelease was not returned when editing issue" );
 
-                        mReleaseProvider
-                            .AddRelease( release.For( mCurrentProject )).Result
-                            .Match( _ => LoadReleases(),
-                                error => mLog.LogError( error ));
+                        ( await mReleaseProvider.AddRelease( release.For( mCurrentProject )))
+                            .IfLeft( error => mLog.LogError( error ));
+
+                        await LoadReleases();
                     }
                 });
             }
@@ -83,16 +91,16 @@ namespace SquirrelsNest.Desktop.ViewModels {
                ( editRelease != null ) ) {
                 var parameters = new DialogParameters{{ EditReleaseDialogViewModel.cReleaseParameter, editRelease }};
 
-                mDialogService.ShowDialog( nameof( EditReleaseDialog ), parameters, result => {
+                mDialogService.ShowDialog( nameof( EditReleaseDialog ), parameters, async result => {
                     if( result.Result == ButtonResult.Ok ) {
                         var release = result.Parameters.GetValue<SnRelease>( EditReleaseDialogViewModel.cReleaseParameter );
 
                         if( release == null ) throw new ApplicationException( "SnRelease was not returned when editing issue" );
 
-                        mReleaseProvider
-                            .UpdateRelease( release.For( mCurrentProject )).Result
-                            .Match( _ => LoadReleases(),
-                                error => mLog.LogError( error ));
+                        ( await mReleaseProvider.UpdateRelease( release.For( mCurrentProject )))
+                            .IfLeft( error => mLog.LogError( error ));
+
+                        await LoadReleases();
                     }
                 });
             }
@@ -104,11 +112,12 @@ namespace SquirrelsNest.Desktop.ViewModels {
                     { ConfirmationDialogViewModel.cConfirmationText, $"Would you like to delete the release named '{release.Name}'?" }
                 };
 
-                mDialogService.ShowDialog( nameof( ConfirmationDialog ), parameters, result => {
+                mDialogService.ShowDialog( nameof( ConfirmationDialog ), parameters, async result => {
                     if( result.Result == ButtonResult.Ok ) {
-                        mReleaseProvider.DeleteRelease( release ).Result
-                            .Match( _ => LoadReleases(),
-                                error => mLog.LogError( error ));
+                        ( await mReleaseProvider.DeleteRelease( release ))
+                            .IfLeft( error => mLog.LogError( error ));
+
+                        await LoadReleases();
                     }
                 });
             }

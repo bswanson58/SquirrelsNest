@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using LanguageExt;
 using LanguageExt.Common;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
@@ -31,6 +33,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private readonly IModelState            mModelState;
         private readonly IDialogService         mDialogService;
         private readonly ILog                   mLog;
+        private readonly IRelayCommand          mFilterStateChanged;
         private SnUser                          mCurrentUser;
         private Option<SnProject>               mCurrentProject;
         private bool                            mDisplayIssuesForAllUsers;
@@ -69,11 +72,12 @@ namespace SquirrelsNest.Desktop.ViewModels {
             IssueList = new RangeCollection<UiIssue>();
             ProjectName = String.Empty;
             ViewDisplayed = new RelayCommand<bool>( OnViewDisplayed );
-            CreateIssue = new RelayCommand( OnCreateIssue );
+            CreateIssue = new AsyncRelayCommand( OnCreateIssue );
             ToggleDisplayStyle = new RelayCommand( OnToggleDisplayStyle );
+            mFilterStateChanged = new AsyncRelayCommand( OnFilterStateChanged );
 
             IssueCompleted = new RelayCommand<UiIssue>( OnIssueCompleted );
-            EditIssue = new RelayCommand<UiIssue>( OnEditIssue );
+            EditIssue = new AsyncRelayCommand<UiIssue>( OnEditIssue );
             DeleteIssue = new RelayCommand<UiIssue>( OnDeleteIssue );
         }
 
@@ -82,7 +86,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
             set {
                 SetProperty( ref mDisplayFinalizedIssues, value );
 
-                LoadIssueList();
+                mFilterStateChanged.Execute( Unit.Default );
             }
         }
 
@@ -91,8 +95,12 @@ namespace SquirrelsNest.Desktop.ViewModels {
             set {
                 SetProperty( ref mDisplayIssuesForAllUsers, !value );
 
-                LoadIssueList();
+                mFilterStateChanged.Execute( Unit.Default );
             }
+        }
+
+        private Task OnFilterStateChanged() {
+            return LoadIssueList();
         }
 
         private void OnToggleDisplayStyle() {
@@ -109,15 +117,15 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
         private void OnViewDisplayed( bool isLoading ) {
             if( isLoading ) {
-                mSubscriptions.Add( mModelState.OnStateChange.ObserveOn( mContext ).Subscribe( OnModelStateChanged ));
-                mSubscriptions.Add( mIssueProvider.OnEntitySourceChange.ObserveOn( mContext ).Subscribe( OnIssueListChanged ));
+                mSubscriptions.Add( mModelState.OnStateChange.ObserveOn( mContext ).SubscribeAsync( OnModelStateChanged, OnError ));
+                mSubscriptions.Add( mIssueProvider.OnEntitySourceChange.ObserveOn( mContext ).SubscribeAsync( OnIssueListChanged, OnError ));
             }
             else {
                 mSubscriptions.Clear();
             }
         }
 
-        private void OnModelStateChanged( CurrentState state ) {
+        private async Task OnModelStateChanged( CurrentState state ) {
             mCurrentProject = state.Project;
             mCurrentUser = state.User;
 
@@ -127,11 +135,15 @@ namespace SquirrelsNest.Desktop.ViewModels {
                 OnPropertyChanged( nameof( ProjectName ));
             });
 
-            LoadIssueList();
+            await LoadIssueList();
         }
 
-        private void OnIssueListChanged( EntitySourceChange change ) {
-            LoadIssueList();
+        private async Task OnIssueListChanged( EntitySourceChange _ ) {
+            await LoadIssueList();
+        }
+
+        private void OnError( Exception ex ) {
+            mLog.LogException( $"During ModelStateChanged/IssueListChanged in {nameof( IssueListViewModel )}", ex );
         }
 
         private bool ShouldIssueBeDisplayed( UiIssue issue ) {
@@ -141,82 +153,93 @@ namespace SquirrelsNest.Desktop.ViewModels {
             return forUser && isActive;
         }
 
-        private void LoadIssueList() {
-            mCurrentProject
-                .ToEither( new Error())
-                .BindAsync( project => mIssueProvider.GetIssues( project )).Result
-                .Map( list => from i in list select BuildIssue( i ))
+        private async Task<Either<Error, IEnumerable<UiIssue>>> CreateUiIssues( IEnumerable<SnIssue> issues ) {
+            var retValue = new List<UiIssue>();
+
+            foreach( var issue in issues ) {
+                var composite = await mIssueBuilder.BuildCompositeIssue( issue );
+
+                composite.Match(
+                    c => retValue.Add( new UiIssue( c )), 
+                    error => mLog.LogError( error ));
+            }
+
+            return retValue;
+        }
+
+        private async Task LoadIssueList() {
+            ( await mCurrentProject.
+                ToEither( new Error())
+                .BindAsync( project => mIssueProvider.GetIssues( project ))
+                .BindAsync( CreateUiIssues ))
                 .Map( list => from i in list where ShouldIssueBeDisplayed( i ) select i )
                 .Map( list => from i in list orderby i.IsFinalized, i.IssueNumber select i )
                 .Match( list => IssueList.Reset( list ),
                         error => mLog.LogError( error ));
         }
 
-        private UiIssue BuildIssue( SnIssue issue ) { 
-            return new UiIssue( mIssueBuilder.BuildCompositeIssue( issue ));
-        }
-
-        private void OnIssueCompleted( UiIssue ? issue ) {
+        private async void OnIssueCompleted( UiIssue ? issue ) {
             if( issue != null ) {
-                mCurrentProject.Do( snProject => {
-                    var project = mProjectBuilder.BuildCompositeProject( snProject );
-                    var newIssue = issue.Issue.ToggleCompletedState( project.WorkflowStates );
+                var composite = await mCurrentProject.MapAsync( async project => await mProjectBuilder.BuildCompositeProject( project ));
+                var updatedIssue = composite.Map( c => issue.Issue.ToggleCompletedState( c.WorkflowStates ));
+                var e = await updatedIssue.BindAsync( async newIssue => await mIssueProvider.UpdateIssue( newIssue ));
 
-                    mIssueProvider
-                        .UpdateIssue( newIssue ).Result
-                        .IfLeft( error => mLog.LogError( error ));
-                });
+                e.IfLeft( er => mLog.LogError( er ));
             }
         }
 
-        private void OnCreateIssue() {
+        private async Task OnCreateIssue() {
             if( mCurrentProject.IsSome ) {
                 var project = mCurrentProject.AsEnumerable().First();
-                var composite = mProjectBuilder.BuildCompositeProject( project );
-                var parameters = new DialogParameters {{ EditIssueDialogViewModel.cProjectParameter, composite },     
-                                                       { EditIssueDialogViewModel.cUserParameter, mCurrentUser }};
+                var composite = await mProjectBuilder.BuildCompositeProject( project );
 
-                mDialogService.ShowDialog( nameof( EditIssueDialog ), parameters, result => {
-                    if( result.Result == ButtonResult.Ok ) {
-                        var issue = result.Parameters.GetValue<SnIssue>( EditIssueDialogViewModel.cIssueParameter );
+                composite.IfLeft( error => mLog.LogError( error ));
+                composite.IfRight( compositeProject => {
+                    var parameters = new DialogParameters {{ EditIssueDialogViewModel.cProjectParameter, compositeProject },
+                                                           { EditIssueDialogViewModel.cUserParameter, mCurrentUser }};
 
-                        if( issue == null ) throw new ApplicationException( "Issue was not returned when editing issue" );
+                    mDialogService.ShowDialog( nameof( EditIssueDialog ), parameters, async result => {
+                        if( result.Result == ButtonResult.Ok ) {
+                            var issue = result.Parameters.GetValue<SnIssue>( EditIssueDialogViewModel.cIssueParameter );
 
-                        project = project.WithNextIssueNumber();
+                            if( issue == null ) throw new ApplicationException( "Issue was not returned when editing issue" );
 
-                        mIssueProvider
-                            .AddIssue( issue ).Result
-                            .Match( _ => {
-                                    mProjectProvider
-                                        .UpdateProject( project ).Result
-                                        .Do( _ => mCurrentProject = project  )
-                                        .IfLeft( error => mLog.LogError( error ));
-                                },
-                                error => mLog.LogError( error ));
-                    }
-                });
+                            project = project.WithNextIssueNumber();
+
+                            ( await ( await mIssueProvider.AddIssue( issue ))
+                                    .BindAsync( _ => mProjectProvider.UpdateProject( project )))
+                                .Do( _ => mCurrentProject = project )
+                                .IfLeft( error => mLog.LogError( error ));
+                        }
+                    });
+                }); 
             }
         }
 
-        private void OnEditIssue( UiIssue ?  uiIssue ) {
+        private async Task OnEditIssue( UiIssue ?  uiIssue ) {
             if(( mCurrentProject.IsSome ) &&
                ( uiIssue != null )) {
-                var project = mProjectBuilder.BuildCompositeProject( mCurrentProject.AsEnumerable().First());
-                var parameters = new DialogParameters{{ EditIssueDialogViewModel.cProjectParameter, project },
-                                                      { EditIssueDialogViewModel.cUserParameter, mCurrentUser },
-                                                      { EditIssueDialogViewModel.cIssueParameter, uiIssue.Issue }};
+                var project = mCurrentProject.AsEnumerable().First();
+                var composite = await mProjectBuilder.BuildCompositeProject( project );
 
-                mDialogService.ShowDialog( nameof( EditIssueDialog ), parameters, result => {
-                    if( result.Result == ButtonResult.Ok ) {
-                        var issue = result.Parameters.GetValue<SnIssue>( EditIssueDialogViewModel.cIssueParameter );
+                composite.IfLeft( error => mLog.LogError( error ));
+                composite.IfRight( compositeProject => {
+                    var parameters = new DialogParameters{{ EditIssueDialogViewModel.cProjectParameter, compositeProject },
+                                                          { EditIssueDialogViewModel.cUserParameter, mCurrentUser },
+                                                          { EditIssueDialogViewModel.cIssueParameter, uiIssue.Issue }};
 
-                        if( issue == null ) throw new ApplicationException( "Issue was not returned when editing issue" );
+                    mDialogService.ShowDialog( nameof( EditIssueDialog ), parameters, async result => {
+                        if( result.Result == ButtonResult.Ok ) {
+                            var issue = result.Parameters.GetValue<SnIssue>( EditIssueDialogViewModel.cIssueParameter );
 
-                        mIssueProvider
-                            .UpdateIssue( issue ).Result
-                            .Match( _ => LoadIssueList(),
-                                    error => mLog.LogError( error ));
-                    }
+                            if( issue == null ) throw new ApplicationException( "Issue was not returned when editing issue" );
+
+                            ( await mIssueProvider.UpdateIssue( issue ))
+                                .IfLeft( error => mLog.LogError( error ));
+
+                            await LoadIssueList();
+                        }
+                    });
                 });
             }
         }
@@ -225,11 +248,12 @@ namespace SquirrelsNest.Desktop.ViewModels {
             if( issue != null ) {
                 var parameters = new DialogParameters{{ ConfirmationDialogViewModel.cConfirmationText, $"Would you like to delete issue {issue.IssueNumber}?" }};
 
-                mDialogService.ShowDialog( nameof( ConfirmationDialog ), parameters, result => {
+                mDialogService.ShowDialog( nameof( ConfirmationDialog ), parameters, async result => {
                     if( result.Result == ButtonResult.Ok ) {
-                        mIssueProvider.DeleteIssue( issue.Issue ).Result
-                            .Match( _ => LoadIssueList(),
-                                    error => mLog.LogError( error ));
+                        ( await mIssueProvider.DeleteIssue( issue.Issue ))
+                            .IfLeft( error => mLog.LogError( error ));
+
+                        await LoadIssueList();
                     }
                 });
             }
