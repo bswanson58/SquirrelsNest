@@ -44,7 +44,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
         public  IRelayCommand<bool>             ViewDisplayed { get; }
         public  IRelayCommand                   CreateIssue { get; }
 
-        public  IssueViewStyle ?                 DisplayStyle { get; private set; }
+        public  IssueViewStyle ?                DisplayStyle { get; private set; }
         public  IRelayCommand                   ToggleDisplayStyle { get; }
 
         // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -168,14 +168,16 @@ namespace SquirrelsNest.Desktop.ViewModels {
         }
 
         private async Task LoadIssueList() {
-            var issues = await mCurrentProject.ToEither( new Error())
-                .BindAsync( project => mIssueProvider.GetIssues( project ));
-            // this was broken into two parts to separate the awaits which caused a lock problem with LiteDB
-            ( await issues.BindAsync( CreateUiIssues ))
-                .Map( list => from i in list where ShouldIssueBeDisplayed( i ) select i )
-                .Map( list => from i in list orderby i.IsFinalized, i.IssueNumber select i )
-                .Match( list => IssueList.Reset( list ),
+            if( mCurrentProject.IsSome ) {
+                var issues = await mCurrentProject.ToEither( new Error())
+                    .BindAsync( project => mIssueProvider.GetIssues( project ));
+                // this was broken into two parts to separate the awaits which caused a lock problem with LiteDB
+                ( await issues.BindAsync( CreateUiIssues ))
+                    .Map( list => from i in list where ShouldIssueBeDisplayed( i ) select i )
+                    .Map( list => from i in list orderby i.IsFinalized, i.IssueNumber select i )
+                    .Match( list => IssueList.Reset( list ),
                         error => mLog.LogError( error ));
+            }
         }
 
         private async void OnIssueCompleted( UiIssue ? issue ) {
