@@ -5,6 +5,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/SquirrelsNest.Desktop;component/Resources/Images.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/SquirrelsNest.Desktop;component/Resources/StoryBoards.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/SquirrelsNest.Desktop;component/Resources/UiStyles.xaml" />
 
                 <!-- MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive! -->
