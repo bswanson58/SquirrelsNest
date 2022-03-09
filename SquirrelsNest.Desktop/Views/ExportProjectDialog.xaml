@@ -6,10 +6,20 @@
              xmlns:viewModelLocator="clr-namespace:MvvmSupport.ViewModelLocator;assembly=MvvmSupport"
              xmlns:viewModels="clr-namespace:SquirrelsNest.Desktop.ViewModels"
              xmlns:entities="clr-namespace:SquirrelsNest.Common.Entities;assembly=SquirrelsNest.Common"
+             xmlns:dialogService="clr-namespace:MvvmSupport.DialogService;assembly=MvvmSupport"
              mc:Ignorable="d" 
              Height="200" Width="600"
              viewModelLocator:ViewModelLocator.AutoWireViewModel="True"
              d:DataContext="{d:DesignInstance viewModels:ExportProjectDialogViewModel, IsDesignTimeCreatable=False}">
+
+    <dialogService:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="dialogService:Dialog.WindowStartupLocation" Value="CenterOwner" />
+            <Setter Property="ResizeMode" Value="NoResize"/>
+            <Setter Property="ShowInTaskbar" Value="False"/>
+            <Setter Property="SizeToContent" Value="WidthAndHeight"/>
+        </Style>
+    </dialogService:Dialog.WindowStyle>
 
     <UserControl.Resources>
         <DataTemplate x:Key="ProjectTemplate" DataType="{x:Type entities:SnProject}">
@@ -17,7 +27,7 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <Grid Margin="10">
+    <Grid Margin="10" FocusManager.FocusedElement="{Binding ElementName=_firstFocus}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="10"/>
@@ -30,7 +40,7 @@
 
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <TextBlock Style="{StaticResource ControlTitleStyle}" VerticalAlignment="Center" Text="Project:"/>
-            <ComboBox VerticalAlignment="Center" Margin="5,0" Width="200" ItemTemplate="{StaticResource ProjectTemplate}"
+            <ComboBox VerticalAlignment="Center" Margin="5,0" Width="200" ItemTemplate="{StaticResource ProjectTemplate}" x:Name="_firstFocus"
                       ItemsSource="{Binding ProjectList}" SelectedItem="{Binding CurrentProject}"/>
         </StackPanel>
 
