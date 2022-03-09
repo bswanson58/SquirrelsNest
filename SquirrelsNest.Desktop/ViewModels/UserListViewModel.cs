@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using LanguageExt;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
-using MoreLinq;
 using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Logging;
 using SquirrelsNest.Core.Extensions;
 using SquirrelsNest.Desktop.Models;
+using SquirrelsNest.Desktop.Platform;
 using SquirrelsNest.Desktop.Views;
 
 namespace SquirrelsNest.Desktop.ViewModels {
@@ -24,7 +23,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private readonly IDisposable            mStateSubscription;
         private SnUser ?                        mCurrentUser;
 
-        public  ObservableCollection<SnUser>    UserList { get; }
+        public  RangeCollection<SnUser>         UserList { get; }
         
         public  IRelayCommand                   CreateUser { get; }
 
@@ -34,7 +33,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
             mDialogService = dialogService;
             mLog = log;
 
-            UserList = new ObservableCollection<SnUser>();
+            UserList = new RangeCollection<SnUser>();
             CreateUser = new RelayCommand( OnCreateUser );
 
             mStateSubscription = mModelState.OnStateChange.SubscribeAsync( OnStateChanged, OnError );
@@ -69,13 +68,12 @@ namespace SquirrelsNest.Desktop.ViewModels {
         }
 
         private async Task LoadUserList() {
-            UserList.Clear();
-
             ( await mUserProvider.GetUsers())
-                .Match( list => list.ForEach( p => UserList.Add( p )),
+                .Match( list => UserList.Reset( list ),
                         error => mLog.LogError( error ));
 
-            CurrentUser = UserList.FirstOrDefault();
+            mCurrentUser = UserList.FirstOrDefault();
+            OnPropertyChanged( nameof( CurrentUser ));
         }
 
         private void OnCreateUser() {
