@@ -8,7 +8,7 @@ namespace SquirrelsNest.Core.Transfer.Dto {
         public  string      Name { get; set;}
         public  string      Description { get; set; }
 
-        protected TrComponent() {
+        public TrComponent() {
             Name = String.Empty;
             Description = String.Empty;
             ProjectId = Common.Values.EntityId.Default;

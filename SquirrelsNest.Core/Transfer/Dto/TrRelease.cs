@@ -11,7 +11,7 @@ namespace SquirrelsNest.Core.Transfer.Dto {
         public  string      RepositoryLabel { get; set; }
         public  DateOnly    ReleaseDate { get; set; }
 
-        protected TrRelease() {
+        public TrRelease() {
             Name = String.Empty;
             Description = String.Empty;
             RepositoryLabel = String.Empty;

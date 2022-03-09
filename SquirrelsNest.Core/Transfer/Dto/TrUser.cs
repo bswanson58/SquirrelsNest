@@ -8,7 +8,7 @@ namespace SquirrelsNest.Core.Transfer.Dto {
         public  string  LoginName { get; set; }
         public  string  Email { get; set; }
 
-        protected TrUser() {
+        public TrUser() {
             Name = String.Empty;
             LoginName = String.Empty;
             Email = String.Empty;
@@ -26,5 +26,15 @@ namespace SquirrelsNest.Core.Transfer.Dto {
         public SnUser ToEntity() {
             return new SnUser( EntityId, String.Empty, LoginName, Name, Email );
         }
+
+        private static TrUser ? mDefaultUser;
+
+        public static TrUser Default =>
+            mDefaultUser ??= new TrUser {
+                EntityId = Common.Values.EntityId.Default,
+                Name = String.Empty,
+                LoginName = String.Empty,
+                Email = String.Empty
+            } ;
     }
 }

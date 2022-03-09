@@ -7,6 +7,7 @@ using SquirrelsNest.Core.Interfaces;
 using SquirrelsNest.Core.Platform;
 using SquirrelsNest.Core.ProjectTemplates;
 using SquirrelsNest.Core.Transfer.Export;
+using SquirrelsNest.Core.Transfer.Import;
 using SquirrelsNest.Core.Validators;
 
 namespace SquirrelsNest.Core {
@@ -23,6 +24,7 @@ namespace SquirrelsNest.Core {
             builder.RegisterType<ProjectTemplateSerializer>().As<IProjectTemplateSerializer>().InstancePerDependency();
             builder.RegisterType<ProjectTemplateManager>().As<IProjectTemplateManager>().InstancePerDependency();
 
+            builder.RegisterType<ImportManager>().As<IImportManager>().SingleInstance();
             builder.RegisterType<ExportManager>().As<IExportManager>().SingleInstance();
 
             builder.RegisterType<CompositeProjectValidator>().As<IValidator<CompositeProject>>();

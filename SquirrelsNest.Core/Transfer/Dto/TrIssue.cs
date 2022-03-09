@@ -57,5 +57,22 @@ namespace SquirrelsNest.Core.Transfer.Dto {
                                 Common.Values.EntityId.CreateIdOrThrow( WorkflowStateId ),
                                 Common.Values.EntityId.CreateIdOrThrow( AssignedToId ));
         }
+
+        public TrIssue With( string ? enteredBy = null, string ? assignedTo = null ) {
+            return new TrIssue {
+                AssignedToId = assignedTo ?? AssignedToId,
+                EnteredById = enteredBy ?? EnteredById,
+                EntityId = EntityId,
+                Title = Title,
+                Description = Description,
+                ProjectId = ProjectId,
+                IssueNumber = IssueNumber,
+                EntryDate = EntryDate,
+                IssueTypeId = IssueTypeId,
+                ComponentId = ComponentId,
+                ReleaseId = ReleaseId,
+                WorkflowStateId = WorkflowStateId
+            };
+        }
     }
 }

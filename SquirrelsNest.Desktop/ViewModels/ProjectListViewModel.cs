@@ -12,7 +12,9 @@ using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Logging;
+using SquirrelsNest.Core.Interfaces;
 using SquirrelsNest.Core.ProjectTemplates;
+using SquirrelsNest.Core.Transfer.Import;
 using SquirrelsNest.Desktop.Models;
 using SquirrelsNest.Desktop.Platform;
 using SquirrelsNest.Desktop.Views;
@@ -24,6 +26,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private readonly IModelState                mModelState;
         private readonly IProjectProvider           mProjectProvider;
         private readonly IProjectTemplateManager    mTemplateManager;
+        private readonly IImportManager             mImportManager;
         private readonly IDialogService             mDialogService;
         private readonly ILog                       mLog;
         private readonly CompositeDisposable        mSubscriptions;
@@ -32,15 +35,17 @@ namespace SquirrelsNest.Desktop.ViewModels {
         public  RangeCollection<SnProject>          ProjectList { get; }
         
         public  IRelayCommand                       CreateProject { get; }
+        public  IRelayCommand                       ImportProject { get; }
         public  IRelayCommand<bool>                 ViewDisplayed { get; }
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public  IRelayCommand<SnProject>            EditProject { get; }
 
         public ProjectListViewModel( IModelState modelState, IProjectProvider projectProvider, IProjectTemplateManager templateManager,
-                                     IDialogService dialogService, ILog log, SynchronizationContext context ) {
+                                     IImportManager importManager, IDialogService dialogService, ILog log, SynchronizationContext context ) {
             mModelState = modelState;
             mProjectProvider = projectProvider;
             mTemplateManager = templateManager;
+            mImportManager = importManager;
             mDialogService = dialogService;
             mContext = context;
             mLog = log;
@@ -48,6 +53,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
             mSubscriptions = new CompositeDisposable();
             ProjectList = new RangeCollection<SnProject>();
             CreateProject = new RelayCommand( OnCreateProject );
+            ImportProject = new RelayCommand( OnImportProject );
             ViewDisplayed = new RelayCommand<bool>( OnViewDisplayed );
             EditProject = new RelayCommand<SnProject>( OnEditProject );
         }
@@ -142,14 +148,29 @@ namespace SquirrelsNest.Desktop.ViewModels {
                         var editedProject = result.Parameters.GetValue<SnProject>( EditProjectDialogViewModel.cProject );
 
                         if( editedProject != null ) {
-                            var error = await mProjectProvider.UpdateProject( editedProject );
+                            ( await mProjectProvider.UpdateProject( editedProject ))
+                                .IfLeft( e => mLog.LogError( e ));
 
-                            error.IfLeft( e => mLog.LogError( e ));
                             await LoadProjectList();
                         }
                     }
                 });
             }
+        }
+
+        private void OnImportProject() {
+            mDialogService.ShowDialog( nameof( ImportProjectDialog ), new DialogParameters(), async result => {
+                if( result.Result == ButtonResult.Ok ) {
+                    var importParameters = result.Parameters.GetValue<ImportParameters>( ImportProjectDialogViewModel.cImportParameters );
+
+                    if( importParameters == null ) throw new ApplicationException( "Dialog did not return ImportParameters." );
+
+                    ( await mImportManager.ImportProject( importParameters ))
+                        .IfLeft( error => mLog.LogError( error ));
+
+                    await LoadProjectList();
+                }
+            });;
         }
 
         public void Dispose() {

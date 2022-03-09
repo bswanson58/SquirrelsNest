@@ -62,7 +62,10 @@
 
             <ListBox Grid.Row="0" ItemsSource="{Binding ProjectList}" ItemTemplate="{StaticResource ProjectTemplate}" SelectedItem="{Binding CurrentProject}"/>
 
-            <Button Grid.Row="2" HorizontalAlignment="Right" Style="{StaticResource GeneralButtonStyle}" Content="New Project" Command="{Binding CreateProject}"/>
+            <StackPanel Grid.Row="2" HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button Style="{StaticResource GeneralButtonStyle}" Content="Import Project" Margin="10,0" Command="{Binding ImportProject}"/>
+                <Button Style="{StaticResource GeneralButtonStyle}" Content="New Project" Command="{Binding CreateProject}"/>
+            </StackPanel>
         </Grid>
     </GroupBox>
 </UserControl>

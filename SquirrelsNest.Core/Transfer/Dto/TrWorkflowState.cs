@@ -12,7 +12,7 @@ namespace SquirrelsNest.Core.Transfer.Dto {
         public  string          Description { get; set; }
         public  StateCategory   Category { get; set; }
 
-        protected TrWorkflowState() {
+        public TrWorkflowState() {
             ProjectId = Common.Values.EntityId.Default;
             Name = String.Empty;
             Description = String.Empty;
