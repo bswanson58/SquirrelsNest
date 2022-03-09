@@ -42,7 +42,8 @@ namespace SquirrelsNest.Core.Transfer.Export {
                     .Map( te => te.With( te.CompositeProject.Components.Map( TrComponent.From )))
                     .Map( te => te.With( te.CompositeProject.IssueTypes.Map( TrIssueType.From )))
                     .Map( te => te.With( te.CompositeProject.Releases.Map( TrRelease.From )))
-                    .Map( te => te.With( te.CompositeProject.WorkflowStates.Map( TrWorkflowState.From )));
+                    .Map( te => te.With( te.CompositeProject.WorkflowStates.Map( TrWorkflowState.From )))
+                    .Map( te => te.With( te.CompositeProject.Users.Map( TrUser.From )));
 
             var entityWithIssues = 
                 from issueList in issues
