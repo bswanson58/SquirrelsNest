@@ -192,8 +192,9 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
         private async Task OnCreateIssue() {
             if( mCurrentProject.IsSome ) {
-                var project = mCurrentProject.AsEnumerable().First();
-                var composite = await mProjectBuilder.BuildCompositeProject( project );
+                // insure that the current project is up to date, because we are going to update it.
+                var updatedProject = await mCurrentProject.MapAsync( p => mProjectProvider.GetProject( p.EntityId ));
+                var composite = await updatedProject.BindAsync( p => mProjectBuilder.BuildCompositeProject( p ));
 
                 composite.IfLeft( error => mLog.LogError( error ));
                 composite.IfRight( compositeProject => {
@@ -206,7 +207,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
                             if( issue == null ) throw new ApplicationException( "Issue was not returned when editing issue" );
 
-                            project = project.WithNextIssueNumber();
+                            var project = compositeProject.Project.WithNextIssueNumber();
 
                             ( await ( await mIssueProvider.AddIssue( issue ))
                                     .BindAsync( _ => mProjectProvider.UpdateProject( project )))
