@@ -23,7 +23,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SquirrelsNest.EfDb", "Squir
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SquirrelsNest.EfDb.Tests", "SquirrelsNest.EfDb.Tests\SquirrelsNest.EfDb.Tests.csproj", "{16FCAB1E-E962-463E-B19F-B1F230CF575B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SquirrelsNest.DatabaseTests", "SquirrelsNest.DatabaseTests\SquirrelsNest.DatabaseTests.csproj", "{6174974A-CFE6-4F88-90B3-BB9B04828490}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SquirrelsNest.DatabaseTests", "SquirrelsNest.DatabaseTests\SquirrelsNest.DatabaseTests.csproj", "{6174974A-CFE6-4F88-90B3-BB9B04828490}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SquirrelsNest.Core.Tests", "SquirrelsNest.Core.Tests\SquirrelsNest.Core.Tests.csproj", "{1B41D07F-E8CB-403B-87FC-20C66A44F5EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -117,6 +119,13 @@ Global
 		{6174974A-CFE6-4F88-90B3-BB9B04828490}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6174974A-CFE6-4F88-90B3-BB9B04828490}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6174974A-CFE6-4F88-90B3-BB9B04828490}.Release|x64.ActiveCfg = Release|Any CPU
+		{1B41D07F-E8CB-403B-87FC-20C66A44F5EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B41D07F-E8CB-403B-87FC-20C66A44F5EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B41D07F-E8CB-403B-87FC-20C66A44F5EC}.Debug|x64.ActiveCfg = Debug|x64
+		{1B41D07F-E8CB-403B-87FC-20C66A44F5EC}.Debug|x64.Build.0 = Debug|x64
+		{1B41D07F-E8CB-403B-87FC-20C66A44F5EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B41D07F-E8CB-403B-87FC-20C66A44F5EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B41D07F-E8CB-403B-87FC-20C66A44F5EC}.Release|x64.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
