@@ -2,6 +2,7 @@
 using FluentValidation;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Core.CompositeBuilders;
+using SquirrelsNest.Core.Database;
 using SquirrelsNest.Core.Environment;
 using SquirrelsNest.Core.Interfaces;
 using SquirrelsNest.Core.Platform;
@@ -28,6 +29,14 @@ namespace SquirrelsNest.Core {
             builder.RegisterType<ExportManager>().As<IExportManager>().SingleInstance();
 
             builder.RegisterType<CompositeProjectValidator>().As<IValidator<CompositeProject>>();
+
+            // The entity providers
+            builder.RegisterType<ComponentProvider>().As<IComponentProvider>().InstancePerDependency();
+            builder.RegisterType<IssueProvider>().As<IIssueProvider>().InstancePerDependency();
+            builder.RegisterType<IssueTypeProvider>().As<IIssueTypeProvider>().SingleInstance();
+            builder.RegisterType<ReleaseProvider>().As<IReleaseProvider>().SingleInstance();
+            builder.RegisterType<WorkflowStateProvider>().As<IWorkflowStateProvider>().SingleInstance();
+            builder.RegisterType<UserProvider>().As<IUserProvider>().SingleInstance();
         }
     }
 }

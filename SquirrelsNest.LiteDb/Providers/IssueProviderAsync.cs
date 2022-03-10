@@ -1,13 +1,13 @@
 ﻿using LanguageExt;
 using LanguageExt.Common;
 using SquirrelsNest.Common.Entities;
-using SquirrelsNest.Common.Interfaces;
+using SquirrelsNest.Common.Interfaces.Database;
 using SquirrelsNest.Common.Values;
 using SquirrelsNest.LiteDb.Database;
 using SquirrelsNest.LiteDb.Dto;
 
 namespace SquirrelsNest.LiteDb.Providers {
-    internal class IssueProviderAsync : IssueProvider, IIssueProvider {
+    internal class IssueProviderAsync : IssueProvider, IDbIssueProvider {
         public IssueProviderAsync( IDatabaseProvider databaseProvider ) :
             base( databaseProvider ) {
         }

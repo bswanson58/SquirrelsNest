@@ -1,12 +1,12 @@
 ﻿using LanguageExt;
 using LanguageExt.Common;
 using SquirrelsNest.Common.Entities;
-using SquirrelsNest.Common.Interfaces;
+using SquirrelsNest.Common.Interfaces.Database;
 using SquirrelsNest.Common.Values;
 using SquirrelsNest.LiteDb.Database;
 
 namespace SquirrelsNest.LiteDb.Providers {
-    internal class ReleaseProviderAsync : ReleaseProvider, IReleaseProvider {
+    internal class ReleaseProviderAsync : ReleaseProvider, IDbReleaseProvider {
         public ReleaseProviderAsync( IDatabaseProvider databaseProvider ) :
             base( databaseProvider ) {
         }

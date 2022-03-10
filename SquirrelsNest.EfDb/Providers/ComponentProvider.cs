@@ -1,13 +1,13 @@
 ﻿using LanguageExt;
 using LanguageExt.Common;
 using SquirrelsNest.Common.Entities;
-using SquirrelsNest.Common.Interfaces;
+using SquirrelsNest.Common.Interfaces.Database;
 using SquirrelsNest.Common.Values;
 using SquirrelsNest.EfDb.Context;
 using SquirrelsNest.EfDb.Dto;
 
 namespace SquirrelsNest.EfDb.Providers {
-    internal class ComponentProvider : EntityProvider<SnComponent, DbComponent>, IComponentProvider {
+    internal class ComponentProvider : EntityProvider<SnComponent, DbComponent>, IDbComponentProvider {
         public ComponentProvider( IContextFactory contextFactory )
             : base( contextFactory ) { }
 

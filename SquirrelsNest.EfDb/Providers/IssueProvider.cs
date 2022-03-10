@@ -1,13 +1,13 @@
 ﻿using LanguageExt;
 using LanguageExt.Common;
 using SquirrelsNest.Common.Entities;
-using SquirrelsNest.Common.Interfaces;
+using SquirrelsNest.Common.Interfaces.Database;
 using SquirrelsNest.Common.Values;
 using SquirrelsNest.EfDb.Context;
 using SquirrelsNest.EfDb.Dto;
 
 namespace SquirrelsNest.EfDb.Providers {
-    internal class IssueProvider : EntityProvider<SnIssue, DbIssue>, IIssueProvider {
+    internal class IssueProvider : EntityProvider<SnIssue, DbIssue>, IDbIssueProvider {
         public IssueProvider( IContextFactory contextFactory )
             : base( contextFactory ) { }
 

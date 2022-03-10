@@ -1,13 +1,13 @@
 ﻿using LanguageExt;
 using LanguageExt.Common;
 using SquirrelsNest.Common.Entities;
-using SquirrelsNest.Common.Interfaces;
+using SquirrelsNest.Common.Interfaces.Database;
 using SquirrelsNest.Common.Values;
 using SquirrelsNest.EfDb.Context;
 using SquirrelsNest.EfDb.Dto;
 
 namespace SquirrelsNest.EfDb.Providers {
-    internal class ReleaseProvider : EntityProvider<SnRelease, DbRelease>, IReleaseProvider {
+    internal class ReleaseProvider : EntityProvider<SnRelease, DbRelease>, IDbReleaseProvider {
         public ReleaseProvider( IContextFactory contextFactory )
             : base( contextFactory ) { }
 

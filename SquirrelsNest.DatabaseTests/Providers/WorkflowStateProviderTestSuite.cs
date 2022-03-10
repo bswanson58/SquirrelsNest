@@ -2,13 +2,13 @@
 using System.Linq;
 using FluentAssertions;
 using SquirrelsNest.Common.Entities;
-using SquirrelsNest.Common.Interfaces;
+using SquirrelsNest.Common.Interfaces.Database;
 using SquirrelsNest.Common.Values;
 using Xunit;
 
 namespace SquirrelsNest.DatabaseTests.Providers {
     public abstract class WorkflowStateProviderTestSuite : BaseProviderTestSuite {
-        protected abstract IWorkflowStateProvider CreateSut();
+        protected abstract IDbWorkflowStateProvider CreateSut();
 
         [Fact]
         public async void StateCanBeStored() {

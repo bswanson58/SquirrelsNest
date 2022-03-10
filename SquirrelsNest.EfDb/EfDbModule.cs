@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using SquirrelsNest.Common.Interfaces;
+using SquirrelsNest.Common.Interfaces.Database;
 using SquirrelsNest.EfDb.Context;
 using SquirrelsNest.EfDb.Providers;
 
@@ -10,13 +11,13 @@ namespace SquirrelsNest.EfDb {
             builder.RegisterType<ContextFactory>().As<IContextFactory>().SingleInstance();
             builder.RegisterType<SquirrelsNestDbContext>().InstancePerDependency();
 
-            builder.RegisterType<ComponentProvider>().As<IComponentProvider>().SingleInstance();
-            builder.RegisterType<IssueProvider>().As<IIssueProvider>().SingleInstance();
-            builder.RegisterType<IssueTypeProvider>().As<IIssueTypeProvider>().SingleInstance();
+            builder.RegisterType<ComponentProvider>().As<IDbComponentProvider>().SingleInstance();
+            builder.RegisterType<IssueProvider>().As<IDbIssueProvider>().SingleInstance();
+            builder.RegisterType<IssueTypeProvider>().As<IDbIssueTypeProvider>().SingleInstance();
             builder.RegisterType<ProjectProvider>().As<IProjectProvider>().SingleInstance();
-            builder.RegisterType<ReleaseProvider>().As<IReleaseProvider>().SingleInstance();
-            builder.RegisterType<WorkflowStateProvider>().As<IWorkflowStateProvider>().SingleInstance();
-            builder.RegisterType<UserProvider>().As<IUserProvider>().SingleInstance();
+            builder.RegisterType<ReleaseProvider>().As<IDbReleaseProvider>().SingleInstance();
+            builder.RegisterType<WorkflowStateProvider>().As<IDbWorkflowStateProvider>().SingleInstance();
+            builder.RegisterType<UserProvider>().As<IDbUserProvider>().SingleInstance();
         }
     }
 }

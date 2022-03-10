@@ -3,7 +3,7 @@ using System.Linq;
 using FluentAssertions;
 using LanguageExt;
 using SquirrelsNest.Common.Entities;
-using SquirrelsNest.Common.Interfaces;
+using SquirrelsNest.Common.Interfaces.Database;
 using SquirrelsNest.Common.Platform;
 using SquirrelsNest.Common.Values;
 using Xunit;
@@ -18,7 +18,7 @@ namespace SquirrelsNest.DatabaseTests.Providers {
             DateTimeProvider.SetProvider( new TestTimeProvider( mTestTime ));
         }
 
-        protected abstract IReleaseProvider CreateSut();
+        protected abstract IDbReleaseProvider CreateSut();
         
         [Fact]
         public async void ReleaseCanBeStored() {

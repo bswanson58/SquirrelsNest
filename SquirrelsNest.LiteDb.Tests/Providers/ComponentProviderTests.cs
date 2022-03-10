@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using NSubstitute;
 using SquirrelsNest.Common.Interfaces;
+using SquirrelsNest.Common.Interfaces.Database;
 using SquirrelsNest.DatabaseTests.Providers;
 using SquirrelsNest.DatabaseTests.Support;
 using SquirrelsNest.LiteDb.Database;
@@ -24,7 +25,7 @@ namespace SquirrelsNest.LiteDb.Tests.Providers {
             mConstants.DatabaseFileName.Returns( "Project.DB" );
         }
 
-        protected override  IComponentProvider CreateSut() {
+        protected override  IDbComponentProvider CreateSut() {
             return new ComponentProviderAsync( new DatabaseProvider( mEnvironment, mConstants ));
         }
 
