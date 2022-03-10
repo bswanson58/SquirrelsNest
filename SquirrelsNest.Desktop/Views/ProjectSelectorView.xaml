@@ -27,6 +27,6 @@
     </UserControl.Resources>
 
     <Grid>
-        <ListBox ItemsSource="{Binding ProjectList}" ItemTemplate="{StaticResource ProjectTemplate}" SelectedItem="{Binding CurrentProject}"/>
+        <ListBox Margin="15,0,0,0" ItemsSource="{Binding ProjectList}" ItemTemplate="{StaticResource ProjectTemplate}" SelectedItem="{Binding CurrentProject}"/>
     </Grid>
 </UserControl>
