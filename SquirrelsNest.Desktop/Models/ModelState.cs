@@ -8,7 +8,7 @@ namespace SquirrelsNest.Desktop.Models {
     internal class ModelState : IModelState {
         private readonly BehaviorSubject<CurrentState>  mModelState;
         private Option<SnProject>                       mCurrentProject;
-        private SnUser                                  mCurrentUser;
+        private Option<SnUser>                          mCurrentUser;
 
         public  IObservable<CurrentState>               OnStateChange => mModelState.AsObservable();
 
@@ -42,7 +42,7 @@ namespace SquirrelsNest.Desktop.Models {
         public void ClearUser() {
             mCurrentUser = SnUser.Default;
 
-            NotifyStateChange();
+            ClearProject();
         }
 
         private void NotifyStateChange() {

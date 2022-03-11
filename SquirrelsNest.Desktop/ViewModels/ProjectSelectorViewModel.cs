@@ -29,6 +29,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private readonly IValidator<CompositeProject>   mValidator;
         private readonly ILog                           mLog;
         private readonly CompositeDisposable            mSubscriptions;
+        private Option<SnUser>                          mCurrentUser;
         private CompositeProject ?                      mCurrentProject;
 
         public  RangeCollection<CompositeProject>       ProjectList { get; }
@@ -43,6 +44,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
             mValidator = validator;
             mContext = context;
             mLog = log;
+            mCurrentUser = Option<SnUser>.None;
 
             ProjectList = new RangeCollection<CompositeProject>();
             mSubscriptions = new CompositeDisposable();

@@ -36,7 +36,8 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <ListBox Grid.Row="0" ItemsSource="{Binding UserList}" ItemTemplate="{StaticResource UserTemplate}" SelectedItem="{Binding CurrentUser}"/>
+            <ListBox Grid.Row="0" ItemsSource="{Binding UserList}" ItemTemplate="{StaticResource UserTemplate}"
+                     SelectedItem="{Binding SelectedUser}"/>
 
             <Button Grid.Row="2" HorizontalAlignment="Left" Style="{StaticResource GeneralButtonStyle}" Content="New User" Command="{Binding CreateUser}"/>
         </Grid>

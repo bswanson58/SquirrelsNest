@@ -34,7 +34,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private readonly IDialogService         mDialogService;
         private readonly ILog                   mLog;
         private readonly IRelayCommand          mFilterStateChanged;
-        private SnUser                          mCurrentUser;
+        private Option<SnUser>                  mCurrentUser;
         private Option<SnProject>               mCurrentProject;
         private bool                            mDisplayIssuesForAllUsers;
         private bool                            mDisplayFinalizedIssues;
@@ -63,7 +63,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
             mProjectBuilder = projectBuilder;
             mIssueBuilder = issueBuilder;
             mContext = context;
-            mCurrentUser = SnUser.Default;
+            mCurrentUser = Option<SnUser>.None;
+            mCurrentProject = Option<SnProject>.None;
             mDisplayIssuesForAllUsers = true;
             mDisplayFinalizedIssues = true;
             DisplayStyle = IssueViewStyle.Everything;
@@ -129,10 +130,12 @@ namespace SquirrelsNest.Desktop.ViewModels {
             mCurrentProject = state.Project;
             mCurrentUser = state.User;
 
-            mCurrentProject.Do( project => {
-                ProjectName = project.Name;
+            mCurrentUser.Do( _ => {
+                mCurrentProject.Do( project => {
+                    ProjectName = project.Name;
 
-                OnPropertyChanged( nameof( ProjectName ));
+                    OnPropertyChanged( nameof( ProjectName ));
+                });
             });
 
             await LoadIssueList();
@@ -147,8 +150,10 @@ namespace SquirrelsNest.Desktop.ViewModels {
         }
 
         private bool ShouldIssueBeDisplayed( UiIssue issue ) {
-            var forUser = mDisplayIssuesForAllUsers || issue.AssignedUser.EntityId.Equals( mCurrentUser.EntityId );
             var isActive = mDisplayFinalizedIssues || !issue.IsFinalized;
+            var forUser = mDisplayIssuesForAllUsers;
+
+            mCurrentUser.Do( user => forUser = mDisplayIssuesForAllUsers || issue.AssignedUser.EntityId.Equals( user.EntityId ));
 
             return forUser && isActive;
         }
@@ -168,7 +173,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
         }
 
         private async Task LoadIssueList() {
-            if( mCurrentProject.IsSome ) {
+            if(( mCurrentProject.IsSome ) &&
+               ( mCurrentUser.IsSome )) {
                 var issues = await mCurrentProject.ToEither( new Error())
                     .BindAsync( project => mIssueProvider.GetIssues( project ));
                 // this was broken into two parts to separate the awaits which caused a lock problem with LiteDB
@@ -177,6 +183,9 @@ namespace SquirrelsNest.Desktop.ViewModels {
                     .Map( list => from i in list orderby i.IsFinalized, i.IssueNumber select i )
                     .Match( list => IssueList.Reset( list ),
                         error => mLog.LogError( error ));
+            }
+            else {
+                IssueList.Clear();
             }
         }
 

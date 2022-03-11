@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reactive.Disposables;
 using System.Threading.Tasks;
 using LanguageExt;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
@@ -20,8 +21,9 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private readonly IUserProvider          mUserProvider;
         private readonly IDialogService         mDialogService;
         private readonly ILog                   mLog;
-        private readonly IDisposable            mStateSubscription;
-        private SnUser ?                        mCurrentUser;
+        private readonly CompositeDisposable    mSubscriptions;
+        private Option<SnUser>                  mCurrentUser;
+        private SnUser ?                        mSelectedUser;
 
         public  RangeCollection<SnUser>         UserList { get; }
         
@@ -32,37 +34,56 @@ namespace SquirrelsNest.Desktop.ViewModels {
             mUserProvider = userProvider;
             mDialogService = dialogService;
             mLog = log;
+            mCurrentUser = Option<SnUser>.None;
+            mSelectedUser = null;
+            mSubscriptions = new CompositeDisposable();
 
             UserList = new RangeCollection<SnUser>();
             CreateUser = new RelayCommand( OnCreateUser );
 
-            mStateSubscription = mModelState.OnStateChange.SubscribeAsync( OnStateChanged, OnError );
+            mSubscriptions.Add( mModelState.OnStateChange.SubscribeAsync( OnStateChanged, OnError ));
+            mSubscriptions.Add( mUserProvider.OnEntitySourceChange.SubscribeAsync( OnUserListChanged, OnError ));
         }
 
-        private async Task<Unit> OnStateChanged( CurrentState state ) {
+        private async Task OnStateChanged( CurrentState state ) {
+            if( state.User != mCurrentUser ) {
+                mCurrentUser = state.User;
+
+                await LoadUserList();
+                SetSelectedUser();
+            }
+        }
+
+        private async Task OnUserListChanged( EntitySourceChange _ ) {
             await LoadUserList();
-
-            mCurrentUser = UserList.FirstOrDefault( p => p.EntityId.Equals( state.User.EntityId ));
-
-            OnPropertyChanged( nameof( CurrentUser ));
-
-            return Unit.Default;
         }
 
         private void OnError( Exception ex ) {
             mLog.LogException( $"During ModelStateChanged in {nameof( UserListViewModel )}", ex );
         }
 
-        public SnUser ? CurrentUser {
-            get => mCurrentUser;
-            set {
-                SetProperty( ref mCurrentUser, value );
+        private void SetSelectedUser() {
+            mCurrentUser.Do( user => mSelectedUser = UserList.FirstOrDefault( p => p.EntityId.Equals( user.EntityId )));
+            if( mCurrentUser.IsNone ) {
+                mSelectedUser = null;
+            }
 
-                if( mCurrentUser != null ) {
-                    mModelState.SetUser( mCurrentUser );
-                }
-                else {
-                    mModelState.ClearProject();
+            OnPropertyChanged( nameof( SelectedUser ));
+        }
+
+        public SnUser ? SelectedUser {
+            get => mSelectedUser;
+            set {
+                if(( mSelectedUser != value ) &&
+                   ( value != null )) {
+                    SetProperty( ref mSelectedUser, value );
+
+                    if( mSelectedUser != null ) {
+                        mModelState.SetUser( mSelectedUser );
+                    }
+                    else {
+                        mModelState.ClearUser();
+                    }
                 }
             }
         }
@@ -71,9 +92,6 @@ namespace SquirrelsNest.Desktop.ViewModels {
             ( await mUserProvider.GetUsers())
                 .Match( list => UserList.Reset( list ),
                         error => mLog.LogError( error ));
-
-            mCurrentUser = UserList.FirstOrDefault();
-            OnPropertyChanged( nameof( CurrentUser ));
         }
 
         private void OnCreateUser() {
@@ -88,6 +106,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
                             .IfLeft( error => mLog.LogError( error ));
 
                         await LoadUserList();
+                        SelectedUser = UserList.FirstOrDefault( u => u.Email.Equals( editedUser.Email ));
                     }
                 }
             });
@@ -95,7 +114,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
         public void Dispose() {
             mUserProvider.Dispose();
-            mStateSubscription.Dispose();
+            mSubscriptions.Dispose();
         }
     }
 }
