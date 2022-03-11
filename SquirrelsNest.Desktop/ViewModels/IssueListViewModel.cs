@@ -200,15 +200,16 @@ namespace SquirrelsNest.Desktop.ViewModels {
         }
 
         private async Task OnCreateIssue() {
-            if( mCurrentProject.IsSome ) {
+            if(( mCurrentProject.IsSome ) &&
+               ( mCurrentUser.IsSome )) {
                 // insure that the current project is up to date, because we are going to update it.
                 var updatedProject = await mCurrentProject.MapAsync( p => mProjectProvider.GetProject( p.EntityId ));
                 var composite = await updatedProject.BindAsync( p => mProjectBuilder.BuildCompositeProject( p ));
 
                 composite.IfLeft( error => mLog.LogError( error ));
                 composite.IfRight( compositeProject => {
-                    var parameters = new DialogParameters {{ EditIssueDialogViewModel.cProjectParameter, compositeProject },
-                                                           { EditIssueDialogViewModel.cUserParameter, mCurrentUser }};
+                    var parameters = new DialogParameters {{ EditIssueDialogViewModel.cProjectParameter, compositeProject }};
+                    mCurrentUser.Do( user => parameters.Add( EditIssueDialogViewModel.cUserParameter, user  ));
 
                     mDialogService.ShowDialog( nameof( EditIssueDialog ), parameters, async result => {
                         if( result.Result == ButtonResult.Ok ) {
@@ -230,6 +231,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
         private async Task OnEditIssue( UiIssue ?  uiIssue ) {
             if(( mCurrentProject.IsSome ) &&
+               ( mCurrentUser.IsSome ) &&
                ( uiIssue != null )) {
                 var project = mCurrentProject.AsEnumerable().First();
                 var composite = await mProjectBuilder.BuildCompositeProject( project );
@@ -237,8 +239,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
                 composite.IfLeft( error => mLog.LogError( error ));
                 composite.IfRight( compositeProject => {
                     var parameters = new DialogParameters{{ EditIssueDialogViewModel.cProjectParameter, compositeProject },
-                                                          { EditIssueDialogViewModel.cUserParameter, mCurrentUser },
                                                           { EditIssueDialogViewModel.cIssueParameter, uiIssue.Issue }};
+                    mCurrentUser.Do( user => parameters.Add( EditIssueDialogViewModel.cUserParameter, user  ));
 
                     mDialogService.ShowDialog( nameof( EditIssueDialog ), parameters, async result => {
                         if( result.Result == ButtonResult.Ok ) {
