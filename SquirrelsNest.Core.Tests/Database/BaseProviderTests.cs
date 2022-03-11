@@ -39,7 +39,9 @@ namespace SquirrelsNest.Core.Tests.Database {
         protected async Task<SnIssue[]> CreateSomeIssues( uint count, SnComponent[] components ) {
             var retValue = new List<SnIssue>();
 
-            for( uint index = 0; index < components.Length; index++ ) {
+            if( count > components.Length ) throw new ArgumentException( "there should be at least as many components as issues created." );
+
+            for( uint index = 0; index < count; index++ ) {
                 retValue.Add( new SnIssue( $"issue {index + 1}", index + 1, SnProject.Default.EntityId ).With( components[index]));
             }
 
@@ -49,7 +51,9 @@ namespace SquirrelsNest.Core.Tests.Database {
         protected async Task<SnIssue[]> CreateSomeIssues( uint count, SnIssueType[] issueTypes ) {
             var retValue = new List<SnIssue>();
 
-            for( uint index = 0; index < issueTypes.Length; index++ ) {
+            if( count > issueTypes.Length ) throw new ArgumentException( "there should be at least as many issue types as issues created." );
+
+            for( uint index = 0; index < count; index++ ) {
                 retValue.Add( new SnIssue( $"issue {index + 1}", index + 1, SnProject.Default.EntityId ).With( issueTypes[index]));
             }
 
@@ -59,7 +63,9 @@ namespace SquirrelsNest.Core.Tests.Database {
         protected async Task<SnIssue[]> CreateSomeIssues( uint count, SnRelease[] releases ) {
             var retValue = new List<SnIssue>();
 
-            for( uint index = 0; index < releases.Length; index++ ) {
+            if( count > releases.Length ) throw new ArgumentException( "there should be at least as many releases as issues created." );
+
+            for( uint index = 0; index < count; index++ ) {
                 retValue.Add( new SnIssue( $"issue {index + 1}", index + 1, SnProject.Default.EntityId ).With( releases[index]));
             }
 
@@ -69,7 +75,9 @@ namespace SquirrelsNest.Core.Tests.Database {
         protected async Task<SnIssue[]> CreateSomeIssues( uint count, SnWorkflowState[] states ) {
             var retValue = new List<SnIssue>();
 
-            for( uint index = 0; index < states.Length; index++ ) {
+            if( count > states.Length ) throw new ArgumentException( "there should be at least as many workflow states as issues created." );
+
+            for( uint index = 0; index < count; index++ ) {
                 retValue.Add( new SnIssue( $"issue {index + 1}", index + 1, SnProject.Default.EntityId ).With( states[index]));
             }
 
@@ -79,9 +87,10 @@ namespace SquirrelsNest.Core.Tests.Database {
         protected async Task<SnIssue[]> CreateSomeIssues( uint count, SnUser[] enteredBy, SnUser[] assignedTo ) {
             var retValue = new List<SnIssue>();
 
-            if( enteredBy.Length != assignedTo.Length ) throw new ArgumentException( "enteredBy and assignedTo users must be provided" );
+            if( count > assignedTo.Length ) throw new ArgumentException( "there should be at least as many assigned users as issues created." );
+            if( count > enteredBy.Length ) throw new ArgumentException( "there should be at least as many entering users as issues created." );
 
-            for( uint index = 0; index < enteredBy.Length; index++ ) {
+            for( uint index = 0; index < count; index++ ) {
                 retValue.Add( new SnIssue( $"issue {index + 1}", index + 1, SnProject.Default.EntityId )
                     .With( enteredBy: enteredBy[index].EntityId, assignedTo: assignedTo[index].EntityId ));
             }
