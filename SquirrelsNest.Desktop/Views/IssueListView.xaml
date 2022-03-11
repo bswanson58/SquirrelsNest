@@ -84,10 +84,14 @@
                     <Setter TargetName="IssueNumber" Property="TextDecorations" Value="Strikethrough"/>
                     <Setter TargetName="IssueTitle" Property="Opacity" Value="0.6"/>
                 </DataTrigger>
-                <DataTrigger Binding="{Binding IsCurrentUser}" Value="True">
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Path=IsCurrentUser}" Value="True" />
+                        <Condition Binding="{Binding Path=IsFinalized}" Value="False" />
+                    </MultiDataTrigger.Conditions>
                     <Setter TargetName="IssueNumber" Property="Foreground" Value="{StaticResource SignatureSolidBrush}"/>
                     <Setter TargetName="IssueTitle" Property="Foreground" Value="{StaticResource SignatureSolidBrush}"/>
-                </DataTrigger>
+                </MultiDataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
 
@@ -139,10 +143,14 @@
                     <Setter TargetName="IssueNumber" Property="TextDecorations" Value="Strikethrough"/>
                     <Setter TargetName="IssueTitle" Property="Opacity" Value="0.6"/>
                 </DataTrigger>
-                <DataTrigger Binding="{Binding IsCurrentUser}" Value="True">
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Path=IsCurrentUser}" Value="True" />
+                        <Condition Binding="{Binding Path=IsFinalized}" Value="False" />
+                    </MultiDataTrigger.Conditions>
                     <Setter TargetName="IssueNumber" Property="Foreground" Value="{StaticResource SignatureSolidBrush}"/>
                     <Setter TargetName="IssueTitle" Property="Foreground" Value="{StaticResource SignatureSolidBrush}"/>
-                </DataTrigger>
+                </MultiDataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
 
@@ -207,10 +215,14 @@
                     <Setter TargetName="IssueNumber" Property="TextDecorations" Value="Strikethrough"/>
                     <Setter TargetName="IssueTitle" Property="Opacity" Value="0.6"/>
                 </DataTrigger>
-                <DataTrigger Binding="{Binding IsCurrentUser}" Value="True">
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Path=IsCurrentUser}" Value="True" />
+                        <Condition Binding="{Binding Path=IsFinalized}" Value="False" />
+                    </MultiDataTrigger.Conditions>
                     <Setter TargetName="IssueNumber" Property="Foreground" Value="{StaticResource SignatureSolidBrush}"/>
                     <Setter TargetName="IssueTitle" Property="Foreground" Value="{StaticResource SignatureSolidBrush}"/>
-                </DataTrigger>
+                </MultiDataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
 
@@ -259,10 +271,14 @@
                     <Setter TargetName="IssueNumber" Property="TextDecorations" Value="Strikethrough"/>
                     <Setter TargetName="IssueTitle" Property="Opacity" Value="0.6"/>
                 </DataTrigger>
-                <DataTrigger Binding="{Binding IsCurrentUser}" Value="True">
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Path=IsCurrentUser}" Value="True" />
+                        <Condition Binding="{Binding Path=IsFinalized}" Value="False" />
+                    </MultiDataTrigger.Conditions>
                     <Setter TargetName="IssueNumber" Property="Foreground" Value="{StaticResource SignatureSolidBrush}"/>
                     <Setter TargetName="IssueTitle" Property="Foreground" Value="{StaticResource SignatureSolidBrush}"/>
-                </DataTrigger>
+                </MultiDataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
 
