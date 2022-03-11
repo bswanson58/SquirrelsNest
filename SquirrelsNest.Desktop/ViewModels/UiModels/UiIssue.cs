@@ -1,4 +1,5 @@
-﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+﻿using LanguageExt;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Core.CompositeBuilders;
 
@@ -17,9 +18,12 @@ namespace SquirrelsNest.Desktop.ViewModels.UiModels {
         public  string              Description => Issue.Description;
 
         public  bool                IsFinalized => State.Category == StateCategory.Completed || State.Category == StateCategory.Terminal;
+        public  bool                IsCurrentUser { get; private set; }
 
-        public UiIssue( CompositeIssue compositeIssue ) {
+        public UiIssue( CompositeIssue compositeIssue, Option<SnUser> currentUser ) {
             mCompositeIssue = compositeIssue;
+
+            currentUser.Do( u => IsCurrentUser = mCompositeIssue.Issue.AssignedToId.Equals( u.EntityId ));
         }
     }
 }

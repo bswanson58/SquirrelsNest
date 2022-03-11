@@ -6,6 +6,9 @@
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
+    <Color x:Key="SignatureColor">#FFEA6500</Color>
+    <SolidColorBrush x:Key="SignatureSolidBrush" Color="{StaticResource SignatureColor}"/>
+
     <Color x:Key="BorderLineColor">#80D0D0D0</Color>
 
     <SolidColorBrush x:Key="ControlTextColor" Color="#FF878787" />

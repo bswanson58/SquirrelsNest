@@ -84,6 +84,10 @@
                     <Setter TargetName="IssueNumber" Property="TextDecorations" Value="Strikethrough"/>
                     <Setter TargetName="IssueTitle" Property="Opacity" Value="0.6"/>
                 </DataTrigger>
+                <DataTrigger Binding="{Binding IsCurrentUser}" Value="True">
+                    <Setter TargetName="IssueNumber" Property="Foreground" Value="{StaticResource SignatureSolidBrush}"/>
+                    <Setter TargetName="IssueTitle" Property="Foreground" Value="{StaticResource SignatureSolidBrush}"/>
+                </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
 
@@ -134,6 +138,10 @@
                 <DataTrigger Binding="{Binding IsFinalized}" Value="True">
                     <Setter TargetName="IssueNumber" Property="TextDecorations" Value="Strikethrough"/>
                     <Setter TargetName="IssueTitle" Property="Opacity" Value="0.6"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsCurrentUser}" Value="True">
+                    <Setter TargetName="IssueNumber" Property="Foreground" Value="{StaticResource SignatureSolidBrush}"/>
+                    <Setter TargetName="IssueTitle" Property="Foreground" Value="{StaticResource SignatureSolidBrush}"/>
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
@@ -199,6 +207,10 @@
                     <Setter TargetName="IssueNumber" Property="TextDecorations" Value="Strikethrough"/>
                     <Setter TargetName="IssueTitle" Property="Opacity" Value="0.6"/>
                 </DataTrigger>
+                <DataTrigger Binding="{Binding IsCurrentUser}" Value="True">
+                    <Setter TargetName="IssueNumber" Property="Foreground" Value="{StaticResource SignatureSolidBrush}"/>
+                    <Setter TargetName="IssueTitle" Property="Foreground" Value="{StaticResource SignatureSolidBrush}"/>
+                </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
 
@@ -246,6 +258,10 @@
                 <DataTrigger Binding="{Binding IsFinalized}" Value="True">
                     <Setter TargetName="IssueNumber" Property="TextDecorations" Value="Strikethrough"/>
                     <Setter TargetName="IssueTitle" Property="Opacity" Value="0.6"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsCurrentUser}" Value="True">
+                    <Setter TargetName="IssueNumber" Property="Foreground" Value="{StaticResource SignatureSolidBrush}"/>
+                    <Setter TargetName="IssueTitle" Property="Foreground" Value="{StaticResource SignatureSolidBrush}"/>
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>

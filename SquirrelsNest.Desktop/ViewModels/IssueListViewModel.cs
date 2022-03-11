@@ -165,7 +165,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
                 var composite = await mIssueBuilder.BuildCompositeIssue( issue );
 
                 composite.Match(
-                    c => retValue.Add( new UiIssue( c )), 
+                    c => retValue.Add( new UiIssue( c, mCurrentUser )), 
                     error => mLog.LogError( error ));
             }
 
