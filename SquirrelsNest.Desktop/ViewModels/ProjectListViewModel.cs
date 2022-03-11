@@ -37,8 +37,10 @@ namespace SquirrelsNest.Desktop.ViewModels {
         public  IRelayCommand                       CreateProject { get; }
         public  IRelayCommand                       ImportProject { get; }
         public  IRelayCommand<bool>                 ViewDisplayed { get; }
-        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        // ReSharper disable UnusedAutoPropertyAccessor.Global
         public  IRelayCommand<SnProject>            EditProject { get; }
+        public  IRelayCommand<SnProject>            DeleteProject { get; }
+        // ReSharper enable UnusedAutoPropertyAccessor.Global
 
         public ProjectListViewModel( IModelState modelState, IProjectProvider projectProvider, IProjectTemplateManager templateManager,
                                      IImportManager importManager, IDialogService dialogService, ILog log, SynchronizationContext context ) {
@@ -56,6 +58,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
             ImportProject = new RelayCommand( OnImportProject );
             ViewDisplayed = new RelayCommand<bool>( OnViewDisplayed );
             EditProject = new RelayCommand<SnProject>( OnEditProject );
+            DeleteProject = new RelayCommand<SnProject>( OnDeleteProject );
         }
 
         private async void OnViewDisplayed( bool isLoaded ) {
@@ -158,6 +161,23 @@ namespace SquirrelsNest.Desktop.ViewModels {
             }
         }
 
+        private void OnDeleteProject( SnProject ? project ) {
+            if( project != null ) {
+                var parameters = new DialogParameters {
+                    { ConfirmationDialogViewModel.cConfirmationText, $"Would you like to delete the project named '{project.Name}'?" }
+                };
+
+                mDialogService.ShowDialog( nameof( ConfirmationDialog ), parameters, async result => {
+                    if( result.Result == ButtonResult.Ok ) {
+                        ( await mProjectProvider.DeleteProject( project ))
+                            .IfLeft( error => mLog.LogError( error ));
+
+                        await LoadProjectList();
+                    }
+                });
+            }
+        }
+
         private void OnImportProject() {
             mDialogService.ShowDialog( nameof( ImportProjectDialog ), new DialogParameters(), async result => {
                 if( result.Result == ButtonResult.Ok ) {
@@ -170,7 +190,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
                     await LoadProjectList();
                 }
-            });;
+            });
         }
 
         public void Dispose() {
