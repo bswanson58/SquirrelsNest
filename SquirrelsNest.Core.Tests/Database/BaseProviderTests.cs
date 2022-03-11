@@ -12,6 +12,7 @@ namespace SquirrelsNest.Core.Tests.Database {
         protected readonly IDbReleaseProvider       mReleaseProvider;
         protected readonly IDbWorkflowStateProvider mStateProvider;
         protected readonly IDbUserProvider          mUserProvider;
+        protected readonly IDbProjectProvider       mProjectProvider;
 
         protected BaseProviderTests() {
             var contextFactory = new EfContextFactory();
@@ -22,6 +23,17 @@ namespace SquirrelsNest.Core.Tests.Database {
             mReleaseProvider = new EfDb.Providers.ReleaseProvider( contextFactory );
             mStateProvider = new EfDb.Providers.WorkflowStateProvider( contextFactory );
             mUserProvider = new EfDb.Providers.UserProvider( contextFactory );
+            mProjectProvider = new EfDb.Providers.ProjectProvider( contextFactory );
+        }
+
+        protected async Task<SnIssue[]> CreateSomeIssues( uint count, SnProject forProject ) {
+            var retValue = new List<SnIssue>();
+
+            for( uint index = 0; index < count; index++ ) {
+                retValue.Add( new SnIssue( $"issue {index + 1}", index + 1, forProject.EntityId ));
+            }
+
+            return await CreateSomeIssues( retValue.ToArray());
         }
 
         protected async Task<SnIssue[]> CreateSomeIssues( uint count, SnComponent[] components ) {
@@ -88,44 +100,48 @@ namespace SquirrelsNest.Core.Tests.Database {
             return retValue.ToArray();
         }
 
-        protected async Task<SnComponent[]> CreateSomeComponents( uint count ) {
+        protected async Task<SnComponent[]> CreateSomeComponents( uint count, SnProject ? forProject = null ) {
             var retValue = new List<SnComponent>();
+            var project = forProject ?? SnProject.Default;
 
             for( var index = 0; index < count; index++ ) {
-                (await mComponentProvider.AddComponent( new SnComponent( $"component {index + 1}" ).For( SnProject.Default )))
+                (await mComponentProvider.AddComponent( new SnComponent( $"component {index + 1}" ).For( project )))
                     .Do( c => retValue.Add( c ));
             }
 
             return retValue.ToArray();
         }
 
-        protected async Task<SnIssueType[]> CreateSomeIssueTypes( uint count ) {
+        protected async Task<SnIssueType[]> CreateSomeIssueTypes( uint count, SnProject ? forProject = null ) {
             var retValue = new List<SnIssueType>();
+            var project = forProject ?? SnProject.Default;
 
             for( var index = 0; index < count; index++ ) {
-                (await mIssueTypeProvider.AddIssue( new SnIssueType( $"issue type {index + 1}" ).For( SnProject.Default )))
+                (await mIssueTypeProvider.AddIssue( new SnIssueType( $"issue type {index + 1}" ).For( project )))
                     .Do( c => retValue.Add( c ));
             }
 
             return retValue.ToArray();
         }
 
-        protected async Task<SnRelease[]> CreateSomeReleases( uint count ) {
+        protected async Task<SnRelease[]> CreateSomeReleases( uint count, SnProject ? forProject = null ) {
             var retValue = new List<SnRelease>();
+            var project = forProject ?? SnProject.Default;
 
             for( var index = 0; index < count; index++ ) {
-                (await mReleaseProvider.AddRelease( new SnRelease( $"release {index + 1}" ).For( SnProject.Default )))
+                (await mReleaseProvider.AddRelease( new SnRelease( $"release {index + 1}" ).For( project )))
                     .Do( c => retValue.Add( c ));
             }
 
             return retValue.ToArray();
         }
 
-        protected async Task<SnWorkflowState[]> CreateSomeStates( uint count ) {
+        protected async Task<SnWorkflowState[]> CreateSomeStates( uint count, SnProject ? forProject = null ) {
             var retValue = new List<SnWorkflowState>();
+            var project = forProject ?? SnProject.Default;
 
             for( var index = 0; index < count; index++ ) {
-                (await mStateProvider.AddState( new SnWorkflowState( $"state {index + 1}" ).For( SnProject.Default )))
+                (await mStateProvider.AddState( new SnWorkflowState( $"state {index + 1}" ).For( project )))
                     .Do( c => retValue.Add( c ));
             }
 
@@ -137,6 +153,17 @@ namespace SquirrelsNest.Core.Tests.Database {
 
             for( var index = 0; index < count; index++ ) {
                 (await mUserProvider.AddUser( new SnUser( $"user {index + 1}", $"user{index}@bob.com" )))
+                    .Do( c => retValue.Add( c ));
+            }
+
+            return retValue.ToArray();
+        }
+
+        protected async Task<SnProject[]> CreateSomeProjects( uint count ) {
+            var retValue = new List<SnProject>();
+
+            for( var index = 0; index < count; index++ ) {
+                (await mProjectProvider.AddProject( new SnProject( $"project {index + 1}", $"P{index}" )))
                     .Do( c => retValue.Add( c ));
             }
 
@@ -156,6 +183,7 @@ namespace SquirrelsNest.Core.Tests.Database {
             mReleaseProvider.Dispose();
             mStateProvider.Dispose();
             mUserProvider.Dispose();
+            mProjectProvider.Dispose();
 
             DeleteDatabase();
         }

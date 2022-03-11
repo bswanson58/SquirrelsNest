@@ -34,6 +34,7 @@ namespace SquirrelsNest.Core {
             builder.RegisterType<ComponentProvider>().As<IComponentProvider>().InstancePerDependency();
             builder.RegisterType<IssueProvider>().As<IIssueProvider>().InstancePerDependency();
             builder.RegisterType<IssueTypeProvider>().As<IIssueTypeProvider>().SingleInstance();
+            builder.RegisterType<ProjectProvider>().As<IProjectProvider>().SingleInstance();
             builder.RegisterType<ReleaseProvider>().As<IReleaseProvider>().SingleInstance();
             builder.RegisterType<WorkflowStateProvider>().As<IWorkflowStateProvider>().SingleInstance();
             builder.RegisterType<UserProvider>().As<IUserProvider>().SingleInstance();
