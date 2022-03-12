@@ -10,7 +10,7 @@ namespace SquirrelsNest.Core.Tests.Database {
     public class ProjectProviderTests : BaseProviderTests {
 
         private IProjectProvider CreateSut() {
-            return new ProjectProvider( mIssueProvider, mProjectProvider, mComponentProvider, mIssueTypeProvider,
+            return new ProjectProvider( mAssociationProvider, mIssueProvider, mProjectProvider, mComponentProvider, mIssueTypeProvider,
                                         mReleaseProvider, mStateProvider );
         }
 

@@ -116,6 +116,5 @@ namespace SquirrelsNest.DatabaseTests.Providers {
             result.IfLeft( error => error.Should().BeNull( $"{error.Message} occurred while getting empty components list" ));
             result.IfRight( enumerator => enumerator.Count().Should().Be( 0, "There should be no components in the database" ));
         }
-
     }
 }

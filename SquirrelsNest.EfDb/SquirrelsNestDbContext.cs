@@ -9,6 +9,7 @@ using SquirrelsNest.EfDb.Support;
 
 namespace SquirrelsNest.EfDb {
     internal class SquirrelsNestDbContext : DbContext {
+        public  DbSet<DbAssociation>    Associations { get; set; }
         public  DbSet<DbComponent>      Components { get; set; }
         public  DbSet<DbIssue>          Issues { get; set; }
         public  DbSet<DbIssueType>      IssueTypes { get; set; }
@@ -28,11 +29,11 @@ namespace SquirrelsNest.EfDb {
 
             configurationBuilder.Properties<DateOnly>()
                 .HaveConversion<DateOnlyConverter>()
-                .HaveColumnType("date");
+                .HaveColumnType( "date" );
 
             configurationBuilder.Properties<DateOnly?>()
                 .HaveConversion<NullableDateOnlyConverter>()
-                .HaveColumnType("date");
+                .HaveColumnType( "date" );
         }
     }
 }

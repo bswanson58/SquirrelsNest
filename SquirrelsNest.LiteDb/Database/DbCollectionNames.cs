@@ -1,6 +1,7 @@
 ﻿namespace SquirrelsNest.LiteDb.Database {
     internal static class DbCollectionNames {
         // ReSharper disable InconsistentNaming
+        public const string AssociationCollection   = "Associations";
         public const string ComponentCollection     = "Components";
         public const string IssueCollection         = "Issues";
         public const string IssueTypeCollection     = "IssueTypes";

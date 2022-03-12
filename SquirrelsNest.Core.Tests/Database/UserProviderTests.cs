@@ -9,7 +9,7 @@ namespace SquirrelsNest.Core.Tests.Database {
     [Collection(nameof(SequentialCollection))]
     public class UserProviderTests : BaseProviderTests {
         private IUserProvider CreateSut() {
-            return new UserProvider( mIssueProvider, mUserProvider );
+            return new UserProvider( mIssueProvider, mUserProvider, mAssociationProvider );
         }
 
         [Fact]

@@ -6,6 +6,7 @@ using SquirrelsNest.Common.Interfaces.Database;
 
 namespace SquirrelsNest.Core.Tests.Database {
     public class BaseProviderTests : IDisposable {
+        protected readonly IDbAssociationProvider   mAssociationProvider;
         protected readonly IDbIssueProvider         mIssueProvider;
         protected readonly IDbComponentProvider     mComponentProvider;
         protected readonly IDbIssueTypeProvider     mIssueTypeProvider;
@@ -17,6 +18,7 @@ namespace SquirrelsNest.Core.Tests.Database {
         protected BaseProviderTests() {
             var contextFactory = new EfContextFactory();
 
+            mAssociationProvider = new EfDb.Providers.AssociationProvider( contextFactory );
             mIssueProvider = new EfDb.Providers.IssueProvider( contextFactory );
             mComponentProvider = new EfDb.Providers.ComponentProvider( contextFactory );
             mIssueTypeProvider = new EfDb.Providers.IssueTypeProvider( contextFactory );
@@ -186,6 +188,7 @@ namespace SquirrelsNest.Core.Tests.Database {
         }
 
         public virtual void Dispose() {
+            mAssociationProvider.Dispose();
             mIssueProvider.Dispose();
             mComponentProvider.Dispose();
             mIssueTypeProvider.Dispose();

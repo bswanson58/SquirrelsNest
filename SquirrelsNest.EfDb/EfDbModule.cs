@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Interfaces.Database;
 using SquirrelsNest.EfDb.Context;
 using SquirrelsNest.EfDb.Providers;
@@ -11,6 +10,7 @@ namespace SquirrelsNest.EfDb {
             builder.RegisterType<ContextFactory>().As<IContextFactory>().SingleInstance();
             builder.RegisterType<SquirrelsNestDbContext>().InstancePerDependency();
 
+            builder.RegisterType<AssociationProvider>().As<IDbAssociationProvider>().SingleInstance();
             builder.RegisterType<ComponentProvider>().As<IDbComponentProvider>().SingleInstance();
             builder.RegisterType<IssueProvider>().As<IDbIssueProvider>().SingleInstance();
             builder.RegisterType<IssueTypeProvider>().As<IDbIssueTypeProvider>().SingleInstance();
