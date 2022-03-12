@@ -18,7 +18,9 @@ namespace SquirrelsNest.EfDb.Providers {
         public Task<Either<Error, Unit>> DeleteAssociation( SnAssociation user ) => DeleteEntity( user );
         public Task<Either<Error, SnAssociation>> GetAssociation( EntityId userId ) => GetEntity( userId );
 
-        public Task<Either<Error, IEnumerable<SnAssociation>>> GetAssociations( SnUser forUser ) => GetEntities();
-        public Task<Either<Error, IEnumerable<SnAssociation>>> GetAssociations( EntityId associationId ) => GetEntities();
+        public Task<Either<Error, IEnumerable<SnAssociation>>> GetAssociations( SnUser forUser ) => 
+            GetEntities( a => a.OwnerId.Equals( forUser.EntityId ));
+        public Task<Either<Error, IEnumerable<SnAssociation>>> GetAssociations( EntityId associationId ) =>
+            GetEntities( a => a.AssociationId.Equals( associationId ));
     }
 }

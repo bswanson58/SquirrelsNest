@@ -8,6 +8,7 @@ using SquirrelsNest.Core.CompositeBuilders;
 
 namespace SquirrelsNest.Core.Database {
     internal class ProjectProvider : BaseDeleteProvider, IProjectProvider {
+        private readonly IDbAssociationProvider     mAssociationProvider;
         private readonly IDbProjectProvider         mProjectProvider;
         private readonly IDbComponentProvider       mComponentProvider;
         private readonly IDbIssueTypeProvider       mIssueTypeProvider;
@@ -16,10 +17,11 @@ namespace SquirrelsNest.Core.Database {
 
         public IObservable<EntitySourceChange> OnEntitySourceChange => mProjectProvider.OnEntitySourceChange;
 
-        public ProjectProvider( IDbIssueProvider issueProvider, IDbProjectProvider projectProvider,
+        public ProjectProvider( IDbAssociationProvider associationProvider, IDbIssueProvider issueProvider, IDbProjectProvider projectProvider,
                                 IDbComponentProvider componentProvider, IDbIssueTypeProvider issueTypeProvider,
                                 IDbReleaseProvider releaseProvider, IDbWorkflowStateProvider stateProvider ) :
             base( issueProvider ) {
+            mAssociationProvider = associationProvider;
             mProjectProvider = projectProvider;
             mComponentProvider = componentProvider;
             mIssueTypeProvider = issueTypeProvider;
@@ -28,9 +30,31 @@ namespace SquirrelsNest.Core.Database {
         }
 
         public Task<Either<Error, SnProject>> AddProject( SnProject project ) => mProjectProvider.AddProject( project );
+
+        public async Task<Either<Error, SnProject>> AddProject( SnProject project, SnUser forUser ) {
+            var projectResult = await mProjectProvider.AddProject( project ).ConfigureAwait( false );
+
+            return await projectResult.BindAsync( async p => {
+                var association = new SnAssociation( forUser.EntityId, p.EntityId );
+
+                return ( await mAssociationProvider.AddAssociation( association ).ConfigureAwait( false ))
+                    .Bind( _ => projectResult.Map( pr => pr ));
+            }); 
+        }
+
         public Task<Either<Error, Unit>> UpdateProject( SnProject project ) => mProjectProvider.UpdateProject( project );
         public Task<Either<Error, SnProject>> GetProject( EntityId projectId ) => mProjectProvider.GetProject( projectId );
         public Task<Either<Error, IEnumerable<SnProject>>> GetProjects() => mProjectProvider.GetProjects();
+
+        public async Task<Either<Error, IEnumerable<SnProject>>> GetProjects( SnUser forUser ) {
+            var associatedProjects = new List<EntityId>();
+            var projects = await mProjectProvider.GetProjects().ConfigureAwait( false );
+
+            ( await mAssociationProvider.GetAssociations( forUser ).ConfigureAwait( false ))
+                .Do( list => associatedProjects.AddRange( from a in list select a.AssociationId ));
+
+            return projects.Map( list => from project in list where associatedProjects.Contains( project.EntityId ) select project );
+        }
 
         public async Task<Either<Error, Unit>> DeleteProject( SnProject project ) {
             if( project == null ) {
@@ -39,6 +63,26 @@ namespace SquirrelsNest.Core.Database {
 
             return await CollectProject( project )
                 .BindAsync( DeleteProject );
+        }
+
+        private async Task<Either<Error, Unit>> DeleteAssociations( IEnumerable<SnAssociation> associations ) {
+            foreach( var association in associations ) {
+                var result = await mAssociationProvider.DeleteAssociation( association );
+
+                if( result.IsLeft ) {
+                    return result;
+                }
+            }
+
+            return Unit.Default;
+        }
+
+        public async Task<Either<Error, Unit>> DeleteProject( SnProject project, SnUser user ) {
+            var associations = ( await mAssociationProvider.GetAssociations( user ))
+                .Map( list => from a in list where a.AssociationId.Equals( project.EntityId ) select a );
+
+            return await DeleteProject( project )
+                .Bind( _ => associations.BindAsync( DeleteAssociations ));
         }
 
         private async Task<Either<Error, CompositeProject>> CollectProject( SnProject project ) {
