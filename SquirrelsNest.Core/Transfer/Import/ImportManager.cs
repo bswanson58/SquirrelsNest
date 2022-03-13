@@ -5,6 +5,7 @@ using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Core.Interfaces;
 using SquirrelsNest.Core.Platform;
 using SquirrelsNest.Core.Transfer.Dto;
+using SquirrelsNest.Core.Validators;
 
 namespace SquirrelsNest.Core.Transfer.Import {
     internal class ImportManager : IImportManager {
@@ -140,7 +141,24 @@ namespace SquirrelsNest.Core.Transfer.Import {
             return await mProjectProvider.AddProject( project, forUser );
         }
 
+        private Option<Error> ValidateImportParameters( ImportParameters parameters ) {
+            var validator = new ImportParametersValidator();
+            var validationResults = validator.Validate( parameters );
+
+            if(!validationResults.IsValid ) {
+                return Error.New( 0, validationResults.ToString());
+            }
+
+            return Option<Error>.None;
+        }
+
         public async Task<Either<Error, SnProject>> ImportProject( ImportParameters parameters, SnUser forUser ) {
+            var parameterErrors = ValidateImportParameters( parameters );
+
+            if( parameterErrors.IsSome ) {
+                return parameterErrors.First();
+            }
+
             var imported = await mFileWriter.LoadAsync<TransferEntities>( parameters.ImportFilePath );
 
             return await imported.BindAsync( CreateComponents )
