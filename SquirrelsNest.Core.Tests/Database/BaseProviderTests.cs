@@ -13,6 +13,7 @@ namespace SquirrelsNest.Core.Tests.Database {
         protected readonly IDbReleaseProvider       mReleaseProvider;
         protected readonly IDbWorkflowStateProvider mStateProvider;
         protected readonly IDbUserProvider          mUserProvider;
+        protected readonly IDbUserDataProvider      mUserDataProvider;
         protected readonly IDbProjectProvider       mProjectProvider;
 
         protected BaseProviderTests() {
@@ -25,6 +26,7 @@ namespace SquirrelsNest.Core.Tests.Database {
             mReleaseProvider = new EfDb.Providers.ReleaseProvider( contextFactory );
             mStateProvider = new EfDb.Providers.WorkflowStateProvider( contextFactory );
             mUserProvider = new EfDb.Providers.UserProvider( contextFactory );
+            mUserDataProvider = new EfDb.Providers.UserDataProvider( contextFactory );
             mProjectProvider = new EfDb.Providers.ProjectProvider( contextFactory );
         }
 
@@ -195,6 +197,7 @@ namespace SquirrelsNest.Core.Tests.Database {
             mReleaseProvider.Dispose();
             mStateProvider.Dispose();
             mUserProvider.Dispose();
+            mUserDataProvider.Dispose();
             mProjectProvider.Dispose();
 
             DeleteDatabase();

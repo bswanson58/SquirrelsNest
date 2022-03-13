@@ -8,13 +8,16 @@ using SquirrelsNest.Common.Values;
 namespace SquirrelsNest.Core.Database {
     internal class UserProvider : BaseDeleteProvider, IUserProvider {
         private readonly IDbUserProvider        mUserProvider;
+        private readonly IDbUserDataProvider    mUserDataProvider;
         private readonly IDbAssociationProvider mAssociationProvider;
 
         public IObservable<EntitySourceChange> OnEntitySourceChange => mUserProvider.OnEntitySourceChange;
 
-        public UserProvider( IDbIssueProvider issueProvider, IDbUserProvider userProvider, IDbAssociationProvider associationProvider ) :
+        public UserProvider( IDbIssueProvider issueProvider, IDbUserProvider userProvider, IDbUserDataProvider userDataProvider,
+                             IDbAssociationProvider associationProvider ) :
             base( issueProvider ) {
             mUserProvider = userProvider;
+            mUserDataProvider = userDataProvider;
             mAssociationProvider = associationProvider;
         }
 
@@ -22,6 +25,26 @@ namespace SquirrelsNest.Core.Database {
         public Task<Either<Error, Unit>> UpdateUser( SnUser user ) => mUserProvider.UpdateUser( user );
         public Task<Either<Error, SnUser>> GetUser( EntityId userId ) => mUserProvider.GetUser( userId );
         public Task<Either<Error, IEnumerable<SnUser>>> GetUsers() => mUserProvider.GetUsers();
+
+        private async Task<Either<Error, Unit>> DeleteUserData( SnUser forUser ) {
+            var data = await mUserDataProvider.GetData( forUser );
+
+            if( data.IsLeft ) {
+                return data.Map( _ => Unit.Default );
+            }
+
+            return await data.BindAsync( async list => {
+                foreach( var d in list ) {
+                    var result = await mUserDataProvider.DeleteData( d );
+
+                    if( result.IsLeft ) {
+                        return result;
+                    }
+                }
+
+                return Unit.Default;
+            });
+        }
 
         public async Task<Either<Error, Unit>> DeleteUser( SnUser user ) {
             var assignedBy = ( await mIssueProvider.GetIssues().ConfigureAwait( false ))
@@ -35,6 +58,7 @@ namespace SquirrelsNest.Core.Database {
             return await assignedBy
                 .BindAsync( UpdateIssues )
                 .BindAsync( _ => enteredBy.BindAsync( UpdateIssues ))
+                .BindAsync( _ => DeleteUserData( user ))
                 .BindAsync( _ => mUserProvider.DeleteUser( user )).ConfigureAwait( false );
         }
 

@@ -9,7 +9,7 @@ namespace SquirrelsNest.Core.Tests.Database {
     public class UserAssociationProviderTests : BaseProviderTests {
 
         private IUserProvider CreateSut() {
-            return new UserProvider( mIssueProvider, mUserProvider, mAssociationProvider );
+            return new UserProvider( mIssueProvider, mUserProvider, mUserDataProvider, mAssociationProvider );
         }
 
         [Fact]

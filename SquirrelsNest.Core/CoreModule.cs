@@ -38,6 +38,7 @@ namespace SquirrelsNest.Core {
             builder.RegisterType<ReleaseProvider>().As<IReleaseProvider>().SingleInstance();
             builder.RegisterType<WorkflowStateProvider>().As<IWorkflowStateProvider>().SingleInstance();
             builder.RegisterType<UserProvider>().As<IUserProvider>().SingleInstance();
+            builder.RegisterType<UserDataProvider>().As<IUserDataProvider>().SingleInstance();
         }
     }
 }
