@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using LanguageExt;
 using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
@@ -12,10 +13,12 @@ namespace SquirrelsNest.Desktop.ViewModels {
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class ExportProjectDialogViewModel : DialogAwareBase {
         public const string                 cExportParameters = "parameters";
+        public const string                 cUserParameter = "user";
 
         private readonly IProjectProvider   mProjectProvider;
         private ExportParameters ?          mParameters;
         private SnProject ?                 mCurrentProject;
+        private Option<SnUser>              mCurrentUser;
         private string                      mExportPath;
         private bool                        mIncludeCompletedIssues;
 
@@ -27,6 +30,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
             ProjectList = new RangeCollection<SnProject>();
             mIncludeCompletedIssues = false;
             mCurrentProject = SnProject.Default;
+            mCurrentUser = Option<SnUser>.None;
             mExportPath = String.Empty;
 
             SetTitle( "Export Project Properties" );
@@ -40,6 +44,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
         public override async void OnDialogOpened( IDialogParameters parameters ) {
             mParameters = parameters.GetValue<ExportParameters>( cExportParameters );
+            mCurrentUser = parameters.GetValue<Option<SnUser>>( cUserParameter );
 
             await LoadProjects();
         }
@@ -60,9 +65,11 @@ namespace SquirrelsNest.Desktop.ViewModels {
         }
 
         private async Task LoadProjects() {
-            var projects = await mProjectProvider.GetProjects();
+            if( mCurrentUser.IsSome ) {
+                var projects = await mCurrentUser.MapAsync( user => mProjectProvider.GetProjects( user ));
 
-            projects.Do( list => ProjectList.Reset( list ));
+                projects.Do( list => ProjectList.Reset( list ));
+            }
         }
 
         protected override void OnAccept() {

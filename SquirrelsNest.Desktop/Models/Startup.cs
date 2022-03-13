@@ -34,7 +34,7 @@ namespace SquirrelsNest.Desktop.Models {
             mLog.ApplicationStarting();
 
             await EstablishCurrentUser( mAppState );
-            await EstablishCurrentProject( mAppState );
+            await EstablishCurrentProject( mAppState, mModelState.CurrentState.User );
 
             ShowMainWindow( OnClosing );
         }
@@ -46,30 +46,36 @@ namespace SquirrelsNest.Desktop.Models {
             mClosingAction();
         }
 
-        private async Task EstablishCurrentProject( IPreferences<AppState> appState ) {
+        private async Task EstablishCurrentProject( IPreferences<AppState> appState, Option<SnUser> user ) {
             var currentState = appState.Current;
 
             if( currentState.ProjectId != EntityId.Default ) {
                 var projectId = EntityId.For( currentState.ProjectId );
                 var project = await projectId.MapAsync( async p => await mProjectProvider.GetProject( p ));
 
-                project.Match( 
-                    p => mModelState.SetProject( p ),
-                    error => mLog.LogError( error ));
+                project.Do( p => mModelState.SetProject( p ));
+
+                if( project.IsLeft ) {
+                    await EstablishFirstProject( user );
+                }
             }
             else {
-                var projects = await  mProjectProvider.GetProjects();
-                
-                projects
-                    .Match( list => {
-                            var firstProject = list.FirstOrDefault( SnProject.Default );
-
-                            if(!firstProject.EntityId.Equals( EntityId.Default )) {
-                                mModelState.SetProject( firstProject );
-                            }
-                        },
-                        error => mLog.LogError( error ));
+                await EstablishFirstProject( user );
             }
+        }
+
+        private async Task EstablishFirstProject( Option<SnUser> user ) {
+            var projects = await user.MapAsync( async u => await mProjectProvider.GetProjects( u ));
+                
+            projects
+                .Match( list => {
+                        var firstProject = list.FirstOrDefault( SnProject.Default );
+
+                        if(!firstProject.EntityId.Equals( EntityId.Default )) {
+                            mModelState.SetProject( firstProject );
+                        }
+                    },
+                    error => mLog.LogError( error ));
         }
 
         private async Task EstablishCurrentUser( IPreferences<AppState> appState ) {

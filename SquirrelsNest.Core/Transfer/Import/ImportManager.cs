@@ -134,13 +134,13 @@ namespace SquirrelsNest.Core.Transfer.Import {
             return entities;
         }
 
-        private async Task<Either<Error, SnProject>> CreateProject( TransferEntities entities, ImportParameters parameters ) {
+        private async Task<Either<Error, SnProject>> CreateProject( TransferEntities entities, ImportParameters parameters, SnUser forUser ) {
             var project = entities.Project.ToEntity().With( name: parameters.ProjectName );
 
-            return await mProjectProvider.AddProject( project );
+            return await mProjectProvider.AddProject( project, forUser );
         }
 
-        public async Task<Either<Error, SnProject>> ImportProject( ImportParameters parameters ) {
+        public async Task<Either<Error, SnProject>> ImportProject( ImportParameters parameters, SnUser forUser ) {
             var imported = await mFileWriter.LoadAsync<TransferEntities>( parameters.ImportFilePath );
 
             return await imported.BindAsync( CreateComponents )
@@ -149,7 +149,7 @@ namespace SquirrelsNest.Core.Transfer.Import {
                 .BindAsync( CreateReleases )
                 .BindAsync( AssimilateUsers )
                 .BindAsync( CreateIssues )
-                .BindAsync( entities => CreateProject( entities, parameters ));
+                .BindAsync( entities => CreateProject( entities, parameters, forUser ));
         }
     }
 }

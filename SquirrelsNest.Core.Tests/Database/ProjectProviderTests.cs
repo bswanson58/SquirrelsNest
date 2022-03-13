@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using FluentAssertions;
+using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Core.Database;
 using SquirrelsNest.DatabaseTests.Support;
@@ -21,7 +22,7 @@ namespace SquirrelsNest.Core.Tests.Database {
             await CreateSomeComponents( 3, projects[1]);
             await CreateSomeComponents( 2 );
 
-            var result = await sut.DeleteProject( projects[1]);
+            var result = await sut.DeleteProject( projects[1], SnUser.Default );
             var list = await mComponentProvider.GetComponents( projects[1]);
 
             result.IfLeft( error => error.Should().BeNull( "error deleting the project" ));
@@ -36,7 +37,7 @@ namespace SquirrelsNest.Core.Tests.Database {
             await CreateSomeIssueTypes( 5, projects[1]);
             await CreateSomeComponents( 2 );
 
-            var result = await sut.DeleteProject( projects[1]);
+            var result = await sut.DeleteProject( projects[1], SnUser.Default );
             var list = await mIssueTypeProvider.GetIssues( projects[1]);
 
             result.IfLeft( error => error.Should().BeNull( "error deleting the project" ));
@@ -52,7 +53,7 @@ namespace SquirrelsNest.Core.Tests.Database {
             await CreateSomeStates( 3 );
             await CreateSomeComponents( 2 );
 
-            var result = await sut.DeleteProject( projects[1]);
+            var result = await sut.DeleteProject( projects[1], SnUser.Default );
             var list = await mStateProvider.GetStates( projects[1]);
 
             result.IfLeft( error => error.Should().BeNull( "error deleting the project" ));
@@ -68,7 +69,7 @@ namespace SquirrelsNest.Core.Tests.Database {
             await CreateSomeReleases( 3 );
             await CreateSomeComponents( 2 );
 
-            var result = await sut.DeleteProject( projects[1]);
+            var result = await sut.DeleteProject( projects[1], SnUser.Default );
             var list = await mReleaseProvider.GetReleases( projects[1]);
 
             result.IfLeft( error => error.Should().BeNull( "error deleting the project" ));
@@ -84,7 +85,7 @@ namespace SquirrelsNest.Core.Tests.Database {
             await CreateSomeReleases( 3, projects[2]);
             await CreateSomeComponents( 2, projects[0]);
 
-            var result = await sut.DeleteProject( projects[1]);
+            var result = await sut.DeleteProject( projects[1], SnUser.Default );
             var list = await mIssueProvider.GetIssues( projects[1]);
 
             result.IfLeft( error => error.Should().BeNull( "error deleting the project" ));

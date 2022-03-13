@@ -56,15 +56,15 @@ namespace SquirrelsNest.Core.ProjectTemplates {
             return forProject;
         }
 
-        private Task<Either<Error, SnProject>> CreateNewProject( ProjectParameters parameters ) {
+        private Task<Either<Error, SnProject>> CreateNewProject( ProjectParameters parameters, SnUser forUser ) {
             SnProject CreateSnProject() =>
                 new SnProject( parameters.ProjectName, parameters.ProjectPrefix ).With( description: parameters.ProjectDescription );
 
-            return mProjectProvider.AddProject( CreateSnProject());
+            return mProjectProvider.AddProject( CreateSnProject(), forUser );
         }
 
-        public async Task<Either<Error, SnProject>> CreateProject( ProjectTemplate template, ProjectParameters parameters ) {
-            var project = await CreateNewProject( parameters ).ConfigureAwait( false );
+        public async Task<Either<Error, SnProject>> CreateProject( ProjectTemplate template, ProjectParameters parameters, SnUser forUser ) {
+            var project = await CreateNewProject( parameters, forUser ).ConfigureAwait( false );
 
             return await project
                     .BindAsync( p => CreateComponents( template.Components, p ))

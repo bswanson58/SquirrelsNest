@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using LanguageExt;
 using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
@@ -9,10 +10,12 @@ using SquirrelsNest.Desktop.Support;
 
 namespace SquirrelsNest.Desktop.ViewModels {
     internal class ImportProjectDialogViewModel : DialogAwareBase {
-        public  const string        cImportParameters = "parameters";
+        public  const string                cImportParameters = "parameters";
+        public  const string                cUserParameter = "user";
 
         private readonly IProjectProvider   mProjectProvider;
         private readonly List<SnProject>    mExistingProjects;
+        private Option<SnUser>              mCurrentUser;
         private string                      mImportPath;
         private string                      mProjectName;
 
@@ -22,12 +25,14 @@ namespace SquirrelsNest.Desktop.ViewModels {
             mExistingProjects = new List<SnProject>();
             mImportPath = String.Empty;
             mProjectName = String.Empty;
+            mCurrentUser = Option<SnUser>.None;
 
             SetTitle( "Import Project" );
         }
 
         public override async void OnDialogOpened( IDialogParameters parameters ) {
             var inputParameters = parameters.GetValue<ImportParameters>( cImportParameters );
+            mCurrentUser = parameters.GetValue<Option<SnUser>>( cUserParameter );
 
             if( inputParameters != null ) {
                 ImportPath = inputParameters.ImportFilePath;
@@ -48,10 +53,12 @@ namespace SquirrelsNest.Desktop.ViewModels {
         }
 
         private async Task LoadExistingProjects() {
-            var projects = await mProjectProvider.GetProjects();
+            if( mCurrentUser.IsSome ) {
+                var projects = await mCurrentUser.MapAsync( user => mProjectProvider.GetProjects( user ));
 
-            mExistingProjects.Clear();
-            projects.Do( list => mExistingProjects.AddRange( list ));
+                mExistingProjects.Clear();
+                projects.Do( list => mExistingProjects.AddRange( list ));
+            }
         }
 
         protected override void OnAccept() {

@@ -56,7 +56,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
             if( isLoading ) {
                 await LoadProjectList();
 
-                mSubscriptions.Add( mModelState.OnStateChange.ObserveOn( mContext ).Subscribe( OnStateChanged ));
+                mSubscriptions.Add( mModelState.OnStateChange.ObserveOn( mContext ).SubscribeAsync( OnStateChanged, OnError ));
                 mSubscriptions.Add( mProjectProvider.OnEntitySourceChange.ObserveOn( mContext ).SubscribeAsync( OnProjectsChanged, OnError ));
                 mSubscriptions.Add( mProjectBuilder.OnProjectPartsChanged.ObserveOn( mContext ).SubscribeAsync( OnProjectsChanged, OnError ));
             }
@@ -65,7 +65,11 @@ namespace SquirrelsNest.Desktop.ViewModels {
             }
         }
 
-        private void OnStateChanged( CurrentState state ) {
+        private async Task OnStateChanged( CurrentState state ) {
+            mCurrentUser = state.User;
+
+            await LoadProjectList();
+
             state.Project
                 .Do( project => {
                     mCurrentProject = ProjectList.FirstOrDefault( p => p.Project.EntityId.Equals( project.EntityId ));
@@ -112,19 +116,21 @@ namespace SquirrelsNest.Desktop.ViewModels {
         }
 
         private async Task LoadProjectList() {
-            var currentProject = mCurrentProject;
-            var projects = await mProjectProvider.GetProjects();
-            var composites = await projects.BindAsync( GetCompositeProjects );
+            if( mCurrentUser.IsSome ) {
+                var currentProject = mCurrentProject;
+                var projects = await mCurrentUser.MapAsync( user => mProjectProvider.GetProjects( user ));
+                var composites = await projects.BindAsync( GetCompositeProjects );
             
-            composites
-                .Map( list => from project in list where mValidator.Validate( project ).IsValid select project )
-                .Match( list => ProjectList.Reset( list ),
+                composites
+                    .Map( list => from project in list where mValidator.Validate( project ).IsValid select project )
+                    .Match( list => ProjectList.Reset( list ),
                         error => mLog.LogError( error ));
 
-            mCurrentProject = currentProject == null ? 
-                ProjectList.FirstOrDefault() : 
-                ProjectList.FirstOrDefault( p => p.Project.EntityId.Equals( currentProject.Project.EntityId ));
-            OnPropertyChanged( nameof( CurrentProject ));
+                mCurrentProject = currentProject == null ? 
+                    ProjectList.FirstOrDefault() : 
+                    ProjectList.FirstOrDefault( p => p.Project.EntityId.Equals( currentProject.Project.EntityId ));
+                OnPropertyChanged( nameof( CurrentProject ));
+            }
         }
 
         public void Dispose() {

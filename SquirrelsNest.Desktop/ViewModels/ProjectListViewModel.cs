@@ -12,6 +12,7 @@ using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Logging;
+using SquirrelsNest.Core.Extensions;
 using SquirrelsNest.Core.Interfaces;
 using SquirrelsNest.Core.ProjectTemplates;
 using SquirrelsNest.Core.Transfer.Import;
@@ -30,6 +31,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private readonly IDialogService             mDialogService;
         private readonly ILog                       mLog;
         private readonly CompositeDisposable        mSubscriptions;
+        private Option<SnUser>                      mCurrentUser;
         private SnProject ?                         mCurrentProject;
 
         public  RangeCollection<SnProject>          ProjectList { get; }
@@ -51,6 +53,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
             mDialogService = dialogService;
             mContext = context;
             mLog = log;
+            mCurrentUser = Option<SnUser>.None;
 
             mSubscriptions = new CompositeDisposable();
             ProjectList = new RangeCollection<SnProject>();
@@ -65,20 +68,28 @@ namespace SquirrelsNest.Desktop.ViewModels {
             if( isLoaded ) {
                 await LoadProjectList();
 
-                mSubscriptions.Add( mModelState.OnStateChange.ObserveOn( mContext ).Subscribe( OnStateChanged ));
+                mSubscriptions.Add( mModelState.OnStateChange.ObserveOn( mContext ).SubscribeAsync( OnStateChanged, OnError ));
             }
             else {
                 mSubscriptions.Clear();
             }
         }
 
-        private void OnStateChanged( CurrentState state ) {
+        private async Task OnStateChanged( CurrentState state ) {
+            mCurrentUser = state.User;
+
+            await LoadProjectList();
+
             state.Project
                 .Do( project => {
                     mCurrentProject = ProjectList.FirstOrDefault( p => p.EntityId.Equals( project.EntityId ));
 
                     OnPropertyChanged( nameof( CurrentProject ));
                 });
+        }
+
+        private void OnError( Exception ex ) {
+            mLog.LogException( $"During EntitySourceChanged/ProjectPartsChanged in {nameof( ProjectSelectorViewModel )}", ex );
         }
 
         public SnProject ? CurrentProject {
@@ -95,50 +106,54 @@ namespace SquirrelsNest.Desktop.ViewModels {
         }
 
         private async Task LoadProjectList() {
-            var currentProject = mCurrentProject;
-            var projectList = await mProjectProvider.GetProjects();
+            if( mCurrentUser.IsSome ) {
+                var currentProject = mCurrentProject;
+                var projectList = await mCurrentUser.MapAsync( user => mProjectProvider.GetProjects( user ));
 
-            projectList
-                .Match( list => ProjectList.Reset( list ),
+                projectList
+                    .Match( list => ProjectList.Reset( list ),
                         error => mLog.LogError( error ));
 
-            mCurrentProject = currentProject != null ? 
-                ProjectList.FirstOrDefault( p => p.EntityId.Equals( currentProject.EntityId )) : 
-                ProjectList.FirstOrDefault();
-            OnPropertyChanged( nameof( CurrentProject ));
+                mCurrentProject = currentProject != null ? 
+                    ProjectList.FirstOrDefault( p => p.EntityId.Equals( currentProject.EntityId )) : 
+                    ProjectList.FirstOrDefault();
+                OnPropertyChanged( nameof( CurrentProject ));
+            }
         }
 
         private void OnCreateProject() {
             var parameters = new DialogParameters();
 
-            mDialogService.ShowDialog( nameof( CreateProjectDialog ), parameters, async result => {
-                if( result.Result == ButtonResult.Ok ) {
-                    var editedProject = result.Parameters.GetValue<SnProject>( CreateProjectDialogViewModel.cProject );
-                    var template = result.Parameters.GetValue<ProjectTemplate>( CreateProjectDialogViewModel.cTemplate );
-                    Either<Error, SnProject> createdProject;
+            mCurrentUser.Do( user => {
+                mDialogService.ShowDialog( nameof( CreateProjectDialog ), parameters, async result => {
+                    if( result.Result == ButtonResult.Ok ) {
+                        var editedProject = result.Parameters.GetValue<SnProject>( CreateProjectDialogViewModel.cProject );
+                        var template = result.Parameters.GetValue<ProjectTemplate>( CreateProjectDialogViewModel.cTemplate );
+                        Either<Error, SnProject> createdProject;
 
-                    if( editedProject == null ) throw new ApplicationException( "Dialog did not return a project" );
+                        if( editedProject == null ) throw new ApplicationException( "Dialog did not return a project" );
 
-                    if( template != null ) {
-                        var projectParameters = new ProjectParameters {
+                        if( template != null ) {
+                            var projectParameters = new ProjectParameters {
                                 ProjectName = editedProject.Name, 
                                 ProjectDescription = editedProject.Description, 
                                 ProjectPrefix = editedProject.IssuePrefix
                             };
 
-                        createdProject = await mTemplateManager.CreateProject( template, projectParameters );
-                    }
-                    else {
-                        createdProject = await mProjectProvider.AddProject( editedProject );
-                    }
+                            createdProject = await mTemplateManager.CreateProject( template, projectParameters, user );
+                        }
+                        else {
+                            createdProject = await mProjectProvider.AddProject( editedProject, user );
+                        }
 
-                    await LoadProjectList();
+                        await LoadProjectList();
 
-                    createdProject
+                        createdProject
                             .Do( p => mModelState.SetProject( p ))
                             .IfLeft( error => mLog.LogError( error ));
 
-                }
+                    }
+                });
             });
         }
 
@@ -163,33 +178,39 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
         private void OnDeleteProject( SnProject ? project ) {
             if( project != null ) {
-                var parameters = new DialogParameters {
-                    { ConfirmationDialogViewModel.cConfirmationText, $"Would you like to delete the project named '{project.Name}'?" }
-                };
+                mCurrentUser.Do( user => {
+                    var parameters = new DialogParameters {
+                        { ConfirmationDialogViewModel.cConfirmationText, $"Would you like to delete the project named '{project.Name}'?" }
+                    };
 
-                mDialogService.ShowDialog( nameof( ConfirmationDialog ), parameters, async result => {
-                    if( result.Result == ButtonResult.Ok ) {
-                        ( await mProjectProvider.DeleteProject( project ))
-                            .IfLeft( error => mLog.LogError( error ));
+                    mDialogService.ShowDialog( nameof( ConfirmationDialog ), parameters, async result => {
+                        if( result.Result == ButtonResult.Ok ) {
+                            ( await mProjectProvider.DeleteProject( project, user ))
+                                .IfLeft( error => mLog.LogError( error ));
 
-                        await LoadProjectList();
-                    }
+                            await LoadProjectList();
+                        }
+                    });
                 });
             }
         }
 
         private void OnImportProject() {
-            mDialogService.ShowDialog( nameof( ImportProjectDialog ), new DialogParameters(), async result => {
-                if( result.Result == ButtonResult.Ok ) {
-                    var importParameters = result.Parameters.GetValue<ImportParameters>( ImportProjectDialogViewModel.cImportParameters );
+            mCurrentUser.Do( user => {
+                var parameters = new DialogParameters{{ ImportProjectDialogViewModel.cUserParameter, mCurrentUser }};
 
-                    if( importParameters == null ) throw new ApplicationException( "Dialog did not return ImportParameters." );
+                mDialogService.ShowDialog( nameof( ImportProjectDialog ), parameters, async result => {
+                    if( result.Result == ButtonResult.Ok ) {
+                        var importParameters = result.Parameters.GetValue<ImportParameters>( ImportProjectDialogViewModel.cImportParameters );
 
-                    ( await mImportManager.ImportProject( importParameters ))
-                        .IfLeft( error => mLog.LogError( error ));
+                        if( importParameters == null ) throw new ApplicationException( "Dialog did not return ImportParameters." );
 
-                    await LoadProjectList();
-                }
+                        ( await mImportManager.ImportProject( importParameters, user ))
+                            .IfLeft( error => mLog.LogError( error ));
+
+                        await LoadProjectList();
+                    }
+                });
             });
         }
 

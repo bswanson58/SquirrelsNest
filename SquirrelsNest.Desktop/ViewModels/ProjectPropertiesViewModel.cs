@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reactive.Linq;
 using System.Threading;
+using LanguageExt;
 using Microsoft.Toolkit.Mvvm.Input;
 using MvvmSupport.DialogService;
 using SquirrelsNest.Common.Entities;
@@ -20,6 +21,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
         private readonly IDialogService             mDialogService;
         private readonly IDisposable                mStateSubscription;
         private readonly ILog                       mLog;
+        private Option<SnUser>                      mCurrentUser;
         private SnProject ?                         mCurrentProject;
 
         public  IRelayCommand                       CreateTemplate { get; }
@@ -31,6 +33,7 @@ namespace SquirrelsNest.Desktop.ViewModels {
             mDialogService = dialogService;
             mTemplateManager = templateManager;
             mExportManager = exportManager;
+            mCurrentUser = Option<SnUser>.None;
 
             CreateTemplate = new RelayCommand( OnCreateTemplate );
             ExportProject = new RelayCommand( OnExportProject );
@@ -39,6 +42,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
         }
 
         private void OnStateChanged( CurrentState state ) {
+            mCurrentUser = state.User;
+
             state.Project.Do( project => {
                 mCurrentProject = project;
             });
@@ -63,7 +68,9 @@ namespace SquirrelsNest.Desktop.ViewModels {
 
         private void OnExportProject() {
             if( mCurrentProject != null ) {
-                mDialogService.ShowDialog( nameof( ExportProjectDialog ), new DialogParameters(), async result => {
+                var parameters = new DialogParameters{{ ExportProjectDialogViewModel.cUserParameter, mCurrentUser }};
+
+                mDialogService.ShowDialog( nameof( ExportProjectDialog ), parameters, async result => {
                     if( result.Result == ButtonResult.Ok ) {
                         var exportParameters = result.Parameters.GetValue<ExportParameters>( ExportProjectDialogViewModel.cExportParameters );
 

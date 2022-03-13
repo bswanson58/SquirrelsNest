@@ -5,6 +5,6 @@ using SquirrelsNest.Core.Transfer.Import;
 
 namespace SquirrelsNest.Core.Interfaces {
     public interface IImportManager {
-        Task<Either<Error, SnProject>>  ImportProject( ImportParameters parameters );
+        Task<Either<Error, SnProject>>  ImportProject( ImportParameters parameters, SnUser forUser );
     }
 }
