@@ -9,6 +9,7 @@
         public const string ReleaseCollection       = "Releases";
         public const string WorkflowStateCollection = "WorkflowStates";
         public const string UserCollection          = "Users";
+        public const string UserDataCollection      = "UserData";
         // ReSharper restore InconsistentNaming
     }
 }

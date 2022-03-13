@@ -17,6 +17,7 @@ namespace SquirrelsNest.EfDb {
         public  DbSet<DbRelease>        Releases { get; set; }
         public  DbSet<DbUser>           Users { get; set; }
         public  DbSet<DbWorkflowState>  States { get; set; }
+        public  DbSet<DbUserData>       UserData { get; set; }
 
         public SquirrelsNestDbContext( ConfigurationBuilder builder ) :
             base( builder.Options()) { }

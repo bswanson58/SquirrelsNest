@@ -18,6 +18,7 @@ namespace SquirrelsNest.EfDb {
             builder.RegisterType<ReleaseProvider>().As<IDbReleaseProvider>().SingleInstance();
             builder.RegisterType<WorkflowStateProvider>().As<IDbWorkflowStateProvider>().SingleInstance();
             builder.RegisterType<UserProvider>().As<IDbUserProvider>().SingleInstance();
+            builder.RegisterType<UserDataProvider>().As<IDbUserDataProvider>().SingleInstance();
         }
     }
 }

@@ -7,7 +7,7 @@ using SquirrelsNest.LiteDb.Database;
 using SquirrelsNest.LiteDb.Dto;
 
 namespace SquirrelsNest.LiteDb.Providers {
-    internal class AssociationProvider: BaseProvider<SnAssociation, DbAssociation> {
+    internal class AssociationProvider : BaseProvider<SnAssociation, DbAssociation> {
         private static SnAssociation ConvertTo( DbAssociation association ) => association.ToEntity();
         private static DbAssociation ConvertFrom( SnAssociation association ) => DbAssociation.From( association );
 

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SquirrelsNest.EfDb;
 
@@ -11,9 +12,10 @@ using SquirrelsNest.EfDb;
 namespace SquirrelsNest.EfDb.Migrations
 {
     [DbContext(typeof(SquirrelsNestDbContext))]
-    partial class SquirrelsNestDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220313170211_AddedUserDataSet")]
+    partial class AddedUserDataSet
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
