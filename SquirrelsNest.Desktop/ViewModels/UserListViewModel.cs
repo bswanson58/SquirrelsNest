@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Reactive.Disposables;
+using System.Reactive.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using LanguageExt;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
@@ -29,7 +31,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
         
         public  IRelayCommand                   CreateUser { get; }
 
-        public UserListViewModel( IModelState modelState, IUserProvider userProvider, IDialogService dialogService, ILog log ) {
+        public UserListViewModel( IModelState modelState, IUserProvider userProvider, IDialogService dialogService,
+                                  SynchronizationContext context, ILog log ) {
             mModelState = modelState;
             mUserProvider = userProvider;
             mDialogService = dialogService;
@@ -41,8 +44,8 @@ namespace SquirrelsNest.Desktop.ViewModels {
             UserList = new RangeCollection<SnUser>();
             CreateUser = new RelayCommand( OnCreateUser );
 
-            mSubscriptions.Add( mModelState.OnStateChange.SubscribeAsync( OnStateChanged, OnError ));
-            mSubscriptions.Add( mUserProvider.OnEntitySourceChange.SubscribeAsync( OnUserListChanged, OnError ));
+            mSubscriptions.Add( mModelState.OnStateChange.ObserveOn( context ).SubscribeAsync( OnStateChanged, OnError ));
+            mSubscriptions.Add( mUserProvider.OnEntitySourceChange.ObserveOn( context ).SubscribeAsync( OnUserListChanged, OnError ));
         }
 
         private async Task OnStateChanged( CurrentState state ) {
