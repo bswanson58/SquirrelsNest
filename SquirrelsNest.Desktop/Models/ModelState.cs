@@ -36,7 +36,7 @@ namespace SquirrelsNest.Desktop.Models {
         public void SetUser( SnUser user ) {
             mCurrentUser = user;
 
-            NotifyStateChange();
+            ClearProject();
         }
 
         public void ClearUser() {
