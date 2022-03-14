@@ -1,8 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Reactive.Linq;
+﻿using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Threading.Tasks;
 using LanguageExt;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
@@ -11,7 +8,7 @@ using SquirrelsNest.Common.Values;
 using SquirrelsNest.Core.Interfaces;
 using SquirrelsNest.Core.Preferences;
 
-namespace SquirrelsNest.Desktop.Models {
+namespace SquirrelsNest.Core.Models {
     internal class ModelState : IModelState {
         private readonly IProjectProvider               mProjectProvider;
         private readonly IUserData                      mUserData;

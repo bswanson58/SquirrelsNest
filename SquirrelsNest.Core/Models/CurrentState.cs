@@ -1,8 +1,8 @@
 ﻿using LanguageExt;
 using SquirrelsNest.Common.Entities;
 
-namespace SquirrelsNest.Desktop.Models {
-    internal class CurrentState {
+namespace SquirrelsNest.Core.Models {
+    public class CurrentState {
         public  Option<SnProject>   Project { get; }
         public  Option<SnUser>      User { get; }
 

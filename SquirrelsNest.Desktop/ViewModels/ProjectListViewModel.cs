@@ -14,9 +14,9 @@ using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Logging;
 using SquirrelsNest.Core.Extensions;
 using SquirrelsNest.Core.Interfaces;
+using SquirrelsNest.Core.Models;
 using SquirrelsNest.Core.ProjectTemplates;
 using SquirrelsNest.Core.Transfer.Import;
-using SquirrelsNest.Desktop.Models;
 using SquirrelsNest.Desktop.Platform;
 using SquirrelsNest.Desktop.Views;
 

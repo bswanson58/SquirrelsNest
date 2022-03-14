@@ -1,9 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
-using SquirrelsNest.Common.Entities;
+﻿using SquirrelsNest.Common.Entities;
+using SquirrelsNest.Core.Models;
 
-namespace SquirrelsNest.Desktop.Models {
-    internal interface IModelState {
+namespace SquirrelsNest.Core.Interfaces {
+    public interface IModelState {
         Task        SetProject( SnProject project );
         Task        SetUser( SnUser user );
 

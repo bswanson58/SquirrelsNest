@@ -8,9 +8,9 @@ using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Logging;
 using SquirrelsNest.Core.Interfaces;
+using SquirrelsNest.Core.Models;
 using SquirrelsNest.Core.ProjectTemplates;
 using SquirrelsNest.Core.Transfer.Export;
-using SquirrelsNest.Desktop.Models;
 using SquirrelsNest.Desktop.Views;
 
 namespace SquirrelsNest.Desktop.ViewModels {

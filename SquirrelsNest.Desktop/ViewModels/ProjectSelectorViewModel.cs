@@ -16,7 +16,7 @@ using SquirrelsNest.Common.Logging;
 using SquirrelsNest.Core.CompositeBuilders;
 using SquirrelsNest.Core.Extensions;
 using SquirrelsNest.Core.Interfaces;
-using SquirrelsNest.Desktop.Models;
+using SquirrelsNest.Core.Models;
 using SquirrelsNest.Desktop.Platform;
 
 namespace SquirrelsNest.Desktop.ViewModels {

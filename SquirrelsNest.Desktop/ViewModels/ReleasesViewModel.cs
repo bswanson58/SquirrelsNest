@@ -10,7 +10,8 @@ using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Logging;
 using SquirrelsNest.Core.Extensions;
-using SquirrelsNest.Desktop.Models;
+using SquirrelsNest.Core.Interfaces;
+using SquirrelsNest.Core.Models;
 using SquirrelsNest.Desktop.Views;
 
 namespace SquirrelsNest.Desktop.ViewModels {

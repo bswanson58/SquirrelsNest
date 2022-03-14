@@ -7,6 +7,7 @@ using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Logging;
 using SquirrelsNest.Common.Values;
+using SquirrelsNest.Core.Interfaces;
 using SquirrelsNest.Desktop.Preferences;
 using SquirrelsNest.Desktop.Views;
 

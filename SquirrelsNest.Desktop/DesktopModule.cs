@@ -26,7 +26,6 @@ namespace SquirrelsNest.Desktop {
             builder.RegisterType<Preferences<EfDatabaseConfiguration>>().As<IPreferences<EfDatabaseConfiguration>>();
 
             builder.RegisterType<Startup>().SingleInstance();
-            builder.RegisterType<ModelState>().As<IModelState>().SingleInstance();
 
             // Dialog support classes
             builder.RegisterType<DialogServiceContainer>().As<IDialogServiceContainer>().SingleInstance();

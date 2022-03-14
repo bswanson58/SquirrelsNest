@@ -6,7 +6,8 @@ using Microsoft.Toolkit.Mvvm.ComponentModel;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Core.Extensions;
-using SquirrelsNest.Desktop.Models;
+using SquirrelsNest.Core.Interfaces;
+using SquirrelsNest.Core.Models;
 
 namespace SquirrelsNest.Desktop.ViewModels {
     // ReSharper disable once ClassNeverInstantiated.Global

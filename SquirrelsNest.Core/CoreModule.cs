@@ -5,6 +5,7 @@ using SquirrelsNest.Core.CompositeBuilders;
 using SquirrelsNest.Core.Database;
 using SquirrelsNest.Core.Environment;
 using SquirrelsNest.Core.Interfaces;
+using SquirrelsNest.Core.Models;
 using SquirrelsNest.Core.Platform;
 using SquirrelsNest.Core.ProjectTemplates;
 using SquirrelsNest.Core.Transfer.Export;
@@ -18,6 +19,8 @@ namespace SquirrelsNest.Core {
             builder.RegisterType<ApplicationEnvironment>().As<IEnvironment>();
 
             builder.RegisterType<FileWriter>().As<IFileWriter>().SingleInstance();
+
+            builder.RegisterType<ModelState>().As<IModelState>().SingleInstance();
 
             builder.RegisterType<IssueBuilder>().As<IIssueBuilder>().SingleInstance();
             builder.RegisterType<ProjectBuilder>().As<IProjectBuilder>().SingleInstance();
