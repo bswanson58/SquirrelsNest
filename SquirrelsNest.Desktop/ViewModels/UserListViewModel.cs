@@ -84,9 +84,6 @@ namespace SquirrelsNest.Desktop.ViewModels {
                     if( mSelectedUser != null ) {
                         mModelState.SetUser( mSelectedUser );
                     }
-                    else {
-                        mModelState.ClearUser();
-                    }
                 }
             }
         }

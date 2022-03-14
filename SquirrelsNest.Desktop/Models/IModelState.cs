@@ -1,13 +1,11 @@
 ﻿using System;
+using System.Threading.Tasks;
 using SquirrelsNest.Common.Entities;
 
 namespace SquirrelsNest.Desktop.Models {
     internal interface IModelState {
-        void    SetProject( SnProject project );
-        void    ClearProject();
-
-        void    SetUser( SnUser user );
-        void    ClearUser();
+        Task        SetProject( SnProject project );
+        Task        SetUser( SnUser user );
 
         CurrentState                CurrentState { get; }
         IObservable<CurrentState>   OnStateChange { get; }

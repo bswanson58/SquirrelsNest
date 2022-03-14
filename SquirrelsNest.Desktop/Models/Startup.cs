@@ -12,17 +12,15 @@ using SquirrelsNest.Desktop.Views;
 
 namespace SquirrelsNest.Desktop.Models {
     internal class Startup {
-        private readonly IProjectProvider       mProjectProvider;
         private readonly IUserProvider          mUserProvider;
         private readonly IModelState            mModelState;
         private readonly IApplicationLog        mLog;
         private readonly IPreferences<AppState> mAppState;
         private Action                          mClosingAction;
 
-        public Startup( IModelState modelState, IProjectProvider projectProvider, IUserProvider userProvider, IPreferences<AppState> appState, IApplicationLog log ) {
+        public Startup( IModelState modelState, IUserProvider userProvider, IPreferences<AppState> appState, IApplicationLog log ) {
             mModelState = modelState;
             mLog = log;
-            mProjectProvider = projectProvider;
             mUserProvider = userProvider;
             mAppState = appState;
             mClosingAction = () => { };
@@ -34,7 +32,6 @@ namespace SquirrelsNest.Desktop.Models {
             mLog.ApplicationStarting();
 
             await EstablishCurrentUser( mAppState );
-            await EstablishCurrentProject( mAppState, mModelState.CurrentState.User );
 
             ShowMainWindow( OnClosing );
         }
@@ -44,38 +41,6 @@ namespace SquirrelsNest.Desktop.Models {
                 .Do( project => mAppState.Save( mAppState.Current.With( projectId: project.EntityId )));
 
             mClosingAction();
-        }
-
-        private async Task EstablishCurrentProject( IPreferences<AppState> appState, Option<SnUser> user ) {
-            var currentState = appState.Current;
-
-            if( currentState.ProjectId != EntityId.Default ) {
-                var projectId = EntityId.For( currentState.ProjectId );
-                var project = await projectId.MapAsync( async p => await mProjectProvider.GetProject( p ));
-
-                project.Do( p => mModelState.SetProject( p ));
-
-                if( project.IsLeft ) {
-                    await EstablishFirstProject( user );
-                }
-            }
-            else {
-                await EstablishFirstProject( user );
-            }
-        }
-
-        private async Task EstablishFirstProject( Option<SnUser> user ) {
-            var projects = await user.MapAsync( async u => await mProjectProvider.GetProjects( u ));
-                
-            projects
-                .Match( list => {
-                        var firstProject = list.FirstOrDefault( SnProject.Default );
-
-                        if(!firstProject.EntityId.Equals( EntityId.Default )) {
-                            mModelState.SetProject( firstProject );
-                        }
-                    },
-                    error => mLog.LogError( error ));
         }
 
         private async Task EstablishCurrentUser( IPreferences<AppState> appState ) {
@@ -89,14 +54,17 @@ namespace SquirrelsNest.Desktop.Models {
                 from f in firstUser
                 select c.EntityId.Equals( EntityId.Default ) ? f : c;
 
-            bestUser.Do( 
-                user => {
-                    mModelState.SetUser( user );
+            ( await bestUser.MapAsync( 
+                async user => {
+                    await mModelState.SetUser( user );
 
                     if(!user.EntityId.Value.Equals( currentState.UserId )) {
                         mAppState.Save( currentState.With( userId: user.EntityId ));
                     }
-                });
+
+                    return Unit.Default;
+                }))
+                .IfLeft( error => mLog.LogError( error ));
         }
 
         private async Task<Either<Error, SnUser>> GetUserOrDefault( Option<EntityId> userId ) {

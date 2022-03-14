@@ -15,22 +15,19 @@ namespace SquirrelsNest.Core.Database {
         }
 
         public async Task<Either<Error, Unit>> SaveData( SnUserData data ) {
-            var user = await mUserProvider.GetUser( data.UserId );
+            var user = await mUserProvider.GetUser( data.UserId ).ConfigureAwait( false );
+            var existingData = await user.BindAsync( async u => await mDataProvider.GetData( u, data.DataType )).ConfigureAwait( false );
+            var deletedData = await existingData.BindAsync( async d => {
+                if(!d.EntityId.Equals( SnUserData.Default.EntityId )) {
+                    return await mDataProvider.DeleteData( d ).ConfigureAwait( false );
+                }
 
-            if( user.IsLeft ) {
-                return user.Map( _ => Unit.Default );
-            }
+                return Unit.Default;
+            });
 
-            var existingData = await user.BindAsync( async u => await mDataProvider.GetData( u, data.DataType ));
-
-            return await existingData.BindAsync( async d => {
-                    if( d.EntityId.Equals( SnUserData.Default.EntityId )) {
-                        var retValue = await mDataProvider.AddData( data );
-
-                        return retValue.Map( _ => Unit.Default );
-                    }
-
-                    return await mDataProvider.UpdateData( data );
+            return await deletedData.BindAsync( async _ => {
+                    return ( await mDataProvider.AddData( data ).ConfigureAwait( false ))
+                        .Map( _ => Unit.Default );
                 });
         }
 
