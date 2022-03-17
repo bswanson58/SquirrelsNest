@@ -8,7 +8,6 @@ using SquirrelsNest.Common.Platform;
 using SquirrelsNest.Core.Preferences;
 using SquirrelsNest.Desktop.Ioc;
 using SquirrelsNest.Desktop.Models;
-using SquirrelsNest.Desktop.Platform;
 using SquirrelsNest.Desktop.Preferences;
 using SquirrelsNest.Desktop.Views;
 using SquirrelsNest.EfDb.Context;
@@ -18,7 +17,6 @@ namespace SquirrelsNest.Desktop {
         protected override void Load( ContainerBuilder builder ) {
             // Classes from SquirrelsNest.Common
             builder.RegisterInstance( DateTimeProvider.Instance ).As<ITimeProvider>();
-            builder.RegisterType<PlatformLog>().As<ILog>().As<IApplicationLog>().SingleInstance();
 
             // Preference classes
             builder.RegisterType<Preferences<AppState>>().As<IPreferences<AppState>>().SingleInstance();

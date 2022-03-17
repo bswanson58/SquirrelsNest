@@ -1,9 +1,7 @@
-﻿using System;
-using System.IO;
-using Serilog;
+﻿using Serilog;
 using SquirrelsNest.Common.Interfaces;
 
-namespace SquirrelsNest.Desktop.Platform {
+namespace SquirrelsNest.Core.Platform {
     internal class PlatformLog : IApplicationLog {
         private readonly IEnvironment   mEnvironment;
         private readonly ILogger	mLog;
