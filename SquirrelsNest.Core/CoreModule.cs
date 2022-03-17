@@ -7,6 +7,7 @@ using SquirrelsNest.Core.Environment;
 using SquirrelsNest.Core.Interfaces;
 using SquirrelsNest.Core.Models;
 using SquirrelsNest.Core.Platform;
+using SquirrelsNest.Core.Preferences;
 using SquirrelsNest.Core.ProjectTemplates;
 using SquirrelsNest.Core.Transfer.Export;
 using SquirrelsNest.Core.Transfer.Import;
@@ -17,6 +18,9 @@ namespace SquirrelsNest.Core {
         protected override void Load( ContainerBuilder builder ) {
             builder.RegisterType<ApplicationConstants>().As<IApplicationConstants>();
             builder.RegisterType<ApplicationEnvironment>().As<IEnvironment>();
+
+            // Preferences support classes
+            builder.RegisterType<PreferencesHandler>().As<IPreferencesHandler>().SingleInstance();
 
             builder.RegisterType<FileWriter>().As<IFileWriter>().SingleInstance();
 

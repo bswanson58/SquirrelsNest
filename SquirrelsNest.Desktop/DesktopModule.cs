@@ -5,6 +5,7 @@ using MvvmSupport.DialogService;
 using MvvmSupport.Ioc;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Platform;
+using SquirrelsNest.Core.Preferences;
 using SquirrelsNest.Desktop.Ioc;
 using SquirrelsNest.Desktop.Models;
 using SquirrelsNest.Desktop.Platform;
@@ -19,8 +20,6 @@ namespace SquirrelsNest.Desktop {
             builder.RegisterInstance( DateTimeProvider.Instance ).As<ITimeProvider>();
             builder.RegisterType<PlatformLog>().As<ILog>().As<IApplicationLog>().SingleInstance();
 
-            // Preferences support classes
-            builder.RegisterType<PreferencesHandler>().As<IPreferencesHandler>().SingleInstance();
             // Preference classes
             builder.RegisterType<Preferences<AppState>>().As<IPreferences<AppState>>().SingleInstance();
             builder.RegisterType<Preferences<EfDatabaseConfiguration>>().As<IPreferences<EfDatabaseConfiguration>>();

@@ -1,6 +1,6 @@
 ﻿using SquirrelsNest.Common.Interfaces;
 
-namespace SquirrelsNest.Desktop.Preferences {
+namespace SquirrelsNest.Core.Preferences {
     public class Preferences<T> : IPreferences<T> where T : new() {
         private readonly IPreferencesHandler     mPreferences;
 

@@ -1,9 +1,7 @@
-﻿using System;
-using System.IO;
-using SquirrelsNest.Common.Interfaces;
+﻿using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Core.Platform;
 
-namespace SquirrelsNest.Desktop.Preferences {
+namespace SquirrelsNest.Core.Preferences {
     public interface IPreferencesHandler {
         T       Load<T>() where T : new();
         void    Save<T>( T preferences );
