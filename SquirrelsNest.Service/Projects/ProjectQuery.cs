@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HotChocolate.Types;
 using LanguageExt;
 using LanguageExt.Common;
 using SquirrelsNest.Common.Entities;
@@ -8,6 +9,8 @@ using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Service.Dto;
 
 namespace SquirrelsNest.Service.Projects {
+    // ReSharper disable once ClassNeverInstantiated.Global
+    [ExtendObjectType(OperationTypeNames.Query)]
     public class ProjectQuery {
         private readonly IUserProvider      mUserProvider;
         private readonly IProjectProvider   mProjectProvider;
@@ -23,10 +26,11 @@ namespace SquirrelsNest.Service.Projects {
             return users.Map( userList => userList.FirstOrDefault( SnUser.Default ));
         }
 
+        // ReSharper disable once UnusedMember.Global
         public async Task<IEnumerable<ClProject>> GetProjects() {
             var user = await GetUser();
             var projects = await user.BindAsync( async u => await mProjectProvider.GetProjects( u ));
-            var clProjects = projects.Map( list => list.Select( ProjectExtensions.From ));
+            var clProjects = projects.Map( list => list.Select( ProjectExtensions.ToCl ));
 
             return clProjects.Match( list => list, _ => new List<ClProject>());
         }

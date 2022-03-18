@@ -12,6 +12,7 @@ using SquirrelsNest.Core;
 using SquirrelsNest.Core.Preferences;
 using SquirrelsNest.EfDb;
 using SquirrelsNest.EfDb.Context;
+using SquirrelsNest.Service.Dto;
 using SquirrelsNest.Service.Issues;
 using SquirrelsNest.Service.Projects;
 
@@ -20,20 +21,6 @@ var appBuilder = WebApplication.CreateBuilder( args );
 // Use AutoFac as the container
 appBuilder.Host.UseServiceProviderFactory( new AutofacServiceProviderFactory());
 appBuilder.Host.ConfigureContainer<ContainerBuilder>( ConfigureDependencies );
-
-/*
-// Manually create an instance of the Startup class
-var startup = new Startup( appBuilder.Configuration );
-
-// Manually call ConfigureServices()
-startup.ConfigureServices( appBuilder.Services );
-
-var app = appBuilder.Build();
-
-startup.Configure( app, app.Lifetime );
-
-app.Run();
-*/
 
 ConfigureConfiguration( appBuilder.Configuration );
 ConfigureServices( appBuilder.Services );
@@ -59,7 +46,11 @@ void ConfigureConfiguration( ConfigurationManager configuration ) {
 void ConfigureServices( IServiceCollection services ) {
     services
         .AddGraphQLServer()
-        .AddQueryType<ProjectQuery>();
+        .AddQueryType()
+        .AddTypeExtension<ProjectQuery>()
+        .AddTypeExtension<IssueQuery>()
+        .AddType<ClProject>()
+        .AddType<ClIssue>();
 }
 
 void ConfigureMiddleware( IApplicationBuilder serviceBuilder, IServiceProvider services ) {
