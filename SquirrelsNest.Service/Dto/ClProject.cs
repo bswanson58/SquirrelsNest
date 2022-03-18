@@ -4,12 +4,12 @@ using SquirrelsNest.Common.Values;
 
 namespace SquirrelsNest.Service.Dto {
     public class ClProject : ClBase {
-        public string Name { get; }
-        public string Description { get; }
+        public string   Name { get; }
+        public string   Description { get; }
         public DateOnly Inception { get; }
-        public string RepositoryUrl { get; }
-        public string IssuePrefix { get; }
-        public int NextIssueNumber { get; }
+        public string   RepositoryUrl { get; }
+        public string   IssuePrefix { get; }
+        public int      NextIssueNumber { get; }
 
         public ClProject( string id, string name, string description, DateOnly inception, string repositoryUrl,
                           string issuePrefix, int nextIssueNumber ) :
@@ -29,7 +29,7 @@ namespace SquirrelsNest.Service.Dto {
     }
 
     public static class ProjectExtensions {
-        public static ClProject From( this SnProject project ) {
+        public static ClProject ToCl( this SnProject project ) {
             return new ClProject( project.EntityId, project.Name, project.Description, project.Inception,
                                   project.RepositoryUrl, project.IssuePrefix, (int)project.NextIssueNumber );
         }

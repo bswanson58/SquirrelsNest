@@ -1,5 +1,6 @@
 ﻿using System;
 using SquirrelsNest.Common.Entities;
+using SquirrelsNest.Core.CompositeBuilders;
 
 namespace SquirrelsNest.Service.Dto {
     public class ClIssue : ClBase {
@@ -34,9 +35,16 @@ namespace SquirrelsNest.Service.Dto {
     }
 
     public static class IssueExtensions {
-        public static ClIssue From( SnIssue issue ) {
+        public static ClIssue ToCl( SnIssue issue ) {
             return new ClIssue( issue.EntityId, issue.Title, issue.Description, ClProject.Default, (int)issue.IssueNumber, issue.EntryDate,
                        ClUser.Default, ClIssueType.Default, ClComponent.Default, ClRelease.Default, ClWorkflowState.Default, ClUser.Default );
+        }
+
+        public static ClIssue ToCl( CompositeIssue issue ) {
+            return new ClIssue( issue.Issue.EntityId, issue.Issue.Title, issue.Issue.Description,
+                                issue.Project.ToCl(), (int)issue.Issue.IssueNumber, issue.Issue.EntryDate,
+                                issue.EnteredBy.ToCl(), issue.IssueType.ToCl(), issue.Component.ToCl(),
+                                ClRelease.Default, issue.State.ToCl(), issue.AssignedTo.ToCl());
         }
     }
 

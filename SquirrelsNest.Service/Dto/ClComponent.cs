@@ -21,8 +21,8 @@ namespace SquirrelsNest.Service.Dto {
             mDefaultComponent ??= new ClComponent( EntityId.Default.Value, EntityId.Default.Value, "Unspecified", String.Empty );
     }
 
-    public static class ComponentExtensions {
-        public static ClComponent From( this SnComponent component ) {
+    public static class ClComponentEx {
+        public static ClComponent ToCl( this SnComponent component ) {
             return new ClComponent( component.EntityId, component.ProjectId, component.Name, component.Description );
         }
     }

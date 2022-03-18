@@ -23,8 +23,8 @@ namespace SquirrelsNest.Service.Dto {
             mDefaultState ??= new ClWorkflowState( EntityId.Default.Value, EntityId.Default.Value, "Unspecified", String.Empty, StateCategory.Initial );
     }
 
-    public static class WorkflowStateExtensions {
-        public static ClWorkflowState From( this SnWorkflowState state ) {
+    public static class ClWorkflowStateEx {
+        public static ClWorkflowState ToCl( this SnWorkflowState state ) {
             return new ClWorkflowState( state.EntityId, state.ProjectId, state.Name, state.Description, state.Category );
         }
     }

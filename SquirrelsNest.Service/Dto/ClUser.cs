@@ -21,8 +21,8 @@ namespace SquirrelsNest.Service.Dto {
             mDefaultUser ??= new ClUser( EntityId.Default.Value, "Unspecified", "Unspecified", String.Empty );
     }
 
-    public static class UserExtensions {
-        public static ClUser From( this SnUser user ) {
+    public static class ClUserEx {
+        public static ClUser ToCl( this SnUser user ) {
             return new ClUser( user.EntityId, user.Name, user.LoginName, user.Email );
         }
     }

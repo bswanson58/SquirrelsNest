@@ -25,8 +25,8 @@ namespace SquirrelsNest.Service.Dto {
             mDefaultRelease ??= new ClRelease( EntityId.Default.Value, EntityId.Default.Value, "Unspecified", String.Empty, string.Empty, DateOnly.MinValue );
     }
 
-    public static class ReleaseExtensions {
-        public static ClRelease From( this SnRelease release ) {
+    public static class ClReleaseEx {
+        public static ClRelease ToCl( this SnRelease release ) {
             return new ClRelease( release.EntityId, release.ProjectId, release.Name, release.Description, release.RepositoryLabel, release.ReleaseDate );
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Values;
 
 namespace SquirrelsNest.Service.Dto {
@@ -20,9 +21,9 @@ namespace SquirrelsNest.Service.Dto {
             mDefaultIssue ??= new ClIssueType( EntityId.Default.Value, EntityId.Default.Value, "Unspecified", String.Empty );
     }
 
-    public static class IssueTypeExtensions {
-        public static ClIssueType From( this ClIssueType issue ) {
-            return new ClIssueType( issue.Id, issue.ProjectId, issue.Name, issue.Description );
+    public static class ClIssueTypeEx {
+        public static ClIssueType ToCl( this SnIssueType issue ) {
+            return new ClIssueType( issue.EntityId, issue.ProjectId, issue.Name, issue.Description );
         }
     }
 
