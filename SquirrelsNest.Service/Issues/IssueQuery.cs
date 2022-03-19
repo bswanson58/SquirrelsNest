@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HotChocolate.Data;
 using HotChocolate.Types;
 using HotChocolate.Types.Relay;
 using LanguageExt;
@@ -63,7 +64,10 @@ namespace SquirrelsNest.Service.Issues {
         }
 
         // ReSharper disable once UnusedMember.Global
-        public async Task<IEnumerable<ClIssue>> GetIssuesForProject([ID(nameof(ClProject))] string projectId ) {
+        [UsePaging(MaxPageSize = 30, IncludeTotalCount = true)]
+        [UseFiltering]
+        [UseSorting]
+        public async Task<IEnumerable<ClIssue>> AllIssuesForProject([ID(nameof(ClProject))] string projectId ) {
             var entityId = EntityId.For( projectId );
             var project = await GetProject( entityId );
             var issues = await project.BindAsync( async p => await mIssueProvider.GetIssues( p ));

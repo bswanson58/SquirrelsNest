@@ -27,7 +27,8 @@ namespace SquirrelsNest.Service.Projects {
         }
 
         // ReSharper disable once UnusedMember.Global
-        public async Task<IEnumerable<ClProject>> GetProjects() {
+        [UsePaging(MaxPageSize = 15, IncludeTotalCount = true)]
+        public async Task<IEnumerable<ClProject>> AllProjects() {
             var user = await GetUser();
             var projects = await user.BindAsync( async u => await mProjectProvider.GetProjects( u ));
             var clProjects = projects.Map( list => list.Select( ProjectExtensions.ToCl ));

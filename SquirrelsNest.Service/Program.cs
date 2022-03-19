@@ -50,7 +50,9 @@ void ConfigureServices( IServiceCollection services ) {
         .AddTypeExtension<ProjectQuery>()
         .AddTypeExtension<IssueQuery>()
         .AddType<ClProject>()
-        .AddType<ClIssue>();
+        .AddType<ClIssue>()
+        .AddFiltering()
+        .AddSorting();
 }
 
 void ConfigureMiddleware( IApplicationBuilder serviceBuilder, IServiceProvider services ) {
