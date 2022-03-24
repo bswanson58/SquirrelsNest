@@ -1,6 +1,8 @@
+import Box from '@mui/material/Box'
+
 function ProjectSelector() {
   return (
-    <div>ProjectSelector</div>
+    <Box>ProjectSelector</Box>
   )
 }
 

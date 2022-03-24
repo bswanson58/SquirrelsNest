@@ -1,6 +1,11 @@
+import Layout from '../components/Layout'
+import ProjectSelector from '../components/ProjectSelector'
+
 function ProjectPage() {
   return (
-    <div>ProjectPage</div>
+    <Layout>
+        <ProjectSelector />
+    </Layout>
   )
 }
 

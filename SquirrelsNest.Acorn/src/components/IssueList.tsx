@@ -1,6 +1,8 @@
+import Box from '@mui/material/Box'
+
 function IssueList() {
   return (
-    <div>IssueList</div>
+    <Box>IssueList</Box>
   )
 }
 
