@@ -16,6 +16,9 @@ using SquirrelsNest.Service.Dto;
 using SquirrelsNest.Service.Issues;
 using SquirrelsNest.Service.Projects;
 
+const string    corsPolicy = "corsPolicy";
+const string    apiEndpoint = "/api";
+
 var appBuilder = WebApplication.CreateBuilder( args );
 
 // Use AutoFac as the container
@@ -53,16 +56,23 @@ void ConfigureServices( IServiceCollection services ) {
         .AddType<ClIssue>()
         .AddFiltering()
         .AddSorting();
+
+    services.AddCors( options => options
+            .AddPolicy( corsPolicy, builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()));
 }
 
 void ConfigureMiddleware( IApplicationBuilder serviceBuilder, IServiceProvider services ) {
+    serviceBuilder.UseCors( corsPolicy );
 }
 
 void ConfigureEndpoints( IEndpointRouteBuilder routeBuilder, IServiceProvider services ) {
-    routeBuilder.MapGraphQL( "/api" );
+    routeBuilder.MapGraphQL( apiEndpoint );
 
     routeBuilder.MapGet( "/", context => {
-        context.Response.Redirect( "/api", true );
+        context.Response.Redirect( apiEndpoint, true );
 
         return Task.CompletedTask;
     });
