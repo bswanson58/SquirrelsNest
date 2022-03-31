@@ -1,3 +1,4 @@
+import { Route } from 'react-router-dom'
 import { ComponentType, FC } from 'react';
 
 /**
@@ -65,6 +66,18 @@ export type AppRoute = {
    * true
    */
   isEnabled: boolean;
+
+  /**
+   * The required role claim for the route
+   * @type {string}
+   * @memberof Route
+   * @required
+   * @example
+   * 'user'
+   * @default
+   * ''
+   */
+  roleClaim: string
 
   /**
    * The icon that illustrates the route
