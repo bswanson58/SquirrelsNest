@@ -18,6 +18,7 @@ function Application() {
 
   const isInRole = (route: AppRoute): boolean => {
     return (
+      route.roleClaim === 'none' ||
       claims.findIndex(
         (claim) => claim.name === 'role' && claim.value === route.roleClaim
       ) > -1
