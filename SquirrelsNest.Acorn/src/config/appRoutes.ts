@@ -9,9 +9,9 @@ import {
 import IssuesPage from '../pages/IssuesPage'
 import ProjectPage from '../pages/ProjectPage'
 import DefaultPage from '../pages/DefaultPage'
+import LoginPage from '../pages/LoginPage'
 import RegisterPage from '../pages/RegisterPage'
 import { AppRoute } from '../types/AppRoute'
-import RegisterUser from '../components/RegisterUser'
 
 const appRoutes: Array<AppRoute> = [
   {
@@ -41,6 +41,16 @@ const appRoutes: Array<AppRoute> = [
     description: 'Register User',
     component: RegisterPage(),
     path: '/register',
+    roleClaim: 'none',
+    isEnabled: true,
+    icon: DashboardIcon,
+  },
+  {
+    key: 'router-login',
+    title: 'Login',
+    description: 'Login User',
+    component: LoginPage(),
+    path: '/login',
     roleClaim: 'none',
     isEnabled: true,
     icon: DashboardIcon,

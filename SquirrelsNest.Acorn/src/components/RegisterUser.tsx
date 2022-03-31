@@ -15,8 +15,6 @@ function RegisterUser() {
 
     async function register(credentials: userCredentials) {
         try{
-            console.log( credentials )
-
             setErrors([]);
             const response = await axios
                 .post<authenticationResponse>(`${urlAccounts}/create`, credentials)
