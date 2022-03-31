@@ -69,7 +69,7 @@ namespace SquirrelsNest.Service.Controllers {
 
             if( result.Succeeded ) {
                 // make the first user to be created an admin
-                var role = mContext.Users.Any() ? "user" : "admin";
+                var role = mContext.Users.Length() == 1 ? "admin" : "user";
 
                 result = await mUserManager.AddClaimAsync( user, new Claim( "role", role ));
 
@@ -103,11 +103,12 @@ namespace SquirrelsNest.Service.Controllers {
             claims.AddRange( dbClaims );
 
             var key = new SymmetricSecurityKey( Encoding.UTF8.GetBytes( mConfiguration["JwtKey"]));
-            var creds = new SigningCredentials( key, SecurityAlgorithms.HmacSha256 );
+            var credentials = new SigningCredentials( key, SecurityAlgorithms.HmacSha256 );
 
             var expiration = DateTime.UtcNow.AddYears( 1 );
 
-            var token = new JwtSecurityToken( issuer: null, audience: null, claims: claims, expires: expiration, signingCredentials: creds );
+            var token = new JwtSecurityToken( issuer: null, audience: null, claims: claims, expires: expiration, 
+                                              signingCredentials: credentials );
 
             return new AuthenticationResponse() {
                 Token = new JwtSecurityTokenHandler().WriteToken( token ),
