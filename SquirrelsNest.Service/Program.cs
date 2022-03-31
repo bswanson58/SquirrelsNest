@@ -61,7 +61,13 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
     services.AddDbContext<ServiceDbContext>( options =>
         options.UseSqlServer( configuration.GetConnectionString( "ServiceConnection" )));
     
-    services.AddIdentity<IdentityUser, IdentityRole>()
+    services.AddIdentity<IdentityUser, IdentityRole>( options => {
+            options.Password.RequireDigit = false;
+            options.Password.RequiredLength = 4;
+            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequireUppercase = false;
+            options.Password.RequireLowercase = false;
+        })
         .AddEntityFrameworkStores<ServiceDbContext>()
         .AddDefaultTokenProviders();
 
