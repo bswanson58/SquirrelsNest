@@ -19,7 +19,7 @@ using SquirrelsNest.Service.Support;
 
 namespace SquirrelsNest.Service.Controllers {
     [ApiController]
-    [Route( "api/accounts" )]
+    [Route( "/account" )]
     public class AccountsController : ControllerBase {
         private readonly UserManager<IdentityUser>      mUserManager;
         private readonly SignInManager<IdentityUser>    mSignInManager;
@@ -68,7 +68,14 @@ namespace SquirrelsNest.Service.Controllers {
             var result = await mUserManager.CreateAsync(user, userCredentials.Password);
 
             if( result.Succeeded ) {
-                return await BuildToken( userCredentials );
+                // make the first user to be created an admin
+                var role = mContext.Users.Any() ? "user" : "admin";
+
+                result = await mUserManager.AddClaimAsync( user, new Claim( "role", role ));
+
+                if( result.Succeeded ) {
+                    return await BuildToken( userCredentials );
+                }
             }
 
             return BadRequest( result.Errors );
