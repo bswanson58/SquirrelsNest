@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Service.Controllers.Dto;
 using SquirrelsNest.Service.Database;
 using SquirrelsNest.Service.Dto;
@@ -21,16 +22,18 @@ namespace SquirrelsNest.Service.Controllers {
     [ApiController]
     [Route( "/account" )]
     public class AccountsController : ControllerBase {
+        private readonly IUserProvider                  mUserProvider;
         private readonly UserManager<IdentityUser>      mUserManager;
         private readonly SignInManager<IdentityUser>    mSignInManager;
         private readonly IConfiguration                 mConfiguration;
         private readonly ServiceDbContext               mContext;
 
         public AccountsController( UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager,
-                                   IConfiguration configuration, ServiceDbContext context ) {
+                                   IConfiguration configuration, ServiceDbContext context, IUserProvider userProvider ) {
             mUserManager = userManager;
             mSignInManager = signInManager;
             mConfiguration = configuration;
+            mUserProvider = userProvider;
             mContext = context;
         }
 
@@ -93,10 +96,7 @@ namespace SquirrelsNest.Service.Controllers {
         }
 
         private async Task<AuthenticationResponse> BuildToken( UserCredentials userCredentials ) {
-            var claims = new List<Claim>() {
-                new Claim( "email", userCredentials.Email )
-            };
-
+            var claims = await BuildUserClaims( userCredentials.Email );
             var user = await mUserManager.FindByNameAsync( userCredentials.Email );
             var dbClaims = await mUserManager.GetClaimsAsync( user );
 
@@ -114,6 +114,22 @@ namespace SquirrelsNest.Service.Controllers {
                 Token = new JwtSecurityTokenHandler().WriteToken( token ),
                 Expiration = expiration
             };
+        }
+
+        private async Task<List<Claim>> BuildUserClaims( string email ) {
+            var claims = new List<Claim>() {
+                new Claim( "email", email )
+            };
+
+            var users = await mUserProvider.GetUsers();
+            var user = await mUserProvider.GetUser( email );
+
+            user.Do( u => {
+                claims.Add( new Claim( "fullName", u.Name ));
+                claims.Add( new Claim( "entityId", u.EntityId ));
+            });
+
+            return claims;
         }
     }
 }

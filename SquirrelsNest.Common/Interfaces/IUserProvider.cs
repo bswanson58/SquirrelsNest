@@ -10,6 +10,7 @@ namespace SquirrelsNest.Common.Interfaces {
         Task<Either<Error, Unit>>                   DeleteUser( SnUser user );
 
         Task<Either<Error, SnUser>>                 GetUser( EntityId userId );
+        Task<Either<Error, SnUser>>                 GetUser( string email );
         Task<Either<Error, IEnumerable<SnUser>>>    GetUsers();
 
         Task<Either<Error, SnAssociation>>          AddAssociation( SnUser forUser, SnProject toProject );

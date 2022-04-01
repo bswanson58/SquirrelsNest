@@ -24,6 +24,18 @@ namespace SquirrelsNest.Core.Database {
         public Task<Either<Error, SnUser>> AddUser( SnUser user ) => mUserProvider.AddUser( user );
         public Task<Either<Error, Unit>> UpdateUser( SnUser user ) => mUserProvider.UpdateUser( user );
         public Task<Either<Error, SnUser>> GetUser( EntityId userId ) => mUserProvider.GetUser( userId );
+        public async Task<Either<Error, SnUser>> GetUser( string email ) {
+            return ( await GetUsers())
+                .Map( list => list.Where( u => u.Email.Equals( email )))
+                .Map( u => u.FirstOrDefault( SnUser.Default ))
+                .Bind( ConvertDefaultUser );
+        }
+
+        private static Either<Error, SnUser> ConvertDefaultUser( SnUser user ) =>
+            user.EntityId.Equals( SnUser.Default.EntityId ) ? 
+                Error.New( "A user could not be located" ) :
+                user;
+
         public Task<Either<Error, IEnumerable<SnUser>>> GetUsers() => mUserProvider.GetUsers();
 
         private async Task<Either<Error, Unit>> DeleteUserData( SnUser forUser ) {
