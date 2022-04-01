@@ -80,7 +80,7 @@ namespace SquirrelsNest.Service.Controllers {
                 result = await mUserManager.AddClaimAsync( user, new Claim( "role", role ));
 
                 if( result.Succeeded ) {
-                    var dbUser = await InsureUserExists( userCredentials.Email );
+                    var dbUser = await InsureUserExists( userCredentials );
                     var retValue = dbUser.Match( 
                         u => new ObjectResult( u ), 
                         e => Problem( title: "Error Creating SnUser", detail: e.Message ));
@@ -138,23 +138,23 @@ namespace SquirrelsNest.Service.Controllers {
             var user = await mUserProvider.GetUser( email );
 
             user.Do( u => {
-                claims.Add( new Claim( "fullName", u.Name ));
+                claims.Add( new Claim( "name", u.Name ));
                 claims.Add( new Claim( "entityId", u.EntityId ));
             });
 
             return claims;
         }
 
-        private async Task<Either<Error, SnUser>> InsureUserExists( string forEmail ) {
-            var user = await mUserProvider.GetUser( forEmail );
+        private async Task<Either<Error, SnUser>> InsureUserExists( UserCredentials user ) {
+            var dbUser = await mUserProvider.GetUser( user.Email );
 
-            if( user.IsLeft ) {
-                var newUser = new SnUser( forEmail, forEmail );
+            if( dbUser.IsLeft ) {
+                var newUser = new SnUser( user.Email, user.Email ).With( displayName: user.Name );
 
                 return await mUserProvider.AddUser( newUser );
             }
 
-            return user;
+            return dbUser;
         }
     }
 }

@@ -8,10 +8,12 @@ namespace SquirrelsNest.Service.Controllers.Dto {
         public string   Email { get; set; }
         [Required]
         public string   Password { get; set; }
+        public string   Name { get; set; }
 
         public UserCredentials() {
             Email = String.Empty;
             Password = String.Empty;
+            Name = String.Empty;
         }
     }
 }

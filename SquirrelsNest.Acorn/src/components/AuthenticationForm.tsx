@@ -6,22 +6,28 @@ import Button from './shared/Button';
 import { Link } from 'react-router-dom';
 
 interface authFormProps{
-    model: userCredentials;
-    onSubmit(values: userCredentials, actions: FormikHelpers<userCredentials>): void; 
+    model: userCredentials
+    requireName: boolean
+    onSubmit(values: userCredentials, actions: FormikHelpers<userCredentials>): void
 }
+
 export default function AuthForm(props: authFormProps){
     return (
         <Formik
             initialValues={props.model}
             onSubmit={props.onSubmit}
             validationSchema={Yup.object({
-                email: Yup.string().required('This field is required')
-                    .email('You have to insert a valid email'),
-                password: Yup.string().required('This field is required')
+                name: props.requireName ? 
+                    Yup.string().required('User name is required') :
+                    Yup.string().notRequired(),
+                email: Yup.string().required('An email address is required')
+                    .email('Entry must be a valid email'),
+                password: Yup.string().required('A password is required')
             })}
         >
             {formikProps => (
                 <Form>
+                    { props.requireName && <TextField displayName="Name" field='name' />}
                     <TextField displayName="Email" field="email" />
                     <TextField displayName="Password" field="password" type="password" />
 

@@ -30,7 +30,8 @@ function RegisterUser() {
             <h3>Register User</h3>
             <ErrorDisplay errors={errors} />
             <AuthenticationForm
-            model={{email: '', password: ''}}
+            requireName={true}
+            model={{name: '', email: '', password: ''}}
             onSubmit={async values => await register(values)}
             />
         </>

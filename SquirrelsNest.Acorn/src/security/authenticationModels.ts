@@ -4,6 +4,7 @@ export interface claim {
 } 
 
 export interface userCredentials {
+    name: string;
     email: string;
     password: string;
 }
@@ -11,9 +12,4 @@ export interface userCredentials {
 export interface authenticationResponse{
     token: string;
     expiration: Date;
-}
-
-export interface userDTO {
-    id: string;
-    email: string;
 }

@@ -34,7 +34,8 @@ export default function Login() {
       <h3>Login</h3>
       <ErrorDisplay errors={errors} />
       <AuthenticationForm
-        model={{ email: '', password: '' }}
+        requireName={false}
+        model={{ name: '', email: '', password: '' }}
         onSubmit={async (values) => await login(values)}
       />
     </>
