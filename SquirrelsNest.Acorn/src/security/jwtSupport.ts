@@ -1,42 +1,48 @@
-import {authenticationResponse, claim} from './authenticationModels';
+import { authenticationResponse, claim } from './authenticationModels'
 
-const tokenKey = 'token';
+const tokenKey = 'token'
 const expirationKey = 'token-expiration'
 
-export function saveAuthenticationToken(authData: authenticationResponse){
-    localStorage.setItem(tokenKey, authData.token);
-    localStorage.setItem(expirationKey, authData.expiration.toString());
+export function saveAuthenticationToken(authData: authenticationResponse) {
+  localStorage.setItem(tokenKey, authData.token)
+  localStorage.setItem(expirationKey, authData.expiration.toString())
 }
 
-export function getAuthenticationClaims(): claim[]{
-    const token = localStorage.getItem(tokenKey);
+export function getAuthenticationClaims(): claim[] {
+  const token = localStorage.getItem(tokenKey)
 
-    if (!token){
-        return [];
-    }
+  if (!token) {
+    return []
+  }
 
-    const expiration = localStorage.getItem(expirationKey)!;
-    const expirationDate = new Date(expiration);
+  const expiration = localStorage.getItem(expirationKey)!
+  const expirationDate = new Date(expiration)
 
-    if (expirationDate <= new Date()){
-        logout();
-        return []; // the token has expired
-    }
+  if (expirationDate <= new Date()) {
+    logout()
+    return [] // the token has expired
+  }
 
-    const dataToken = JSON.parse(atob(token.split('.')[1]));
-    const response: claim[] = [];
-    for (const property in dataToken){
-        response.push({name: property, value: dataToken[property]});
-    }
+  const dataToken = JSON.parse(atob(token.split('.')[1]))
+  const response: claim[] = []
+  for (const property in dataToken) {
+    response.push({ name: property, value: dataToken[property] })
+  }
 
-    return response;
+  return response
 }
 
-export function logout(){
-    localStorage.removeItem(tokenKey);
-    localStorage.removeItem(expirationKey);
+export function hasRoleClaim(role: string, claims: claim[]): boolean {
+  return (
+    role === 'none' ||
+    claims.findIndex((claim) => claim.name === 'role' && claim.value === role) > -1 )
 }
 
-export function getAuthenticationToken(){
-    return localStorage.getItem(tokenKey);
+export function logout() {
+  localStorage.removeItem(tokenKey)
+  localStorage.removeItem(expirationKey)
+}
+
+export function getAuthenticationToken() {
+  return localStorage.getItem(tokenKey)
 }

@@ -7,8 +7,9 @@ import { claim } from '../security/authenticationModels'
 import theme from '../theme'
 import { AppRoute } from '../types/AppRoute'
 import appRoutes from '../config/appRoutes'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import AuthenticationContext from '../security/AuthenticationContext'
+import { getAuthenticationClaims, hasRoleClaim } from '../security/jwtSupport'
 
 function Application() {
   const [claims, setClaims] = useState<claim[]>([
@@ -16,22 +17,17 @@ function Application() {
     {name: 'role', value: 'user'}
   ])
 
-  const isInRole = (route: AppRoute): boolean => {
-    return (
-      route.roleClaim === 'none' ||
-      claims.findIndex(
-        (claim) => claim.name === 'role' && claim.value === route.roleClaim
-      ) > -1
-    )
-  }
+//  useEffect(() => {
+//    setClaims( getAuthenticationClaims())
+//  }, [])
 
-  const addRoute = (route: AppRoute, isAuthorized: boolean): JSX.Element => {
+  const addRoute = (route: AppRoute): JSX.Element => {
     return (
       <Route
         key={route.key}
         path={route.path}
         element={
-          isAuthorized ? (
+          hasRoleClaim(route.roleClaim, claims) ? (
             route.component || DefaultPage()
           ) : (
             <p>You are not authorized to view this page</p>
@@ -50,10 +46,8 @@ function Application() {
             <Routes>
               {appRoutes.map((route: AppRoute) =>
                 route.subRoutes
-                  ? route.subRoutes.map((item: AppRoute) =>
-                      addRoute(item, isInRole(route))
-                    )
-                  : addRoute(route, isInRole(route))
+                  ? route.subRoutes.map((item: AppRoute) => addRoute(item))
+                  : addRoute(route)
               )}
             </Routes>
           </Router>
