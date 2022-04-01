@@ -5,6 +5,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using LanguageExt;
+using LanguageExt.Common;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -12,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Service.Controllers.Dto;
 using SquirrelsNest.Service.Database;
@@ -77,6 +80,17 @@ namespace SquirrelsNest.Service.Controllers {
                 result = await mUserManager.AddClaimAsync( user, new Claim( "role", role ));
 
                 if( result.Succeeded ) {
+                    var dbUser = await InsureUserExists( userCredentials.Email );
+                    var retValue = dbUser.Match( 
+                        u => new ObjectResult( u ), 
+                        e => Problem( title: "Error Creating SnUser", detail: e.Message ));
+
+                    if( dbUser.IsLeft ) {
+                        return retValue;
+                    }
+                }
+
+                if( result.Succeeded ) {
                     return await BuildToken( userCredentials );
                 }
             }
@@ -121,7 +135,6 @@ namespace SquirrelsNest.Service.Controllers {
                 new Claim( "email", email )
             };
 
-            var users = await mUserProvider.GetUsers();
             var user = await mUserProvider.GetUser( email );
 
             user.Do( u => {
@@ -130,6 +143,18 @@ namespace SquirrelsNest.Service.Controllers {
             });
 
             return claims;
+        }
+
+        private async Task<Either<Error, SnUser>> InsureUserExists( string forEmail ) {
+            var user = await mUserProvider.GetUser( forEmail );
+
+            if( user.IsLeft ) {
+                var newUser = new SnUser( forEmail, forEmail );
+
+                return await mUserProvider.AddUser( newUser );
+            }
+
+            return user;
         }
     }
 }
