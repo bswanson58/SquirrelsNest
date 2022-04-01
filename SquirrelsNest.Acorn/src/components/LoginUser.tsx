@@ -1,12 +1,13 @@
-import axios, { AxiosError } from 'axios'
-import { authenticationResponse,  userCredentials } from '../security/authenticationModels'
-import AuthenticationForm from './AuthenticationForm'
+import axios from 'axios'
+import { parseAxiosError } from '../utility/axiosErrorParser'
+import { authenticationResponse, userCredentials } from '../security/authenticationModels'
 import { urlAccounts } from '../config/endpoints'
 import { useContext, useState } from 'react'
-import ErrorDisplay from './ErrorDisplay'
-import { getAuthenticationClaims, saveAuthenticationToken } from '../security/jwtSupport'
-import AuthenticationContext from '../security/AuthenticationContext'
 import { useNavigate } from 'react-router-dom'
+import { getAuthenticationClaims, saveAuthenticationToken } from '../security/jwtSupport'
+import AuthenticationForm from './AuthenticationForm'
+import AuthenticationContext from '../security/AuthenticationContext'
+import ErrorDisplay from './ErrorDisplay'
 
 export default function Login() {
   const [errors, setErrors] = useState<string[]>([])
@@ -24,11 +25,7 @@ export default function Login() {
       update(getAuthenticationClaims())
       history('/')
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const err = error as AxiosError
-
-        setErrors(err.response?.data)
-      }
+      setErrors(parseAxiosError(error))
     }
   }
 
