@@ -1,12 +1,26 @@
 import { useContext } from 'react'
-import UserContext from "../security/UserContext"
+import { AppBar } from '@mui/material'
+import Typography from '@mui/material/Typography'
+import UserContext from '../security/UserContext'
+import { Box } from '@mui/system'
 
 function Footer() {
   const { user } = useContext(UserContext)
 
   return (
     <>
-    <div>Footer - {user.name()} {user.isLoggedIn() ? user.hasRoleClaim('admin') ? '(admin)' : '(user)' : ''}</div>
+      <AppBar position='fixed' sx={{ top: 'auto', bottom: 0 }}>
+        <Box m={1}>
+          <Typography>
+            {user.name()}{' '}
+            {user.isLoggedIn()
+              ? user.hasRoleClaim('admin')
+                ? '(admin)'
+                : '(user)'
+              : ''}
+          </Typography>
+        </Box>
+      </AppBar>
     </>
   )
 }
