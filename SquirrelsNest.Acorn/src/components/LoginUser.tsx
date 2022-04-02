@@ -8,10 +8,11 @@ import { getAuthenticationClaims, saveAuthenticationToken } from '../security/jw
 import AuthenticationForm from './AuthenticationForm'
 import AuthenticationContext from '../security/AuthenticationContext'
 import ErrorDisplay from './ErrorDisplay'
+import { User } from '../security/user'
 
 export default function Login() {
   const [errors, setErrors] = useState<string[]>([])
-  const { update } = useContext(AuthenticationContext)
+  const { updateUser } = useContext(AuthenticationContext)
   const history = useNavigate()
 
   async function login(credentials: userCredentials) {
@@ -22,7 +23,7 @@ export default function Login() {
         credentials
       )
       saveAuthenticationToken(response.data)
-      update(getAuthenticationClaims())
+      updateUser( new User(getAuthenticationClaims()))
       history('/')
     } catch (error) {
       setErrors(parseAxiosError(error))

@@ -3,19 +3,15 @@ import { ThemeProvider } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 import DefaultPage from '../pages/DefaultPage'
 import GraphQlContext from '../data/GraphQlContext'
-import { claim } from '../security/authenticationModels'
 import theme from '../theme'
 import { AppRoute } from '../types/AppRoute'
 import appRoutes from '../config/appRoutes'
 import { useState, useEffect } from 'react'
 import AuthenticationContext from '../security/AuthenticationContext'
-import { getAuthenticationClaims, hasRoleClaim } from '../security/jwtSupport'
+import { User, noUser } from '../security/user'
 
 function Application() {
-  const [claims, setClaims] = useState<claim[]>([
-    {name: 'email', value:'bswanson58@gmail.com'},
-    {name: 'role', value: 'user'}
-  ])
+  const [user, setUser] = useState<User>(noUser)
 
 //  useEffect(() => {
 //    setClaims( getAuthenticationClaims())
@@ -27,7 +23,7 @@ function Application() {
         key={route.key}
         path={route.path}
         element={
-          hasRoleClaim(route.roleClaim, claims) ? (
+          user.hasRoleClaim(route.roleClaim) ? (
             route.component || DefaultPage()
           ) : (
             <p>You are not authorized to view this page</p>
@@ -41,7 +37,7 @@ function Application() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <GraphQlContext>
-        <AuthenticationContext.Provider value={{ claims, update: setClaims }}>
+        <AuthenticationContext.Provider value={{ user, updateUser: setUser }}>
           <Router>
             <Routes>
               {appRoutes.map((route: AppRoute) =>

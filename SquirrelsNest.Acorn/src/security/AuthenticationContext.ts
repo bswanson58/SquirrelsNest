@@ -1,9 +1,9 @@
 import React from 'react'
-import { claim } from './authenticationModels'
+import { User, noUser } from './user';
 
 const AuthenticationContext = React.createContext<{
-    claims: claim[];
-    update(claims: claim[]): void
-}>({claims: [], update: () => {}})
+    user: User;
+    updateUser(user: User): void
+}>({user: noUser, updateUser: () => {}})
 
 export default AuthenticationContext

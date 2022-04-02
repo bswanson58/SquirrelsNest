@@ -10,7 +10,6 @@ import ErrorDisplay from './ErrorDisplay';
 
 function RegisterUser() {
     const [errors, setErrors] = useState<string[]>([]);
-    const {update} = useContext(AuthenticationContext);
     const history = useNavigate();
 
     async function register(credentials: userCredentials) {
