@@ -75,9 +75,14 @@ namespace SquirrelsNest.Service.Controllers {
 
             if( result.Succeeded ) {
                 // make the first user to be created an admin
-                var role = mContext.Users.Length() == 1 ? "admin" : "user";
+                if( mContext.Users.Length() == 1 ) {
+                    result = await mUserManager.AddClaimAsync( user, new Claim( "role", "admin" ));
+                }
 
-                result = await mUserManager.AddClaimAsync( user, new Claim( "role", role ));
+                // all users have the user role.
+                if( result.Succeeded ) {
+                    result = await mUserManager.AddClaimAsync( user, new Claim( "role", "user" ));
+                }
 
                 if( result.Succeeded ) {
                     var dbUser = await InsureUserExists( userCredentials );

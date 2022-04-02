@@ -11,15 +11,23 @@ export class User {
       return this.mClaims.length > 0
   }
 
-  hasRoleClaim(role: string): boolean {
-    return (
-      role === 'none' ||
-      this.mClaims.findIndex((claim) => claim.name === 'role' && claim.value === role ) > -1
-    )
-  }
-
   findValue( name: string ) : claim | undefined {
       return this.mClaims.find( claim => claim.name === name )
+  }
+
+  hasRoleClaim(role: string): boolean {
+    if( role === 'none')
+      return true
+
+    var roleClaim = this.findValue('role')
+
+    if( Array.isArray( roleClaim?.value )) {
+        let roles = roleClaim?.value as string[]
+
+        return roles.findIndex( r => r === role ) > -1
+    }
+
+    return roleClaim?.value === role
   }
 
   emailAddress(): string {
