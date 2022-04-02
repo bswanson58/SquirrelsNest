@@ -6,13 +6,13 @@ import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getAuthenticationClaims, saveAuthenticationToken } from '../security/jwtSupport'
 import AuthenticationForm from './AuthenticationForm'
-import AuthenticationContext from '../security/AuthenticationContext'
+import UserContext from '../security/UserContext'
 import ErrorDisplay from './ErrorDisplay'
 import { User } from '../security/user'
 
 export default function Login() {
   const [errors, setErrors] = useState<string[]>([])
-  const { updateUser } = useContext(AuthenticationContext)
+  const { updateUser } = useContext(UserContext)
   const history = useNavigate()
 
   async function login(credentials: userCredentials) {

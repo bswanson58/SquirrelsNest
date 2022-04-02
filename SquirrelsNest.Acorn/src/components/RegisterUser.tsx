@@ -1,10 +1,9 @@
 import axios from 'axios'
 import { parseAxiosError } from '../utility/axiosErrorParser';
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { urlAccounts } from '../config/endpoints';
 import { authenticationResponse, userCredentials } from "../security/authenticationModels";
-import AuthenticationContext from "../security/AuthenticationContext";
 import AuthenticationForm from './AuthenticationForm'
 import ErrorDisplay from './ErrorDisplay';
 

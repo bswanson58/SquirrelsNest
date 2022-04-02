@@ -7,7 +7,7 @@ import theme from '../theme'
 import { AppRoute } from '../types/AppRoute'
 import appRoutes from '../config/appRoutes'
 import { useState, useEffect } from 'react'
-import AuthenticationContext from '../security/AuthenticationContext'
+import UserContext from '../security/UserContext'
 import { User, noUser } from '../security/user'
 
 function Application() {
@@ -37,7 +37,7 @@ function Application() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <GraphQlContext>
-        <AuthenticationContext.Provider value={{ user, updateUser: setUser }}>
+        <UserContext.Provider value={{ user, updateUser: setUser }}>
           <Router>
             <Routes>
               {appRoutes.map((route: AppRoute) =>
@@ -47,7 +47,7 @@ function Application() {
               )}
             </Routes>
           </Router>
-        </AuthenticationContext.Provider>
+        </UserContext.Provider>
       </GraphQlContext>
     </ThemeProvider>
   )
