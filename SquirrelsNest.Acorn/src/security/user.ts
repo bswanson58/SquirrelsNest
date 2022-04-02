@@ -44,4 +44,15 @@ export class User {
 }
 
 let noUser = new User([])
-export { noUser }
+let adminUser = new User([
+  { name: 'name', value: 'Bill Swanson' },
+  { name: 'email', value: 'bswanson58@gmail.com' },
+  { name: 'role', value: 'admin' },
+])
+let normalUser = new User([
+  { name: 'name', value: 'Bill Swanson' },
+  { name: 'email', value: 'bswanson58@gmail.com' },
+  { name: 'role', value: 'user' },
+])
+
+export { noUser, adminUser, normalUser }

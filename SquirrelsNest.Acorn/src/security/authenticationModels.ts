@@ -1,15 +1,15 @@
 export interface claim {
-    name: string;
-    value: string;
+    name: string
+    value: string
 } 
 
 export interface userCredentials {
-    name: string;
-    email: string;
-    password: string;
+    name: string
+    email: string
+    password: string
 }
 
 export interface authenticationResponse{
-    token: string;
-    expiration: Date;
+    token: string
+    expiration: Date
 }

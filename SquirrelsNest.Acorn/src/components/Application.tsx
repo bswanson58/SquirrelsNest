@@ -8,10 +8,10 @@ import { AppRoute } from '../types/AppRoute'
 import appRoutes from '../config/appRoutes'
 import { useState, useEffect } from 'react'
 import UserContext from '../security/UserContext'
-import { User, noUser } from '../security/user'
+import { User, noUser, adminUser, normalUser } from '../security/user'
 
 function Application() {
-  const [user, setUser] = useState<User>(noUser)
+  const [user, setUser] = useState<User>(normalUser)
 
 //  useEffect(() => {
 //    setClaims( getAuthenticationClaims())
