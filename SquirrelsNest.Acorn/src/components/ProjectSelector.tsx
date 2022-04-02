@@ -31,7 +31,7 @@ function ProjectSelector() {
 
   return (
     <>
-      <Typography>ProjectSelector</Typography>
+      <Typography variant='subtitle2'>Projects</Typography>
 
       <List dense>
         {data?.allProjects.nodes.map((item) => (
