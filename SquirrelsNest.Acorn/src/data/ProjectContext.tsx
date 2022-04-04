@@ -23,7 +23,7 @@ function ProjectContextProvider(props: any) {
     PROJECTS_QUERY,
     {
       variables: {
-        limit: 10,
+        first: 10,
       },
     }
   )

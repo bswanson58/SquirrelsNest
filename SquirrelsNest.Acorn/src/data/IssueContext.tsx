@@ -22,7 +22,8 @@ function IssueContextProvider(props: any) {
     ISSUES_FOR_PROJECT_QUERY,
     {
       variables: {
-        limit: 10,
+        first: 5,
+        projectId: "05be38d6-2751-49bf-8a48-4c1823a69f7d"
       },
     }
   )

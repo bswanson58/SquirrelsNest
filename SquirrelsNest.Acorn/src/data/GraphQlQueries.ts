@@ -1,5 +1,5 @@
-export const PROJECTS_QUERY = `{ 
-  allProjects(first: 10) {
+export const PROJECTS_QUERY = `query ProjectsQuery($first: Int!) { 
+  allProjects(first: $first) {
       pageInfo {
         hasNextPage
         hasPreviousPage
@@ -19,10 +19,10 @@ export const PROJECTS_QUERY = `{
     }
   }`
 
-export const ISSUES_FOR_PROJECT_QUERY = `{ 
+export const ISSUES_FOR_PROJECT_QUERY = `query IssuesForProjectQuery($first: Int!, $projectId: ID!) { 
   allIssuesForProject(
-      first: 10 
-      projectId: "05be38d6-2751-49bf-8a48-4c1823a69f7d" ) {
+      first: $first
+      projectId: $projectId ) {
     pageInfo {
       hasNextPage
       hasPreviousPage
