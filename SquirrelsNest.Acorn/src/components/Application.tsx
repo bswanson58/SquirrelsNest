@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react'
 import UserContext from '../security/UserContext'
 import { User, noUser, adminUser, normalUser } from '../security/user'
 import { ProjectContextProvider } from '../data/ProjectContext'
+import { IssueContextProvider } from '../data/IssueContext'
 import { getAuthenticationClaims } from '../security/jwtSupport'
 import ApplicationRouter from './ApplicationRouter'
 
@@ -22,7 +23,9 @@ function Application() {
       <GraphQlContext>
         <UserContext.Provider value={{ user, updateUser: setUser }}>
           <ProjectContextProvider>
-            <ApplicationRouter />
+            <IssueContextProvider>
+              <ApplicationRouter />
+            </IssueContextProvider>
           </ProjectContextProvider>
         </UserContext.Provider>
       </GraphQlContext>

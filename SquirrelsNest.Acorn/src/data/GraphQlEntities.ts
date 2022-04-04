@@ -67,7 +67,10 @@ export enum StateCategory {
     endCursor: String
   }
 
-  export interface AllIssuesForProjectConnection {
+  export interface AllIssuesForProjectQueryResult {
+    allIssuesForProject: AllIssuesForProjectConnection
+}
+export interface AllIssuesForProjectConnection {
     pageInfo: PageInfo
     edges: AllIssuesForProjectEdge[]
     nodes: ClIssue[]
