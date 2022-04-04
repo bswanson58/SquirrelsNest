@@ -9,6 +9,7 @@ import appRoutes from '../config/appRoutes'
 import { useState, useEffect } from 'react'
 import UserContext from '../security/UserContext'
 import { User, noUser, adminUser, normalUser } from '../security/user'
+import { ProjectContextProvider } from '../data/ProjectContext'
 
 function Application() {
   const [user, setUser] = useState<User>(normalUser)
@@ -38,15 +39,17 @@ function Application() {
       <CssBaseline />
       <GraphQlContext>
         <UserContext.Provider value={{ user, updateUser: setUser }}>
-          <Router>
-            <Routes>
-              {appRoutes.map((route: AppRoute) =>
-                route.subRoutes
-                  ? route.subRoutes.map((item: AppRoute) => addRoute(item))
-                  : addRoute(route)
-              )}
-            </Routes>
-          </Router>
+          <ProjectContextProvider>
+            <Router>
+              <Routes>
+                {appRoutes.map((route: AppRoute) =>
+                  route.subRoutes
+                    ? route.subRoutes.map((item: AppRoute) => addRoute(item))
+                    : addRoute(route)
+                )}
+              </Routes>
+            </Router>
+          </ProjectContextProvider>
         </UserContext.Provider>
       </GraphQlContext>
     </ThemeProvider>

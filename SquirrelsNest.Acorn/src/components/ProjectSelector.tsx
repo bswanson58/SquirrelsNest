@@ -5,27 +5,12 @@ import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
-import { useQuery } from 'graphql-hooks'
-import { PROJECTS_QUERY } from '../data/GraphQlQueries'
-import { AllProjectsQueryResult } from '../data/GraphQlEntities'
+import { useProjectContext } from '../data/ProjectContext'
 
 function ProjectSelector() {
-  const { loading, error, data } = useQuery<AllProjectsQueryResult>(
-    PROJECTS_QUERY,
-    {
-      variables: {
-        limit: 10,
-      },
-    }
-  )
+  const projectContext = useProjectContext()
 
-  if (loading) {
-    return <Box>Loading...</Box>
-  }
-
-  if (error) {
-    console.log('---- error details:')
-    console.log(error)
+  if(projectContext.loadingErrors) {
     return <Box>An error occurred...</Box>
   }
 
@@ -34,7 +19,7 @@ function ProjectSelector() {
       <Typography variant='subtitle2'>Projects</Typography>
 
       <List dense>
-        {data?.allProjects.nodes.map((item) => (
+        {projectContext.projects.mProjects.map((item) => (
           <ListItem key={item.id as React.Key} disablePadding>
             <ListItemButton>
               <ListItemText primary={item.name} />
