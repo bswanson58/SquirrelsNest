@@ -1,38 +1,20 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { ThemeProvider } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
-import DefaultPage from '../pages/DefaultPage'
 import GraphQlContext from '../data/GraphQlContext'
 import theme from '../theme'
-import { AppRoute } from '../types/AppRoute'
-import appRoutes from '../config/appRoutes'
 import { useState, useEffect } from 'react'
 import UserContext from '../security/UserContext'
 import { User, noUser, adminUser, normalUser } from '../security/user'
 import { ProjectContextProvider } from '../data/ProjectContext'
+import { getAuthenticationClaims } from '../security/jwtSupport'
+import ApplicationRouter from './ApplicationRouter'
 
 function Application() {
-  const [user, setUser] = useState<User>(normalUser)
+  const [user, setUser] = useState<User>(noUser)
 
-//  useEffect(() => {
-//    setClaims( getAuthenticationClaims())
-//  }, [])
-
-  const addRoute = (route: AppRoute): JSX.Element => {
-    return (
-      <Route
-        key={route.key}
-        path={route.path}
-        element={
-          user.hasRoleClaim(route.roleClaim) ? (
-            route.component || DefaultPage()
-          ) : (
-            <p>You are not authorized to view this page</p>
-          )
-        }
-      />
-    )
-  }
+  useEffect(() => {
+    setUser(new User(getAuthenticationClaims()))
+  }, [])
 
   return (
     <ThemeProvider theme={theme}>
@@ -40,15 +22,7 @@ function Application() {
       <GraphQlContext>
         <UserContext.Provider value={{ user, updateUser: setUser }}>
           <ProjectContextProvider>
-            <Router>
-              <Routes>
-                {appRoutes.map((route: AppRoute) =>
-                  route.subRoutes
-                    ? route.subRoutes.map((item: AppRoute) => addRoute(item))
-                    : addRoute(route)
-                )}
-              </Routes>
-            </Router>
+            <ApplicationRouter />
           </ProjectContextProvider>
         </UserContext.Provider>
       </GraphQlContext>
