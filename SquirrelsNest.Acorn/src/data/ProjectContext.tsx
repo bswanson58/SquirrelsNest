@@ -1,6 +1,6 @@
 import { ProjectList, noProjects } from './projectList'
 import { useContext, createContext, useState, useEffect } from 'react'
-import { APIError, useQuery } from 'graphql-hooks'
+import { APIError, UseClientRequestResult, useManualQuery } from 'graphql-hooks'
 import { PROJECTS_QUERY } from '../data/GraphQlQueries'
 import { AllProjectsQueryResult, ClProject } from '../data/GraphQlEntities'
 import UserContext from '../security/UserContext'
@@ -19,7 +19,7 @@ function ProjectContextProvider(props: any) {
   const [loadingErrors, setLoadingErrors] = useState<APIError<object>>()
   const [currentProject, setCurrentProject] = useState<ClProject>()
 
-  const queryResult = useQuery<AllProjectsQueryResult>(
+  const [ requestProjects, queryResult ] = useManualQuery<AllProjectsQueryResult>(
     PROJECTS_QUERY,
     {
       variables: {
@@ -28,15 +28,8 @@ function ProjectContextProvider(props: any) {
     }
   )
 
-  useEffect(() => {
+  const processResponse = ( queryResult: UseClientRequestResult<AllProjectsQueryResult> ) => {
     const { loading, error, data } = queryResult
-
-    if (user === noUser) {
-      setLoadingErrors(undefined)
-      setProjectList(noProjects)
-
-      return
-    }
 
     if (loading) {
       return
@@ -57,7 +50,22 @@ function ProjectContextProvider(props: any) {
       setLoadingErrors(undefined)
       setProjectList(new ProjectList(data))
     }
-  }, [user, queryResult.loading])
+  }
+
+  useEffect(() => {
+    setLoadingErrors(undefined)
+    setProjectList(noProjects)
+
+    if (user !== noUser) {
+      requestProjects()
+
+      console.log('requested project data')
+    }
+  }, [user])
+
+  useEffect(() => {
+    processResponse(queryResult)
+  }, [queryResult.data, queryResult.error])
 
   return (
     <ProjectContext.Provider
