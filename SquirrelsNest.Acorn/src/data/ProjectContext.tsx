@@ -32,8 +32,6 @@ function ProjectContextProvider(props: any) {
     const { loading, error, data } = queryResult
 
     if (user === noUser) {
-      console.log('no user for projects')
-
       setLoadingErrors(undefined)
       setProjectList(noProjects)
 
@@ -41,7 +39,6 @@ function ProjectContextProvider(props: any) {
     }
 
     if (loading) {
-      console.log('loading projects')
       return
     }
 
@@ -55,8 +52,10 @@ function ProjectContextProvider(props: any) {
     }
 
     if (data) {
+      console.log(`loaded project data: ${data.allProjects.totalCount} projects`)
+      
       setLoadingErrors(undefined)
-      setProjectList(new ProjectList(data.allProjects.nodes))
+      setProjectList(new ProjectList(data))
     }
   }, [user, queryResult.loading])
 

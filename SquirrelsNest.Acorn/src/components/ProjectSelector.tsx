@@ -19,7 +19,7 @@ function ProjectSelector() {
       <Typography variant='subtitle2'>Projects</Typography>
 
       <List dense>
-        {projectContext.projects.mProjects.map((item) => (
+        {projectContext.projects.projects.map((item) => (
           <ListItem key={item.id as React.Key} disablePadding>
             <ListItemButton>
               <ListItemText primary={item.name} />
