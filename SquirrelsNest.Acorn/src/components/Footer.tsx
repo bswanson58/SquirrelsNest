@@ -1,11 +1,10 @@
-import { useContext } from 'react'
 import { AppBar } from '@mui/material'
 import Typography from '@mui/material/Typography'
-import UserContext from '../security/UserContext'
+import { useUserContext } from '../security/UserContext'
 import { Box } from '@mui/system'
 
 function Footer() {
-  const { user } = useContext(UserContext)
+  const { user } = useUserContext()
 
   return (
     <>

@@ -2,17 +2,17 @@ import axios from 'axios'
 import { parseAxiosError } from '../utility/axiosErrorParser'
 import { authenticationResponse, userCredentials } from '../security/authenticationModels'
 import { urlAccounts } from '../config/endpoints'
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getAuthenticationClaims, saveAuthenticationToken } from '../security/jwtSupport'
 import AuthenticationForm from './AuthenticationForm'
-import UserContext from '../security/UserContext'
+import { useUserContext } from '../security/UserContext'
 import ErrorDisplay from './ErrorDisplay'
 import { User } from '../security/user'
 
 export default function Login() {
   const [errors, setErrors] = useState<string[]>([])
-  const { updateUser } = useContext(UserContext)
+  const { updateUser } = useUserContext()
   const history = useNavigate()
 
   async function login(credentials: userCredentials) {

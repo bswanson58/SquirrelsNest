@@ -1,5 +1,5 @@
-import { ReactElement, useEffect, useContext, useState } from 'react'
-import UserContext from './UserContext'
+import { ReactElement, useEffect, useState } from 'react'
+import { useUserContext } from './UserContext'
 
 interface authorizedProps {
   authorized: ReactElement
@@ -9,7 +9,7 @@ interface authorizedProps {
 
 export default function Authorized(props: authorizedProps) {
   const [isAuthorized, setIsAuthorized] = useState( true )
-  const { user } = useContext( UserContext )
+  const { user } = useUserContext()
 
   useEffect(() => {
     if (props.role) {

@@ -3,7 +3,7 @@ import { useContext, createContext, useState, useEffect } from 'react'
 import { APIError, UseClientRequestResult, useManualQuery } from 'graphql-hooks'
 import { PROJECTS_QUERY } from '../data/GraphQlQueries'
 import { AllProjectsQueryResult, ClProject } from '../data/GraphQlEntities'
-import UserContext from '../security/UserContext'
+import { useUserContext } from '../security/UserContext'
 import { noUser } from '../security/user'
 
 const ProjectContext = createContext<{
@@ -14,7 +14,7 @@ const ProjectContext = createContext<{
 }>({ projects: noProjects, loadingErrors: undefined, currentProject: undefined, setCurrentProject: () => {} })
 
 function ProjectContextProvider(props: any) {
-  const { user } = useContext(UserContext)
+  const { user } = useUserContext()
   const [projectData, setProjectData] = useState<ProjectData>(noProjects)
   const [loadingErrors, setLoadingErrors] = useState<APIError<object>>()
   const [currentProject, setCurrentProject] = useState<ClProject>()

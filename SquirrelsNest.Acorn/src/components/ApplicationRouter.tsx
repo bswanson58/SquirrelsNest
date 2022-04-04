@@ -2,11 +2,10 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { AppRoute } from '../types/AppRoute'
 import appRoutes from '../config/appRoutes'
 import DefaultPage from '../pages/DefaultPage'
-import { useContext } from 'react'
-import UserContext from '../security/UserContext'
+import { useUserContext } from '../security/UserContext'
 
 function ApplicationRouter() {
-  const { user } = useContext(UserContext)
+  const { user } = useUserContext()
 
   const addRoute = (route: AppRoute): JSX.Element => {
     return (
