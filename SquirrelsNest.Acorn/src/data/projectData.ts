@@ -1,6 +1,6 @@
 import { AllProjectsQueryResult, AllProjectsEdge, ClProject, PageInfo } from './GraphQlEntities'
 
-class ProjectList {
+class ProjectData {
   projects: ClProject[]
   pageInfo: PageInfo
   edges: AllProjectsEdge[]
@@ -21,6 +21,6 @@ class ProjectList {
   }
 }
 
-let noProjects = new ProjectList(undefined)
+let noProjects = new ProjectData(undefined)
 
-export { ProjectList, noProjects }
+export { ProjectData, noProjects }

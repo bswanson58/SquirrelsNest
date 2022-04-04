@@ -1,4 +1,4 @@
-import { ProjectList, noProjects } from './projectList'
+import { ProjectData, noProjects } from './projectData'
 import { useContext, createContext, useState, useEffect } from 'react'
 import { APIError, UseClientRequestResult, useManualQuery } from 'graphql-hooks'
 import { PROJECTS_QUERY } from '../data/GraphQlQueries'
@@ -7,7 +7,7 @@ import UserContext from '../security/UserContext'
 import { noUser } from '../security/user'
 
 const ProjectContext = createContext<{
-  projects: ProjectList
+  projects: ProjectData
   loadingErrors: APIError<object> | undefined
   currentProject: ClProject | undefined
   setCurrentProject(project: ClProject): void
@@ -15,7 +15,7 @@ const ProjectContext = createContext<{
 
 function ProjectContextProvider(props: any) {
   const { user } = useContext(UserContext)
-  const [projectList, setProjectList] = useState<ProjectList>(noProjects)
+  const [projectData, setProjectData] = useState<ProjectData>(noProjects)
   const [loadingErrors, setLoadingErrors] = useState<APIError<object>>()
   const [currentProject, setCurrentProject] = useState<ClProject>()
 
@@ -39,7 +39,7 @@ function ProjectContextProvider(props: any) {
       console.log(error)
 
       setLoadingErrors(error)
-      setProjectList(noProjects)
+      setProjectData(noProjects)
 
       return
     }
@@ -48,13 +48,13 @@ function ProjectContextProvider(props: any) {
       console.log(`loaded project data: ${data.allProjects.totalCount} projects`)
       
       setLoadingErrors(undefined)
-      setProjectList(new ProjectList(data))
+      setProjectData(new ProjectData(data))
     }
   }
 
   useEffect(() => {
     setLoadingErrors(undefined)
-    setProjectList(noProjects)
+    setProjectData(noProjects)
 
     if (user !== noUser) {
       requestProjects()
@@ -69,7 +69,7 @@ function ProjectContextProvider(props: any) {
 
   return (
     <ProjectContext.Provider
-      value={{ projects: projectList, loadingErrors: loadingErrors, currentProject: currentProject, setCurrentProject: p => setCurrentProject(p) }}>
+      value={{ projects: projectData, loadingErrors: loadingErrors, currentProject: currentProject, setCurrentProject: p => setCurrentProject(p) }}>
       {props.children}
     </ProjectContext.Provider>
   )

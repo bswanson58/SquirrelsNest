@@ -8,9 +8,9 @@ import Typography from '@mui/material/Typography'
 import { useProjectContext } from '../data/ProjectContext'
 
 function ProjectSelector() {
-  const projectContext = useProjectContext()
+  const projectData = useProjectContext()
 
-  if(projectContext.loadingErrors) {
+  if(projectData.loadingErrors) {
     return <Box>An error occurred...</Box>
   }
 
@@ -19,7 +19,7 @@ function ProjectSelector() {
       <Typography variant='subtitle2'>Projects</Typography>
 
       <List dense>
-        {projectContext.projects.projects.map((item) => (
+        {projectData.projects.projects.map((item) => (
           <ListItem key={item.id as React.Key} disablePadding>
             <ListItemButton>
               <ListItemText primary={item.name} />
