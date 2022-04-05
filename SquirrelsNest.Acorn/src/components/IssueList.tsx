@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
@@ -10,15 +10,17 @@ import { ClIssue } from '../data/GraphQlEntities'
 import styled from 'styled-components'
 import { Grid } from '@mui/material'
 import { useState } from 'react'
+import DetailIcon from '@mui/icons-material/List';
 
 const RelativeBox = styled(Box)`
   position: relative;
 `
-const TopRightButton = styled(Button)`
+const TopRightButton = styled(IconButton)`
   position: absolute;
   right: 0%;
   top: 0%;
   padding: 0%;
+  margin: 0%;
 `
 const SubTypography = styled(Typography)`
   opacity: 0.7;
@@ -44,13 +46,13 @@ function IssueList() {
         break
     }
   }
+  
+  const createPrimary = (issue: ClIssue) => {
+    return <Typography variant='body1'>{issue.title}</Typography>
+  }
 
   const createSubTypography = (text: String) => {
     return <SubTypography variant='body2'>{text}</SubTypography>
-  }
-
-  const createPrimary = (issue: ClIssue) => {
-    return <Typography variant='body1'>{issue.title}</Typography>
   }
 
   const descriptionDetails = (issue: ClIssue) => {
@@ -93,7 +95,9 @@ function IssueList() {
   return (
     <RelativeBox>
       <Typography variant='subtitle2'>Issues</Typography>
-      <TopRightButton onClick={toggleStyle}>ds</TopRightButton>
+      <TopRightButton onClick={toggleStyle}>
+        <DetailIcon/>
+      </TopRightButton>
 
       <List dense>
         {currentIssues.issueData.issues.map((item) => (
