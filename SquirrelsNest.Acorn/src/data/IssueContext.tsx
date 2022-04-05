@@ -23,7 +23,7 @@ function IssueContextProvider(props: any) {
     {
       variables: {
         first: 5,
-        projectId: "05be38d6-2751-49bf-8a48-4c1823a69f7d"
+        projectId: currentProject?.id
       },
     }
   )
@@ -56,12 +56,11 @@ function IssueContextProvider(props: any) {
     setLoadingErrors(undefined)
     setIssueData(noIssues)
 
-    if (user !== noUser) {
-      requestIssues()
-
-      console.log('requested issue data')
-    }
-  }, [user, currentProject])
+    if ((user !== noUser) &&
+        (currentProject != undefined)) {
+        requestIssues()
+      }
+    }, [user, currentProject])
 
   useEffect(() => {
     processResponse(queryResult)
