@@ -11,6 +11,7 @@ import styled from 'styled-components'
 import { Grid } from '@mui/material'
 import { useState } from 'react'
 import DetailIcon from '@mui/icons-material/List';
+import { useProjectContext } from '../data/ProjectContext'
 
 const RelativeBox = styled(Box)`
   position: relative;
@@ -31,6 +32,7 @@ enum eDisplayStyle { TITLE_ONLY, TITLE_DESCRIPTION, FULL_DETAILS }
 
 function IssueList() {
   const [displayStyle, setDisplayStyle] = useState(eDisplayStyle.TITLE_DESCRIPTION)
+  const { currentProject } = useProjectContext();
   const currentIssues = useIssueContext()
 
   const toggleStyle = () => {
@@ -46,9 +48,14 @@ function IssueList() {
         break
     }
   }
-  
+
   const createPrimary = (issue: ClIssue) => {
-    return <Typography variant='body1'>{issue.title}</Typography>
+    return (
+      <>
+        <SubTypography variant='body1' display='inline'>({currentProject?.issuePrefix}-{issue.issueNumber}) </SubTypography>
+        <Typography variant='body1' display='inline'>{issue.title}</Typography>
+      </>
+    )
   }
 
   const createSubTypography = (text: String) => {

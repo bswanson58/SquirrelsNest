@@ -11,9 +11,10 @@ export const PROJECTS_QUERY = `query ProjectsQuery($first: Int!) {
         }
       }
       nodes {
+        id
         name
         description
-        id
+        issuePrefix
       }
       totalCount
     }
