@@ -1,8 +1,8 @@
 import { ProjectData, noProjects } from './projectData'
 import { useContext, createContext, useState, useEffect } from 'react'
 import { APIError, UseClientRequestResult, useManualQuery } from 'graphql-hooks'
-import { PROJECTS_QUERY } from '../data/GraphQlQueries'
-import { AllProjectsQueryResult, ClProject } from '../data/GraphQlEntities'
+import { PROJECTS_QUERY } from './GraphQlQueries'
+import { AllProjectsQueryResult, ClProject } from './GraphQlEntities'
 import { useUserContext } from '../security/UserContext'
 import { noUser } from '../security/user'
 
