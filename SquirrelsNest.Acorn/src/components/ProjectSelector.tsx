@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
@@ -10,10 +10,17 @@ import { ClProject } from '../data/GraphQlEntities'
 
 function ProjectSelector() {
   const projectData = useProjectContext()
+  const [selectedItem, setSelectedItem] = useState<String>('');
 
-  const selectItem = (project: ClProject) => {
+  const handleListItemClick = (project: ClProject) => {
     projectData.setCurrentProject(project)
-  }
+  };
+
+  useEffect(() => {
+    if(projectData.currentProject !== undefined) {
+      setSelectedItem(projectData.currentProject.id)
+    }
+  },[projectData.currentProject])
 
   if(projectData.loadingErrors) {
     return <Box>An error occurred...</Box>
@@ -26,7 +33,7 @@ function ProjectSelector() {
       <List dense>
         {projectData.projects.projects.map((item) => (
           <ListItem key={item.id as React.Key} disablePadding>
-            <ListItemButton onClick={() => selectItem(item)}>
+            <ListItemButton selected={selectedItem === item.id} onClick={() => handleListItemClick(item)}>
               <ListItemText primary={item.name} />
             </ListItemButton>
           </ListItem>
