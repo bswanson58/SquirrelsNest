@@ -10,14 +10,14 @@ function IssuesPage() {
     <Layout>
       <Box m={1}>
         <Grid container spacing={1}>
-          <Grid item xs={4}>
+          <Grid item xs={3} lg={2}>
             <Paper elevation={0} variant='outlined'>
               <Box m={1}>
                 <ProjectSelector />
               </Box>
             </Paper>
           </Grid>
-          <Grid item xs={8}>
+          <Grid item xs={9} lg={10}>
             <Paper elevation={0} variant='outlined'>
               <Box m={1}>
                 <IssueList />
