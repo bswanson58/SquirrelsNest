@@ -19,7 +19,7 @@ export class User {
     if( role === 'none')
       return true
 
-    var roleClaim = this.findValue('role')
+    const roleClaim = this.findValue('role');
 
     if( Array.isArray( roleClaim?.value )) {
         let roles = roleClaim?.value as string[]

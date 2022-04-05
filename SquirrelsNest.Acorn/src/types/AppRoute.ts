@@ -1,5 +1,5 @@
 import { Route } from 'react-router-dom'
-import { ComponentType, FC } from 'react';
+import { ComponentType } from 'react';
 
 /**
  * Represents the route of a page.

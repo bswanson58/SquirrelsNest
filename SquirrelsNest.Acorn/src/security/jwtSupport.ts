@@ -31,18 +31,19 @@ export function getAuthenticationClaims(): claim[] {
 
   return response
 }
-
+/*
 export function hasRoleClaim(role: string, claims: claim[]): boolean {
   return (
     role === 'none' ||
     claims.findIndex((claim) => claim.name === 'role' && claim.value === role) > -1 )
 }
-
+*/
 export function logout() {
   localStorage.removeItem(tokenKey)
   localStorage.removeItem(expirationKey)
 }
-
+/*
 export function getAuthenticationToken() {
   return localStorage.getItem(tokenKey)
 }
+*/

@@ -9,7 +9,7 @@ import { useIssueContext } from '../data/IssueContext'
 import { ClIssue } from '../data/GraphQlEntities'
 import styled from 'styled-components'
 import { Grid } from '@mui/material'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import DetailIcon from '@mui/icons-material/List';
 import { useProjectContext } from '../data/ProjectContext'
 
@@ -18,10 +18,10 @@ const RelativeBox = styled(Box)`
 `
 const TopRightButton = styled(IconButton)`
   position: absolute;
-  right: 0%;
-  top: 0%;
-  padding: 0%;
-  margin: 0%;
+  right: 0;
+  top: 0;
+  padding: 0;
+  margin: 0;
 `
 const SubTypography = styled(Typography)`
   opacity: 0.7;
@@ -91,7 +91,7 @@ function IssueList() {
         return descriptionDetails(issue)
 
       case eDisplayStyle.TITLE_ONLY:
-        return(null)
+        return null
     }
   }
 

@@ -9,14 +9,14 @@ import { noUser } from '../security/user'
 
 const IssueContext = createContext<{
   issueData: IssueData
-  loadingErrors: APIError<object> | undefined
+  loadingErrors: APIError | undefined
 }>({ issueData: noIssues, loadingErrors: undefined })
 
 function IssueContextProvider(props: any) {
   const { user } = useUserContext()
   const { currentProject } = useProjectContext()
   const [issueData, setIssueData] = useState<IssueData>(noIssues)
-  const [loadingErrors, setLoadingErrors] = useState<APIError<object>>()
+  const [loadingErrors, setLoadingErrors] = useState<APIError>()
 
   const [ requestIssues, queryResult ] = useManualQuery<AllIssuesForProjectQueryResult>(
     ISSUES_FOR_PROJECT_QUERY,
@@ -57,7 +57,7 @@ function IssueContextProvider(props: any) {
     setIssueData(noIssues)
 
     if ((user !== noUser) &&
-        (currentProject != undefined)) {
+        (currentProject !== undefined)) {
         requestIssues()
       }
     }, [user, currentProject])

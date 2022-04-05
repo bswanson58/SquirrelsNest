@@ -14,8 +14,7 @@ function RegisterUser() {
     async function register(credentials: userCredentials) {
         try{
             setErrors([]);
-            const response = await axios
-                .post<authenticationResponse>(`${urlAccounts}/create`, credentials)
+            await axios.post<authenticationResponse>(`${urlAccounts}/create`, credentials);
             history('/')
         }
         catch(error) {

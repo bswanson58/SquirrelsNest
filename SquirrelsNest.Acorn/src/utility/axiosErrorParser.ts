@@ -11,7 +11,7 @@ export function parseAxiosError( error: unknown ): string[] {
                 retValue = err.response.data
             }
             else {
-                const { detail, status, title } = err.response.data
+                const { detail, title } = err.response.data
 
                 retValue = [`${err.message}: ${title} - ${detail}`]
             }

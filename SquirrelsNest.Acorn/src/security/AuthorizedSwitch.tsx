@@ -7,7 +7,7 @@ interface authorizedProps {
   role?: string
 }
 
-export default function Authorized(props: authorizedProps) {
+function AuthorizedSwitch(props: authorizedProps) {
   const [isAuthorized, setIsAuthorized] = useState( true )
   const { user } = useUserContext()
 
@@ -21,3 +21,5 @@ export default function Authorized(props: authorizedProps) {
 
   return <>{isAuthorized ? props.authorized : props.notAuthorized}</>
 }
+
+export default AuthorizedSwitch
