@@ -58,14 +58,18 @@ function ProjectContextProvider(props: any) {
 
     if (user !== noUser) {
       requestProjects()
-
-      console.log('requested project data')
     }
   }, [user])
 
   useEffect(() => {
     processResponse(queryResult)
   }, [queryResult.data, queryResult.error])
+
+  useEffect(() => {
+    if(currentProject === undefined) {
+      setCurrentProject(projectData.projects.find(() => true))
+    }
+},[projectData.projects])
 
   return (
     <ProjectContext.Provider
