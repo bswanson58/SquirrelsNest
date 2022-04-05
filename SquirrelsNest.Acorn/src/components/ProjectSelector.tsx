@@ -34,7 +34,7 @@ function ProjectSelector() {
         {projectData.projects.projects.map((item) => (
           <ListItem key={item.id as React.Key} disablePadding>
             <ListItemButton selected={selectedItem === item.id} onClick={() => handleListItemClick(item)}>
-              <ListItemText primary={item.name} />
+              <ListItemText primaryTypographyProps={{variant: 'body1'}} primary={item.name} />
             </ListItemButton>
           </ListItem>
         ))}
