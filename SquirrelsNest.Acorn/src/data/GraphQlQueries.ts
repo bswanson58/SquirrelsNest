@@ -40,6 +40,18 @@ export const ISSUES_FOR_PROJECT_QUERY = `query IssuesForProjectQuery($first: Int
       issueNumber
       title
       description
+      component {
+        name
+      }
+      assignedTo {
+        name
+      }
+      workflowState {
+        name
+      }
+      issueType {
+        name
+      }
     }
     totalCount
   }
