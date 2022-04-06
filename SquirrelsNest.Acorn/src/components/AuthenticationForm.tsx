@@ -1,40 +1,73 @@
 import {userCredentials} from '../security/authenticationModels'
-import {Form, Formik, FormikHelpers} from 'formik';
-import * as Yup from 'yup';
-import TextField from './shared/TextField';
-import Button from './shared/Button';
-import { Link } from 'react-router-dom';
+import {Field, Form, Formik, FormikHelpers} from 'formik'
+import * as Yup from 'yup'
+import {TextField} from 'formik-mui'
+import {Button, LinearProgress} from '@mui/material'
+import styled from 'styled-components'
 
-interface authFormProps{
-    model: userCredentials
-    requireName: boolean
-    onSubmit(values: userCredentials, actions: FormikHelpers<userCredentials>): void
+interface authFormProps {
+  model: userCredentials
+  submitText: string
+  requireName: boolean
+
+  onSubmit( values: userCredentials, actions: FormikHelpers<userCredentials> ): void
 }
 
-export default function AuthForm(props: authFormProps){
-    return (
-        <Formik
-            initialValues={props.model}
-            onSubmit={props.onSubmit}
-            validationSchema={Yup.object({
-                name: props.requireName ? 
-                    Yup.string().required('User name is required') :
-                    Yup.string().notRequired(),
-                email: Yup.string().required('An email address is required')
-                    .email('Entry must be a valid email'),
-                password: Yup.string().required('A password is required')
-            })}
-        >
-            {formikProps => (
-                <Form>
-                    { props.requireName && <TextField displayName="Name" field='name' />}
-                    <TextField displayName="Email" field="email" />
-                    <TextField displayName="Password" field="password" type="password" />
+const WideField = styled(Field) `
+  width: 400px;
+  margin: 0 0 20px 10px;
+`
 
-                    <Button disabled={formikProps.isSubmitting} type="submit">Send</Button>
-                    <Link className="btn btn-secondary" to="/">Cancel</Link>
-                </Form>
-            )}
-        </Formik>
-    )
+const RightButton = styled(Button) `
+  margin-top: 10px;
+  width: 120px;
+  margin-left: 290px;
+`
+
+export default function AuthForm( props: authFormProps ) {
+  return (
+    <Formik
+      initialValues={props.model}
+      onSubmit={props.onSubmit}
+      validationSchema={Yup.object( {
+        name: props.requireName ?
+          Yup.string().required( 'User name is required' ) :
+          Yup.string().notRequired(),
+        email: Yup.string().required( 'An email address is required' )
+          .email( 'Entry must be a valid email' ),
+        password: Yup.string().required( 'A password is required' )
+      } )}
+    >
+
+      {( { submitForm, isSubmitting } ) => (
+        <Form>
+          {props.requireName &&
+              <WideField component={TextField} name="Name" type="text" label="Name"/>}
+          <WideField
+            component={TextField}
+            name="email"
+            type="email"
+            label="Email"
+          />
+          <br/>
+          <WideField
+            component={TextField}
+            name="password"
+            type="password"
+            label="Password"
+          />
+          {isSubmitting && <LinearProgress/>}
+          <br/>
+          <RightButton
+            variant="contained"
+            color="primary"
+            disabled={isSubmitting}
+            onClick={submitForm}
+          >
+            {props.submitText}
+          </RightButton>
+        </Form>
+      )}
+    </Formik>
+  )
 }
