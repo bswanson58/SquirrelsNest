@@ -58,13 +58,13 @@ function IssueContextProvider(props: any) {
 
     if ((user !== noUser) &&
         (currentProject !== undefined)) {
-        requestIssues()
-      }
-    }, [user, currentProject])
+      (async () => requestIssues())()
+    }
+  }, [user, currentProject, requestIssues])
 
   useEffect(() => {
     processResponse(queryResult)
-  }, [queryResult.data, queryResult.error])
+  }, [queryResult])
 
   return (
     <IssueContext.Provider

@@ -8,7 +8,7 @@ import { noUser } from '../security/user'
 
 const ProjectContext = createContext<{
   projects: ProjectData
-  loadingErrors: APIError<object> | undefined
+  loadingErrors: APIError | undefined
   currentProject: ClProject | undefined
   setCurrentProject(project: ClProject): void
 }>({ projects: noProjects, loadingErrors: undefined, currentProject: undefined, setCurrentProject: () => {} })
@@ -16,7 +16,7 @@ const ProjectContext = createContext<{
 function ProjectContextProvider(props: any) {
   const { user } = useUserContext()
   const [projectData, setProjectData] = useState<ProjectData>(noProjects)
-  const [loadingErrors, setLoadingErrors] = useState<APIError<object>>()
+  const [loadingErrors, setLoadingErrors] = useState<APIError>()
   const [currentProject, setCurrentProject] = useState<ClProject>()
 
   const [ requestProjects, queryResult ] = useManualQuery<AllProjectsQueryResult>(
@@ -57,19 +57,19 @@ function ProjectContextProvider(props: any) {
     setProjectData(noProjects)
 
     if (user !== noUser) {
-      requestProjects()
+      ( async () => await requestProjects())()
     }
-  }, [user])
+  }, [user, requestProjects])
 
   useEffect(() => {
     processResponse(queryResult)
-  }, [queryResult.data, queryResult.error])
+  }, [queryResult, queryResult.data, queryResult.error])
 
   useEffect(() => {
     if(currentProject === undefined) {
       setCurrentProject(projectData.projects.find(() => true))
     }
-},[projectData.projects])
+},[currentProject, projectData.projects])
 
   return (
     <ProjectContext.Provider
