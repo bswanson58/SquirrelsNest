@@ -2,7 +2,7 @@ import {userCredentials} from '../security/authenticationModels'
 import {Field, Form, Formik, FormikHelpers} from 'formik'
 import * as Yup from 'yup'
 import {TextField} from 'formik-mui'
-import {Button, LinearProgress} from '@mui/material'
+import {Button} from '@mui/material'
 import styled from 'styled-components'
 
 interface authFormProps {
@@ -24,7 +24,7 @@ const RightButton = styled(Button) `
   margin-left: 290px;
 `
 
-export default function AuthForm( props: authFormProps ) {
+function AuthenticationForm( props: authFormProps ) {
   return (
     <Formik
       initialValues={props.model}
@@ -49,15 +49,12 @@ export default function AuthForm( props: authFormProps ) {
             type="email"
             label="Email"
           />
-          <br/>
           <WideField
             component={TextField}
             name="password"
             type="password"
             label="Password"
           />
-          {isSubmitting && <LinearProgress/>}
-          <br/>
           <RightButton
             variant="contained"
             color="primary"
@@ -71,3 +68,5 @@ export default function AuthForm( props: authFormProps ) {
     </Formik>
   )
 }
+
+export default AuthenticationForm
