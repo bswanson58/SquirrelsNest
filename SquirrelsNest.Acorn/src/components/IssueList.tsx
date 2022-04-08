@@ -6,15 +6,17 @@ import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
-import {useIssueContext} from '../data/IssueContext'
+import {UseClientRequestResult, useManualQuery} from 'graphql-hooks'
 import {ClIssue} from '../data/GraphQlEntities'
+import {ADD_ISSUE_MUTATION} from '../data/graphQlMutations'
+import {useIssueContext} from '../data/IssueContext'
 import styled from 'styled-components'
 import {Grid, Stack} from '@mui/material'
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import DetailIcon from '@mui/icons-material/List'
 import {useProjectContext} from '../data/ProjectContext'
 import AddIssueDialog from '../dialogs/AddIssueDialog'
-import {ClIssueEntry} from '../data/mutationEntities'
+import {AddIssueInput, AddIssuePayload} from '../data/mutationEntities'
 
 const RelativeBox = styled( Box )`
   position: relative;
@@ -36,6 +38,7 @@ enum eDisplayStyle { TITLE_ONLY, TITLE_DESCRIPTION, FULL_DETAILS }
 
 function IssueList() {
   const [displayStyle, setDisplayStyle] = useState( eDisplayStyle.TITLE_DESCRIPTION )
+  const [issueInput, setIssueInput] = useState<AddIssueInput>({ title:'', description:'', projectId:''})
   const [addIssue, setAddIssue] = useState( false )
   const { currentProject } = useProjectContext()
   const currentIssues = useIssueContext()
@@ -54,11 +57,63 @@ function IssueList() {
     }
   }
 
+  const [requestAddIssue, mutationResult] = useManualQuery<AddIssuePayload>(
+    ADD_ISSUE_MUTATION,
+    {
+      variables: {
+        'issue': {
+          'projectId': issueInput.projectId,
+          'title': issueInput.title,
+          'description': issueInput.description
+        }
+      },
+    }
+  )
+
+  const processData = ( data: AddIssuePayload) => {
+    console.log(`Added issue: ${data.addIssue.issue.title}`)
+
+    if(data.addIssue.errors.length > 0){
+      console.log(`Error adding issue: ${data.addIssue.errors[0]}`)
+    }
+    else {
+      currentIssues.updateIssue(data.addIssue.issue)
+    }
+  }
+
+  const processResponse = ( queryResult: UseClientRequestResult<AddIssuePayload> ) => {
+    const { loading, error, data } = queryResult
+
+    if (loading) {
+      return
+    }
+
+    if (error) {
+      console.log(error)
+
+      return
+    }
+
+    if (data) {
+      processData(data)
+    }
+  }
+
+  useEffect(() => {
+    if(issueInput?.projectId.length > 0){
+      (async () => requestAddIssue())()
+    }
+  },[issueInput, requestAddIssue])
+
+  useEffect(() => {
+    processResponse(mutationResult)
+  }, [mutationResult])
+
   const displayAddIssue = () => setAddIssue( true )
   const closeAddIssue = () => setAddIssue( false )
-  const handleAddIssue = ( issue: ClIssueEntry ) => {
+  const handleAddIssue = ( issue: AddIssueInput ) => {
     setAddIssue( false )
-    console.log( `Add issue: ${issue.title}, ${issue.description}` )
+    setIssueInput(issue)
   }
 
   const createPrimary = ( issue: ClIssue ) => {
@@ -139,7 +194,7 @@ function IssueList() {
         ) )}
       </List>
 
-      <AddIssueDialog initialValues={{ title: '', description: '' }} onClose={() => closeAddIssue()}
+      <AddIssueDialog initialValues={{ title: '', description: '', projectId: '' }} onClose={() => closeAddIssue()}
                       onConfirm={issue => handleAddIssue( issue )} open={addIssue}/>
     </RelativeBox>
   )

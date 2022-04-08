@@ -1,27 +1,31 @@
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField} from '@mui/material'
 import Button from '@mui/material/Button'
 import React, {useEffect, useState} from 'react'
-import { ClIssueEntry } from '../data/mutationEntities'
+import {AddIssueInput} from '../data/mutationEntities'
+import {useProjectContext} from '../data/ProjectContext'
 
 interface DialogProps {
-  initialValues: ClIssueEntry
+  initialValues: AddIssueInput
   open: boolean
   onClose: () => void
-  onConfirm: (issue: ClIssueEntry) => void
+  onConfirm: ( issue: AddIssueInput ) => void
 }
 
 function AddIssueDialog( props: DialogProps ) {
-  const [title, setTitle] = useState<String>('')
-  const [description, setDescription] = useState<String>('')
+  const { currentProject } = useProjectContext()
+  const [title, setTitle] = useState<String>( '' )
+  const [description, setDescription] = useState<String>( '' )
 
   const handleConfirm = () => {
-    props.onConfirm({ title: title, description: description })
+    if( currentProject !== undefined ) {
+      props.onConfirm( { title: title, description: description, projectId: currentProject.id } )
+    }
   }
 
-  useEffect(() => {
+  useEffect( () => {
     setTitle( props.initialValues.title )
     setDescription( props.initialValues.description )
-  },[props.initialValues])
+  }, [props.initialValues] )
 
   return (
     <Dialog open={props.open} onClose={props.onClose} aria-labelledby='Add Issue'
@@ -32,21 +36,21 @@ function AddIssueDialog( props: DialogProps ) {
         <TextField
           autoFocus
           value={title}
-          onChange={event => setTitle(event.currentTarget.value)}
+          onChange={event => setTitle( event.currentTarget.value )}
           margin='dense'
           id='title'
           label='title'
           type='text'
-          fullWidth />
+          fullWidth/>
         <DialogContentText>Description</DialogContentText>
         <TextField
           value={description}
-          onChange={event => setDescription(event.currentTarget.value)}
+          onChange={event => setDescription( event.currentTarget.value )}
           margin='dense'
           id='description'
           label='description'
           type='text'
-          fullWidth />
+          fullWidth/>
       </DialogContent>
       <DialogActions>
         <Button onClick={() => props.onClose()} color='primary'>

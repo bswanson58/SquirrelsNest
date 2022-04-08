@@ -2,7 +2,7 @@ import { IssueData, noIssues } from './issueData'
 import { useContext, createContext, useState, useEffect } from 'react'
 import { APIError, UseClientRequestResult, useManualQuery } from 'graphql-hooks'
 import { ISSUES_FOR_PROJECT_QUERY } from './GraphQlQueries'
-import { AllIssuesForProjectQueryResult } from './GraphQlEntities'
+import {AllIssuesForProjectQueryResult, ClIssue} from './GraphQlEntities'
 import { useUserContext } from '../security/UserContext'
 import { useProjectContext } from './ProjectContext'
 import { noUser } from '../security/user'
@@ -10,7 +10,8 @@ import { noUser } from '../security/user'
 const IssueContext = createContext<{
   issueData: IssueData
   loadingErrors: APIError | undefined
-}>({ issueData: noIssues, loadingErrors: undefined })
+  updateIssue(issue: ClIssue): void
+}>({ issueData: noIssues, loadingErrors: undefined, updateIssue : () => {} })
 
 function IssueContextProvider(props: any) {
   const { user } = useUserContext()
@@ -66,9 +67,15 @@ function IssueContextProvider(props: any) {
     processResponse(queryResult)
   }, [queryResult])
 
+  function updateIssue(newIssue: ClIssue){
+    issueData.issues = issueData.issues.map(i => i.id === newIssue.id ? newIssue : i);
+
+    setIssueData( issueData )
+  }
+
   return (
     <IssueContext.Provider
-      value={{ issueData: issueData, loadingErrors: loadingErrors }}>
+      value={{ issueData: issueData, loadingErrors: loadingErrors, updateIssue: updateIssue }}>
       {props.children}
     </IssueContext.Provider>
   )
