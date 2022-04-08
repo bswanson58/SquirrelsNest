@@ -6,17 +6,16 @@ import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
-import {UseClientRequestResult, useManualQuery} from 'graphql-hooks'
 import {ClIssue} from '../data/GraphQlEntities'
-import {ADD_ISSUE_MUTATION} from '../data/graphQlMutations'
+import {useIssueMutationContext} from '../data/IssueMutationContext'
 import {useIssueQueryContext} from '../data/IssueQueryContext'
 import styled from 'styled-components'
 import {Grid, Stack} from '@mui/material'
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import DetailIcon from '@mui/icons-material/List'
 import {useProjectQueryContext} from '../data/ProjectQueryContext'
 import AddIssueDialog from '../dialogs/AddIssueDialog'
-import {AddIssueInput, AddIssuePayload} from '../data/mutationEntities'
+import {AddIssueInput} from '../data/mutationEntities'
 
 const RelativeBox = styled( Box )`
   position: relative;
@@ -38,10 +37,10 @@ enum eDisplayStyle { TITLE_ONLY, TITLE_DESCRIPTION, FULL_DETAILS }
 
 function IssueList() {
   const [displayStyle, setDisplayStyle] = useState( eDisplayStyle.TITLE_DESCRIPTION )
-  const [issueInput, setIssueInput] = useState<AddIssueInput>({ title:'', description:'', projectId:''})
   const [addIssue, setAddIssue] = useState( false )
   const { currentProject } = useProjectQueryContext()
   const currentIssues = useIssueQueryContext()
+  const issueMutations = useIssueMutationContext()
 
   const toggleStyle = () => {
     switch( displayStyle ) {
@@ -57,63 +56,11 @@ function IssueList() {
     }
   }
 
-  const [requestAddIssue, mutationResult] = useManualQuery<AddIssuePayload>(
-    ADD_ISSUE_MUTATION,
-    {
-      variables: {
-        'issue': {
-          'projectId': issueInput.projectId,
-          'title': issueInput.title,
-          'description': issueInput.description
-        }
-      },
-    }
-  )
-
-  const processData = ( data: AddIssuePayload) => {
-    console.log(`Added issue: ${data.addIssue.issue.title}`)
-
-    if(data.addIssue.errors.length > 0){
-      console.log(`Error adding issue: ${data.addIssue.errors[0]}`)
-    }
-    else {
-      currentIssues.updateIssue(data.addIssue.issue)
-    }
-  }
-
-  const processResponse = ( queryResult: UseClientRequestResult<AddIssuePayload> ) => {
-    const { loading, error, data } = queryResult
-
-    if (loading) {
-      return
-    }
-
-    if (error) {
-      console.log(error)
-
-      return
-    }
-
-    if (data) {
-      processData(data)
-    }
-  }
-
-  useEffect(() => {
-    if(issueInput?.projectId.length > 0){
-      (async () => requestAddIssue())()
-    }
-  },[issueInput, requestAddIssue])
-
-  useEffect(() => {
-    processResponse(mutationResult)
-  }, [mutationResult])
-
   const displayAddIssue = () => setAddIssue( true )
   const closeAddIssue = () => setAddIssue( false )
   const handleAddIssue = ( issue: AddIssueInput ) => {
+    issueMutations.addIssue(issue)
     setAddIssue( false )
-    setIssueInput(issue)
   }
 
   const createPrimary = ( issue: ClIssue ) => {
