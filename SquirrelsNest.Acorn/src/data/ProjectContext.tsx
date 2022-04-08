@@ -1,25 +1,36 @@
-import { ProjectData, noProjects } from './projectData'
-import { useContext, createContext, useState, useEffect } from 'react'
-import { APIError, UseClientRequestResult, useManualQuery } from 'graphql-hooks'
-import { PROJECTS_QUERY } from './GraphQlQueries'
-import { AllProjectsQueryResult, ClProject } from './GraphQlEntities'
-import { useUserContext } from '../security/UserContext'
-import { noUser } from '../security/user'
+import {ProjectData, noProjects} from './projectData'
+import {useContext, createContext, useState, useEffect} from 'react'
+import {APIError, UseClientRequestResult, useManualQuery} from 'graphql-hooks'
+import {PROJECTS_QUERY} from './GraphQlQueries'
+import {AllProjectsQueryResult, ClProject} from './GraphQlEntities'
+import {useUserContext} from '../security/UserContext'
+import {noUser} from '../security/user'
 
-const ProjectContext = createContext<{
+interface IProjectContext {
   projects: ProjectData
   loadingErrors: APIError | undefined
   currentProject: ClProject | undefined
-  setCurrentProject(project: ClProject): void
-}>({ projects: noProjects, loadingErrors: undefined, currentProject: undefined, setCurrentProject: () => {} })
 
-function ProjectContextProvider(props: any) {
+  setCurrentProject( project: ClProject ): void
+}
+
+const initialContext: IProjectContext = {
+  projects: noProjects,
+  loadingErrors: undefined,
+  currentProject: undefined,
+  setCurrentProject() {
+  }
+}
+
+const ProjectContext = createContext<IProjectContext>( initialContext )
+
+function ProjectContextProvider( props: any ) {
   const { user } = useUserContext()
-  const [projectData, setProjectData] = useState<ProjectData>(noProjects)
+  const [projectData, setProjectData] = useState<ProjectData>( noProjects )
   const [loadingErrors, setLoadingErrors] = useState<APIError>()
   const [currentProject, setCurrentProject] = useState<ClProject>()
 
-  const [ requestProjects, queryResult ] = useManualQuery<AllProjectsQueryResult>(
+  const [requestProjects, queryResult] = useManualQuery<AllProjectsQueryResult>(
     PROJECTS_QUERY,
     {
       variables: {
@@ -31,54 +42,59 @@ function ProjectContextProvider(props: any) {
   const processResponse = ( queryResult: UseClientRequestResult<AllProjectsQueryResult> ) => {
     const { loading, error, data } = queryResult
 
-    if (loading) {
+    if( loading ) {
       return
     }
 
-    if (error) {
-      console.log(error)
+    if( error ) {
+      console.log( error )
 
-      setLoadingErrors(error)
-      setProjectData(noProjects)
+      setLoadingErrors( error )
+      setProjectData( noProjects )
 
       return
     }
 
-    if (data) {
-      console.log(`loaded project data: ${data.allProjects.totalCount} projects`)
-      
-      setLoadingErrors(undefined)
-      setProjectData(new ProjectData(data))
+    if( data ) {
+      console.log( `loaded project data: ${data.allProjects.totalCount} projects` )
+
+      setLoadingErrors( undefined )
+      setProjectData( new ProjectData( data ) )
     }
   }
 
-  useEffect(() => {
-    setLoadingErrors(undefined)
-    setProjectData(noProjects)
+  useEffect( () => {
+    setLoadingErrors( undefined )
+    setProjectData( noProjects )
 
-    if (user !== noUser) {
-      ( async () => await requestProjects())()
+    if( user !== noUser ) {
+      (async () => await requestProjects())()
     }
-  }, [user, requestProjects])
+  }, [user, requestProjects] )
 
-  useEffect(() => {
-    processResponse(queryResult)
-  }, [queryResult, queryResult.data, queryResult.error])
+  useEffect( () => {
+    processResponse( queryResult )
+  }, [queryResult, queryResult.data, queryResult.error] )
 
-  useEffect(() => {
-    if(currentProject === undefined) {
-      setCurrentProject(projectData.projects.find(() => true))
+  useEffect( () => {
+    if( currentProject === undefined ) {
+      setCurrentProject( projectData.projects.find( () => true ) )
     }
-},[currentProject, projectData.projects])
+  }, [currentProject, projectData.projects] )
 
   return (
     <ProjectContext.Provider
-      value={{ projects: projectData, loadingErrors: loadingErrors, currentProject: currentProject, setCurrentProject: p => setCurrentProject(p) }}>
+      value={{
+        projects: projectData,
+        loadingErrors: loadingErrors,
+        currentProject: currentProject,
+        setCurrentProject: p => setCurrentProject( p )
+      }}>
       {props.children}
     </ProjectContext.Provider>
   )
 }
 
-const useProjectContext = () => useContext(ProjectContext);
+const useProjectContext = () => useContext( ProjectContext )
 
-export { ProjectContextProvider, useProjectContext }
+export {ProjectContextProvider, useProjectContext}

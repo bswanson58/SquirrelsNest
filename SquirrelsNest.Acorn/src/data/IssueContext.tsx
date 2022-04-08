@@ -1,25 +1,35 @@
-import { IssueData, noIssues } from './issueData'
-import { useContext, createContext, useState, useEffect } from 'react'
-import { APIError, UseClientRequestResult, useManualQuery } from 'graphql-hooks'
-import { ISSUES_FOR_PROJECT_QUERY } from './GraphQlQueries'
+import {IssueData, noIssues} from './issueData'
+import {useContext, createContext, useState, useEffect} from 'react'
+import {APIError, UseClientRequestResult, useManualQuery} from 'graphql-hooks'
+import {ISSUES_FOR_PROJECT_QUERY} from './GraphQlQueries'
 import {AllIssuesForProjectQueryResult, ClIssue} from './GraphQlEntities'
-import { useUserContext } from '../security/UserContext'
-import { useProjectContext } from './ProjectContext'
-import { noUser } from '../security/user'
+import {useUserContext} from '../security/UserContext'
+import {useProjectContext} from './ProjectContext'
+import {noUser} from '../security/user'
 
-const IssueContext = createContext<{
+interface IIssueContext {
   issueData: IssueData
   loadingErrors: APIError | undefined
-  updateIssue(issue: ClIssue): void
-}>({ issueData: noIssues, loadingErrors: undefined, updateIssue : () => {} })
 
-function IssueContextProvider(props: any) {
+  updateIssue( issue: ClIssue ): void
+}
+
+const initialContext: IIssueContext = {
+  issueData: noIssues,
+  loadingErrors: undefined,
+  updateIssue() {
+  }
+}
+
+const IssueContext = createContext<IIssueContext>( initialContext )
+
+function IssueContextProvider( props: any ) {
   const { user } = useUserContext()
   const { currentProject } = useProjectContext()
-  const [issueData, setIssueData] = useState<IssueData>(noIssues)
+  const [issueData, setIssueData] = useState<IssueData>( noIssues )
   const [loadingErrors, setLoadingErrors] = useState<APIError>()
 
-  const [ requestIssues, queryResult ] = useManualQuery<AllIssuesForProjectQueryResult>(
+  const [requestIssues, queryResult] = useManualQuery<AllIssuesForProjectQueryResult>(
     ISSUES_FOR_PROJECT_QUERY,
     {
       variables: {
@@ -32,43 +42,43 @@ function IssueContextProvider(props: any) {
   const processResponse = ( queryResult: UseClientRequestResult<AllIssuesForProjectQueryResult> ) => {
     const { loading, error, data } = queryResult
 
-    if (loading) {
+    if( loading ) {
       return
     }
 
-    if (error) {
-      console.log(error)
+    if( error ) {
+      console.log( error )
 
-      setLoadingErrors(error)
-      setIssueData(noIssues)
+      setLoadingErrors( error )
+      setIssueData( noIssues )
 
       return
     }
 
-    if (data) {
-      console.log(`loaded issue data: ${data.allIssuesForProject.totalCount} issues`)
-      
-      setLoadingErrors(undefined)
-      setIssueData(new IssueData(data))
+    if( data ) {
+      console.log( `loaded issue data: ${data.allIssuesForProject.totalCount} issues` )
+
+      setLoadingErrors( undefined )
+      setIssueData( new IssueData( data ) )
     }
   }
 
-  useEffect(() => {
-    setLoadingErrors(undefined)
-    setIssueData(noIssues)
+  useEffect( () => {
+    setLoadingErrors( undefined )
+    setIssueData( noIssues )
 
-    if ((user !== noUser) &&
-        (currentProject !== undefined)) {
+    if( (user !== noUser) &&
+      (currentProject !== undefined) ) {
       (async () => requestIssues())()
     }
-  }, [user, currentProject, requestIssues])
+  }, [user, currentProject, requestIssues] )
 
-  useEffect(() => {
-    processResponse(queryResult)
-  }, [queryResult])
+  useEffect( () => {
+    processResponse( queryResult )
+  }, [queryResult] )
 
-  function updateIssue(newIssue: ClIssue){
-    issueData.issues = issueData.issues.map(i => i.id === newIssue.id ? newIssue : i);
+  function updateIssue( newIssue: ClIssue ) {
+    issueData.issues = issueData.issues.map( i => i.id === newIssue.id ? newIssue : i )
 
     setIssueData( issueData )
   }
@@ -81,6 +91,6 @@ function IssueContextProvider(props: any) {
   )
 }
 
-const useIssueContext = () => useContext(IssueContext);
+const useIssueContext = () => useContext( IssueContext )
 
-export { IssueContextProvider, useIssueContext }
+export {IssueContextProvider, useIssueContext}
