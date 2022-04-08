@@ -96,6 +96,8 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
         .AddTypeExtension<IssueQuery>()
         .AddType<ClProject>()
         .AddType<ClIssue>()
+        .AddMutationType()
+        .AddTypeExtension<IssueMutations>()
         .AddFiltering()
         .AddSorting();
 
@@ -103,7 +105,7 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
             .AddPolicy( corsPolicy, builder => builder
                 .AllowAnyOrigin()
                 .AllowAnyMethod()
-                .AllowAnyHeader() ) );
+                .AllowAnyHeader()));
 }
 
 void ConfigureMiddleware( IApplicationBuilder serviceBuilder ) {
