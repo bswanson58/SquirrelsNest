@@ -7,23 +7,23 @@ import {useUserContext} from '../security/UserContext'
 import {useProjectContext} from './ProjectContext'
 import {noUser} from '../security/user'
 
-interface IIssueContext {
+interface IIssueQueryContext {
   issueData: IssueData
   loadingErrors: APIError | undefined
 
   updateIssue( issue: ClIssue ): void
 }
 
-const initialContext: IIssueContext = {
+const initialContext: IIssueQueryContext = {
   issueData: noIssues,
   loadingErrors: undefined,
   updateIssue() {
   }
 }
 
-const IssueContext = createContext<IIssueContext>( initialContext )
+const IssueQueryContext = createContext<IIssueQueryContext>( initialContext )
 
-function IssueContextProvider( props: any ) {
+function IssueQueryContextProvider( props: any ) {
   const { user } = useUserContext()
   const { currentProject } = useProjectContext()
   const [issueData, setIssueData] = useState<IssueData>( noIssues )
@@ -84,13 +84,13 @@ function IssueContextProvider( props: any ) {
   }
 
   return (
-    <IssueContext.Provider
+    <IssueQueryContext.Provider
       value={{ issueData: issueData, loadingErrors: loadingErrors, updateIssue: updateIssue }}>
       {props.children}
-    </IssueContext.Provider>
+    </IssueQueryContext.Provider>
   )
 }
 
-const useIssueContext = () => useContext( IssueContext )
+const useIssueQueryContext = () => useContext( IssueQueryContext )
 
-export {IssueContextProvider, useIssueContext}
+export {IssueQueryContextProvider, useIssueQueryContext}

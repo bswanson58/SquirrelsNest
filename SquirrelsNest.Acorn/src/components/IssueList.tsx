@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography'
 import {UseClientRequestResult, useManualQuery} from 'graphql-hooks'
 import {ClIssue} from '../data/GraphQlEntities'
 import {ADD_ISSUE_MUTATION} from '../data/graphQlMutations'
-import {useIssueContext} from '../data/IssueContext'
+import {useIssueQueryContext} from '../data/IssueQueryContext'
 import styled from 'styled-components'
 import {Grid, Stack} from '@mui/material'
 import React, {useEffect, useState} from 'react'
@@ -41,7 +41,7 @@ function IssueList() {
   const [issueInput, setIssueInput] = useState<AddIssueInput>({ title:'', description:'', projectId:''})
   const [addIssue, setAddIssue] = useState( false )
   const { currentProject } = useProjectContext()
-  const currentIssues = useIssueContext()
+  const currentIssues = useIssueQueryContext()
 
   const toggleStyle = () => {
     switch( displayStyle ) {
