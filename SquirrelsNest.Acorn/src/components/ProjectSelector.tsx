@@ -5,11 +5,11 @@ import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
-import { useProjectContext } from '../data/ProjectContext'
+import { useProjectQueryContext } from '../data/ProjectQueryContext'
 import { ClProject } from '../data/GraphQlEntities'
 
 function ProjectSelector() {
-  const projectData = useProjectContext()
+  const projectData = useProjectQueryContext()
   const [selectedItem, setSelectedItem] = useState<String>('');
 
   const handleListItemClick = (project: ClProject) => {

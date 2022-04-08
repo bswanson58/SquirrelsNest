@@ -4,7 +4,7 @@ import {APIError, UseClientRequestResult, useManualQuery} from 'graphql-hooks'
 import {ISSUES_FOR_PROJECT_QUERY} from './GraphQlQueries'
 import {AllIssuesForProjectQueryResult, ClIssue} from './GraphQlEntities'
 import {useUserContext} from '../security/UserContext'
-import {useProjectContext} from './ProjectContext'
+import {useProjectQueryContext} from './ProjectQueryContext'
 import {noUser} from '../security/user'
 
 interface IIssueQueryContext {
@@ -25,7 +25,7 @@ const IssueQueryContext = createContext<IIssueQueryContext>( initialContext )
 
 function IssueQueryContextProvider( props: any ) {
   const { user } = useUserContext()
-  const { currentProject } = useProjectContext()
+  const { currentProject } = useProjectQueryContext()
   const [issueData, setIssueData] = useState<IssueData>( noIssues )
   const [loadingErrors, setLoadingErrors] = useState<APIError>()
 

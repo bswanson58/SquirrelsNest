@@ -2,7 +2,7 @@ import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Te
 import Button from '@mui/material/Button'
 import React, {useEffect, useState} from 'react'
 import {AddIssueInput} from '../data/mutationEntities'
-import {useProjectContext} from '../data/ProjectContext'
+import {useProjectQueryContext} from '../data/ProjectQueryContext'
 
 interface DialogProps {
   initialValues: AddIssueInput
@@ -12,7 +12,7 @@ interface DialogProps {
 }
 
 function AddIssueDialog( props: DialogProps ) {
-  const { currentProject } = useProjectContext()
+  const { currentProject } = useProjectQueryContext()
   const [title, setTitle] = useState<String>( '' )
   const [description, setDescription] = useState<String>( '' )
 

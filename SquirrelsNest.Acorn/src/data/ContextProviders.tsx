@@ -1,17 +1,17 @@
 import GraphQlContext from '../data/GraphQlContext'
 import { UserContextProvider } from '../security/UserContext'
-import { ProjectContextProvider } from './ProjectContext'
+import { ProjectQueryContextProvider } from './ProjectQueryContext'
 import { IssueQueryContextProvider } from './IssueQueryContext'
 
 function ContextProviders(props: any) {
   return (
     <GraphQlContext>
       <UserContextProvider>
-        <ProjectContextProvider>
+        <ProjectQueryContextProvider>
           <IssueQueryContextProvider>
               {props.children}
           </IssueQueryContextProvider>
-        </ProjectContextProvider>
+        </ProjectQueryContextProvider>
       </UserContextProvider>
     </GraphQlContext>
   )

@@ -14,7 +14,7 @@ import styled from 'styled-components'
 import {Grid, Stack} from '@mui/material'
 import React, {useEffect, useState} from 'react'
 import DetailIcon from '@mui/icons-material/List'
-import {useProjectContext} from '../data/ProjectContext'
+import {useProjectQueryContext} from '../data/ProjectQueryContext'
 import AddIssueDialog from '../dialogs/AddIssueDialog'
 import {AddIssueInput, AddIssuePayload} from '../data/mutationEntities'
 
@@ -40,7 +40,7 @@ function IssueList() {
   const [displayStyle, setDisplayStyle] = useState( eDisplayStyle.TITLE_DESCRIPTION )
   const [issueInput, setIssueInput] = useState<AddIssueInput>({ title:'', description:'', projectId:''})
   const [addIssue, setAddIssue] = useState( false )
-  const { currentProject } = useProjectContext()
+  const { currentProject } = useProjectQueryContext()
   const currentIssues = useIssueQueryContext()
 
   const toggleStyle = () => {

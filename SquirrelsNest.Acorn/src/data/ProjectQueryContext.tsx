@@ -6,7 +6,7 @@ import {AllProjectsQueryResult, ClProject} from './GraphQlEntities'
 import {useUserContext} from '../security/UserContext'
 import {noUser} from '../security/user'
 
-interface IProjectContext {
+interface IProjectQueryContext {
   projects: ProjectData
   loadingErrors: APIError | undefined
   currentProject: ClProject | undefined
@@ -14,7 +14,7 @@ interface IProjectContext {
   setCurrentProject( project: ClProject ): void
 }
 
-const initialContext: IProjectContext = {
+const initialContext: IProjectQueryContext = {
   projects: noProjects,
   loadingErrors: undefined,
   currentProject: undefined,
@@ -22,9 +22,9 @@ const initialContext: IProjectContext = {
   }
 }
 
-const ProjectContext = createContext<IProjectContext>( initialContext )
+const ProjectQueryContext = createContext<IProjectQueryContext>( initialContext )
 
-function ProjectContextProvider( props: any ) {
+function ProjectQueryContextProvider( props: any ) {
   const { user } = useUserContext()
   const [projectData, setProjectData] = useState<ProjectData>( noProjects )
   const [loadingErrors, setLoadingErrors] = useState<APIError>()
@@ -83,7 +83,7 @@ function ProjectContextProvider( props: any ) {
   }, [currentProject, projectData.projects] )
 
   return (
-    <ProjectContext.Provider
+    <ProjectQueryContext.Provider
       value={{
         projects: projectData,
         loadingErrors: loadingErrors,
@@ -91,10 +91,10 @@ function ProjectContextProvider( props: any ) {
         setCurrentProject: p => setCurrentProject( p )
       }}>
       {props.children}
-    </ProjectContext.Provider>
+    </ProjectQueryContext.Provider>
   )
 }
 
-const useProjectContext = () => useContext( ProjectContext )
+const useProjectQueryContext = () => useContext( ProjectQueryContext )
 
-export {ProjectContextProvider, useProjectContext}
+export {ProjectQueryContextProvider, useProjectQueryContext}
