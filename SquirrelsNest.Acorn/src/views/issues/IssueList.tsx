@@ -1,33 +1,22 @@
 import React, {useState} from 'react'
-import {Box, Grid, IconButton, List, ListItem, ListItemButton, ListItemText, Typography} from '@mui/material'
+import {Box, IconButton, List, ListItem, ListItemButton, ListItemText, Typography} from '@mui/material'
 import AddIssueIcon from '@mui/icons-material/AddCircle'
 import DetailIcon from '@mui/icons-material/List'
 import AddIssueDialog from './AddIssueDialog'
-import {RelativeBox, SubTypography, TopRightStack} from './IssueList.styles'
-import {AddIssueInput, ClIssue, useIssueMutationContext, useIssueQueryContext, useProjectQueryContext} from '../../data'
-
-enum eDisplayStyle { TITLE_ONLY, TITLE_DESCRIPTION, FULL_DETAILS }
+import {createPrimary, createSecondary, eDisplayStyle, nextDisplayStyle} from './IssueList.Items'
+import {RelativeBox, TopRightStack} from './IssueList.styles'
+import {AddIssueInput, useIssueMutationContext, useIssueQueryContext, useProjectQueryContext} from '../../data'
 
 function IssueList() {
   const [displayStyle, setDisplayStyle] = useState( eDisplayStyle.TITLE_DESCRIPTION )
   const [addIssue, setAddIssue] = useState( false )
-  const { currentProject } = useProjectQueryContext()
+  const projectContext = useProjectQueryContext()
   const currentIssues = useIssueQueryContext()
   const issueMutations = useIssueMutationContext()
 
-  const toggleStyle = () => {
-    switch( displayStyle ) {
-      case eDisplayStyle.FULL_DETAILS:
-        setDisplayStyle( eDisplayStyle.TITLE_DESCRIPTION )
-        break
-      case eDisplayStyle.TITLE_DESCRIPTION:
-        setDisplayStyle( eDisplayStyle.TITLE_ONLY )
-        break
-      case eDisplayStyle.TITLE_ONLY:
-        setDisplayStyle( eDisplayStyle.FULL_DETAILS )
-        break
-    }
-  }
+  const emptyAddIssue: AddIssueInput = { title: '', description: '', projectId: '' }
+
+  const toggleStyle = () => setDisplayStyle( nextDisplayStyle( displayStyle ) )
 
   const displayAddIssue = () => setAddIssue( true )
   const closeAddIssue = () => setAddIssue( false )
@@ -36,51 +25,8 @@ function IssueList() {
     setAddIssue( false )
   }
 
-  const createPrimary = ( issue: ClIssue ) => {
-    return (
-      <>
-        <SubTypography variant='body1'
-                       display='inline'>({currentProject?.issuePrefix}-{issue.issueNumber}) </SubTypography>
-        <Typography variant='body1' display='inline'>{issue.title}</Typography>
-      </>
-    )
-  }
-
-  const createSubTypography = ( text: String ) => {
-    return <SubTypography variant='body2'>{text}</SubTypography>
-  }
-
-  const descriptionDetails = ( issue: ClIssue ) => {
-    return createSubTypography( issue.description )
-  }
-
-  const fullDetails = ( issue: ClIssue ) => {
-    return (
-      <>
-        <SubTypography variant='body2'>{issue.description}</SubTypography>
-        <Grid container spacing={1} columns={14}>
-          <Grid item xs={1}/>
-          <Grid item xs={3}>{createSubTypography( issue.issueType.name )}</Grid>
-          <Grid item xs={3}>{createSubTypography( issue.workflowState.name )}</Grid>
-          <Grid item xs={3}>{createSubTypography( issue.component.name )}</Grid>
-          <Grid item xs={3}>{createSubTypography( issue.assignedTo.name )}</Grid>
-          <Grid item xs={1}/>
-        </Grid>
-      </>
-    )
-  }
-
-  const createSecondary = ( issue: ClIssue ) => {
-    switch( displayStyle ) {
-      case eDisplayStyle.FULL_DETAILS:
-        return fullDetails( issue )
-
-      case eDisplayStyle.TITLE_DESCRIPTION:
-        return descriptionDetails( issue )
-
-      case eDisplayStyle.TITLE_ONLY:
-        return null
-    }
+  if( projectContext?.currentProject === undefined ) {
+    return <Box>Select a project to display...</Box>
   }
 
   if( currentIssues.loadingErrors ) {
@@ -106,15 +52,15 @@ function IssueList() {
             <ListItemButton>
               <ListItemText
                 disableTypography={true}
-                primary={createPrimary( item )}
-                secondary={createSecondary( item )}
+                primary={createPrimary( projectContext.currentProject?.issuePrefix!, item )}
+                secondary={createSecondary( displayStyle, item )}
               />
             </ListItemButton>
           </ListItem>
         ) )}
       </List>
 
-      <AddIssueDialog initialValues={{ title: '', description: '', projectId: '' }} onClose={() => closeAddIssue()}
+      <AddIssueDialog initialValues={ emptyAddIssue } onClose={() => closeAddIssue()}
                       onConfirm={issue => handleAddIssue( issue )} open={addIssue}/>
     </RelativeBox>
   )
