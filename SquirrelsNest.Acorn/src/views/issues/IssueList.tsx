@@ -1,26 +1,10 @@
 import React, {useState} from 'react'
-import {Box, Grid, IconButton, List, ListItem, ListItemButton, ListItemText, Stack, Typography} from '@mui/material'
+import {Box, Grid, IconButton, List, ListItem, ListItemButton, ListItemText, Typography} from '@mui/material'
 import AddIssueIcon from '@mui/icons-material/AddCircle'
 import DetailIcon from '@mui/icons-material/List'
-import styled from 'styled-components'
 import AddIssueDialog from './AddIssueDialog'
+import {RelativeBox, SubTypography, TopRightStack} from './IssueList.styles'
 import {AddIssueInput, ClIssue, useIssueMutationContext, useIssueQueryContext, useProjectQueryContext} from '../../data'
-
-const RelativeBox = styled( Box )`
-  position: relative;
-`
-const TopRightStack = styled( Stack )`
-  position: absolute;
-  right: 0;
-  top: 0;
-  padding: 0;
-  margin: 0;
-`
-const SubTypography = styled( Typography )`
-  opacity: 0.7;
-  // transform: scale(1);
-  // -webkit-transform-origin-x: 0; // align text left after scaling
-`
 
 enum eDisplayStyle { TITLE_ONLY, TITLE_DESCRIPTION, FULL_DETAILS }
 
