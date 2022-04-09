@@ -1,8 +1,7 @@
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField} from '@mui/material'
 import Button from '@mui/material/Button'
 import React, {useEffect, useState} from 'react'
-import {AddIssueInput} from '../../data/mutationEntities'
-import {useProjectQueryContext} from '../../data/ProjectQueryContext'
+import {AddIssueInput, useProjectQueryContext} from '../../data'
 
 interface DialogProps {
   initialValues: AddIssueInput

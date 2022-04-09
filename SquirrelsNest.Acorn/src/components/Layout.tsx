@@ -1,17 +1,17 @@
-import React, { PropsWithChildren } from 'react'
+import React, {PropsWithChildren} from 'react'
 import Footer from './Footer'
 import Header from './Header'
-import appRoutes from '../config/appRoutes'
+import {appRoutes} from '../config/appRoutes'
 
 type Props = {}
 
-function Layout(props: PropsWithChildren<Props>) {
+function Layout( props: PropsWithChildren<Props> ) {
   return (
-      <>
-        <Header menuItems={appRoutes} />
+    <>
+      <Header menuItems={appRoutes}/>
         {props.children}
-        <Footer/>
-      </>
+      <Footer/>
+    </>
   )
 }
 

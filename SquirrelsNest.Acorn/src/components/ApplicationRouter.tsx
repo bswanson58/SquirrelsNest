@@ -1,22 +1,23 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import { AppRoute } from '../types/AppRoute'
-import appRoutes from '../config/appRoutes'
+import {BrowserRouter as Router, Route, Routes} from 'react-router-dom'
+import {AppRoute} from '../types/AppRoute'
+import {appRoutes} from '../config/appRoutes'
 import DefaultPage from './DefaultPage'
-import { useUserContext } from '../security/UserContext'
+import {useUserContext} from '../security/UserContext'
+import UnauthorizedPage from './UnauthorizedPage'
 
 function ApplicationRouter() {
   const { user } = useUserContext()
 
-  const addRoute = (route: AppRoute): JSX.Element => {
+  const addRoute = ( route: AppRoute ): JSX.Element => {
     return (
       <Route
         key={route.key}
         path={route.path}
         element={
-          user.hasRoleClaim(route.roleClaim) ? (
+          user.hasRoleClaim( route.roleClaim ) ? (
             route.component || DefaultPage()
           ) : (
-            <p>You are not authorized to view this page</p>
+            <UnauthorizedPage/>
           )
         }
       />
@@ -26,10 +27,10 @@ function ApplicationRouter() {
   return (
     <Router>
       <Routes>
-        {appRoutes.map((route: AppRoute) =>
+        {appRoutes.map( ( route: AppRoute ) =>
           route.subRoutes
-            ? route.subRoutes.map((item: AppRoute) => addRoute(item))
-            : addRoute(route)
+            ? route.subRoutes.map( ( item: AppRoute ) => addRoute( item ) )
+            : addRoute( route )
         )}
       </Routes>
     </Router>

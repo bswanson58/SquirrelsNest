@@ -1,18 +1,18 @@
-import { createContext, useContext, useEffect, useState } from 'react'
-import { User, noUser, adminUser, normalUser } from '../security/user'
-import { getAuthenticationClaims } from '../security/jwtSupport'
+import {createContext, useContext, useEffect, useState} from 'react'
+import {User, noUser} from './user'
+import {getAuthenticationClaims} from './jwtSupport'
 
 const UserContext = createContext<{
   user: User
-  updateUser(user: User): void
-}>({ user: noUser, updateUser: () => {} })
+  updateUser( user: User ): void
+}>( { user: noUser, updateUser: () => {} } )
 
-function UserContextProvider(props: any) {
-  const [user, setUser] = useState<User>(noUser)
+function UserContextProvider( props: any ) {
+  const [user, setUser] = useState<User>( noUser )
 
-  useEffect(() => {
-    setUser(new User(getAuthenticationClaims()))
-  }, [])
+  useEffect( () => {
+    setUser( new User( getAuthenticationClaims()))
+  }, [] )
 
   return (
     <UserContext.Provider value={{ user, updateUser: setUser }}>
@@ -21,6 +21,6 @@ function UserContextProvider(props: any) {
   )
 }
 
-const useUserContext = () => useContext(UserContext)
+const useUserContext = () => useContext( UserContext )
 
-export { UserContextProvider, useUserContext }
+export {UserContextProvider, useUserContext}

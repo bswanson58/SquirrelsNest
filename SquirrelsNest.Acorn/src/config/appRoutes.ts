@@ -13,7 +13,9 @@ import LoginPage from '../views/user/LoginPage'
 import RegisterPage from '../views/user/RegisterPage'
 import { AppRoute } from '../types/AppRoute'
 
-const appRoutes: Array<AppRoute> = [
+export const loginUrl = '/login'
+
+export const appRoutes: Array<AppRoute> = [
   {
     key: 'router-issues',
     title: 'Issues',
@@ -50,7 +52,7 @@ const appRoutes: Array<AppRoute> = [
     title: 'Login',
     description: 'Login User',
     component: LoginPage(),
-    path: '/login',
+    path: loginUrl,
     roleClaim: 'none',
     isEnabled: true,
     icon: DashboardIcon,
@@ -87,5 +89,3 @@ const appRoutes: Array<AppRoute> = [
     ],
   },
 ]
-
-export default appRoutes
