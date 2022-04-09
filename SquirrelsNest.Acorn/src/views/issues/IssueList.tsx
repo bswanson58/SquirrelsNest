@@ -4,11 +4,7 @@ import AddIssueIcon from '@mui/icons-material/AddCircle'
 import DetailIcon from '@mui/icons-material/List'
 import styled from 'styled-components'
 import AddIssueDialog from './AddIssueDialog'
-import {AddIssueInput} from '../../data/mutationEntities'
-import {ClIssue} from '../../data/GraphQlEntities'
-import {useIssueMutationContext} from '../../data/IssueMutationContext'
-import {useIssueQueryContext} from '../../data/IssueQueryContext'
-import {useProjectQueryContext} from '../../data/ProjectQueryContext'
+import {AddIssueInput, ClIssue, useIssueMutationContext, useIssueQueryContext, useProjectQueryContext} from '../../data'
 
 const RelativeBox = styled( Box )`
   position: relative;
