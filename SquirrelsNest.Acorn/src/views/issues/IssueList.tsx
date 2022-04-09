@@ -1,21 +1,14 @@
-import Box from '@mui/material/Box'
-import IconButton from '@mui/material/IconButton'
-import AddIssue from '@mui/icons-material/AddCircle'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemButton from '@mui/material/ListItemButton'
-import ListItemText from '@mui/material/ListItemText'
-import Typography from '@mui/material/Typography'
+import React, {useState} from 'react'
+import {Box, Grid, IconButton, List, ListItem, ListItemButton, ListItemText, Stack, Typography} from '@mui/material'
+import AddIssueIcon from '@mui/icons-material/AddCircle'
+import DetailIcon from '@mui/icons-material/List'
+import styled from 'styled-components'
+import AddIssueDialog from './AddIssueDialog'
+import {AddIssueInput} from '../../data/mutationEntities'
 import {ClIssue} from '../../data/GraphQlEntities'
 import {useIssueMutationContext} from '../../data/IssueMutationContext'
 import {useIssueQueryContext} from '../../data/IssueQueryContext'
-import styled from 'styled-components'
-import {Grid, Stack} from '@mui/material'
-import React, {useState} from 'react'
-import DetailIcon from '@mui/icons-material/List'
 import {useProjectQueryContext} from '../../data/ProjectQueryContext'
-import AddIssueDialog from './AddIssueDialog'
-import {AddIssueInput} from '../../data/mutationEntities'
 
 const RelativeBox = styled( Box )`
   position: relative;
@@ -59,7 +52,7 @@ function IssueList() {
   const displayAddIssue = () => setAddIssue( true )
   const closeAddIssue = () => setAddIssue( false )
   const handleAddIssue = ( issue: AddIssueInput ) => {
-    issueMutations.addIssue(issue)
+    issueMutations.addIssue( issue )
     setAddIssue( false )
   }
 
@@ -120,7 +113,7 @@ function IssueList() {
 
       <TopRightStack direction='row'>
         <IconButton onClick={displayAddIssue}>
-          <AddIssue/>
+          <AddIssueIcon/>
         </IconButton>
         <IconButton onClick={toggleStyle}>
           <DetailIcon/>
