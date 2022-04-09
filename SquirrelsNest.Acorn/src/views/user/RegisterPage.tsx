@@ -1,5 +1,5 @@
-import Layout from "../components/Layout"
-import RegisterUser from "../components/RegisterUser"
+import Layout from "../../components/Layout"
+import RegisterUser from "./RegisterUser"
 
 function RegisterPage() {
     return (
@@ -10,4 +10,3 @@ function RegisterPage() {
   }
   
   export default RegisterPage
-  

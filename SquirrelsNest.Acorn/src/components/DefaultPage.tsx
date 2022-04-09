@@ -1,5 +1,5 @@
 import { Typography, Box } from '@mui/material'
-import { PageTitle } from '../components/shared/PageTitle'
+import { PageTitle } from './shared/PageTitle'
 
 function DefaultPage() {
   return (

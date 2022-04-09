@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { AppRoute } from '../types/AppRoute'
 import appRoutes from '../config/appRoutes'
-import DefaultPage from '../pages/DefaultPage'
+import DefaultPage from './DefaultPage'
 import { useUserContext } from '../security/UserContext'
 
 function ApplicationRouter() {

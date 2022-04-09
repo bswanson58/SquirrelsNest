@@ -6,11 +6,11 @@ import {
   ListAlt as ListIcon,
 } from '@mui/icons-material'
 
-import IssuesPage from '../pages/IssuesPage'
-import ProjectPage from '../pages/ProjectPage'
-import DefaultPage from '../pages/DefaultPage'
-import LoginPage from '../pages/LoginPage'
-import RegisterPage from '../pages/RegisterPage'
+import IssuesPage from '../views/issues/IssuesPage'
+import ProjectPage from '../views/projects/ProjectPage'
+import DefaultPage from '../components/DefaultPage'
+import LoginPage from '../views/user/LoginPage'
+import RegisterPage from '../views/user/RegisterPage'
 import { AppRoute } from '../types/AppRoute'
 
 const appRoutes: Array<AppRoute> = [

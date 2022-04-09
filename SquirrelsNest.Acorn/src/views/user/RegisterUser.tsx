@@ -1,13 +1,13 @@
 import {Box, Typography} from '@mui/material'
 import axios from 'axios'
 import styled from 'styled-components'
-import {parseAxiosError} from '../utility/axiosErrorParser'
+import {parseAxiosError} from '../../utility/axiosErrorParser'
 import {useState} from 'react'
 import {useNavigate} from 'react-router-dom'
-import {urlAccounts} from '../config/endpoints'
-import {authenticationResponse, userCredentials} from '../security/authenticationModels'
+import {urlAccounts} from '../../config/endpoints'
+import {authenticationResponse, userCredentials} from '../../security/authenticationModels'
 import AuthenticationForm from './AuthenticationForm'
-import ErrorDisplay from './ErrorDisplay'
+import ErrorDisplay from '../../components/ErrorDisplay'
 
 const BorderedBox = styled( Box )`
   margin: 50px;

@@ -5,8 +5,8 @@ import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import Typography from '@mui/material/Typography'
-import { useProjectQueryContext } from '../data/ProjectQueryContext'
-import { ClProject } from '../data/GraphQlEntities'
+import { useProjectQueryContext } from '../../data/ProjectQueryContext'
+import { ClProject } from '../../data/GraphQlEntities'
 
 function ProjectSelector() {
   const projectData = useProjectQueryContext()

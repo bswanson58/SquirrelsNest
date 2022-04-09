@@ -1,5 +1,5 @@
-import Layout from "../components/Layout"
-import LoginUser from "../components/LoginUser"
+import Layout from "../../components/Layout"
+import LoginUser from "./LoginUser"
 
 function LoginPage() {
     return (
@@ -10,4 +10,3 @@ function LoginPage() {
   }
   
   export default LoginPage
-  
