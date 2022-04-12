@@ -1,7 +1,9 @@
-import React, {useState} from 'react'
-import {Box, IconButton, List, ListItem, ListItemButton, ListItemText, Typography} from '@mui/material'
+import React, {useEffect, useState} from 'react'
+import {Box, Button, IconButton, List, ListItem, ListItemButton, ListItemText, Typography} from '@mui/material'
 import AddIssueIcon from '@mui/icons-material/AddCircle'
 import DetailIcon from '@mui/icons-material/List'
+import {noUser} from '../../security/user'
+import {useUserContext} from '../../security/UserContext'
 import AddIssueDialog from './AddIssueDialog'
 import {createPrimary, createSecondary, eDisplayStyle, nextDisplayStyle} from './IssueList.Items'
 import {RelativeBox, TopRightStack} from './IssueList.styles'
@@ -10,8 +12,9 @@ import {AddIssueInput, useIssueMutationContext, useIssueQueryContext, useProject
 function IssueList() {
   const [displayStyle, setDisplayStyle] = useState( eDisplayStyle.TITLE_DESCRIPTION )
   const [addIssue, setAddIssue] = useState( false )
+  const userContext = useUserContext()
   const projectContext = useProjectQueryContext()
-  const currentIssues = useIssueQueryContext()
+  const issueContext = useIssueQueryContext()
   const issueMutations = useIssueMutationContext()
 
   const emptyAddIssue: AddIssueInput = { title: '', description: '', projectId: '' }
@@ -25,11 +28,18 @@ function IssueList() {
     setAddIssue( false )
   }
 
+  useEffect( () => {
+    if((userContext.user !== noUser) &&
+      (projectContext.currentProject !== undefined) ) {
+      (async () => issueContext.requestInitialIssues())()
+    }
+  }, [userContext.user, projectContext.currentProject] )
+
   if( projectContext?.currentProject === undefined ) {
     return <Box>Select a project to display...</Box>
   }
 
-  if( currentIssues.loadingErrors ) {
+  if( issueContext.loadingErrors ) {
     return <Box>An error occurred...</Box>
   }
 
@@ -47,7 +57,7 @@ function IssueList() {
       </TopRightStack>
 
       <List dense>
-        {currentIssues.issueData.issues.map( ( item ) => (
+        {issueContext.issueData.issues.map( ( item ) => (
           <ListItem key={item.id as React.Key} disablePadding>
             <ListItemButton>
               <ListItemText
@@ -60,7 +70,11 @@ function IssueList() {
         ) )}
       </List>
 
-      <AddIssueDialog initialValues={ emptyAddIssue } onClose={() => closeAddIssue()}
+      {(issueContext.issueData.issues.length < issueContext.issueData.totalCount) &&
+          <Button>Load More Issues</Button>
+      }
+
+      <AddIssueDialog initialValues={emptyAddIssue} onClose={() => closeAddIssue()}
                       onConfirm={issue => handleAddIssue( issue )} open={addIssue}/>
     </RelativeBox>
   )

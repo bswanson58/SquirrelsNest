@@ -43,13 +43,6 @@ export interface ClComponent {
   id: String
 }
 
-export interface StateCategoryOperationFilterInput {
-  eq: StateCategory
-  neq: StateCategory
-  in: StateCategory[]
-  nin: StateCategory[]
-}
-
 export interface AllIssuesForProjectEdge {
   cursor: String
   node: ClIssue
@@ -73,8 +66,7 @@ export interface AllIssuesForProjectQueryResult {
 
 export interface AllIssuesForProjectConnection {
   pageInfo: PageInfo
-  edges: AllIssuesForProjectEdge[]
-  nodes: ClIssue[]
+  items: ClIssue[]
   totalCount: number
 }
 

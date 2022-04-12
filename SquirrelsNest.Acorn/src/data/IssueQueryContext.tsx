@@ -3,13 +3,15 @@ import {useContext, createContext, useState, useEffect} from 'react'
 import {APIError, UseClientRequestResult, useManualQuery} from 'graphql-hooks'
 import {ISSUES_FOR_PROJECT_QUERY} from './GraphQlQueries'
 import {AllIssuesForProjectQueryResult, ClIssue} from './GraphQlEntities'
-import {useUserContext} from '../security/UserContext'
 import {useProjectQueryContext} from './ProjectQueryContext'
-import {noUser} from '../security/user'
 
 interface IIssueQueryContext {
   issueData: IssueData
   loadingErrors: APIError | undefined
+
+  requestInitialIssues(): void
+
+  requestAdditionalIssues(): void
 
   updateIssue( issue: ClIssue ): void
 }
@@ -17,23 +19,26 @@ interface IIssueQueryContext {
 const initialContext: IIssueQueryContext = {
   issueData: noIssues,
   loadingErrors: undefined,
-  updateIssue() {
-  }
+  requestInitialIssues() {},
+  requestAdditionalIssues() {},
+  updateIssue() {}
 }
 
+const issuePageSize = 5
 const IssueQueryContext = createContext<IIssueQueryContext>( initialContext )
 
 function IssueQueryContextProvider( props: any ) {
-  const { user } = useUserContext()
   const { currentProject } = useProjectQueryContext()
   const [issueData, setIssueData] = useState<IssueData>( noIssues )
   const [loadingErrors, setLoadingErrors] = useState<APIError>()
+  const [skipCount, setSkipCount] = useState(0)
 
   const [requestIssues, queryResult] = useManualQuery<AllIssuesForProjectQueryResult>(
     ISSUES_FOR_PROJECT_QUERY,
     {
       variables: {
-        first: 5,
+        skip: skipCount,
+        take: issuePageSize,
         projectId: currentProject?.id
       },
     }
@@ -64,18 +69,20 @@ function IssueQueryContextProvider( props: any ) {
   }
 
   useEffect( () => {
-    setLoadingErrors( undefined )
-    setIssueData( noIssues )
-
-    if( (user !== noUser) &&
-      (currentProject !== undefined) ) {
-      (async () => requestIssues())()
-    }
-  }, [user, currentProject, requestIssues] )
-
-  useEffect( () => {
     processResponse( queryResult )
   }, [queryResult] )
+
+  async function requestInitialIssues() {
+    setLoadingErrors( undefined )
+    setIssueData( noIssues )
+    setSkipCount(0)
+
+    await requestIssues()
+  }
+
+  function requestAdditionalIssues() {
+
+  }
 
   function updateIssue( newIssue: ClIssue ) {
     issueData.issues = issueData.issues.map( i => i.id === newIssue.id ? newIssue : i )
@@ -85,7 +92,7 @@ function IssueQueryContextProvider( props: any ) {
 
   return (
     <IssueQueryContext.Provider
-      value={{ issueData: issueData, loadingErrors: loadingErrors, updateIssue: updateIssue }}>
+      value={{ issueData, loadingErrors, requestInitialIssues, requestAdditionalIssues, updateIssue }}>
       {props.children}
     </IssueQueryContext.Provider>
   )

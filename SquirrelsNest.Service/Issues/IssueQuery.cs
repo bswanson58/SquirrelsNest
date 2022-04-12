@@ -64,7 +64,7 @@ namespace SquirrelsNest.Service.Issues {
         }
 
         // ReSharper disable once UnusedMember.Global
-        [UsePaging(MaxPageSize = 30, IncludeTotalCount = true)]
+        [UseOffsetPaging(MaxPageSize = 30, IncludeTotalCount = true)]
         [UseFiltering]
         [UseSorting]
         public async Task<IEnumerable<ClIssue>> AllIssuesForProject([ID(nameof(ClProject))] string projectId ) {
