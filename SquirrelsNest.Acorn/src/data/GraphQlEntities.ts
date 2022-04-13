@@ -5,6 +5,11 @@ export enum StateCategory {
   COMPLETED,
 }
 
+export enum SortEnumType {
+  ASC,
+  DESC
+}
+
 export interface ClWorkflowState {
   projectId: String
   name: String
@@ -98,6 +103,7 @@ export interface ClIssue {
   release: ClRelease
   workflowState: ClWorkflowState
   assignedTo: ClUser
+  isFinalized: boolean
   id: String
 }
 
@@ -109,16 +115,6 @@ export interface ClProject {
   issuePrefix: String
   nextIssueNumber: number
   id: String
-}
-
-export interface AllIssuesForProjectConnection {
-  projectId: String
-  first: number
-  after: String
-  last: number
-  before: String
-//    where: ClIssueFilterInput
-//    order: ClIssueSortInput[]
 }
 
 export interface AllProjectsConnection {

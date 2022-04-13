@@ -15,6 +15,7 @@ namespace SquirrelsNest.Service.Dto {
         public  ClRelease       Release { get; }
         public  ClWorkflowState WorkflowState { get; }
         public  ClUser          AssignedTo { get; }
+        public  bool            IsFinalized => WorkflowState.Category is StateCategory.Completed or StateCategory.Terminal;
 
         public ClIssue( string id, string title, string description, ClProject project, int issueNumber, DateOnly entryDate,
                         ClUser enteredBy, ClIssueType issueType, ClComponent component, ClRelease release, ClWorkflowState workflowState, 

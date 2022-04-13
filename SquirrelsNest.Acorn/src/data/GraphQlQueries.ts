@@ -20,11 +20,13 @@ export const PROJECTS_QUERY = `query ProjectsQuery($first: Int!) {
     }
   }`
 
-export const ISSUES_FOR_PROJECT_QUERY = `query IssuesForProjectQuery($skip: Int!, $take: Int!, $projectId: ID!) { 
+export const ISSUES_FOR_PROJECT_QUERY =
+  `query IssuesForProjectQuery($skip: Int!, $take: Int!, $projectId: ID!, $order:[ClIssueSortInput!]) { 
   allIssuesForProject(
       skip: $skip
       take: $take
-      projectId: $projectId ) {
+      projectId: $projectId
+      order: $order ) {
     pageInfo {
       hasNextPage
       hasPreviousPage
@@ -34,6 +36,7 @@ export const ISSUES_FOR_PROJECT_QUERY = `query IssuesForProjectQuery($skip: Int!
       issueNumber
       title
       description
+      isFinalized
       component {
         name
       }

@@ -43,7 +43,11 @@ function IssueQueryContextProvider( props: any ) {
       variables: {
         skip: skipCount,
         take: issuePageSize,
-        projectId: currentProject?.id
+        projectId: currentProject?.id,
+        order: {
+          isFinalized: 'ASC',
+          issueNumber: 'DESC',
+        },
       }
     })
   }
