@@ -1,12 +1,14 @@
-import {IssueData, noIssues} from './issueData'
 import {useContext, createContext, useState, useEffect} from 'react'
 import {APIError, UseClientRequestResult, useManualQuery} from 'graphql-hooks'
+import {noUser} from '../security/user'
+import {useUserContext} from '../security/UserContext'
 import {ISSUES_FOR_PROJECT_QUERY} from './GraphQlQueries'
 import {AllIssuesForProjectQueryResult, ClIssue} from './GraphQlEntities'
 import {useProjectQueryContext} from './ProjectQueryContext'
 
 interface IIssueQueryContext {
-  issueData: IssueData
+  issueList: ClIssue[]
+  totalIssueCount: number
   loadingErrors: APIError | undefined
 
   requestInitialIssues(): void
@@ -17,32 +19,40 @@ interface IIssueQueryContext {
 }
 
 const initialContext: IIssueQueryContext = {
-  issueData: noIssues,
+  issueList: [],
+  totalIssueCount: 0,
   loadingErrors: undefined,
-  requestInitialIssues() {},
-  requestAdditionalIssues() {},
-  updateIssue() {}
+  requestInitialIssues() {
+  },
+  requestAdditionalIssues() {
+  },
+  updateIssue() {
+  }
 }
 
 const issuePageSize = 5
 const IssueQueryContext = createContext<IIssueQueryContext>( initialContext )
 
 function IssueQueryContextProvider( props: any ) {
+  const userContext = useUserContext()
   const { currentProject } = useProjectQueryContext()
-  const [issueData, setIssueData] = useState<IssueData>( noIssues )
+  const [issueList, setIssueList] = useState<ClIssue[]>( [] )
   const [loadingErrors, setLoadingErrors] = useState<APIError>()
-  const [skipCount, setSkipCount] = useState(0)
+  const [totalIssueCount, setTotalIssueCount] = useState( 0 )
+  const [requestEvent, setRequestEvent] = useState( 0 )
 
-  const [requestIssues, queryResult] = useManualQuery<AllIssuesForProjectQueryResult>(
-    ISSUES_FOR_PROJECT_QUERY,
-    {
-      variables: {
-        skip: skipCount,
-        take: issuePageSize,
-        projectId: currentProject?.id
-      },
-    }
-  )
+  function createQueryVariables() {
+    return ({
+        variables: {
+          skip: issueList.length,
+          take: issuePageSize,
+          projectId: currentProject?.id
+        }
+      }
+    )
+  }
+
+  const [requestIssues, queryResult] = useManualQuery<AllIssuesForProjectQueryResult>( ISSUES_FOR_PROJECT_QUERY )
 
   const processResponse = ( queryResult: UseClientRequestResult<AllIssuesForProjectQueryResult> ) => {
     const { loading, error, data } = queryResult
@@ -55,7 +65,8 @@ function IssueQueryContextProvider( props: any ) {
       console.log( error )
 
       setLoadingErrors( error )
-      setIssueData( noIssues )
+      setTotalIssueCount( 0 )
+      setIssueList( [] )
 
       return
     }
@@ -64,7 +75,8 @@ function IssueQueryContextProvider( props: any ) {
       console.log( `loaded issue data: ${data.allIssuesForProject.totalCount} issues` )
 
       setLoadingErrors( undefined )
-      setIssueData( new IssueData( data ) )
+      setIssueList( [...issueList, ...data.allIssuesForProject.items] )
+      setTotalIssueCount( data.allIssuesForProject.totalCount )
     }
   }
 
@@ -72,27 +84,40 @@ function IssueQueryContextProvider( props: any ) {
     processResponse( queryResult )
   }, [queryResult] )
 
-  async function requestInitialIssues() {
-    setLoadingErrors( undefined )
-    setIssueData( noIssues )
-    setSkipCount(0)
+  useEffect( () => {
+    if( (userContext.user !== noUser) &&
+      (currentProject !== undefined) ) {
+      setLoadingErrors( undefined )
+      setTotalIssueCount( 0 )
+      setIssueList( [] )
+      setRequestEvent( requestEvent + 1 )
+    }
+  }, [userContext, currentProject] )
 
-    await requestIssues()
+  useEffect( () => {
+    (async () => requestInitialIssues())()
+  }, [requestEvent] )
+
+  async function requestInitialIssues() {
+    if( (userContext.user !== noUser) &&
+      (currentProject !== undefined) ) {
+      await requestIssues( createQueryVariables() )
+    }
   }
 
-  function requestAdditionalIssues() {
+  async function requestAdditionalIssues() {
+    setLoadingErrors( undefined )
 
+    await requestIssues( createQueryVariables() )
   }
 
   function updateIssue( newIssue: ClIssue ) {
-    issueData.issues = issueData.issues.map( i => i.id === newIssue.id ? newIssue : i )
-
-    setIssueData( issueData )
+    setIssueList( issueList.map( i => i.id === newIssue.id ? newIssue : i ) )
   }
 
   return (
     <IssueQueryContext.Provider
-      value={{ issueData, loadingErrors, requestInitialIssues, requestAdditionalIssues, updateIssue }}>
+      value={{ issueList, totalIssueCount, loadingErrors, requestInitialIssues, requestAdditionalIssues, updateIssue }}>
       {props.children}
     </IssueQueryContext.Provider>
   )

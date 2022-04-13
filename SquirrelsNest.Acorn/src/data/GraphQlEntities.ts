@@ -61,13 +61,18 @@ export interface PageInfo {
 }
 
 export interface AllIssuesForProjectQueryResult {
-  allIssuesForProject: AllIssuesForProjectConnection
+  allIssuesForProject: ClIssueCollectionSegment
 }
 
-export interface AllIssuesForProjectConnection {
-  pageInfo: PageInfo
+export interface ClIssueCollectionSegment {
+  pageInfo: CollectionSegmentInfo
   items: ClIssue[]
   totalCount: number
+}
+
+export interface CollectionSegmentInfo {
+  hasNextPage: Boolean
+  hasPreviousPage: Boolean
 }
 
 export interface AllProjectsQueryResult {
