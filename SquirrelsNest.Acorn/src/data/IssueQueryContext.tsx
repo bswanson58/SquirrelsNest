@@ -12,7 +12,6 @@ interface IIssueQueryContext {
   loadingErrors: APIError | undefined
 
   requestInitialIssues(): void
-
   requestAdditionalIssues(): void
 
   updateIssue( issue: ClIssue ): void
@@ -22,12 +21,9 @@ const initialContext: IIssueQueryContext = {
   issueList: [],
   totalIssueCount: 0,
   loadingErrors: undefined,
-  requestInitialIssues() {
-  },
-  requestAdditionalIssues() {
-  },
-  updateIssue() {
-  }
+  requestInitialIssues() {},
+  requestAdditionalIssues() {},
+  updateIssue() {}
 }
 
 const issuePageSize = 5
@@ -39,22 +35,25 @@ function IssueQueryContextProvider( props: any ) {
   const [issueList, setIssueList] = useState<ClIssue[]>( [] )
   const [loadingErrors, setLoadingErrors] = useState<APIError>()
   const [totalIssueCount, setTotalIssueCount] = useState( 0 )
-  const [requestEvent, setRequestEvent] = useState( 0 )
 
-  function createQueryVariables() {
+  const [queryIssues] = useManualQuery<AllIssuesForProjectQueryResult>( ISSUES_FOR_PROJECT_QUERY )
+
+  function createQueryVariables( skipCount: number ) {
     return ({
-        variables: {
-          skip: issueList.length,
-          take: issuePageSize,
-          projectId: currentProject?.id
-        }
+      variables: {
+        skip: skipCount,
+        take: issuePageSize,
+        projectId: currentProject?.id
       }
-    )
+    })
   }
 
-  const [requestIssues, queryResult] = useManualQuery<AllIssuesForProjectQueryResult>( ISSUES_FOR_PROJECT_QUERY )
+  function clearIssues() {
+    setTotalIssueCount( 0 )
+    setIssueList( [] )
+  }
 
-  const processResponse = ( queryResult: UseClientRequestResult<AllIssuesForProjectQueryResult> ) => {
+  function processResponse( queryResult: UseClientRequestResult<AllIssuesForProjectQueryResult>, replaceCurrentIssues: boolean ) {
     const { loading, error, data } = queryResult
 
     if( loading ) {
@@ -64,9 +63,8 @@ function IssueQueryContextProvider( props: any ) {
     if( error ) {
       console.log( error )
 
+      clearIssues()
       setLoadingErrors( error )
-      setTotalIssueCount( 0 )
-      setIssueList( [] )
 
       return
     }
@@ -75,45 +73,45 @@ function IssueQueryContextProvider( props: any ) {
       console.log( `loaded issue data: ${data.allIssuesForProject.totalCount} issues` )
 
       setLoadingErrors( undefined )
-      setIssueList( [...issueList, ...data.allIssuesForProject.items] )
       setTotalIssueCount( data.allIssuesForProject.totalCount )
+      setIssueList( replaceCurrentIssues ?
+        data.allIssuesForProject.items :
+        [...issueList, ...data.allIssuesForProject.items] )
     }
   }
 
-  useEffect( () => {
-    processResponse( queryResult )
-  }, [queryResult] )
-
-  useEffect( () => {
+  function requestIssues( isInitialRequest: boolean ) {
     if( (userContext.user !== noUser) &&
       (currentProject !== undefined) ) {
-      setLoadingErrors( undefined )
-      setTotalIssueCount( 0 )
-      setIssueList( [] )
-      setRequestEvent( requestEvent + 1 )
-    }
-  }, [userContext, currentProject] )
-
-  useEffect( () => {
-    (async () => requestInitialIssues())()
-  }, [requestEvent] )
-
-  async function requestInitialIssues() {
-    if( (userContext.user !== noUser) &&
-      (currentProject !== undefined) ) {
-      await requestIssues( createQueryVariables() )
+      queryIssues( createQueryVariables( isInitialRequest ? 0 : issueList.length ) )
+        .then( data => processResponse( data, isInitialRequest ) )
+        .catch( reason => {
+          // setLoadingErrors(...)
+          console.log( reason )
+        } )
     }
   }
 
-  async function requestAdditionalIssues() {
-    setLoadingErrors( undefined )
+  function requestInitialIssues() {
+    clearIssues()
 
-    await requestIssues( createQueryVariables() )
+    requestIssues( true )
+  }
+
+  function requestAdditionalIssues() {
+    requestIssues( false )
   }
 
   function updateIssue( newIssue: ClIssue ) {
     setIssueList( issueList.map( i => i.id === newIssue.id ? newIssue : i ) )
   }
+
+  useEffect( () => {
+    if( (userContext.user !== noUser) &&
+      (currentProject !== undefined) ) {
+      requestInitialIssues()
+    }
+  }, [userContext, currentProject] )
 
   return (
     <IssueQueryContext.Provider
