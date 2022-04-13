@@ -1,27 +1,38 @@
 import {Grid, Typography} from '@mui/material'
 import React from 'react'
 import {ClIssue} from '../../data'
-import {SubTypography} from './IssueList.styles'
+import {SubTypography, StrikeThruTypography, DimmedTypography} from './IssueList.styles'
 
 export enum eDisplayStyle { TITLE_ONLY, TITLE_DESCRIPTION, FULL_DETAILS }
 
-export const nextDisplayStyle = (displayStyle: eDisplayStyle) => {
+export const nextDisplayStyle = ( displayStyle: eDisplayStyle ) => {
   switch( displayStyle ) {
     case eDisplayStyle.FULL_DETAILS:
-      return  eDisplayStyle.TITLE_DESCRIPTION
+      return eDisplayStyle.TITLE_DESCRIPTION
     case eDisplayStyle.TITLE_DESCRIPTION:
-      return  eDisplayStyle.TITLE_ONLY
+      return eDisplayStyle.TITLE_ONLY
     case eDisplayStyle.TITLE_ONLY:
-      return  eDisplayStyle.FULL_DETAILS
+      return eDisplayStyle.FULL_DETAILS
   }
 }
 
-export const createPrimary = (issuePrefix: String, issue: ClIssue ) => {
+export const createPrimary = ( issuePrefix: String, issue: ClIssue ) => {
   return (
     <>
-      <SubTypography variant='body1'
-                     display='inline'>({issuePrefix}-{issue.issueNumber}) </SubTypography>
-      <Typography variant='body1' display='inline'>{issue.title}</Typography>
+      {issue.isFinalized ?
+        <>
+          <SubTypography variant='body1' display='inline'>(</SubTypography>
+          <StrikeThruTypography variant='body1'
+                                display='inline'>{issuePrefix}-{issue.issueNumber}</StrikeThruTypography>
+          <SubTypography variant='body1' display='inline'>) </SubTypography>
+          <DimmedTypography variant='body1' display='inline'>{issue.title}</DimmedTypography>
+        </> :
+        <>
+          <SubTypography variant='body1'
+                         display='inline'>({issuePrefix}-{issue.issueNumber}) </SubTypography>
+          <Typography variant='body1' display='inline'>{issue.title}</Typography>
+        </>
+      }
     </>
   )
 }
@@ -50,7 +61,7 @@ export const fullDetails = ( issue: ClIssue ) => {
   )
 }
 
-export const createSecondary = (displayStyle: eDisplayStyle, issue: ClIssue ) => {
+export const createSecondary = ( displayStyle: eDisplayStyle, issue: ClIssue ) => {
   switch( displayStyle ) {
     case eDisplayStyle.FULL_DETAILS:
       return fullDetails( issue )

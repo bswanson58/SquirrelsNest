@@ -16,3 +16,12 @@ export const SubTypography = styled( Typography )`
   // transform: scale(1);
   // -webkit-transform-origin-x: 0; // align text left after scaling
 `
+export const DimmedTypography = styled( Typography )`
+  opacity: 0.7;
+  // transform: scale(1);
+  // -webkit-transform-origin-x: 0; // align text left after scaling
+`
+export const StrikeThruTypography = styled(SubTypography)`
+  text-decoration: line-through;
+  opacity: 0.5;
+`
