@@ -10,6 +10,13 @@ export enum SortEnumType {
   DESC
 }
 
+export interface LoginResponse {
+  login:{
+    token: string
+    expiration: Date
+  }
+}
+
 export interface ClWorkflowState {
   projectId: String
   name: String

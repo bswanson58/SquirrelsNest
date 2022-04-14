@@ -1,3 +1,10 @@
+export const LOGIN_QUERY = `query login($credentials: UserCredentialsInput!) {
+  login(userCredentials: $credentials) {
+    token
+    expiration
+  }
+}`
+
 export const PROJECTS_QUERY = `query ProjectsQuery($first: Int!) { 
   allProjects(first: $first) {
       pageInfo {

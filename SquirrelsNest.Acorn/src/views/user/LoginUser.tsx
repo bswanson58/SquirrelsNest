@@ -1,50 +1,55 @@
-import axios from 'axios'
 import styled from 'styled-components'
-import {parseAxiosError} from '../../utility/axiosErrorParser'
-import {authenticationResponse, userCredentials} from '../../security/authenticationModels'
-import {urlAccounts} from '../../config/endpoints'
-import {useState} from 'react'
+import {LoginResponse} from '../../data/GraphQlEntities'
+import {LOGIN_QUERY} from '../../data/GraphQlQueries'
+import {userCredentials} from '../../security/authenticationModels'
+import {useContext, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {getAuthenticationClaims, saveAuthenticationToken} from '../../security/jwtSupport'
 import AuthenticationForm from './AuthenticationForm'
 import {useUserContext} from '../../security/UserContext'
-import ErrorDisplay from '../../components/ErrorDisplay'
 import {User} from '../../security/user'
 import {Box, Typography} from '@mui/material'
+import {useManualQuery, ClientContext, APIError} from 'graphql-hooks'
 
-const BorderedBox = styled(Box) `
+const BorderedBox = styled( Box )`
   margin: 50px;
 `
 
 export default function Login() {
-  const [errors, setErrors] = useState<string[]>( [] )
+  const [loadingErrors, setLoadingErrors] = useState<APIError>()
   const { updateUser } = useUserContext()
   const history = useNavigate()
+  const clientContext = useContext( ClientContext )
 
-  async function login( credentials: userCredentials ) {
-    try {
-      setErrors( [] )
-      const response = await axios.post<authenticationResponse>(
-        `${urlAccounts}/login`,
-        credentials
-      )
-      saveAuthenticationToken( response.data )
+  const [loginRequest] = useManualQuery<LoginResponse>( LOGIN_QUERY )
+
+  async function handleLogin( credentials: userCredentials ) {
+    const { data, error } = await loginRequest( {
+      variables: { credentials: { email: credentials.email, password: credentials.password, name: '' } }
+    } )
+    if( error ) {
+      setLoadingErrors( error )
+
+      return
+    }
+
+    if( data ) {
+      saveAuthenticationToken( data.login )
       updateUser( new User( getAuthenticationClaims() ) )
+      clientContext.setHeader( 'Authorization', `Bearer ${data.login.token}` )
+
       history( '/' )
-    } catch( error ) {
-      setErrors( parseAxiosError( error ) )
     }
   }
 
   return (
     <BorderedBox>
-      <Typography variant="h6">Login</Typography>
-      <ErrorDisplay errors={errors}/>
+      <Typography variant='h6'>Login</Typography>
       <AuthenticationForm
         requireName={false}
         submitText={'Login'}
         model={{ name: '', email: '', password: '' }}
-        onSubmit={async ( values ) => await login( values )}
+        onSubmit={async ( values ) => await handleLogin( values )}
       />
     </BorderedBox>
   )
