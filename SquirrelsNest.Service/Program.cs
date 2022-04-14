@@ -18,6 +18,7 @@ using SquirrelsNest.Core;
 using SquirrelsNest.Core.Preferences;
 using SquirrelsNest.EfDb;
 using SquirrelsNest.EfDb.Context;
+using SquirrelsNest.Service;
 using SquirrelsNest.Service.Database;
 using SquirrelsNest.Service.Filters;
 using SquirrelsNest.Service.Issues;
@@ -45,7 +46,8 @@ app.Run();
 void ConfigureDependencies( ContainerBuilder builder ) {
     builder
         .RegisterModule<CoreModule>()
-        .RegisterModule<EfDbModule>();
+        .RegisterModule<EfDbModule>()
+        .RegisterModule<ServiceModule>();
 
     builder.RegisterType<Preferences<EfDatabaseConfiguration>>().As<IPreferences<EfDatabaseConfiguration>>();
 }
@@ -91,6 +93,7 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
 
     services
         .AddGraphQLServer()
+        .RegisterDbContext<ServiceDbContext>()
         .AddAuthorization()
         .AddQueryType()
         .AddTypeExtension<ProjectQuery>()
