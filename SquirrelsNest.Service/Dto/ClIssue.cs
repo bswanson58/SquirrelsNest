@@ -4,6 +4,7 @@ using SquirrelsNest.Core.CompositeBuilders;
 
 namespace SquirrelsNest.Service.Dto {
     public class ClIssue : ClBase {
+        // ReSharper disable UnusedAutoPropertyAccessor.Global
         public  string          Title { get; }
         public  string          Description { get; }
         public  ClProject       Project { get; }
@@ -16,6 +17,7 @@ namespace SquirrelsNest.Service.Dto {
         public  ClWorkflowState WorkflowState { get; }
         public  ClUser          AssignedTo { get; }
         public  bool            IsFinalized => WorkflowState.Category is StateCategory.Completed or StateCategory.Terminal;
+        // ReSharper restore UnusedAutoPropertyAccessor.Global
 
         public ClIssue( string id, string title, string description, ClProject project, int issueNumber, DateOnly entryDate,
                         ClUser enteredBy, ClIssueType issueType, ClComponent component, ClRelease release, ClWorkflowState workflowState, 

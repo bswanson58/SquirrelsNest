@@ -50,7 +50,7 @@ namespace SquirrelsNest.Service.Users {
 
         private async Task<List<Claim>> BuildUserClaims( string email ) {
             var claims = new List<Claim>() {
-                new Claim( "email", email )
+                new ( "email", email )
             };
 
             var user = await mUserProvider.GetUser( email );
