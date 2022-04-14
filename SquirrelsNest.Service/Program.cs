@@ -19,10 +19,10 @@ using SquirrelsNest.Core.Preferences;
 using SquirrelsNest.EfDb;
 using SquirrelsNest.EfDb.Context;
 using SquirrelsNest.Service.Database;
-using SquirrelsNest.Service.Dto;
 using SquirrelsNest.Service.Filters;
 using SquirrelsNest.Service.Issues;
 using SquirrelsNest.Service.Projects;
+using SquirrelsNest.Service.Users;
 
 const string    corsPolicy = "corsPolicy";
 const string    apiEndpoint = "/api";
@@ -91,11 +91,11 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
 
     services
         .AddGraphQLServer()
+        .AddAuthorization()
         .AddQueryType()
         .AddTypeExtension<ProjectQuery>()
         .AddTypeExtension<IssueQuery>()
-        .AddType<ClProject>()
-        .AddType<ClIssue>()
+        .AddTypeExtension<Authentication>()
         .AddMutationType()
         .AddTypeExtension<IssueMutations>()
         .AddFiltering()
