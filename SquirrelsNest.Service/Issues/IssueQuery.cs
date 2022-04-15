@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Data;
 using HotChocolate.Types;
 using HotChocolate.Types.Relay;
@@ -67,6 +68,7 @@ namespace SquirrelsNest.Service.Issues {
         [UseOffsetPaging(MaxPageSize = 30, IncludeTotalCount = true)]
         [UseFiltering]
         [UseSorting]
+        [Authorize( Policy = "IsUser" )]
         public async Task<IEnumerable<ClIssue>> AllIssuesForProject([ID(nameof(ClProject))] string projectId ) {
             var entityId = EntityId.For( projectId );
             var project = await GetProject( entityId );

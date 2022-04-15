@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types;
 using LanguageExt;
 using LanguageExt.Common;
@@ -28,6 +29,7 @@ namespace SquirrelsNest.Service.Projects {
 
         // ReSharper disable once UnusedMember.Global
         [UsePaging(MaxPageSize = 15, IncludeTotalCount = true)]
+        [Authorize( Policy = "IsUser" )]
         public async Task<IEnumerable<ClProject>> AllProjects() {
             var user = await GetUser();
             var projects = await user.BindAsync( async u => await mProjectProvider.GetProjects( u ));

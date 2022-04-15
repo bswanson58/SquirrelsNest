@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types;
 using LanguageExt;
 using LanguageExt.Common;
@@ -33,6 +34,7 @@ namespace SquirrelsNest.Service.Issues {
             return users.Map( userList => userList.FirstOrDefault( SnUser.Default ));
         }
 
+        [Authorize( Policy = "IsUser" )]
         public async Task<AddIssuePayload> AddIssue( AddIssueInput issue ) {
             var user = await GetUser();
             var userId = EntityId.Default;

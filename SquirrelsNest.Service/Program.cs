@@ -75,7 +75,11 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
 
     JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
-    services.AddAuthentication( JwtBearerDefaults.AuthenticationScheme )
+    services.AddAuthentication( options => {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
         .AddJwtBearer( options => {
             options.TokenValidationParameters = new TokenValidationParameters {
                 ValidateIssuer = false,
@@ -88,7 +92,17 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
         } );
 
     services.AddAuthorization( options => {
-        options.AddPolicy( "IsAdmin", policy => policy.RequireClaim( "role", "admin" ));
+        options.AddPolicy( "IsAdmin", policy => {
+            policy.RequireClaim( "role", "admin" );
+            policy.AuthenticationSchemes.Add( JwtBearerDefaults.AuthenticationScheme );
+        });
+    });
+
+    services.AddAuthorization( options => {
+        options.AddPolicy( "IsUser", policy => {
+            policy.RequireClaim( "role", "user" );
+            policy.AuthenticationSchemes.Add( JwtBearerDefaults.AuthenticationScheme );
+        });
     });
 
     services
