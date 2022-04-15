@@ -4,11 +4,13 @@ using SquirrelsNest.Common.Values;
 
 namespace SquirrelsNest.Service.Dto {
     public class ClRelease : ClBase {
+        // ReSharper disable UnusedAutoPropertyAccessor.Global
         public string ProjectId { get; }
         public string Name { get; }
         public string Description { get; }
         public string RepositoryLabel { get; }
         public DateOnly ReleaseDate { get; }
+        // ReSharper restore UnusedAutoPropertyAccessor.Global
 
         public ClRelease( string id, string projectId, string name, string description, string repositoryLabel, DateOnly releaseDate ) :
             base( id ) {
