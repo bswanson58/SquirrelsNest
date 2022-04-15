@@ -1,6 +1,7 @@
+import {ClientContext} from 'graphql-hooks'
 import {createContext, useContext, useEffect, useState} from 'react'
 import {User, noUser} from './user'
-import {getAuthenticationClaims} from './jwtSupport'
+import {getAuthenticationClaims, getAuthenticationToken} from './jwtSupport'
 
 const UserContext = createContext<{
   user: User
@@ -9,9 +10,11 @@ const UserContext = createContext<{
 
 function UserContextProvider( props: any ) {
   const [user, setUser] = useState<User>( noUser )
+  const clientContext = useContext( ClientContext )
 
   useEffect( () => {
     setUser( new User( getAuthenticationClaims()))
+    clientContext.setHeader( 'Authorization', `Bearer ${getAuthenticationToken()}` )
   }, [] )
 
   return (

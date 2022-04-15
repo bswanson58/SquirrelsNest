@@ -67,7 +67,8 @@ function ProjectQueryContextProvider( props: any ) {
     setLoadingErrors( undefined )
     setProjectData( noProjects )
 
-    if( user !== noUser ) {
+    if(( user !== noUser ) &&
+       (user.isLoggedIn())) {
       (async () => await requestProjects())()
     }
   }, [user, requestProjects] )
