@@ -2,6 +2,7 @@ import {request} from 'graphql-request'
 import {urlGraphQl} from '../config/endpoints'
 import {IssuesQuery} from '../data/GraphQlQueries'
 import {Query, QueryAllIssuesForProjectArgs} from '../data/graphQlTypes'
+import {selectAuthHeader} from './auth'
 import {AppThunk} from './configureStore'
 import {issueListFailed, issueListReceived, issueListRequested} from './issues'
 
@@ -21,7 +22,8 @@ export function requestIssueList(/* args: QueryAllProjectsArgs */ ): AppThunk {
           where: null
         }
 
-        const data = await request<Query>( urlGraphQl, IssuesQuery, variables )
+        const authHeader = selectAuthHeader(getState())
+        const data = await request<Query>( urlGraphQl, IssuesQuery, variables, authHeader )
 
         if( data.allIssuesForProject?.items !== undefined ) {
           dispatch( issueListReceived( data.allIssuesForProject.items! ) )

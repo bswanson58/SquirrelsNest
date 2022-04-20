@@ -3,11 +3,12 @@ import {request} from 'graphql-request'
 import {urlGraphQl} from '../config/endpoints'
 import {AllProjectsQuery} from '../data/GraphQlQueries'
 import {ClProject, Query, QueryAllProjectsArgs} from '../data/graphQlTypes'
+import {selectAuthHeader} from './auth'
 import {AppThunk} from './configureStore'
 import {projectListFailed, projectListReceived, projectListRequested} from './projects'
 
 export function requestProjectList(/* args: QueryAllProjectsArgs */ ): AppThunk {
-  return async ( dispatch /*, getState */ ) => {
+  return async ( dispatch, getState ) => {
     dispatch( projectListRequested() )
 
     try {
@@ -15,7 +16,8 @@ export function requestProjectList(/* args: QueryAllProjectsArgs */ ): AppThunk 
         first: 10,
       }
 
-      const data = await request<Query>( urlGraphQl, AllProjectsQuery, variables )
+      const authHeader = selectAuthHeader(getState())
+      const data = await request<Query>( urlGraphQl, AllProjectsQuery, variables, authHeader )
 
       if( data.allProjects !== undefined ) {
         dispatch( projectListReceived( data.allProjects! ) )

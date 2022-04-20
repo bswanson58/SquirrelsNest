@@ -1,5 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {AuthenticationResponse} from '../data/graphQlTypes'
+import {RootState} from './configureStore'
 
 interface AuthState {
   token: String
@@ -45,6 +46,16 @@ const slice = createSlice( {
     },
   }
 } )
+
+export function selectIsUserAuthenticated( state: RootState ) : boolean {
+  return state.auth.token.length > 0
+}
+
+export function selectAuthHeader( state: RootState ) : HeadersInit {
+  return({
+    "authorization": `bearer ${state.auth.token}`
+  })
+}
 
 export const {
   authRequested,
