@@ -4,11 +4,11 @@ import issueReducer from './issues'
 import projectReducer from './projects'
 
 const entitiesReducer = combineReducers( {
-  auth: authReducer,
   issues: issueReducer,
   projects: projectReducer
 } )
 
 export const appReducer = combineReducers( {
+  auth: authReducer,
   entities: entitiesReducer
 } )
