@@ -1,0 +1,44 @@
+import {request} from 'graphql-request'
+import {urlGraphQl} from '../config/endpoints'
+import {IssuesQuery} from '../data/GraphQlQueries'
+import {Query, QueryAllIssuesForProjectArgs} from '../data/graphQlTypes'
+import {AppThunk} from './configureStore'
+import {issueListFailed, issueListReceived, issueListRequested} from './issues'
+
+export function requestIssueList(/* args: QueryAllProjectsArgs */ ): AppThunk {
+  return async ( dispatch, getState ) => {
+    dispatch( issueListRequested() )
+
+    const currentProject = getState().entities.projects.currentProject;
+
+    if( currentProject !== null ) {
+      try {
+        const variables: QueryAllIssuesForProjectArgs = {
+          skip: 0,
+          take: 3,
+          projectId: currentProject.id,
+          order: [],
+          where: null
+        }
+
+        const data = await request<Query>( urlGraphQl, IssuesQuery, variables )
+
+        if( data.allIssuesForProject?.items !== undefined ) {
+          dispatch( issueListReceived( data.allIssuesForProject.items! ) )
+        }
+      } catch( error: any ) {
+        if( error?.response?.errors?.length !== undefined ) {
+          dispatch( issueListFailed( error.response.errors[0].message ) )
+        } else if( error.response.error !== undefined ) {
+          dispatch( issueListFailed( `(${error.response.status}) ${error.response.error}` ) )
+        } else {
+          dispatch( issueListFailed( '' ) )
+        }
+//      console.error( JSON.stringify( error, undefined, 2 ) )
+      }
+    }
+    else {
+      dispatch(issueListFailed('current project is not set'))
+    }
+  }
+}
