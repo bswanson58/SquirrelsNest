@@ -5,6 +5,7 @@ import {Query, QueryLoginArgs} from '../data/graphQlTypes'
 import {userCredentials} from '../security/authenticationModels'
 import {authFailed, authReceived, authRequested} from './auth'
 import {AppThunk} from './configureStore'
+import {requestProjectList} from './projectActions'
 
 export function loginUser( credentials: userCredentials ): AppThunk {
   return async ( dispatch /*, getState */ ) => {
@@ -22,12 +23,16 @@ export function loginUser( credentials: userCredentials ): AppThunk {
       const data = await request<Query>( urlGraphQl, LoginQuery, variables )
 
       dispatch( authReceived( data.login ) )
-    } catch( error: any ) {
+      dispatch( requestProjectList() )
+    }
+    catch( error: any ) {
       if( error?.response?.errors?.length !== undefined ) {
         dispatch( authFailed( error.response.errors[0].message ) )
-      } else if( error.response.error !== undefined ) {
+      }
+      else if( error.response.error !== undefined ) {
         dispatch( authFailed( `(${error.response.status}) ${error.response.error}` ) )
-      } else {
+      }
+      else {
         dispatch( authFailed( '' ) )
       }
 

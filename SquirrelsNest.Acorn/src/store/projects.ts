@@ -1,5 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {AllProjectsConnection, ClProject} from '../data/graphQlTypes'
+import {RootState} from './configureStore'
 
 interface ProjectState {
   list: ClProject[]
@@ -20,6 +21,7 @@ const slice = createSlice( {
   reducers: {
     projectListRequested: ( projectState ) => {
       projectState.loading = true
+      projectState.list = []
 
       console.log( `project list begin` )
     },
@@ -40,7 +42,7 @@ const slice = createSlice( {
       console.log( `project list failed: ${action.payload}` )
     },
 
-    setCurrentProject: (projectState, action: PayloadAction<ClProject> ) => {
+    projectSetCurrent: (projectState, action: PayloadAction<ClProject> ) => {
       projectState.currentProject = action.payload
 
       console.log(`set current project: ${projectState.currentProject?.name}`)
@@ -48,11 +50,19 @@ const slice = createSlice( {
   }
 } )
 
+export function selectProjectList(state: RootState ) : ClProject[] {
+  return state.entities.projects.list
+}
+
+export function selectCurrentProject(state: RootState ) : ClProject | null {
+  return state.entities.projects.currentProject
+}
+
 export const {
   projectListRequested,
   projectListReceived,
   projectListFailed,
-  setCurrentProject,
+  projectSetCurrent,
 } = slice.actions
 
 export default slice.reducer

@@ -1,11 +1,10 @@
-import {createAction} from '@reduxjs/toolkit'
 import {request} from 'graphql-request'
 import {urlGraphQl} from '../config/endpoints'
 import {AllProjectsQuery} from '../data/GraphQlQueries'
 import {ClProject, Query, QueryAllProjectsArgs} from '../data/graphQlTypes'
 import {selectAuthHeader} from './auth'
 import {AppThunk} from './configureStore'
-import {projectListFailed, projectListReceived, projectListRequested} from './projects'
+import {projectListFailed, projectListReceived, projectListRequested, projectSetCurrent} from './projects'
 
 export function requestProjectList(/* args: QueryAllProjectsArgs */ ): AppThunk {
   return async ( dispatch, getState ) => {
@@ -16,13 +15,14 @@ export function requestProjectList(/* args: QueryAllProjectsArgs */ ): AppThunk 
         first: 10,
       }
 
-      const authHeader = selectAuthHeader(getState())
+      const authHeader = selectAuthHeader( getState() )
       const data = await request<Query>( urlGraphQl, AllProjectsQuery, variables, authHeader )
 
       if( data.allProjects !== undefined ) {
         dispatch( projectListReceived( data.allProjects! ) )
       }
-    } catch( error: any ) {
+    }
+    catch( error: any ) {
       if( error?.response?.errors?.length !== undefined ) {
         dispatch( projectListFailed( error.response.errors[0].message ) )
       }
@@ -37,4 +37,8 @@ export function requestProjectList(/* args: QueryAllProjectsArgs */ ): AppThunk 
   }
 }
 
-export const setCurrentProject = createAction<ClProject>( 'projects/setCurrentProject' )
+export function setCurrentProject( project: ClProject ): AppThunk {
+  return ( dispatch ) => {
+    dispatch( projectSetCurrent( project ) )
+  }
+}
