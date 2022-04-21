@@ -1,18 +1,18 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {AuthenticationResponse} from '../data/graphQlTypes'
+import {claim} from '../security/authenticationModels'
 import {RootState} from './configureStore'
 import {getAuthenticationClaims, saveAuthenticationToken} from '../security/jwtSupport'
-import {User, noUser} from '../security/user'
 
 interface AuthState {
-  user: User
+  userClaims: claim[]
   token: String
   expiration: Number
   loading: boolean
 }
 
 const initialState: AuthState = {
-  user: noUser,
+  userClaims: [],
   token: '',
   expiration: 0,
   loading: false
@@ -35,7 +35,7 @@ const slice = createSlice( {
       authState.loading = false
 
       saveAuthenticationToken( action.payload )
-      authState.user = new User( getAuthenticationClaims())
+      authState.userClaims = getAuthenticationClaims()
 
       console.log( `auth received: ${JSON.stringify( action.payload, undefined, 2 )}` )
     },
@@ -56,8 +56,8 @@ export function selectIsAuthenticating( state: RootState ) : boolean {
   return state.auth.loading
 }
 
-export function selectAuthUser(state: RootState ) : User {
-  return state.auth.user
+export function selectUserClaims(state: RootState ) : claim[] {
+  return state.auth.userClaims
 }
 
 export function selectAuthHeader( state: RootState ): HeadersInit {
