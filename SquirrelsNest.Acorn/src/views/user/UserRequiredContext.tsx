@@ -1,19 +1,20 @@
 import {useEffect} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {loginUrl} from '../../config/appRoutes'
-import {useUserContext} from '../../security/UserContext'
+import {selectIsUserAuthenticated} from '../../store/auth'
+import {useAppSelector} from '../../store/storeHooks'
 
 function useUserRequired( redirectUrl = loginUrl ) {
-  const userContext = useUserContext()
+  const isAuthenticated = useAppSelector( selectIsUserAuthenticated )
   const navigate = useNavigate()
 
   useEffect( () => {
-    if(!userContext.user.isLoggedIn()) {
+    if( isAuthenticated ) {
       navigate( redirectUrl )
     }
-  }, [userContext, navigate, redirectUrl] )
+  }, [isAuthenticated, navigate, redirectUrl] )
 
-  return userContext
+  return isAuthenticated
 }
 
 export {useUserRequired}

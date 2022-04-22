@@ -10,7 +10,7 @@ import {selectIssueListStyle, toggleIssueListStyle} from '../../store/ui'
 import AddIssueDialog from './AddIssueDialog'
 import {createPrimary, createSecondary} from './IssueList.Items'
 import {RelativeBox, TopRightStack} from './IssueList.styles'
-import {AddIssueInput, useIssueMutationContext} from '../../data'
+import {AddIssueInput} from '../../data/mutationEntities'
 
 function IssueList() {
   const currentProject = useAppSelector( selectCurrentProject )
@@ -20,7 +20,6 @@ function IssueList() {
   const dispatch = useAppDispatch()
 
   const [addIssue, setAddIssue] = useState( false )
-  const issueMutations = useIssueMutationContext()
 
   const emptyAddIssue: AddIssueInput = { title: '', description: '', projectId: '' }
 
@@ -30,8 +29,8 @@ function IssueList() {
   const displayAddIssue = () => setAddIssue( true )
   const closeAddIssue = () => setAddIssue( false )
   const handleAddIssue = ( issue: AddIssueInput ) => {
-    issueMutations.addIssue( issue )
-    setAddIssue( false )
+//    issueMutations.addIssue( issue )
+//    setAddIssue( false )
   }
 
   if( currentProject === undefined ) {
