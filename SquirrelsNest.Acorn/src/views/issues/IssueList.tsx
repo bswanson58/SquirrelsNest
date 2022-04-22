@@ -6,26 +6,26 @@ import {requestAdditionalIssues} from '../../store/issueActions'
 import {selectIssueList} from '../../store/issues'
 import {selectCurrentProject} from '../../store/projects'
 import {useAppDispatch, useAppSelector} from '../../store/storeHooks'
+import {selectIssueListStyle, toggleIssueListStyle} from '../../store/ui'
 import AddIssueDialog from './AddIssueDialog'
-import {createPrimary, createSecondary, eDisplayStyle, nextDisplayStyle} from './IssueList.Items'
+import {createPrimary, createSecondary} from './IssueList.Items'
 import {RelativeBox, TopRightStack} from './IssueList.styles'
 import {AddIssueInput, useIssueMutationContext} from '../../data'
 
 function IssueList() {
-  const currentProject = useAppSelector(selectCurrentProject)
+  const currentProject = useAppSelector( selectCurrentProject )
   const issueList = useAppSelector( selectIssueList )
-  const totalIssueCount = 7;
+  const issueListStyle = useAppSelector( selectIssueListStyle )
+  const totalIssueCount = 7
   const dispatch = useAppDispatch()
 
-  const [displayStyle, setDisplayStyle] = useState( eDisplayStyle.TITLE_DESCRIPTION )
   const [addIssue, setAddIssue] = useState( false )
   const issueMutations = useIssueMutationContext()
 
   const emptyAddIssue: AddIssueInput = { title: '', description: '', projectId: '' }
 
-  const toggleStyle = () => setDisplayStyle( nextDisplayStyle( displayStyle ) )
-
-  const loadAdditionalIssues = () => dispatch(requestAdditionalIssues)
+  const loadAdditionalIssues = () => dispatch( requestAdditionalIssues )
+  const toggleStyle = () => dispatch( toggleIssueListStyle() )
 
   const displayAddIssue = () => setAddIssue( true )
   const closeAddIssue = () => setAddIssue( false )
@@ -62,7 +62,7 @@ function IssueList() {
               <ListItemText
                 disableTypography={true}
                 primary={createPrimary( currentProject?.issuePrefix!, item )}
-                secondary={createSecondary( displayStyle, item )}
+                secondary={createSecondary( issueListStyle, item )}
               />
             </ListItemButton>
           </ListItem>

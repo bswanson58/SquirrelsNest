@@ -1,20 +1,8 @@
 import {Grid, Typography} from '@mui/material'
 import React from 'react'
 import {ClIssue} from '../../data/graphQlTypes'
+import {eDisplayStyle} from '../../store/ui'
 import {SubTypography, StrikeThruTypography, DimmedTypography} from './IssueList.styles'
-
-export enum eDisplayStyle { TITLE_ONLY, TITLE_DESCRIPTION, FULL_DETAILS }
-
-export const nextDisplayStyle = ( displayStyle: eDisplayStyle ) => {
-  switch( displayStyle ) {
-    case eDisplayStyle.FULL_DETAILS:
-      return eDisplayStyle.TITLE_DESCRIPTION
-    case eDisplayStyle.TITLE_DESCRIPTION:
-      return eDisplayStyle.TITLE_ONLY
-    case eDisplayStyle.TITLE_ONLY:
-      return eDisplayStyle.FULL_DETAILS
-  }
-}
 
 export const createPrimary = ( issuePrefix: String, issue: ClIssue ) => {
   return (

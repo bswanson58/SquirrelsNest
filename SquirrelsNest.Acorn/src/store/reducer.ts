@@ -2,6 +2,7 @@ import {combineReducers} from 'redux'
 import authReducer from './auth'
 import issueReducer from './issues'
 import projectReducer from './projects'
+import uiReducer from './ui'
 
 const entitiesReducer = combineReducers( {
   issues: issueReducer,
@@ -10,5 +11,6 @@ const entitiesReducer = combineReducers( {
 
 export const appReducer = combineReducers( {
   auth: authReducer,
-  entities: entitiesReducer
+  entities: entitiesReducer,
+  ui: uiReducer,
 } )
