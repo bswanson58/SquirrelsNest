@@ -10,6 +10,7 @@ interface IssueState {
     totalCount: number
   }
   loading: boolean
+  mutating: boolean
 }
 
 const initialState: IssueState = {
@@ -19,7 +20,8 @@ const initialState: IssueState = {
     take: 3,
     totalCount: 0,
   },
-  loading: false
+  loading: false,
+  mutating: false,
 }
 
 const slice = createSlice( {
@@ -52,12 +54,18 @@ const slice = createSlice( {
       console.log( `issue list failed: ${action.payload}` )
     },
 
-    // command - event
-    // addBug - bugAdded
-    issueAdded: ( issueState, action: PayloadAction<ClIssue> ) => {
-      console.log('issueAdded reducer')
+    issueMutationStarted: ( issueState ) => {
+      issueState.mutating = true
+    },
 
-      issueState.list.push( action.payload )
+    issueAdded: ( issueState, action: PayloadAction<ClIssue> ) => {
+      issueState.list = [action.payload, ...issueState.list]
+
+      issueState.mutating = false
+    },
+
+    issueMutationFailed: ( issueState ) => {
+      issueState.mutating = false
     },
   }
 } )
@@ -75,6 +83,8 @@ export const {
   issueListRequested,
   issueListReceived,
   issueListFailed,
+  issueMutationStarted,
+  issueMutationFailed,
   issueAdded,
 } = slice.actions
 

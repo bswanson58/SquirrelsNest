@@ -11,6 +11,7 @@ import AddIssueDialog from './AddIssueDialog'
 import {createPrimary, createSecondary} from './IssueList.Items'
 import {RelativeBox, TopRightStack} from './IssueList.styles'
 import {AddIssueInput} from '../../data/graphQlTypes'
+import {addIssue} from '../../store/issueActions'
 
 function IssueList() {
   const currentProject = useAppSelector( selectCurrentProject )
@@ -19,18 +20,18 @@ function IssueList() {
   const moreIssuesAvailable = useAppSelector( selectMoreIssuesAvailable )
   const dispatch = useAppDispatch()
 
-  const [addIssue, setAddIssue] = useState( false )
+  const [displayIssueDialog, setDisplayIssueDialog] = useState( false )
 
   const emptyAddIssue: AddIssueInput = { title: '', description: '', projectId: '' }
 
   const loadAdditionalIssues = () => dispatch( requestAdditionalIssues() )
   const toggleStyle = () => dispatch( toggleIssueListStyle() )
 
-  const displayAddIssue = () => setAddIssue( true )
-  const closeAddIssue = () => setAddIssue( false )
+  const displayAddIssue = () => setDisplayIssueDialog( true )
+  const closeAddIssue = () => setDisplayIssueDialog( false )
   const handleAddIssue = ( issue: AddIssueInput ) => {
-//    issueMutations.addIssue( issue )
-//    setAddIssue( false )
+    dispatch( addIssue( issue ) )
+    setDisplayIssueDialog( false )
   }
 
   if( currentProject === undefined ) {
@@ -68,12 +69,12 @@ function IssueList() {
         ) )}
       </List>
 
-      { moreIssuesAvailable &&
+      {moreIssuesAvailable &&
           <Button onClick={loadAdditionalIssues}>Load More Issues</Button>
       }
 
       <AddIssueDialog initialValues={emptyAddIssue} onClose={() => closeAddIssue()}
-                      onConfirm={issue => handleAddIssue( issue )} open={addIssue}/>
+                      onConfirm={issue => handleAddIssue( issue )} open={displayIssueDialog}/>
     </RelativeBox>
   )
 }

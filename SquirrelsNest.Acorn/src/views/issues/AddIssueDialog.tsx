@@ -2,6 +2,8 @@ import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Te
 import Button from '@mui/material/Button'
 import React, {useEffect, useState} from 'react'
 import {AddIssueInput} from '../../data/graphQlTypes'
+import {selectCurrentProject} from '../../store/projects'
+import {useAppSelector} from '../../store/storeHooks'
 
 interface DialogProps {
   initialValues: AddIssueInput
@@ -11,14 +13,14 @@ interface DialogProps {
 }
 
 function AddIssueDialog( props: DialogProps ) {
-//  const { currentProject } = useProjectQueryContext()
-  const [title, setTitle] = useState<String>( '' )
-  const [description, setDescription] = useState<String>( '' )
+  const currentProject = useAppSelector( selectCurrentProject )
+  const [title, setTitle] = useState<string>( '' )
+  const [description, setDescription] = useState<string>( '' )
 
   const handleConfirm = () => {
-//    if( currentProject !== undefined ) {
-//      props.onConfirm( { title: title, description: description, projectId: currentProject.id } )
-//    }
+    if( currentProject !== null ) {
+      props.onConfirm( { title: title, description: description, projectId: currentProject.id } )
+    }
   }
 
   useEffect( () => {
