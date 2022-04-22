@@ -3,7 +3,7 @@ import {Box, Button, IconButton, List, ListItem, ListItemButton, ListItemText, T
 import AddIssueIcon from '@mui/icons-material/AddCircle'
 import DetailIcon from '@mui/icons-material/List'
 import {requestAdditionalIssues} from '../../store/issueActions'
-import {selectIssueList} from '../../store/issues'
+import {selectIssueList, selectMoreIssuesAvailable} from '../../store/issues'
 import {selectCurrentProject} from '../../store/projects'
 import {useAppDispatch, useAppSelector} from '../../store/storeHooks'
 import {selectIssueListStyle, toggleIssueListStyle} from '../../store/ui'
@@ -16,7 +16,7 @@ function IssueList() {
   const currentProject = useAppSelector( selectCurrentProject )
   const issueList = useAppSelector( selectIssueList )
   const issueListStyle = useAppSelector( selectIssueListStyle )
-  const totalIssueCount = 7
+  const moreIssuesAvailable = useAppSelector( selectMoreIssuesAvailable )
   const dispatch = useAppDispatch()
 
   const [addIssue, setAddIssue] = useState( false )
@@ -24,7 +24,7 @@ function IssueList() {
 
   const emptyAddIssue: AddIssueInput = { title: '', description: '', projectId: '' }
 
-  const loadAdditionalIssues = () => dispatch( requestAdditionalIssues )
+  const loadAdditionalIssues = () => dispatch( requestAdditionalIssues() )
   const toggleStyle = () => dispatch( toggleIssueListStyle() )
 
   const displayAddIssue = () => setAddIssue( true )
@@ -69,7 +69,7 @@ function IssueList() {
         ) )}
       </List>
 
-      {(issueList.length < totalIssueCount) &&
+      { moreIssuesAvailable &&
           <Button onClick={loadAdditionalIssues}>Load More Issues</Button>
       }
 

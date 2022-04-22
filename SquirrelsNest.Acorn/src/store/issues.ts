@@ -1,14 +1,24 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {ClIssue} from '../data/graphQlTypes'
+import {ClIssue, ClIssueCollectionSegment} from '../data/graphQlTypes'
 import {RootState} from './configureStore'
 
 interface IssueState {
   list: ClIssue[]
+  listState: {
+    skip: number
+    take: number
+    totalCount: number
+  }
   loading: boolean
 }
 
 const initialState: IssueState = {
   list: [],
+  listState: {
+    skip: 0,
+    take: 3,
+    totalCount: 0,
+  },
   loading: false
 }
 
@@ -17,14 +27,20 @@ const slice = createSlice( {
   initialState: initialState,
   // actions => actionHandlers
   reducers: {
-    issueListRequested: ( issueState ) => {
-      issueState.loading = true
-
-      console.log(`issue list requested`)
+    issueListPrepare: ( issueState ) => {
+      issueState.list = []
+      issueState.listState.totalCount = 0
+      issueState.listState.skip = 0
     },
 
-    issueListReceived: ( issueState, action: PayloadAction<ClIssue[]> ) => {
-      issueState.list = action.payload
+    issueListRequested: ( issueState ) => {
+      issueState.loading = true
+      issueState.listState.skip = issueState.list.length
+    },
+
+    issueListReceived: ( issueState, action: PayloadAction<ClIssueCollectionSegment> ) => {
+      issueState.list = [...issueState.list, ...action.payload.items!]
+      issueState.listState.totalCount = action.payload.totalCount
       issueState.loading = false
 
       console.log(`issue list received: ${issueState.list.length}`)
@@ -50,7 +66,12 @@ export function selectIssueList( state: RootState ) : ClIssue[] {
   return state.entities.issues.list
 }
 
+export function selectMoreIssuesAvailable( state: RootState ) : boolean {
+  return state.entities.issues.listState.totalCount > state.entities.issues.list.length
+}
+
 export const {
+  issueListPrepare,
   issueListRequested,
   issueListReceived,
   issueListFailed,
