@@ -8,11 +8,14 @@ import {issueListFailed, issueListReceived, issueListRequested} from './issues'
 
 export function requestIssueList(/* args: QueryAllProjectsArgs */ ): AppThunk {
   return async ( dispatch, getState ) => {
-    dispatch( issueListRequested() )
+    const currentProject = getState().entities.projects.currentProject
 
-    const currentProject = getState().entities.projects.currentProject;
+    if( currentProject === null ) {
+      return
+    }
+    else {
+      dispatch( issueListRequested() )
 
-    if( currentProject !== null ) {
       try {
         const variables: QueryAllIssuesForProjectArgs = {
           skip: 0,
@@ -22,25 +25,30 @@ export function requestIssueList(/* args: QueryAllProjectsArgs */ ): AppThunk {
           where: null
         }
 
-        const authHeader = selectAuthHeader(getState())
+        const authHeader = selectAuthHeader( getState() )
         const data = await request<Query>( urlGraphQl, IssuesQuery, variables, authHeader )
 
         if( data.allIssuesForProject?.items !== undefined ) {
           dispatch( issueListReceived( data.allIssuesForProject.items! ) )
         }
-      } catch( error: any ) {
+      }
+      catch( error: any ) {
         if( error?.response?.errors?.length !== undefined ) {
           dispatch( issueListFailed( error.response.errors[0].message ) )
-        } else if( error.response.error !== undefined ) {
+        }
+        else if( error.response.error !== undefined ) {
           dispatch( issueListFailed( `(${error.response.status}) ${error.response.error}` ) )
-        } else {
+        }
+        else {
           dispatch( issueListFailed( '' ) )
         }
 //      console.error( JSON.stringify( error, undefined, 2 ) )
       }
     }
-    else {
-      dispatch(issueListFailed('current project is not set'))
-    }
+  }
+}
+
+export function requestAdditionalIssues(): AppThunk {
+  return async ( dispatch, getState ) => {
   }
 }

@@ -2,23 +2,30 @@ import React, {useState} from 'react'
 import {Box, Button, IconButton, List, ListItem, ListItemButton, ListItemText, Typography} from '@mui/material'
 import AddIssueIcon from '@mui/icons-material/AddCircle'
 import DetailIcon from '@mui/icons-material/List'
+import {requestAdditionalIssues} from '../../store/issueActions'
+import {selectIssueList} from '../../store/issues'
+import {selectCurrentProject} from '../../store/projects'
+import {useAppDispatch, useAppSelector} from '../../store/storeHooks'
 import AddIssueDialog from './AddIssueDialog'
 import {createPrimary, createSecondary, eDisplayStyle, nextDisplayStyle} from './IssueList.Items'
 import {RelativeBox, TopRightStack} from './IssueList.styles'
-import {AddIssueInput, useIssueMutationContext, useIssueQueryContext, useProjectQueryContext} from '../../data'
+import {AddIssueInput, useIssueMutationContext} from '../../data'
 
 function IssueList() {
+  const currentProject = useAppSelector(selectCurrentProject)
+  const issueList = useAppSelector( selectIssueList )
+  const totalIssueCount = 7;
+  const dispatch = useAppDispatch()
+
   const [displayStyle, setDisplayStyle] = useState( eDisplayStyle.TITLE_DESCRIPTION )
   const [addIssue, setAddIssue] = useState( false )
-  const projectContext = useProjectQueryContext()
-  const issueContext = useIssueQueryContext()
   const issueMutations = useIssueMutationContext()
 
   const emptyAddIssue: AddIssueInput = { title: '', description: '', projectId: '' }
 
-  const toggleStyle = () => setDisplayStyle( nextDisplayStyle( displayStyle ))
+  const toggleStyle = () => setDisplayStyle( nextDisplayStyle( displayStyle ) )
 
-  const loadAdditionalIssues = () => issueContext.requestAdditionalIssues()
+  const loadAdditionalIssues = () => dispatch(requestAdditionalIssues)
 
   const displayAddIssue = () => setAddIssue( true )
   const closeAddIssue = () => setAddIssue( false )
@@ -27,13 +34,13 @@ function IssueList() {
     setAddIssue( false )
   }
 
-  if( projectContext?.currentProject === undefined ) {
+  if( currentProject === undefined ) {
     return <Box>Select a project to display...</Box>
   }
 
-  if( issueContext.loadingErrors ) {
-    return <Box>An error occurred...</Box>
-  }
+//  if( issueContext.loadingErrors ) {
+//    return <Box>An error occurred...</Box>
+//  }
 
   return (
     <RelativeBox>
@@ -49,12 +56,12 @@ function IssueList() {
       </TopRightStack>
 
       <List dense>
-        {issueContext.issueList.map( ( item ) => (
+        {issueList.map( ( item ) => (
           <ListItem key={item.id as React.Key} disablePadding>
             <ListItemButton>
               <ListItemText
                 disableTypography={true}
-                primary={createPrimary( projectContext.currentProject?.issuePrefix!, item )}
+                primary={createPrimary( currentProject?.issuePrefix!, item )}
                 secondary={createSecondary( displayStyle, item )}
               />
             </ListItemButton>
@@ -62,7 +69,7 @@ function IssueList() {
         ) )}
       </List>
 
-      {(issueContext.issueList.length < issueContext.totalIssueCount) &&
+      {(issueList.length < totalIssueCount) &&
           <Button onClick={loadAdditionalIssues}>Load More Issues</Button>
       }
 

@@ -1,6 +1,6 @@
 import {Grid, Typography} from '@mui/material'
 import React from 'react'
-import {ClIssue} from '../../data'
+import {ClIssue} from '../../data/graphQlTypes'
 import {SubTypography, StrikeThruTypography, DimmedTypography} from './IssueList.styles'
 
 export enum eDisplayStyle { TITLE_ONLY, TITLE_DESCRIPTION, FULL_DETAILS }

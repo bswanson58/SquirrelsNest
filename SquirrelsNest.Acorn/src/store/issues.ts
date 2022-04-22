@@ -1,5 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {ClIssue} from '../data/graphQlTypes'
+import {RootState} from './configureStore'
 
 interface IssueState {
   list: ClIssue[]
@@ -44,6 +45,10 @@ const slice = createSlice( {
     },
   }
 } )
+
+export function selectIssueList( state: RootState ) : ClIssue[] {
+  return state.entities.issues.list
+}
 
 export const {
   issueListRequested,

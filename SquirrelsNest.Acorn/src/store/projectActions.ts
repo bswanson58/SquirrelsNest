@@ -4,6 +4,7 @@ import {AllProjectsQuery} from '../data/GraphQlQueries'
 import {ClProject, Query, QueryAllProjectsArgs} from '../data/graphQlTypes'
 import {selectAuthHeader} from './auth'
 import {AppThunk} from './configureStore'
+import {requestIssueList} from './issueActions'
 import {projectListFailed, projectListReceived, projectListRequested, projectSetCurrent} from './projects'
 
 export function requestProjectList(/* args: QueryAllProjectsArgs */ ): AppThunk {
@@ -40,5 +41,6 @@ export function requestProjectList(/* args: QueryAllProjectsArgs */ ): AppThunk 
 export function setCurrentProject( project: ClProject ): AppThunk {
   return ( dispatch ) => {
     dispatch( projectSetCurrent( project ) )
+    dispatch( requestIssueList() )
   }
 }
