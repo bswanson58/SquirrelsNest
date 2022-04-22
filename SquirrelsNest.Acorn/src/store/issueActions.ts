@@ -1,18 +1,10 @@
 import {request} from 'graphql-request'
 import {urlGraphQl} from '../config/endpoints'
-import {AddIssueMutation} from '../data/mutationStatements'
+import {Query, QueryAllIssuesForProjectArgs} from '../data/graphQlTypes'
 import {IssuesQuery} from '../data/queryStatements'
-import {AddIssueInput, Mutation, MutationAddIssueArgs, Query, QueryAllIssuesForProjectArgs} from '../data/graphQlTypes'
 import {selectAuthHeader} from './auth'
 import {AppThunk} from './configureStore'
-import {
-  issueAdded,
-  issueListFailed,
-  issueListPrepare,
-  issueListReceived,
-  issueListRequested, issueMutationFailed,
-  issueMutationStarted
-} from './issues'
+import {issueListFailed, issueListPrepare, issueListReceived, issueListRequested} from './issues'
 
 function requestIssues(): AppThunk {
   return async ( dispatch, getState ) => {
@@ -72,33 +64,5 @@ export function requestAdditionalIssues(): AppThunk {
   return ( dispatch ) => {
     dispatch( issueListRequested() )
     dispatch( requestIssues() )
-  }
-}
-
-export function addIssue( issue: AddIssueInput ): AppThunk {
-  return async ( dispatch, getState ) => {
-    dispatch( issueMutationStarted() )
-
-    try {
-      const authHeader = selectAuthHeader( getState() )
-      const variables: MutationAddIssueArgs = {
-        issue: issue
-      }
-
-      const data = await request<Mutation>( urlGraphQl, AddIssueMutation, variables, authHeader )
-
-      if( data.addIssue.errors.length > 0 ) {
-        dispatch( issueMutationFailed() )
-      }
-      else if( data.addIssue.issue !== null ) {
-        dispatch( issueAdded( data.addIssue.issue! ) )
-      }
-      else {
-        dispatch( issueMutationFailed() )
-      }
-    }
-    catch( error: any ) {
-      dispatch( issueMutationFailed() )
-    }
   }
 }

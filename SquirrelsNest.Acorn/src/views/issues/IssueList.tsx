@@ -11,7 +11,7 @@ import AddIssueDialog from './AddIssueDialog'
 import {createPrimary, createSecondary} from './IssueList.Items'
 import {RelativeBox, TopRightStack} from './IssueList.styles'
 import {AddIssueInput} from '../../data/graphQlTypes'
-import {addIssue} from '../../store/issueActions'
+import {addIssue} from '../../store/issueMutations'
 
 function IssueList() {
   const currentProject = useAppSelector( selectCurrentProject )
