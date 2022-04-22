@@ -20,7 +20,12 @@ function requestIssues(): AppThunk {
           skip: listState.skip,
           take: listState.take,
           projectId: currentProject.id,
-          order: [],
+          order: [
+            // @ts-ignore - for an unknown reason, importing SortEnumType causes a module error
+            { isFinalized: 'ASC' },
+            // @ts-ignore
+            { issueNumber: 'DESC' },
+          ],
           where: null
         }
 
@@ -47,17 +52,17 @@ function requestIssues(): AppThunk {
   }
 }
 
-export function requestInitialIssues() : AppThunk {
-  return( dispatch ) => {
-    dispatch( issueListPrepare())
-    dispatch( issueListRequested())
-    dispatch( requestIssues())
+export function requestInitialIssues(): AppThunk {
+  return ( dispatch ) => {
+    dispatch( issueListPrepare() )
+    dispatch( issueListRequested() )
+    dispatch( requestIssues() )
   }
 }
 
 export function requestAdditionalIssues(): AppThunk {
-  return( dispatch ) => {
-    dispatch( issueListRequested())
-    dispatch( requestIssues())
+  return ( dispatch ) => {
+    dispatch( issueListRequested() )
+    dispatch( requestIssues() )
   }
 }

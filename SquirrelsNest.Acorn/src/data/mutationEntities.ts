@@ -1,4 +1,4 @@
-import {ClIssue} from './GraphQlEntities'
+import {ClIssue} from './graphQlTypes'
 
 export interface AddIssueInput {
   projectId: String
