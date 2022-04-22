@@ -1,6 +1,7 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {AuthenticationResponse} from '../data/graphQlTypes'
 import {claim} from '../security/authenticationModels'
+import {userEmail, userName} from '../security/userClaims'
 import {RootState} from './configureStore'
 import {getAuthenticationClaims, saveAuthenticationToken} from '../security/jwtSupport'
 
@@ -52,12 +53,24 @@ export function selectIsUserAuthenticated( state: RootState ): boolean {
   return state.auth.token.length > 0
 }
 
-export function selectIsAuthenticating( state: RootState ) : boolean {
+export function selectIsAuthenticating( state: RootState ): boolean {
   return state.auth.loading
 }
 
-export function selectUserClaims(state: RootState ) : claim[] {
+export function selectUserClaims( state: RootState ): claim[] {
   return state.auth.userClaims
+}
+
+export function selectUserName( state: RootState ): string {
+  const claims = state.auth.userClaims
+
+  return userName( claims )
+}
+
+export function selectUserEmail( state: RootState ): string {
+  const claims = state.auth.userClaims
+
+  return userEmail( claims )
 }
 
 export function selectAuthHeader( state: RootState ): HeadersInit {

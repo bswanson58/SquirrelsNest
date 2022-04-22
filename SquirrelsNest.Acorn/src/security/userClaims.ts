@@ -23,13 +23,13 @@ export function hasRoleClaim( claims: claim[], role: string ): boolean {
   return roleClaim?.value === role
 }
 
-function emailAddress( claims: claim[] ): string {
+export function userEmail( claims: claim[] ): string {
   let emailClaim = findValue( claims, 'email' )
 
   return emailClaim == null ? '' : emailClaim.value
 }
 
-function name( claims: claim[] ): string {
+export function userName( claims: claim[] ): string {
   let name = findValue( claims, 'name' )
 
   return name == null ? '' : name.value
