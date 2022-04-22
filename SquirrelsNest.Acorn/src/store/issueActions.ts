@@ -1,6 +1,6 @@
 import {request} from 'graphql-request'
 import {urlGraphQl} from '../config/endpoints'
-import {IssuesQuery} from '../data/GraphQlQueries'
+import {IssuesQuery} from '../data/queryStatements'
 import {Query, QueryAllIssuesForProjectArgs} from '../data/graphQlTypes'
 import {selectAuthHeader} from './auth'
 import {AppThunk} from './configureStore'

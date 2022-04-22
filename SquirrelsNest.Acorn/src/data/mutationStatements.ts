@@ -1,4 +1,4 @@
-export const ADD_ISSUE_MUTATION = `mutation addIssue($issue: AddIssueInput!) {
+export const AddIssueMutation = `mutation addIssue($issue: AddIssueInput!) {
   addIssue( issue: $issue ) {
     issue {
       id

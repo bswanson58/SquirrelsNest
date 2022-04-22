@@ -10,7 +10,7 @@ import {selectIssueListStyle, toggleIssueListStyle} from '../../store/ui'
 import AddIssueDialog from './AddIssueDialog'
 import {createPrimary, createSecondary} from './IssueList.Items'
 import {RelativeBox, TopRightStack} from './IssueList.styles'
-import {AddIssueInput} from '../../data/mutationEntities'
+import {AddIssueInput} from '../../data/graphQlTypes'
 
 function IssueList() {
   const currentProject = useAppSelector( selectCurrentProject )

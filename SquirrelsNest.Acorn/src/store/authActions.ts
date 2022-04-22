@@ -1,6 +1,6 @@
 import {request} from 'graphql-request'
 import {urlGraphQl} from '../config/endpoints'
-import {LoginQuery} from '../data/GraphQlQueries'
+import {LoginQuery} from '../data/queryStatements'
 import {Query, QueryLoginArgs} from '../data/graphQlTypes'
 import {userCredentials} from '../security/authenticationModels'
 import {authFailed, authReceived, authRequested} from './auth'
