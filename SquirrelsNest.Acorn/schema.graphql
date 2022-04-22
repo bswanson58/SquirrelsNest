@@ -8,11 +8,6 @@ type AddIssuePayload {
   errors: [MutationError!]!
 }
 
-type AuthenticationResponse {
-  token: String!
-  expiration: DateTime!
-}
-
 type ClComponent {
   projectId: String!
   name: String!
@@ -92,7 +87,13 @@ type CollectionSegmentInfo {
   hasPreviousPage: Boolean!
 }
 
+type LoginPayload {
+  token: String!
+  expiration: DateTime!
+}
+
 type Mutation {
+  login(loginInput: LoginInput!): LoginPayload!
   addIssue(issue: AddIssueInput!): AddIssuePayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
 }
 
@@ -135,7 +136,6 @@ type ProjectListEdge {
 type Query {
   projectList("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): ProjectListConnection @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   issueList(skip: Int take: Int projectId: ID! where: ClIssueFilterInput order: [ClIssueSortInput!]): ClIssueCollectionSegment @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
-  login(userCredentials: UserCredentialsInput!): AuthenticationResponse!
 }
 
 input AddIssueInput {
@@ -321,6 +321,11 @@ input ComparableInt32OperationFilterInput {
   nlte: Int
 }
 
+input LoginInput {
+  email: String!
+  password: String!
+}
+
 input StateCategoryOperationFilterInput {
   eq: StateCategory
   neq: StateCategory
@@ -341,12 +346,6 @@ input StringOperationFilterInput {
   nstartsWith: String
   endsWith: String
   nendsWith: String
-}
-
-input UserCredentialsInput {
-  email: String!
-  password: String!
-  name: String!
 }
 
 enum ApplyPolicy {

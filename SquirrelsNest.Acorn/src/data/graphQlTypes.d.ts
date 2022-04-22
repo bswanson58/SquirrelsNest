@@ -33,12 +33,6 @@ export enum ApplyPolicy {
   BeforeResolver = 'BEFORE_RESOLVER'
 }
 
-export type AuthenticationResponse = {
-  __typename?: 'AuthenticationResponse';
-  expiration: Scalars['DateTime'];
-  token: Scalars['String'];
-};
-
 export type BooleanOperationFilterInput = {
   eq?: InputMaybe<Scalars['Boolean']>;
   neq?: InputMaybe<Scalars['Boolean']>;
@@ -304,14 +298,31 @@ export type ComparableInt32OperationFilterInput = {
   nlte?: InputMaybe<Scalars['Int']>;
 };
 
+export type LoginInput = {
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
+export type LoginPayload = {
+  __typename?: 'LoginPayload';
+  expiration: Scalars['DateTime'];
+  token: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addIssue: AddIssuePayload;
+  login: LoginPayload;
 };
 
 
 export type MutationAddIssueArgs = {
   issue: AddIssueInput;
+};
+
+
+export type MutationLoginArgs = {
+  loginInput: LoginInput;
 };
 
 export type MutationError = {
@@ -357,7 +368,6 @@ export type ProjectListEdge = {
 export type Query = {
   __typename?: 'Query';
   issueList?: Maybe<ClIssueCollectionSegment>;
-  login: AuthenticationResponse;
   projectList?: Maybe<ProjectListConnection>;
 };
 
@@ -368,11 +378,6 @@ export type QueryIssueListArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   take?: InputMaybe<Scalars['Int']>;
   where?: InputMaybe<ClIssueFilterInput>;
-};
-
-
-export type QueryLoginArgs = {
-  userCredentials: UserCredentialsInput;
 };
 
 
@@ -415,10 +420,4 @@ export type StringOperationFilterInput = {
   nstartsWith?: InputMaybe<Scalars['String']>;
   or?: InputMaybe<Array<StringOperationFilterInput>>;
   startsWith?: InputMaybe<Scalars['String']>;
-};
-
-export type UserCredentialsInput = {
-  email: Scalars['String'];
-  name: Scalars['String'];
-  password: Scalars['String'];
 };

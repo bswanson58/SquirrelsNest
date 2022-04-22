@@ -1,7 +1,7 @@
 import {request} from 'graphql-request'
 import {urlGraphQl} from '../config/endpoints'
-import {LoginQuery} from '../data/queryStatements'
-import {Query, QueryLoginArgs} from '../data/graphQlTypes'
+import {LoginMutation} from '../data/mutationStatements'
+import {Mutation, MutationLoginArgs} from '../data/graphQlTypes'
 import {userCredentials} from '../security/authenticationModels'
 import {authFailed, authReceived, authRequested} from './auth'
 import {AppThunk} from './configureStore'
@@ -12,15 +12,14 @@ export function loginUser( credentials: userCredentials ): AppThunk {
     dispatch( authRequested() )
 
     try {
-      const variables: QueryLoginArgs = {
-        userCredentials: {
+      const variables: MutationLoginArgs = {
+        loginInput: {
           email: credentials.email,
           password: credentials.password,
-          name: ''
         }
       }
 
-      const data = await request<Query>( urlGraphQl, LoginQuery, variables )
+      const data = await request<Mutation>( urlGraphQl, LoginMutation, variables )
 
       dispatch( authReceived( data.login ) )
       dispatch( requestProjectList() )

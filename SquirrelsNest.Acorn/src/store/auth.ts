@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {AuthenticationResponse} from '../data/graphQlTypes'
+import {LoginPayload} from '../data/graphQlTypes'
 import {claim} from '../security/authenticationModels'
 import {userEmail, userName} from '../security/userClaims'
 import {RootState} from './configureStore'
@@ -30,7 +30,7 @@ const slice = createSlice( {
       console.log( `auth requested` )
     },
 
-    authReceived: ( authState, action: PayloadAction<AuthenticationResponse> ) => {
+    authReceived: ( authState, action: PayloadAction<LoginPayload> ) => {
       authState.token = action.payload.token
       authState.expiration = action.payload.expiration
       authState.loading = false

@@ -1,13 +1,5 @@
 import {gql} from 'graphql-request'
 
-export const LoginQuery = gql`
-    query login($userCredentials: UserCredentialsInput!) {
-        login(userCredentials: $userCredentials) {
-            token
-            expiration
-        }
-    }`
-
 export const AllProjectsQuery = gql`
     query ProjectsQuery($first: Int!) {
         projectList(first: $first) {

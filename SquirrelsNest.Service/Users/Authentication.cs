@@ -9,10 +9,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SquirrelsNest.Common.Interfaces;
-using SquirrelsNest.Service.Controllers.Dto;
+using SquirrelsNest.Service.Dto.Mutations;
 
 namespace SquirrelsNest.Service.Users {
-    [ExtendObjectType(OperationTypeNames.Query)]
+    [ExtendObjectType(OperationTypeNames.Mutation)]
     public class Authentication {
         private readonly IUserProvider                  mUserProvider;
         private readonly UserManager<IdentityUser>      mUserManager;
@@ -27,7 +27,7 @@ namespace SquirrelsNest.Service.Users {
             mConfiguration = configuration;
         }
 
-        private async Task<AuthenticationResponse> BuildToken( UserCredentials userCredentials ) {
+        private async Task<LoginPayload> BuildToken( LoginInput userCredentials ) {
             var claims = await BuildUserClaims( userCredentials.Email );
             var user = await mUserManager.FindByNameAsync( userCredentials.Email );
             var dbClaims = await mUserManager.GetClaimsAsync( user );
@@ -42,7 +42,7 @@ namespace SquirrelsNest.Service.Users {
             var token = new JwtSecurityToken( issuer: null, audience: null, claims: claims, expires: expiration, 
                 signingCredentials: credentials );
 
-            return new AuthenticationResponse() {
+            return new LoginPayload() {
                 Token = new JwtSecurityTokenHandler().WriteToken( token ),
                 Expiration = expiration
             };
@@ -64,15 +64,15 @@ namespace SquirrelsNest.Service.Users {
         }
 
         // ReSharper disable once UnusedMember.Global
-        public async Task<AuthenticationResponse> Login( UserCredentials userCredentials ) {
-            var result = await mSignInManager.PasswordSignInAsync( userCredentials.Email, userCredentials.Password,
+        public async Task<LoginPayload> Login( LoginInput loginInput ) {
+            var result = await mSignInManager.PasswordSignInAsync( loginInput.Email, loginInput.Password,
                                                                    isPersistent: false, lockoutOnFailure: false);
 
             if( result.Succeeded ) {
-                return await BuildToken( userCredentials );
+                return await BuildToken( loginInput );
             }
 
-            return new AuthenticationResponse();
+            return new LoginPayload();
         }
     }
 }
