@@ -5,15 +5,26 @@ import {ClProject, Query, QueryProjectListArgs} from '../data/graphQlTypes'
 import {selectAuthHeader} from './auth'
 import {AppThunk} from './configureStore'
 import {requestInitialIssues} from './issueActions'
-import {projectListFailed, projectListReceived, projectListRequested, projectSetCurrent} from './projects'
+import {
+  projectListFailed,
+  projectListPrepare,
+  projectListReceived,
+  projectListRequested,
+  projectSetCurrent
+} from './projects'
 
-export function requestProjectList(/* args: QueryAllProjectsArgs */ ): AppThunk {
+function requestProjects(/* args: QueryAllProjectsArgs */ ): AppThunk {
   return async ( dispatch, getState ) => {
     dispatch( projectListRequested() )
 
+    const listState = getState().entities.projects.listState
+
     try {
       const variables: QueryProjectListArgs = {
-        first: 10,
+        skip: listState.skip,
+        take: listState.take,
+        order: [],
+        where: null,
       }
 
       const authHeader = selectAuthHeader( getState() )
@@ -35,6 +46,21 @@ export function requestProjectList(/* args: QueryAllProjectsArgs */ ): AppThunk 
       }
 //      console.error( JSON.stringify( error, undefined, 2 ) )
     }
+  }
+}
+
+export function requestInitialProjects(): AppThunk {
+  return ( dispatch ) => {
+    dispatch( projectListPrepare() )
+    dispatch( projectListRequested() )
+    dispatch( requestProjects() )
+  }
+}
+
+export function requestAdditionalProjects(): AppThunk {
+  return ( dispatch ) => {
+    dispatch( projectListRequested() )
+    dispatch( requestProjects() )
   }
 }
 

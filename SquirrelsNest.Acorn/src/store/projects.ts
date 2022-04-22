@@ -1,15 +1,25 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {ProjectListConnection, ClProject} from '../data/graphQlTypes'
+import {ClProject, ClProjectCollectionSegment} from '../data/graphQlTypes'
 import {RootState} from './configureStore'
 
 interface ProjectState {
   list: ClProject[]
+  listState: {
+    skip: number
+    take: number
+    totalCount: number
+  }
   currentProject: ClProject | null
   loading: boolean
 }
 
 const initialState: ProjectState = {
   list: [],
+  listState: {
+    skip: 0,
+    take: 10,
+    totalCount: 0,
+  },
   currentProject: null,
   loading: false
 }
@@ -19,21 +29,23 @@ const slice = createSlice( {
   initialState: initialState,
   // actions => actionHandlers
   reducers: {
-    projectListRequested: ( projectState ) => {
-      projectState.loading = true
+    projectListPrepare: ( projectState ) => {
       projectState.list = []
-
-      console.log( `project list begin` )
+      projectState.listState.totalCount = 0
+      projectState.listState.skip = 0
     },
 
-    projectListReceived: ( projectState, action: PayloadAction<ProjectListConnection> ) => {
-      if( action.payload.nodes !== undefined ) {
-        projectState.list = action.payload.nodes!
-      }
+    projectListRequested: ( projectState ) => {
+      projectState.loading = true
+      projectState.listState.skip = projectState.list.length
+    },
 
+    projectListReceived: ( projectState, action: PayloadAction<ClProjectCollectionSegment> ) => {
+      projectState.list = [...projectState.list, ...action.payload.items!]
+      projectState.listState.totalCount = action.payload.totalCount
       projectState.loading = false
 
-      console.log( `project list received: ${action.payload.nodes?.length}` )
+      console.log( `project list received: ${action.payload.items?.length}` )
     },
 
     projectListFailed: ( projectState, action: PayloadAction<string> ) => {
@@ -59,6 +71,7 @@ export function selectCurrentProject(state: RootState ) : ClProject | null {
 }
 
 export const {
+  projectListPrepare,
   projectListRequested,
   projectListReceived,
   projectListFailed,

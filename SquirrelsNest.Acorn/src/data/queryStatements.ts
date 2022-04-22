@@ -1,19 +1,17 @@
 import {gql} from 'graphql-request'
 
 export const AllProjectsQuery = gql`
-    query ProjectsQuery($first: Int!) {
-        projectList(first: $first) {
+    query ProjectsQuery($skip: Int!, $take: Int!, $order:[ClProjectSortInput!], $where:ClProjectFilterInput) {
+        projectList(
+            skip: $skip, 
+            take: $take, 
+            order: $order, 
+            where: $where ) {
             pageInfo {
                 hasNextPage
                 hasPreviousPage
             }
-            edges {
-                cursor
-                node {
-                    name
-                }
-            }
-            nodes {
+            items {
                 id
                 name
                 description

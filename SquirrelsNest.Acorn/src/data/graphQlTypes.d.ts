@@ -156,6 +156,14 @@ export type ClProject = {
   repositoryUrl: Scalars['String'];
 };
 
+export type ClProjectCollectionSegment = {
+  __typename?: 'ClProjectCollectionSegment';
+  items?: Maybe<Array<ClProject>>;
+  /** Information to aid in pagination. */
+  pageInfo: CollectionSegmentInfo;
+  totalCount: Scalars['Int'];
+};
+
 export type ClProjectFilterInput = {
   and?: InputMaybe<Array<ClProjectFilterInput>>;
   description?: InputMaybe<StringOperationFilterInput>;
@@ -331,44 +339,10 @@ export type MutationError = {
   suggestion: Scalars['String'];
 };
 
-/** Information about pagination in a connection. */
-export type PageInfo = {
-  __typename?: 'PageInfo';
-  /** When paginating forwards, the cursor to continue. */
-  endCursor?: Maybe<Scalars['String']>;
-  /** Indicates whether more edges exist following the set defined by the clients arguments. */
-  hasNextPage: Scalars['Boolean'];
-  /** Indicates whether more edges exist prior the set defined by the clients arguments. */
-  hasPreviousPage: Scalars['Boolean'];
-  /** When paginating backwards, the cursor to continue. */
-  startCursor?: Maybe<Scalars['String']>;
-};
-
-/** A connection to a list of items. */
-export type ProjectListConnection = {
-  __typename?: 'ProjectListConnection';
-  /** A list of edges. */
-  edges?: Maybe<Array<ProjectListEdge>>;
-  /** A flattened list of the nodes. */
-  nodes?: Maybe<Array<ClProject>>;
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int'];
-};
-
-/** An edge in a connection. */
-export type ProjectListEdge = {
-  __typename?: 'ProjectListEdge';
-  /** A cursor for use in pagination. */
-  cursor: Scalars['String'];
-  /** The item at the end of the edge. */
-  node: ClProject;
-};
-
 export type Query = {
   __typename?: 'Query';
   issueList?: Maybe<ClIssueCollectionSegment>;
-  projectList?: Maybe<ProjectListConnection>;
+  projectList?: Maybe<ClProjectCollectionSegment>;
 };
 
 
@@ -382,10 +356,10 @@ export type QueryIssueListArgs = {
 
 
 export type QueryProjectListArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
+  order?: InputMaybe<Array<ClProjectSortInput>>;
+  skip?: InputMaybe<Scalars['Int']>;
+  take?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<ClProjectFilterInput>;
 };
 
 export enum SortEnumType {

@@ -5,7 +5,7 @@ import {Mutation, MutationLoginArgs} from '../data/graphQlTypes'
 import {userCredentials} from '../security/authenticationModels'
 import {authFailed, authReceived, authRequested} from './auth'
 import {AppThunk} from './configureStore'
-import {requestProjectList} from './projectActions'
+import {requestInitialProjects} from './projectActions'
 
 export function loginUser( credentials: userCredentials ): AppThunk {
   return async ( dispatch /*, getState */ ) => {
@@ -22,7 +22,7 @@ export function loginUser( credentials: userCredentials ): AppThunk {
       const data = await request<Mutation>( urlGraphQl, LoginMutation, variables )
 
       dispatch( authReceived( data.login ) )
-      dispatch( requestProjectList() )
+      dispatch( requestInitialProjects() )
     }
     catch( error: any ) {
       if( error?.response?.errors?.length !== undefined ) {
