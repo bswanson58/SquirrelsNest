@@ -69,7 +69,7 @@ namespace SquirrelsNest.Service.Issues {
         [UseFiltering]
         [UseSorting]
         [Authorize( Policy = "IsUser" )]
-        public async Task<IEnumerable<ClIssue>> AllIssuesForProject([ID(nameof(ClProject))] string projectId ) {
+        public async Task<IEnumerable<ClIssue>> IssueList([ID(nameof(ClProject))] string projectId ) {
             var entityId = EntityId.For( projectId );
             var project = await GetProject( entityId );
             var issues = await project.BindAsync( async p => await mIssueProvider.GetIssues( p ));

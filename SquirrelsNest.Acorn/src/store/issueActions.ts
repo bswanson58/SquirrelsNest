@@ -1,6 +1,6 @@
 import {request} from 'graphql-request'
 import {urlGraphQl} from '../config/endpoints'
-import {Query, QueryAllIssuesForProjectArgs} from '../data/graphQlTypes'
+import {Query, QueryIssueListArgs} from '../data/graphQlTypes'
 import {IssuesQuery} from '../data/queryStatements'
 import {selectAuthHeader} from './auth'
 import {AppThunk} from './configureStore'
@@ -16,7 +16,7 @@ function requestIssues(): AppThunk {
     }
     else {
       try {
-        const variables: QueryAllIssuesForProjectArgs = {
+        const variables: QueryIssueListArgs = {
           skip: listState.skip,
           take: listState.take,
           projectId: currentProject.id,
@@ -32,8 +32,8 @@ function requestIssues(): AppThunk {
         const authHeader = selectAuthHeader( getState() )
         const data = await request<Query>( urlGraphQl, IssuesQuery, variables, authHeader )
 
-        if( data.allIssuesForProject?.items !== undefined ) {
-          dispatch( issueListReceived( data.allIssuesForProject! ) )
+        if( data.issueList?.items !== undefined ) {
+          dispatch( issueListReceived( data.issueList! ) )
         }
       }
       catch( error: any ) {

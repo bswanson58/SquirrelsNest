@@ -28,27 +28,6 @@ export type AddIssuePayload = {
   issue?: Maybe<ClIssue>;
 };
 
-/** A connection to a list of items. */
-export type AllProjectsConnection = {
-  __typename?: 'AllProjectsConnection';
-  /** A list of edges. */
-  edges?: Maybe<Array<AllProjectsEdge>>;
-  /** A flattened list of the nodes. */
-  nodes?: Maybe<Array<ClProject>>;
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int'];
-};
-
-/** An edge in a connection. */
-export type AllProjectsEdge = {
-  __typename?: 'AllProjectsEdge';
-  /** A cursor for use in pagination. */
-  cursor: Scalars['String'];
-  /** The item at the end of the edge. */
-  node: ClProject;
-};
-
 export enum ApplyPolicy {
   AfterResolver = 'AFTER_RESOLVER',
   BeforeResolver = 'BEFORE_RESOLVER'
@@ -354,15 +333,36 @@ export type PageInfo = {
   startCursor?: Maybe<Scalars['String']>;
 };
 
+/** A connection to a list of items. */
+export type ProjectListConnection = {
+  __typename?: 'ProjectListConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<ProjectListEdge>>;
+  /** A flattened list of the nodes. */
+  nodes?: Maybe<Array<ClProject>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int'];
+};
+
+/** An edge in a connection. */
+export type ProjectListEdge = {
+  __typename?: 'ProjectListEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge. */
+  node: ClProject;
+};
+
 export type Query = {
   __typename?: 'Query';
-  allIssuesForProject?: Maybe<ClIssueCollectionSegment>;
-  allProjects?: Maybe<AllProjectsConnection>;
+  issueList?: Maybe<ClIssueCollectionSegment>;
   login: AuthenticationResponse;
+  projectList?: Maybe<ProjectListConnection>;
 };
 
 
-export type QueryAllIssuesForProjectArgs = {
+export type QueryIssueListArgs = {
   order?: InputMaybe<Array<ClIssueSortInput>>;
   projectId: Scalars['ID'];
   skip?: InputMaybe<Scalars['Int']>;
@@ -371,16 +371,16 @@ export type QueryAllIssuesForProjectArgs = {
 };
 
 
-export type QueryAllProjectsArgs = {
+export type QueryLoginArgs = {
+  userCredentials: UserCredentialsInput;
+};
+
+
+export type QueryProjectListArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
-};
-
-
-export type QueryLoginArgs = {
-  userCredentials: UserCredentialsInput;
 };
 
 export enum SortEnumType {

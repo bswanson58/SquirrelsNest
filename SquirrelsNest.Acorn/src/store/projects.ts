@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {AllProjectsConnection, ClProject} from '../data/graphQlTypes'
+import {ProjectListConnection, ClProject} from '../data/graphQlTypes'
 import {RootState} from './configureStore'
 
 interface ProjectState {
@@ -26,7 +26,7 @@ const slice = createSlice( {
       console.log( `project list begin` )
     },
 
-    projectListReceived: ( projectState, action: PayloadAction<AllProjectsConnection> ) => {
+    projectListReceived: ( projectState, action: PayloadAction<ProjectListConnection> ) => {
       if( action.payload.nodes !== undefined ) {
         projectState.list = action.payload.nodes!
       }

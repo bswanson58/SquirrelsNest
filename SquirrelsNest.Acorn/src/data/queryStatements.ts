@@ -10,7 +10,7 @@ export const LoginQuery = gql`
 
 export const AllProjectsQuery = gql`
     query ProjectsQuery($first: Int!) {
-        allProjects(first: $first) {
+        projectList(first: $first) {
             pageInfo {
                 hasNextPage
                 hasPreviousPage
@@ -33,7 +33,7 @@ export const AllProjectsQuery = gql`
 
 export const IssuesQuery = gql`
     query IssuesForProjectQuery($skip: Int!, $take: Int!, $projectId: ID!, $order:[ClIssueSortInput!]) {
-        allIssuesForProject(
+        issueList(
             skip: $skip
             take: $take
             projectId: $projectId

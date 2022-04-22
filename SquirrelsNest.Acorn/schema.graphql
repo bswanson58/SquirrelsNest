@@ -8,25 +8,6 @@ type AddIssuePayload {
   errors: [MutationError!]!
 }
 
-"A connection to a list of items."
-type AllProjectsConnection {
-  "Information to aid in pagination."
-  pageInfo: PageInfo!
-  "A list of edges."
-  edges: [AllProjectsEdge!]
-  "A flattened list of the nodes."
-  nodes: [ClProject!]
-  totalCount: Int!
-}
-
-"An edge in a connection."
-type AllProjectsEdge {
-  "A cursor for use in pagination."
-  cursor: String!
-  "The item at the end of the edge."
-  node: ClProject!
-}
-
 type AuthenticationResponse {
   token: String!
   expiration: DateTime!
@@ -132,9 +113,28 @@ type PageInfo {
   endCursor: String
 }
 
+"A connection to a list of items."
+type ProjectListConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [ProjectListEdge!]
+  "A flattened list of the nodes."
+  nodes: [ClProject!]
+  totalCount: Int!
+}
+
+"An edge in a connection."
+type ProjectListEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: ClProject!
+}
+
 type Query {
-  allProjects("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): AllProjectsConnection
-  allIssuesForProject(skip: Int take: Int projectId: ID! where: ClIssueFilterInput order: [ClIssueSortInput!]): ClIssueCollectionSegment @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
+  projectList("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String): ProjectListConnection @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
+  issueList(skip: Int take: Int projectId: ID! where: ClIssueFilterInput order: [ClIssueSortInput!]): ClIssueCollectionSegment @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   login(userCredentials: UserCredentialsInput!): AuthenticationResponse!
 }
 
