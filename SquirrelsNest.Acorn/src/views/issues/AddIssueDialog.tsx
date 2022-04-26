@@ -1,35 +1,31 @@
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField} from '@mui/material'
 import Button from '@mui/material/Button'
-import React, {useEffect, useState} from 'react'
-import {AddIssueInput} from '../../data/graphQlTypes'
+import React, {useState} from 'react'
+import {addIssue} from '../../store/issueMutations'
 import {selectCurrentProject} from '../../store/projects'
-import {useAppSelector} from '../../store/storeHooks'
+import {useAppDispatch, useAppSelector} from '../../store/storeHooks'
+import {hideModal} from '../../store/uiActions'
 
-interface DialogProps {
-  initialValues: AddIssueInput
-  open: boolean
-  onClose: () => void
-  onConfirm: ( issue: AddIssueInput ) => void
-}
-
-function AddIssueDialog( props: DialogProps ) {
+function AddIssueDialog() {
+  const dispatch = useAppDispatch()
   const currentProject = useAppSelector( selectCurrentProject )
+
   const [title, setTitle] = useState<string>( '' )
   const [description, setDescription] = useState<string>( '' )
 
-  const handleConfirm = () => {
-    if( currentProject !== null ) {
-      props.onConfirm( { title: title, description: description, projectId: currentProject.id } )
-    }
+  const handleCancel = () => {
+    dispatch( hideModal() )
   }
 
-  useEffect( () => {
-    setTitle( props.initialValues.title )
-    setDescription( props.initialValues.description )
-  }, [props.initialValues] )
+  const handleConfirm = () => {
+    if( currentProject !== null ) {
+      dispatch( addIssue( { title: title, description: description, projectId: currentProject.id } ) )
+    }
+    dispatch( hideModal() )
+  }
 
   return (
-    <Dialog open={props.open} onClose={props.onClose} aria-labelledby='Add Issue'
+    <Dialog open={true} onClose={() => handleCancel()} aria-labelledby='Add Issue'
             PaperProps={{ sx: { width: '600px', height: '500px' } }}>
       <DialogTitle>Add Issue</DialogTitle>
       <DialogContent>
@@ -54,7 +50,7 @@ function AddIssueDialog( props: DialogProps ) {
           fullWidth/>
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => props.onClose()} color='primary'>
+        <Button onClick={() => handleCancel()} color='primary'>
           cancel
         </Button>
         <Button onClick={() => handleConfirm()} color='primary' autoFocus>

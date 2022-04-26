@@ -1,17 +1,15 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {Box, Button, IconButton, List, ListItem, ListItemButton, ListItemText, Typography} from '@mui/material'
 import AddIssueIcon from '@mui/icons-material/AddCircle'
 import DetailIcon from '@mui/icons-material/List'
+import {showAddIssueModal} from '../../config/modalMap'
 import {requestAdditionalIssues} from '../../store/issueActions'
 import {selectIssueList, selectMoreIssuesAvailable} from '../../store/issues'
 import {selectCurrentProject} from '../../store/projects'
 import {useAppDispatch, useAppSelector} from '../../store/storeHooks'
 import {selectIssueListStyle, toggleIssueListStyle} from '../../store/ui'
-import AddIssueDialog from './AddIssueDialog'
 import {createPrimary, createSecondary} from './IssueList.Items'
 import {RelativeBox, TopRightStack} from './IssueList.styles'
-import {AddIssueInput} from '../../data/graphQlTypes'
-import {addIssue} from '../../store/issueMutations'
 
 function IssueList() {
   const currentProject = useAppSelector( selectCurrentProject )
@@ -20,19 +18,9 @@ function IssueList() {
   const moreIssuesAvailable = useAppSelector( selectMoreIssuesAvailable )
   const dispatch = useAppDispatch()
 
-  const [displayIssueDialog, setDisplayIssueDialog] = useState( false )
-
-  const emptyAddIssue: AddIssueInput = { title: '', description: '', projectId: '' }
-
   const loadAdditionalIssues = () => dispatch( requestAdditionalIssues() )
   const toggleStyle = () => dispatch( toggleIssueListStyle() )
-
-  const displayAddIssue = () => setDisplayIssueDialog( true )
-  const closeAddIssue = () => setDisplayIssueDialog( false )
-  const handleAddIssue = ( issue: AddIssueInput ) => {
-    dispatch( addIssue( issue ) )
-    setDisplayIssueDialog( false )
-  }
+  const displayAddIssue = () => dispatch( showAddIssueModal() )
 
   if( currentProject === undefined ) {
     return <Box>Select a project to display...</Box>
@@ -72,9 +60,6 @@ function IssueList() {
       {moreIssuesAvailable &&
           <Button onClick={loadAdditionalIssues}>Load More Issues</Button>
       }
-
-      <AddIssueDialog initialValues={emptyAddIssue} onClose={() => closeAddIssue()}
-                      onConfirm={issue => handleAddIssue( issue )} open={displayIssueDialog}/>
     </RelativeBox>
   )
 }
