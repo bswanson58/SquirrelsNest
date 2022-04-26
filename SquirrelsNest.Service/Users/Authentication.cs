@@ -49,15 +49,13 @@ namespace SquirrelsNest.Service.Users {
         }
 
         private async Task<List<Claim>> BuildUserClaims( string email ) {
-            var claims = new List<Claim>() {
-                new ( "email", email )
-            };
-
+            var claims = new List<Claim>();
             var user = await mUserProvider.GetUser( email );
 
             user.Do( u => {
                 claims.Add( new Claim( "name", u.Name ));
                 claims.Add( new Claim( "entityId", u.EntityId ));
+                claims.Add( new Claim( "email", u.Email ));
             });
 
             return claims;

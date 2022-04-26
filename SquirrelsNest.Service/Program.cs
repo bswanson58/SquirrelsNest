@@ -69,6 +69,7 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
             options.Password.RequireNonAlphanumeric = false;
             options.Password.RequireUppercase = false;
             options.Password.RequireLowercase = false;
+            options.User.RequireUniqueEmail = true;
         })
         .AddEntityFrameworkStores<ServiceDbContext>()
         .AddDefaultTokenProviders();
