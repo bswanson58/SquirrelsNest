@@ -46,6 +46,15 @@ const slice = createSlice( {
 
       console.log( `auth received: ${JSON.stringify( action.payload, undefined, 2 )}` )
     },
+
+    authLoaded: ( authState, action: PayloadAction<{token: string, expiration: number}> ) => {
+      authState.token = action.payload.token
+      authState.expiration = action.payload.expiration
+
+      authState.userClaims = getAuthenticationClaims()
+
+      console.log( `authentication loaded: ${userName( authState.userClaims )}`)
+    },
   }
 } )
 
@@ -83,6 +92,7 @@ export const {
   authRequested,
   authReceived,
   authFailed,
+  authLoaded,
 } = slice.actions
 
 export default slice.reducer

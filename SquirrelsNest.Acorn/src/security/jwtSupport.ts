@@ -12,6 +12,10 @@ export function getAuthenticationToken() {
   return localStorage.getItem(tokenKey)
 }
 
+export function getAuthenticationExpiration() {
+  return localStorage.getItem(expirationKey)
+}
+
 export function getAuthenticationClaims(): claim[] {
   const token = localStorage.getItem(tokenKey)
 
