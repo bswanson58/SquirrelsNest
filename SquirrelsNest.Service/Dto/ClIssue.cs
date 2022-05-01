@@ -7,7 +7,7 @@ namespace SquirrelsNest.Service.Dto {
         // ReSharper disable UnusedAutoPropertyAccessor.Global
         public  string          Title { get; }
         public  string          Description { get; }
-        public  ClProject       Project { get; }
+        public  ClProjectBase   Project { get; }
         public  int             IssueNumber {  get; }
         public  DateOnly        EntryDate { get; }
         public  ClUser          EnteredBy { get; }
@@ -19,7 +19,7 @@ namespace SquirrelsNest.Service.Dto {
         public  bool            IsFinalized => WorkflowState.Category is StateCategory.Completed or StateCategory.Terminal;
         // ReSharper restore UnusedAutoPropertyAccessor.Global
 
-        public ClIssue( string id, string title, string description, ClProject project, int issueNumber, DateOnly entryDate,
+        public ClIssue( string id, string title, string description, ClProjectBase project, int issueNumber, DateOnly entryDate,
                         ClUser enteredBy, ClIssueType issueType, ClComponent component, ClRelease release, ClWorkflowState workflowState, 
                         ClUser assignedTo ) :
             base( id ) {
@@ -39,7 +39,7 @@ namespace SquirrelsNest.Service.Dto {
 
     public static class IssueExtensions {
         public static ClIssue ToCl( SnIssue issue ) {
-            return new ClIssue( issue.EntityId, issue.Title, issue.Description, ClProject.Default, (int)issue.IssueNumber, issue.EntryDate,
+            return new ClIssue( issue.EntityId, issue.Title, issue.Description, ClProjectBase.Default, (int)issue.IssueNumber, issue.EntryDate,
                        ClUser.Default, ClIssueType.Default, ClComponent.Default, ClRelease.Default, ClWorkflowState.Default, ClUser.Default );
         }
 

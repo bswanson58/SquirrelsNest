@@ -73,7 +73,7 @@ export type ClIssue = {
   isFinalized: Scalars['Boolean'];
   issueNumber: Scalars['Int'];
   issueType: ClIssueType;
-  project: ClProject;
+  project: ClProjectBase;
   release: ClRelease;
   title: Scalars['String'];
   workflowState: ClWorkflowState;
@@ -99,7 +99,7 @@ export type ClIssueFilterInput = {
   issueNumber?: InputMaybe<ComparableInt32OperationFilterInput>;
   issueType?: InputMaybe<ClIssueTypeFilterInput>;
   or?: InputMaybe<Array<ClIssueFilterInput>>;
-  project?: InputMaybe<ClProjectFilterInput>;
+  project?: InputMaybe<ClProjectBaseFilterInput>;
   release?: InputMaybe<ClReleaseFilterInput>;
   title?: InputMaybe<StringOperationFilterInput>;
   workflowState?: InputMaybe<ClWorkflowStateFilterInput>;
@@ -115,7 +115,7 @@ export type ClIssueSortInput = {
   isFinalized?: InputMaybe<SortEnumType>;
   issueNumber?: InputMaybe<SortEnumType>;
   issueType?: InputMaybe<ClIssueTypeSortInput>;
-  project?: InputMaybe<ClProjectSortInput>;
+  project?: InputMaybe<ClProjectBaseSortInput>;
   release?: InputMaybe<ClReleaseSortInput>;
   title?: InputMaybe<SortEnumType>;
   workflowState?: InputMaybe<ClWorkflowStateSortInput>;
@@ -147,13 +147,44 @@ export type ClIssueTypeSortInput = {
 
 export type ClProject = {
   __typename?: 'ClProject';
+  components: Array<ClComponent>;
   description: Scalars['String'];
   id: Scalars['String'];
   inception: Scalars['Date'];
   issuePrefix: Scalars['String'];
+  issueTypes: Array<ClIssueType>;
   name: Scalars['String'];
   nextIssueNumber: Scalars['Int'];
   repositoryUrl: Scalars['String'];
+  users: Array<ClUser>;
+  workflowStates: Array<ClWorkflowState>;
+};
+
+export type ClProjectBase = {
+  __typename?: 'ClProjectBase';
+  description: Scalars['String'];
+  id: Scalars['String'];
+  inception: Scalars['Date'];
+  name: Scalars['String'];
+  repositoryUrl: Scalars['String'];
+};
+
+export type ClProjectBaseFilterInput = {
+  and?: InputMaybe<Array<ClProjectBaseFilterInput>>;
+  description?: InputMaybe<StringOperationFilterInput>;
+  id?: InputMaybe<StringOperationFilterInput>;
+  inception?: InputMaybe<ComparableDateOnlyOperationFilterInput>;
+  name?: InputMaybe<StringOperationFilterInput>;
+  or?: InputMaybe<Array<ClProjectBaseFilterInput>>;
+  repositoryUrl?: InputMaybe<StringOperationFilterInput>;
+};
+
+export type ClProjectBaseSortInput = {
+  description?: InputMaybe<SortEnumType>;
+  id?: InputMaybe<SortEnumType>;
+  inception?: InputMaybe<SortEnumType>;
+  name?: InputMaybe<SortEnumType>;
+  repositoryUrl?: InputMaybe<SortEnumType>;
 };
 
 export type ClProjectCollectionSegment = {
@@ -166,14 +197,18 @@ export type ClProjectCollectionSegment = {
 
 export type ClProjectFilterInput = {
   and?: InputMaybe<Array<ClProjectFilterInput>>;
+  components?: InputMaybe<ListFilterInputTypeOfClComponentFilterInput>;
   description?: InputMaybe<StringOperationFilterInput>;
   id?: InputMaybe<StringOperationFilterInput>;
   inception?: InputMaybe<ComparableDateOnlyOperationFilterInput>;
   issuePrefix?: InputMaybe<StringOperationFilterInput>;
+  issueTypes?: InputMaybe<ListFilterInputTypeOfClIssueTypeFilterInput>;
   name?: InputMaybe<StringOperationFilterInput>;
   nextIssueNumber?: InputMaybe<ComparableInt32OperationFilterInput>;
   or?: InputMaybe<Array<ClProjectFilterInput>>;
   repositoryUrl?: InputMaybe<StringOperationFilterInput>;
+  users?: InputMaybe<ListFilterInputTypeOfClUserFilterInput>;
+  workflowStates?: InputMaybe<ListFilterInputTypeOfClWorkflowStateFilterInput>;
 };
 
 export type ClProjectSortInput = {
@@ -321,6 +356,34 @@ export type EditIssuePayload = {
   __typename?: 'EditIssuePayload';
   errors: Array<MutationError>;
   issue?: Maybe<ClIssue>;
+};
+
+export type ListFilterInputTypeOfClComponentFilterInput = {
+  all?: InputMaybe<ClComponentFilterInput>;
+  any?: InputMaybe<Scalars['Boolean']>;
+  none?: InputMaybe<ClComponentFilterInput>;
+  some?: InputMaybe<ClComponentFilterInput>;
+};
+
+export type ListFilterInputTypeOfClIssueTypeFilterInput = {
+  all?: InputMaybe<ClIssueTypeFilterInput>;
+  any?: InputMaybe<Scalars['Boolean']>;
+  none?: InputMaybe<ClIssueTypeFilterInput>;
+  some?: InputMaybe<ClIssueTypeFilterInput>;
+};
+
+export type ListFilterInputTypeOfClUserFilterInput = {
+  all?: InputMaybe<ClUserFilterInput>;
+  any?: InputMaybe<Scalars['Boolean']>;
+  none?: InputMaybe<ClUserFilterInput>;
+  some?: InputMaybe<ClUserFilterInput>;
+};
+
+export type ListFilterInputTypeOfClWorkflowStateFilterInput = {
+  all?: InputMaybe<ClWorkflowStateFilterInput>;
+  any?: InputMaybe<Scalars['Boolean']>;
+  none?: InputMaybe<ClWorkflowStateFilterInput>;
+  some?: InputMaybe<ClWorkflowStateFilterInput>;
 };
 
 export type LoginInput = {

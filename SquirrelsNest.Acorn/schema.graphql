@@ -18,7 +18,7 @@ type ClComponent {
 type ClIssue {
   title: String!
   description: String!
-  project: ClProject!
+  project: ClProjectBase!
   issueNumber: Int!
   entryDate: Date!
   enteredBy: ClUser!
@@ -46,12 +46,24 @@ type ClIssueType {
 }
 
 type ClProject {
+  issuePrefix: String!
+  nextIssueNumber: Int!
+  components: [ClComponent!]!
+  issueTypes: [ClIssueType!]!
+  workflowStates: [ClWorkflowState!]!
+  users: [ClUser!]!
   name: String!
   description: String!
   inception: Date!
   repositoryUrl: String!
-  issuePrefix: String!
-  nextIssueNumber: Int!
+  id: String!
+}
+
+type ClProjectBase {
+  name: String!
+  description: String!
+  inception: Date!
+  repositoryUrl: String!
   id: String!
 }
 
@@ -152,7 +164,7 @@ input ClIssueFilterInput {
   or: [ClIssueFilterInput!]
   title: StringOperationFilterInput
   description: StringOperationFilterInput
-  project: ClProjectFilterInput
+  project: ClProjectBaseFilterInput
   issueNumber: ComparableInt32OperationFilterInput
   entryDate: ComparableDateOnlyOperationFilterInput
   enteredBy: ClUserFilterInput
@@ -168,7 +180,7 @@ input ClIssueFilterInput {
 input ClIssueSortInput {
   title: SortEnumType
   description: SortEnumType
-  project: ClProjectSortInput
+  project: ClProjectBaseSortInput
   issueNumber: SortEnumType
   entryDate: SortEnumType
   enteredBy: ClUserSortInput
@@ -197,25 +209,47 @@ input ClIssueTypeSortInput {
   id: SortEnumType
 }
 
-input ClProjectFilterInput {
-  and: [ClProjectFilterInput!]
-  or: [ClProjectFilterInput!]
+input ClProjectBaseFilterInput {
+  and: [ClProjectBaseFilterInput!]
+  or: [ClProjectBaseFilterInput!]
   name: StringOperationFilterInput
   description: StringOperationFilterInput
   inception: ComparableDateOnlyOperationFilterInput
   repositoryUrl: StringOperationFilterInput
-  issuePrefix: StringOperationFilterInput
-  nextIssueNumber: ComparableInt32OperationFilterInput
   id: StringOperationFilterInput
 }
 
-input ClProjectSortInput {
+input ClProjectBaseSortInput {
   name: SortEnumType
   description: SortEnumType
   inception: SortEnumType
   repositoryUrl: SortEnumType
+  id: SortEnumType
+}
+
+input ClProjectFilterInput {
+  and: [ClProjectFilterInput!]
+  or: [ClProjectFilterInput!]
+  issuePrefix: StringOperationFilterInput
+  nextIssueNumber: ComparableInt32OperationFilterInput
+  components: ListFilterInputTypeOfClComponentFilterInput
+  issueTypes: ListFilterInputTypeOfClIssueTypeFilterInput
+  workflowStates: ListFilterInputTypeOfClWorkflowStateFilterInput
+  users: ListFilterInputTypeOfClUserFilterInput
+  name: StringOperationFilterInput
+  description: StringOperationFilterInput
+  inception: ComparableDateOnlyOperationFilterInput
+  repositoryUrl: StringOperationFilterInput
+  id: StringOperationFilterInput
+}
+
+input ClProjectSortInput {
   issuePrefix: SortEnumType
   nextIssueNumber: SortEnumType
+  name: SortEnumType
+  description: SortEnumType
+  inception: SortEnumType
+  repositoryUrl: SortEnumType
   id: SortEnumType
 }
 
@@ -312,6 +346,34 @@ input EditIssueInput {
   releaseId: String!
   workflowStateId: String!
   assignedToId: String!
+}
+
+input ListFilterInputTypeOfClComponentFilterInput {
+  all: ClComponentFilterInput
+  none: ClComponentFilterInput
+  some: ClComponentFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfClIssueTypeFilterInput {
+  all: ClIssueTypeFilterInput
+  none: ClIssueTypeFilterInput
+  some: ClIssueTypeFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfClUserFilterInput {
+  all: ClUserFilterInput
+  none: ClUserFilterInput
+  some: ClUserFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfClWorkflowStateFilterInput {
+  all: ClWorkflowStateFilterInput
+  none: ClWorkflowStateFilterInput
+  some: ClWorkflowStateFilterInput
+  any: Boolean
 }
 
 input LoginInput {

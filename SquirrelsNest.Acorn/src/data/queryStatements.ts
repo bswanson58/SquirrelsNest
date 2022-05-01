@@ -16,6 +16,23 @@ export const AllProjectsQuery = gql`
         name
         description
         issuePrefix
+        components {
+          id
+          name
+        }
+        issueTypes {
+          id
+          name
+        }
+        workflowStates {
+          id
+          name
+        }
+        users {
+          id
+          email
+          name
+        }
       }
       totalCount
     }
