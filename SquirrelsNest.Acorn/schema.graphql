@@ -94,6 +94,11 @@ type CollectionSegmentInfo {
   hasPreviousPage: Boolean!
 }
 
+type EditIssuePayload {
+  issue: ClIssue
+  errors: [MutationError!]!
+}
+
 type LoginPayload {
   token: String!
   expiration: DateTime!
@@ -102,6 +107,7 @@ type LoginPayload {
 type Mutation {
   login(loginInput: LoginInput!): LoginPayload!
   addIssue(issue: AddIssueInput!): AddIssuePayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
+  editIssue(issue: EditIssueInput!): EditIssuePayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
 }
 
 type MutationError {
@@ -295,6 +301,17 @@ input ComparableInt32OperationFilterInput {
   nlt: Int
   lte: Int
   nlte: Int
+}
+
+input EditIssueInput {
+  issueId: String!
+  title: String!
+  description: String!
+  issueTypeId: String!
+  componentId: String!
+  releaseId: String!
+  workflowStateId: String!
+  assignedToId: String!
 }
 
 input LoginInput {
