@@ -27,6 +27,7 @@ export const AllProjectsQuery = gql`
         workflowStates {
           id
           name
+          category
         }
         users {
           id

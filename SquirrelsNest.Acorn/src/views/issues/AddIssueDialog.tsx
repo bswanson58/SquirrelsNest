@@ -1,6 +1,15 @@
-import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField} from '@mui/material'
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  SelectChangeEvent,
+  TextField
+} from '@mui/material'
 import Button from '@mui/material/Button'
 import React, {useState} from 'react'
+import {IssueTypeSelector} from '../../components/IssueTypeSelector'
 import {addIssue} from '../../store/issueMutations'
 import {selectCurrentProject} from '../../store/projects'
 import {useAppDispatch, useAppSelector} from '../../store/storeHooks'
@@ -11,6 +20,7 @@ function AddIssueDialog() {
   const currentProject = useAppSelector( selectCurrentProject )
 
   const [title, setTitle] = useState<string>( '' )
+  const [issueType, setIssueType] = useState<string>( '' )
   const [description, setDescription] = useState<string>( '' )
 
   const handleCancel = () => {
@@ -22,6 +32,10 @@ function AddIssueDialog() {
       dispatch( addIssue( { title: title, description: description, projectId: currentProject.id } ) )
     }
     dispatch( hideModal() )
+  }
+
+  function handleIssueTypeChange( event: SelectChangeEvent ): void {
+    setIssueType( event.target.value )
   }
 
   return (
@@ -48,6 +62,7 @@ function AddIssueDialog() {
           label='description'
           type='text'
           fullWidth/>
+        <IssueTypeSelector handleChange={handleIssueTypeChange}/>
       </DialogContent>
       <DialogActions>
         <Button onClick={() => handleCancel()} color='primary'>
