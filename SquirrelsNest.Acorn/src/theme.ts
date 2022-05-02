@@ -8,6 +8,9 @@ const colors = {
 };
 
 const theme = createTheme({
+  typography: {
+    fontSize:12
+  },
   palette: {
 //    primary: {
       // light: will be calculated from palette.primary.main,
