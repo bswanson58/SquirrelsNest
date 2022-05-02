@@ -13,7 +13,7 @@ export function addIssue( issue: AddIssueInput ): AppThunk {
     try {
       const authHeader = selectAuthHeader( getState() )
       const variables: MutationAddIssueArgs = {
-        issue: issue
+        issueInput: issue
       }
 
       const data = await request<Mutation>( urlGraphQl, AddIssueMutation, variables, authHeader )

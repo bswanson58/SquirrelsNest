@@ -9,8 +9,8 @@ export const LoginMutation = gql`
   }`
 
 export const AddIssueMutation = gql`
-  mutation addIssue($issue: AddIssueInput!) {
-    addIssue( issue: $issue ) {
+  mutation addIssue($issueInput: AddIssueInput!) {
+    addIssue( issueInput: $issueInput ) {
       issue {
         id
         issueNumber

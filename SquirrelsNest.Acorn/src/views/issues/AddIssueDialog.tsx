@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormControl,
   SelectChangeEvent,
   TextField
 } from '@mui/material'
@@ -29,7 +30,12 @@ function AddIssueDialog() {
 
   const handleConfirm = () => {
     if( currentProject !== null ) {
-      dispatch( addIssue( { title: title, description: description, projectId: currentProject.id } ) )
+      dispatch( addIssue( {
+        title: title,
+        description: description,
+        issueTypeId: issueType,
+        projectId: currentProject.id
+      } ) )
     }
     dispatch( hideModal() )
   }
@@ -43,18 +49,24 @@ function AddIssueDialog() {
             PaperProps={{ sx: { width: '600px', height: '500px' } }}>
       <DialogTitle>Add Issue</DialogTitle>
       <DialogContent>
-        <DialogContentText>Issue Title</DialogContentText>
+        <FormControl variant='standard'>
+          <DialogContentText>Issue Title:</DialogContentText>
+          <TextField
+            id='add-issue-name-field'
+            variant='outlined'
+            size='small'
+            label={title ? '' : 'required'}
+            required
+            autoFocus
+            value={title}
+            onChange={event => setTitle( event.currentTarget.value )}
+            margin='dense'
+            type='text'
+            fullWidth/>
+        </FormControl>
+        <DialogContentText>Description:</DialogContentText>
         <TextField
-          autoFocus
-          value={title}
-          onChange={event => setTitle( event.currentTarget.value )}
-          margin='dense'
-          id='title'
-          label='title'
-          type='text'
-          fullWidth/>
-        <DialogContentText>Description</DialogContentText>
-        <TextField
+          size='small'
           value={description}
           onChange={event => setDescription( event.currentTarget.value )}
           margin='dense'

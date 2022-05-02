@@ -18,6 +18,7 @@ export type Scalars = {
 
 export type AddIssueInput = {
   description: Scalars['String'];
+  issueTypeId: Scalars['String'];
   projectId: Scalars['String'];
   title: Scalars['String'];
 };
@@ -406,7 +407,7 @@ export type Mutation = {
 
 
 export type MutationAddIssueArgs = {
-  issue: AddIssueInput;
+  issueInput: AddIssueInput;
 };
 
 

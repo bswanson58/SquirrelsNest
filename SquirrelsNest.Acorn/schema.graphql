@@ -118,7 +118,7 @@ type LoginPayload {
 
 type Mutation {
   login(loginInput: LoginInput!): LoginPayload!
-  addIssue(issue: AddIssueInput!): AddIssuePayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
+  addIssue(issueInput: AddIssueInput!): AddIssuePayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   editIssue(issue: EditIssueInput!): EditIssuePayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
 }
 
@@ -136,6 +136,7 @@ input AddIssueInput {
   projectId: String!
   title: String!
   description: String!
+  issueTypeId: String!
 }
 
 input BooleanOperationFilterInput {

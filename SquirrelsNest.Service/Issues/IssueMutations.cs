@@ -37,7 +37,7 @@ namespace SquirrelsNest.Service.Issues {
         }
 
         [Authorize( Policy = "IsUser" )]
-        public async Task<AddIssuePayload> AddIssue( AddIssueInput issue ) {
+        public async Task<AddIssuePayload> AddIssue( AddIssueInput issueInput ) {
             var user = await GetUser();
             var userId = EntityId.Default;
 
@@ -49,17 +49,28 @@ namespace SquirrelsNest.Service.Issues {
                 return new AddIssuePayload( "The user could not be determined" );
             }
 
-            var projectId = EntityId.For( issue.ProjectId );
-
+            var projectId = EntityId.For( issueInput.ProjectId );
             if( projectId.IsNone ) {
                 return new AddIssuePayload( "A proper project ID was not specified" );
             }
 
             var project = await projectId.MapAsync( id => mProjectProvider.GetProject( id ));
-            var newIssue = project.Map( p => new SnIssue( issue.Title, p.NextIssueNumber, p.EntityId ))
-                                  .Map( i => i.With( description: issue.Description ))
+            var newIssue = project.Map( p => new SnIssue( issueInput.Title, p.NextIssueNumber, p.EntityId ))
+                                  .Map( i => i.With( description: issueInput.Description ))
                                   .Map( i => i.With( assignedTo: userId ));
-            var addedIssue = await newIssue.BindAsync( i => mIssueProvider.AddIssue( i ));
+
+            var compositeProject = await project.BindAsync( p => mProjectBuilder.BuildCompositeProject( p ));
+            if( compositeProject.IsLeft ) {
+                return new AddIssuePayload( "The composite project could not be built for the issue to be added" );
+            }
+
+            newIssue = newIssue.Bind( issue => compositeProject.Map( composite => {
+                var issueType = composite.IssueTypes.FirstOrDefault( it => it.EntityId.Value.Equals( issueInput.IssueTypeId ));
+
+                return issueType != null ? issue.With( issueType ) : issue;
+            }));
+
+            var addedIssue = await newIssue.BindAsync( issue => mIssueProvider.AddIssue( issue ));
 
             if( addedIssue.IsRight ) {
                 var result = await project.BindAsync( p => mProjectProvider.UpdateProject( p.WithNextIssueNumber()));
@@ -69,7 +80,7 @@ namespace SquirrelsNest.Service.Issues {
                 }
             }
 
-            var retValue = await addedIssue.BindAsync( i => mIssueBuilder.BuildCompositeIssue( i ));
+            var retValue = await addedIssue.BindAsync( issue => mIssueBuilder.BuildCompositeIssue( issue ));
                
             return retValue.Match( i => new AddIssuePayload( i ), e => new AddIssuePayload( e ));
         }
