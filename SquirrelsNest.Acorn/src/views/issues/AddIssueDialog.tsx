@@ -74,7 +74,7 @@ function AddIssueDialog() {
           label='description'
           type='text'
           fullWidth/>
-        <IssueTypeSelector handleChange={handleIssueTypeChange}/>
+        <IssueTypeSelector initialValue={undefined} handleChange={handleIssueTypeChange}/>
       </DialogContent>
       <DialogActions>
         <Button onClick={() => handleCancel()} color='primary'>

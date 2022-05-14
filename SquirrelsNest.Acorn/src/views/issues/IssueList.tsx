@@ -2,7 +2,8 @@ import React from 'react'
 import {Box, Button, IconButton, List, ListItem, ListItemButton, ListItemText, Typography} from '@mui/material'
 import AddIssueIcon from '@mui/icons-material/AddCircle'
 import DetailIcon from '@mui/icons-material/List'
-import {showAddIssueModal} from '../../config/modalMap'
+import {showAddIssueModal, showEditIssueTypeModal} from '../../config/modalMap'
+import {ClIssue} from '../../data/graphQlTypes'
 import {requestAdditionalIssues} from '../../store/issueActions'
 import {selectIssueList, selectMoreIssuesAvailable} from '../../store/issues'
 import {selectCurrentProject} from '../../store/projects'
@@ -21,6 +22,8 @@ function IssueList() {
   const loadAdditionalIssues = () => dispatch( requestAdditionalIssues() )
   const toggleStyle = () => dispatch( toggleIssueListStyle() )
   const displayAddIssue = () => dispatch( showAddIssueModal() )
+
+  const onClickIssueType = ( issue: ClIssue ) => dispatch( showEditIssueTypeModal( issue ))
 
   if( currentProject === undefined ) {
     return <Box>Select a project to display...</Box>
@@ -50,7 +53,7 @@ function IssueList() {
               <ListItemText
                 disableTypography={true}
                 primary={createPrimary( currentProject?.issuePrefix!, item )}
-                secondary={createSecondary( issueListStyle, item )}
+                secondary={createSecondary( issueListStyle, item, onClickIssueType )}
               />
             </ListItemButton>
           </ListItem>

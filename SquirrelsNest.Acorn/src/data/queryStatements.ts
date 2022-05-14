@@ -58,15 +58,19 @@ export const IssuesQuery = gql`
         description
         isFinalized
         component {
+          id
           name
         }
         assignedTo {
+          id
           name
         }
         workflowState {
+          id
           name
         }
         issueType {
+          id
           name
         }
       }

@@ -33,13 +33,13 @@ export const descriptionDetails = ( issue: ClIssue ) => {
   return createSubTypography( issue.description )
 }
 
-export const fullDetails = ( issue: ClIssue ) => {
+export const fullDetails = ( issue: ClIssue, onClickIssueType: (issue: ClIssue) => void ) => {
   return (
     <>
       <SubTypography variant='body2'>{issue.description}</SubTypography>
       <Grid container spacing={1} columns={14}>
         <Grid item xs={1}/>
-        <Grid item xs={3}>{createSubTypography( issue.issueType.name )}</Grid>
+        <Grid onClick={() => onClickIssueType( issue )} item xs={3}>{createSubTypography( issue.issueType.name )}</Grid>
         <Grid item xs={3}>{createSubTypography( issue.workflowState.name )}</Grid>
         <Grid item xs={3}>{createSubTypography( issue.component.name )}</Grid>
         <Grid item xs={3}>{createSubTypography( issue.assignedTo.name )}</Grid>
@@ -49,10 +49,10 @@ export const fullDetails = ( issue: ClIssue ) => {
   )
 }
 
-export const createSecondary = ( displayStyle: eDisplayStyle, issue: ClIssue ) => {
+export const createSecondary = ( displayStyle: eDisplayStyle, issue: ClIssue, onClickIssueType: (issue: ClIssue) => void ) => {
   switch( displayStyle ) {
     case eDisplayStyle.FULL_DETAILS:
-      return fullDetails( issue )
+      return fullDetails( issue, onClickIssueType )
 
     case eDisplayStyle.TITLE_DESCRIPTION:
       return descriptionDetails( issue )

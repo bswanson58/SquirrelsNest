@@ -4,13 +4,14 @@ import {selectProjectIssueTypes} from '../store/projects'
 import {useAppSelector} from '../store/storeHooks'
 
 interface IssueTypeSelectorProps {
+  initialValue: string | undefined,
   handleChange: ( event: SelectChangeEvent ) => void
 }
 
 export function IssueTypeSelector( props: PropsWithChildren<IssueTypeSelectorProps> ) {
+  const issueTypes = useAppSelector( selectProjectIssueTypes )
   const [issueType, setIssueType] = useState( '' )
   const { handleChange } = props
-  const issueTypes = useAppSelector( selectProjectIssueTypes )
 
   function localHandleChange( event: SelectChangeEvent ) {
     setIssueType( event.target.value )
@@ -19,8 +20,8 @@ export function IssueTypeSelector( props: PropsWithChildren<IssueTypeSelectorPro
   }
 
   useEffect( () => {
-    setIssueType( issueTypes.length > 0 ? issueTypes[0].id : '' )
-  }, [issueTypes] )
+    setIssueType( props.initialValue !== undefined ? props.initialValue : issueTypes.length > 0 ? issueTypes[0].id : '' )
+  }, [issueTypes, props.initialValue] )
 
   return (
     <FormControl sx={{ m: 1, minWidth: 220 }} size='small'>

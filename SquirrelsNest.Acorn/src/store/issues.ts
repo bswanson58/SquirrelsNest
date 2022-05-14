@@ -64,6 +64,10 @@ const slice = createSlice( {
       issueState.mutating = false
     },
 
+    issueUpdated: ( issueState, action: PayloadAction<ClIssue> ) => {
+      issueState.list = issueState.list.map( i => i.id === action.payload.id ? action.payload : i )
+    },
+
     issueMutationFailed: ( issueState ) => {
       issueState.mutating = false
     },
@@ -86,6 +90,7 @@ export const {
   issueMutationStarted,
   issueMutationFailed,
   issueAdded,
+  issueUpdated,
 } = slice.actions
 
 export default slice.reducer
