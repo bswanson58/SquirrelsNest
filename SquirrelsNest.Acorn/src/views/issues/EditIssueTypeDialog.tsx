@@ -1,15 +1,9 @@
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  SelectChangeEvent,
-} from '@mui/material'
+import {Dialog, DialogActions, DialogContent, DialogTitle, SelectChangeEvent,} from '@mui/material'
 import Button from '@mui/material/Button'
 import React, {PropsWithChildren, useState} from 'react'
 import {IssueTypeSelector} from '../../components/IssueTypeSelector'
-import {ClIssue, EditIssueInput} from '../../data/graphQlTypes'
-import {editIssue} from '../../store/issueMutations'
+import {ClIssue, UpdateIssueInput} from '../../data/graphQlTypes'
+import {updateIssue} from '../../store/issueMutations'
 import {useAppDispatch} from '../../store/storeHooks'
 import {hideModal} from '../../store/uiActions'
 
@@ -31,20 +25,18 @@ function EditIssueTypeDialog( props: PropsWithChildren<editIssueProps> ) {
   const handleConfirm = () => {
     if( (issueType !== undefined) &&
       (issueType !== issue.issueType.id) ) {
-      const issueInput: EditIssueInput = {
-        assignedToId: issue.assignedTo.id ? issue.assignedTo.id : '',
-        componentId: issue.component.id ? issue.component.id : '',
-        description: issue.description,
+      const updateInfo: UpdateIssueInput = {
         issueId: issue.id,
-        issueTypeId: issueType,
-        releaseId: '',
-        title: issue.title,
-        workflowStateId: issue.workflowState.id ? issue.workflowState.id : '',
+        operations: [{
+          // @ts-ignore
+          path: 'ISSUE_TYPE_ID',
+          value: issueType,
+        }]
       }
 
       console.log( `update issue type to ${issueType}` )
 
-      dispatch( editIssue( issueInput ) )
+      dispatch( updateIssue( updateInfo ) )
     }
 
     dispatch( hideModal() )

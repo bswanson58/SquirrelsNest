@@ -120,6 +120,7 @@ type Mutation {
   login(loginInput: LoginInput!): LoginPayload!
   addIssue(issueInput: AddIssueInput!): AddIssuePayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   editIssue(issue: EditIssueInput!): EditIssuePayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
+  updateIssue(updateInput: UpdateIssueInput!): UpdateIssuePayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
 }
 
 type MutationError {
@@ -130,6 +131,11 @@ type MutationError {
 type Query {
   projectList(skip: Int take: Int where: ClProjectFilterInput order: [ClProjectSortInput!]): ClProjectCollectionSegment @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   issueList(skip: Int take: Int projectId: ID! where: ClIssueFilterInput order: [ClIssueSortInput!]): ClIssueCollectionSegment @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
+}
+
+type UpdateIssuePayload {
+  issue: ClIssue
+  errors: [MutationError!]!
 }
 
 input AddIssueInput {
@@ -404,9 +410,30 @@ input StringOperationFilterInput {
   nendsWith: String
 }
 
+input UpdateIssueInput {
+  issueId: String!
+  operations: [UpdateOperationInput!]!
+}
+
+input UpdateOperationInput {
+  path: IssueUpdatePath!
+  value: String!
+}
+
 enum ApplyPolicy {
   BEFORE_RESOLVER
   AFTER_RESOLVER
+}
+
+enum IssueUpdatePath {
+  UNKNOWN
+  TITLE
+  DESCRIPTION
+  ISSUE_TYPE_ID
+  COMPONENT_ID
+  RELEASE_ID
+  WORKFLOW_STATE_ID
+  ASSIGNED_TO_ID
 }
 
 enum SortEnumType {

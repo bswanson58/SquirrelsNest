@@ -64,3 +64,31 @@ export const EditIssueMutation = gql`
     }
   }
 `
+export const UpdateIssueMutation = gql`
+  mutation updateIssue($updateInput: UpdateIssueInput!) {
+    updateIssue(updateInput: $updateInput ) {
+      issue {
+        id
+        issueNumber
+        title
+        description
+        component {
+          name
+        }
+        assignedTo {
+          name
+        }
+        workflowState {
+          name
+        }
+        issueType {
+          name
+        }
+      }
+      errors {
+        message
+        suggestion
+      }
+    }
+  }
+`

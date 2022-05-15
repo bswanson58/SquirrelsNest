@@ -5,9 +5,9 @@ import {
   EditIssueInput,
   Mutation,
   MutationAddIssueArgs,
-  MutationEditIssueArgs
+  MutationEditIssueArgs, MutationUpdateIssueArgs, UpdateIssueInput
 } from '../data/graphQlTypes'
-import {AddIssueMutation, EditIssueMutation} from '../data/mutationStatements'
+import {AddIssueMutation, EditIssueMutation, UpdateIssueMutation} from '../data/mutationStatements'
 import {selectAuthHeader} from './auth'
 import {AppThunk} from './configureStore'
 import {issueAdded, issueMutationFailed, issueMutationStarted, issueUpdated} from './issues'
@@ -57,6 +57,34 @@ export function editIssue( issue: EditIssueInput ): AppThunk {
       }
       else if( data.editIssue.issue !== null ) {
         dispatch( issueUpdated( data.editIssue.issue! ) )
+      }
+      else {
+        dispatch( issueMutationFailed() )
+      }
+    }
+    catch( error: any ) {
+      dispatch( issueMutationFailed() )
+    }
+  }
+}
+
+export function updateIssue( updateInfo: UpdateIssueInput ): AppThunk {
+  return async ( dispatch, getState ) => {
+    dispatch( issueMutationStarted() )
+
+    try {
+      const authHeader = selectAuthHeader( getState() )
+      const variables: MutationUpdateIssueArgs = {
+        updateInput: updateInfo
+      }
+
+      const data = await request<Mutation>( urlGraphQl, UpdateIssueMutation, variables, authHeader )
+
+      if( data.updateIssue.errors.length > 0 ) {
+        dispatch( issueMutationFailed() )
+      }
+      else if( data.updateIssue.issue !== null ) {
+        dispatch( issueUpdated( data.updateIssue.issue! ) )
       }
       else {
         dispatch( issueMutationFailed() )

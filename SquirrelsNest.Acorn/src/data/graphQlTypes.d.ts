@@ -359,6 +359,17 @@ export type EditIssuePayload = {
   issue?: Maybe<ClIssue>;
 };
 
+export enum IssueUpdatePath {
+  AssignedToId = 'ASSIGNED_TO_ID',
+  ComponentId = 'COMPONENT_ID',
+  Description = 'DESCRIPTION',
+  IssueTypeId = 'ISSUE_TYPE_ID',
+  ReleaseId = 'RELEASE_ID',
+  Title = 'TITLE',
+  Unknown = 'UNKNOWN',
+  WorkflowStateId = 'WORKFLOW_STATE_ID'
+}
+
 export type ListFilterInputTypeOfClComponentFilterInput = {
   all?: InputMaybe<ClComponentFilterInput>;
   any?: InputMaybe<Scalars['Boolean']>;
@@ -403,6 +414,7 @@ export type Mutation = {
   addIssue: AddIssuePayload;
   editIssue: EditIssuePayload;
   login: LoginPayload;
+  updateIssue: UpdateIssuePayload;
 };
 
 
@@ -418,6 +430,11 @@ export type MutationEditIssueArgs = {
 
 export type MutationLoginArgs = {
   loginInput: LoginInput;
+};
+
+
+export type MutationUpdateIssueArgs = {
+  updateInput: UpdateIssueInput;
 };
 
 export type MutationError = {
@@ -481,4 +498,20 @@ export type StringOperationFilterInput = {
   nstartsWith?: InputMaybe<Scalars['String']>;
   or?: InputMaybe<Array<StringOperationFilterInput>>;
   startsWith?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateIssueInput = {
+  issueId: Scalars['String'];
+  operations: Array<UpdateOperationInput>;
+};
+
+export type UpdateIssuePayload = {
+  __typename?: 'UpdateIssuePayload';
+  errors: Array<MutationError>;
+  issue?: Maybe<ClIssue>;
+};
+
+export type UpdateOperationInput = {
+  path: IssueUpdatePath;
+  value: Scalars['String'];
 };
