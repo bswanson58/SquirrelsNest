@@ -8,6 +8,7 @@ using LanguageExt.Common;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Values;
+using SquirrelsNest.Core.CompositeBuilders;
 using SquirrelsNest.Core.Interfaces;
 using SquirrelsNest.Service.Dto.Mutations;
 
@@ -144,6 +145,109 @@ namespace SquirrelsNest.Service.Issues {
             var compositeIssue = await updatedIssue.BindAsync( i => mIssueBuilder.BuildCompositeIssue( i ));
 
             return compositeIssue.Match( i => new EditIssuePayload( i ), e => new EditIssuePayload( e ));
+        }
+
+        private Either<Error, SnIssue> UpdateIssue( SnIssue issue, CompositeProject project, UpdateIssueInput updates ) {
+            var retValue = issue;
+
+            foreach( var operation in updates.Operations ) {
+                switch ( operation.Path ) {
+                    case IssueUpdatePath.Title:
+                        retValue = retValue.With( title: operation.Value );
+                        break;
+
+                    case IssueUpdatePath.Description:
+                        retValue = retValue.With( description: operation.Value );
+                        break;
+
+                    case IssueUpdatePath.AssignedToId:
+                        var user = project.Users.FirstOrDefault( u => u.EntityId.Value.Equals( operation.Value ));
+
+                        if( user != null ) {
+                            retValue = retValue.With( assignedTo: user.EntityId );
+                        }
+                        else {
+                            return Error.New( "Invalid AssignedTo User" );
+                        }
+
+                        break;
+
+                    case IssueUpdatePath.ComponentId:
+                        var component = project.Components.FirstOrDefault( c => c.EntityId.Value.Equals( operation.Value ));
+
+                        if( component != null ) {
+                            retValue = retValue.With( component );
+                        }
+                        else {
+                            return Error.New( "Invalid Component" );
+                        }
+
+                        break;
+
+                    case IssueUpdatePath.IssueTypeId:
+                        var issueType = project.IssueTypes.FirstOrDefault( i => i.EntityId.Value.Equals( operation.Value ));
+
+                        if( issueType != null ) {
+                            retValue = retValue.With( issueType );
+                        }
+                        else {
+                            return Error.New( "Invalid Issue Type" );
+                        }
+
+                        break;
+
+                    case IssueUpdatePath.ReleaseId:
+                        var release = project.Releases.FirstOrDefault( r => r.EntityId.Value.Equals( operation.Value ));
+
+                        if( release != null ) {
+                            retValue = retValue.With( release );
+                        }
+                        else {
+                            return Error.New( "Invalid Release" );
+                        }
+
+                        break;
+
+                    case IssueUpdatePath.WorkflowStateId:
+                        var state = project.WorkflowStates.FirstOrDefault( s => s.EntityId.Value.Equals( operation.Value ));
+
+                        if( state != null ) {
+                            retValue = retValue.With( state );
+                        }
+                        else {
+                            return Error.New( "Invalid Workflow State" );
+                        }
+
+                        break;
+
+                    default:
+                        return Error.New( "Invalid Issue update path" );
+                }
+            }
+
+            return retValue;
+        }
+
+        [Authorize( Policy = "IsUser" )]
+        public async Task<UpdateIssuePayload> UpdateIssue( UpdateIssueInput updateInput ) {
+            var issueId = EntityId.For( updateInput.IssueId );
+            if( issueId.IsNone ) {
+                return new UpdateIssuePayload( "Invalid issue ID to be updated" );
+            }
+
+            var currentIssue = await issueId.MapAsync( id => mIssueProvider.GetIssue( id ));
+            var currentProject = await currentIssue.BindAsync( i => mProjectProvider.GetProject( i.ProjectId ));
+            var compositeProject = await currentProject.BindAsync( p => mProjectBuilder.BuildCompositeProject( p ));
+            var updatedIssue = compositeProject.Bind( p => currentIssue.Bind( i => UpdateIssue( i, p, updateInput )));
+            var updateResult = await updatedIssue.MapAsync( i => mIssueProvider.UpdateIssue( i ));
+
+            if( updateResult.IsLeft ) {
+                return new UpdateIssuePayload( updateResult.LeftToList().FirstOrDefault());
+            }
+
+            var compositeIssue = await updatedIssue.BindAsync( i => mIssueBuilder.BuildCompositeIssue( i ));
+
+            return compositeIssue.Match( i => new UpdateIssuePayload( i ), e => new UpdateIssuePayload( e ));
         }
     }
 }
