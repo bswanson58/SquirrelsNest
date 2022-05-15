@@ -36,34 +36,6 @@ export const AddIssueMutation = gql`
     }
   }`
 
-export const EditIssueMutation = gql`
-  mutation editIssue($issue: EditIssueInput!) {
-    editIssue(issue: $issue ) {
-      issue {
-        id
-        issueNumber
-        title
-        description
-        component {
-          name
-        }
-        assignedTo {
-          name
-        }
-        workflowState {
-          name
-        }
-        issueType {
-          name
-        }
-      }
-      errors {
-        message
-        suggestion
-      }
-    }
-  }
-`
 export const UpdateIssueMutation = gql`
   mutation updateIssue($updateInput: UpdateIssueInput!) {
     updateIssue(updateInput: $updateInput ) {
@@ -90,5 +62,4 @@ export const UpdateIssueMutation = gql`
         suggestion
       }
     }
-  }
-`
+  }`

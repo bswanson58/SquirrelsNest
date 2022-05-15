@@ -342,23 +342,6 @@ export type ComparableInt32OperationFilterInput = {
   nlte?: InputMaybe<Scalars['Int']>;
 };
 
-export type EditIssueInput = {
-  assignedToId: Scalars['String'];
-  componentId: Scalars['String'];
-  description: Scalars['String'];
-  issueId: Scalars['String'];
-  issueTypeId: Scalars['String'];
-  releaseId: Scalars['String'];
-  title: Scalars['String'];
-  workflowStateId: Scalars['String'];
-};
-
-export type EditIssuePayload = {
-  __typename?: 'EditIssuePayload';
-  errors: Array<MutationError>;
-  issue?: Maybe<ClIssue>;
-};
-
 export enum IssueUpdatePath {
   AssignedToId = 'ASSIGNED_TO_ID',
   ComponentId = 'COMPONENT_ID',
@@ -412,7 +395,6 @@ export type LoginPayload = {
 export type Mutation = {
   __typename?: 'Mutation';
   addIssue: AddIssuePayload;
-  editIssue: EditIssuePayload;
   login: LoginPayload;
   updateIssue: UpdateIssuePayload;
 };
@@ -420,11 +402,6 @@ export type Mutation = {
 
 export type MutationAddIssueArgs = {
   issueInput: AddIssueInput;
-};
-
-
-export type MutationEditIssueArgs = {
-  issue: EditIssueInput;
 };
 
 

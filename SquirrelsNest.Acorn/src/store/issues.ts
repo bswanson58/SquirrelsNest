@@ -94,32 +94,3 @@ export const {
 } = slice.actions
 
 export default slice.reducer
-
-// Action Creators
-/*
-export function addIssue( issue: AddIssueInput ) {
-  console.log(`addIssue`)
-  return ({
-    type: issueAddBegin.type,
-    payload: { issue }
-  })
-}
-*/
-export function addClIssue( issue: ClIssue) {
-  console.log(`addClIssue`)
-  return({
-    type: issueAdded.type,
-    payload: issue
-  })
-}
-
-/*
-export const resolveIssue = id =>
-  queryCallBegan( {
-    url: url + '/' + id,
-    onSuccess: issueResolved.type,
-    onStart: '',
-    onFail: ''
-  } ),
-)
-*/
