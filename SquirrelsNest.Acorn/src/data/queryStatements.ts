@@ -68,6 +68,7 @@ export const IssuesQuery = gql`
         workflowState {
           id
           name
+          category
         }
         issueType {
           id

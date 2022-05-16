@@ -13,6 +13,7 @@ import {useAppDispatch, useAppSelector} from '../../store/storeHooks'
 import {selectIssueListStyle, toggleIssueListStyle} from '../../store/ui'
 import {createPrimary, createSecondary} from './IssueList.Items'
 import {RelativeBox, TopRightStack} from './IssueList.styles'
+import ToggleIssueState from './ToggleIssueState'
 
 function IssueList() {
   const currentProject = useAppSelector( selectCurrentProject )
@@ -56,7 +57,7 @@ function IssueList() {
           <ListItem key={item.id as React.Key} disablePadding>
             <Grid container direction='row' alignItems='center' spacing={1}>
               <Grid item xs='auto'>
-                <IconButton><CheckIcon/></IconButton>
+                <ToggleIssueState issue={item}/>
               </Grid>
               <Grid item xs>
                 <ListItemText

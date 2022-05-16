@@ -17,15 +17,20 @@ export const AddIssueMutation = gql`
         title
         description
         component {
+          id
           name
         }
         assignedTo {
+          id
           name
         }
         workflowState {
+          id
           name
+          category
         }
         issueType {
+          id
           name
         }
       }
@@ -45,15 +50,20 @@ export const UpdateIssueMutation = gql`
         title
         description
         component {
+          id
           name
         }
         assignedTo {
+          id
           name
         }
         workflowState {
+          id
           name
+          category
         }
         issueType {
+          id
           name
         }
       }
