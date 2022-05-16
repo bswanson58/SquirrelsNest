@@ -45,7 +45,7 @@ const slice = createSlice( {
       issueState.listState.totalCount = action.payload.totalCount
       issueState.loading = false
 
-      console.log(`issue list received: ${issueState.list.length}`)
+      console.log( `issue list received: ${issueState.list.length}` )
     },
 
     issueListFailed: ( issueState, action: PayloadAction<string> ) => {
@@ -68,17 +68,21 @@ const slice = createSlice( {
       issueState.list = issueState.list.map( i => i.id === action.payload.id ? action.payload : i )
     },
 
+    issueDeleted: ( issueState, action: PayloadAction<string> ) => {
+      issueState.list = issueState.list.filter( i => i.id !== action.payload )
+    },
+
     issueMutationFailed: ( issueState ) => {
       issueState.mutating = false
     },
   }
 } )
 
-export function selectIssueList( state: RootState ) : ClIssue[] {
+export function selectIssueList( state: RootState ): ClIssue[] {
   return state.entities.issues.list
 }
 
-export function selectMoreIssuesAvailable( state: RootState ) : boolean {
+export function selectMoreIssuesAvailable( state: RootState ): boolean {
   return state.entities.issues.listState.totalCount > state.entities.issues.list.length
 }
 
@@ -91,6 +95,7 @@ export const {
   issueMutationFailed,
   issueAdded,
   issueUpdated,
+  issueDeleted,
 } = slice.actions
 
 export default slice.reducer

@@ -188,5 +188,21 @@ namespace SquirrelsNest.Service.Issues {
 
             return compositeIssue.Match( i => new UpdateIssuePayload( i ), e => new UpdateIssuePayload( e ));
         }
+
+        [Authorize( Policy = "IsUser" )]
+        public async Task<DeleteIssuePayload> DeleteIssue( DeleteIssueInput deleteInput ) {
+            var issueId = EntityId.For( deleteInput.IssueId );
+            if( issueId.IsNone ) {
+                return new DeleteIssuePayload( "Invalid issue ID to be deleted" );
+            }
+
+            var currentIssue = await issueId.MapAsync( id => mIssueProvider.GetIssue( id ));
+            var result = await currentIssue.BindAsync( i => mIssueProvider.DeleteIssue( i ));
+
+            var retValue = EntityId.Default;
+            currentIssue.Do( issue => retValue = issue.EntityId );
+
+            return result.Match( _ => new DeleteIssuePayload( retValue ), e => new DeleteIssuePayload( e ));
+        }
     }
 }

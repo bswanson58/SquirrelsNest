@@ -63,3 +63,14 @@ export const UpdateIssueMutation = gql`
       }
     }
   }`
+
+export const DeleteIssueMutation = gql`
+  mutation deleteIssue($deleteInput: DeleteIssueInput!) {
+    deleteIssue(deleteInput: $deleteInput) {
+      issueId
+      errors {
+        message
+        suggestion
+      }
+    }
+  }`

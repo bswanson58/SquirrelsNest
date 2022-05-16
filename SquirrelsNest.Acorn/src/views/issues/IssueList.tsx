@@ -1,8 +1,10 @@
 import React from 'react'
-import {Box, Button, IconButton, List, ListItem, ListItemButton, ListItemText, Typography} from '@mui/material'
+import {Box, Button, Grid, IconButton, List, ListItem, ListItemText, Typography} from '@mui/material'
 import AddIssueIcon from '@mui/icons-material/AddCircle'
+import CheckIcon from '@mui/icons-material/Check'
 import DetailIcon from '@mui/icons-material/List'
-import {showAddIssueModal, showEditIssueTypeModal} from '../../config/modalMap'
+import DeleteIcon from '@mui/icons-material/Delete'
+import {showAddIssueModal, showDeleteIssueConfirm, showEditIssueTypeModal} from '../../config/modalMap'
 import {ClIssue} from '../../data/graphQlTypes'
 import {requestAdditionalIssues} from '../../store/issueActions'
 import {selectIssueList, selectMoreIssuesAvailable} from '../../store/issues'
@@ -19,11 +21,14 @@ function IssueList() {
   const moreIssuesAvailable = useAppSelector( selectMoreIssuesAvailable )
   const dispatch = useAppDispatch()
 
-  const loadAdditionalIssues = () => dispatch( requestAdditionalIssues() )
   const toggleStyle = () => dispatch( toggleIssueListStyle() )
-  const displayAddIssue = () => dispatch( showAddIssueModal() )
+  const handleAddIssue = () => dispatch( showAddIssueModal() )
 
-  const onClickIssueType = ( issue: ClIssue ) => dispatch( showEditIssueTypeModal( issue ))
+  const handleDelete = ( issue: ClIssue ) => dispatch( showDeleteIssueConfirm( issue ) )
+
+  const onClickIssueType = ( issue: ClIssue ) => dispatch( showEditIssueTypeModal( issue ) )
+
+  const loadAdditionalIssues = () => dispatch( requestAdditionalIssues() )
 
   if( currentProject === undefined ) {
     return <Box>Select a project to display...</Box>
@@ -38,7 +43,7 @@ function IssueList() {
       <Typography variant='subtitle2'>Issues</Typography>
 
       <TopRightStack direction='row'>
-        <IconButton onClick={displayAddIssue}>
+        <IconButton onClick={handleAddIssue}>
           <AddIssueIcon/>
         </IconButton>
         <IconButton onClick={toggleStyle}>
@@ -49,13 +54,21 @@ function IssueList() {
       <List dense>
         {issueList.map( ( item ) => (
           <ListItem key={item.id as React.Key} disablePadding>
-            <ListItemButton>
-              <ListItemText
-                disableTypography={true}
-                primary={createPrimary( currentProject?.issuePrefix!, item )}
-                secondary={createSecondary( issueListStyle, item, onClickIssueType )}
-              />
-            </ListItemButton>
+            <Grid container direction='row' alignItems='center' spacing={1}>
+              <Grid item xs='auto'>
+                <IconButton><CheckIcon/></IconButton>
+              </Grid>
+              <Grid item xs>
+                <ListItemText
+                  disableTypography={true}
+                  primary={createPrimary( currentProject?.issuePrefix!, item )}
+                  secondary={createSecondary( issueListStyle, item, onClickIssueType )}
+                />
+              </Grid>
+              <Grid item xs='auto'>
+                <IconButton onClick={() => handleDelete( item )}><DeleteIcon/></IconButton>
+              </Grid>
+            </Grid>
           </ListItem>
         ) )}
       </List>

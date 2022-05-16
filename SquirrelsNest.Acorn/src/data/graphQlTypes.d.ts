@@ -342,6 +342,16 @@ export type ComparableInt32OperationFilterInput = {
   nlte?: InputMaybe<Scalars['Int']>;
 };
 
+export type DeleteIssueInput = {
+  issueId: Scalars['String'];
+};
+
+export type DeleteIssuePayload = {
+  __typename?: 'DeleteIssuePayload';
+  errors: Array<MutationError>;
+  issueId: Scalars['String'];
+};
+
 export enum IssueUpdatePath {
   AssignedToId = 'ASSIGNED_TO_ID',
   ComponentId = 'COMPONENT_ID',
@@ -395,6 +405,7 @@ export type LoginPayload = {
 export type Mutation = {
   __typename?: 'Mutation';
   addIssue: AddIssuePayload;
+  deleteIssue: DeleteIssuePayload;
   login: LoginPayload;
   updateIssue: UpdateIssuePayload;
 };
@@ -402,6 +413,11 @@ export type Mutation = {
 
 export type MutationAddIssueArgs = {
   issueInput: AddIssueInput;
+};
+
+
+export type MutationDeleteIssueArgs = {
+  deleteInput: DeleteIssueInput;
 };
 
 

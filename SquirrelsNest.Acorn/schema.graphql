@@ -106,6 +106,11 @@ type CollectionSegmentInfo {
   hasPreviousPage: Boolean!
 }
 
+type DeleteIssuePayload {
+  issueId: String!
+  errors: [MutationError!]!
+}
+
 type LoginPayload {
   token: String!
   expiration: DateTime!
@@ -115,6 +120,7 @@ type Mutation {
   login(loginInput: LoginInput!): LoginPayload!
   addIssue(issueInput: AddIssueInput!): AddIssuePayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   updateIssue(updateInput: UpdateIssueInput!): UpdateIssuePayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
+  deleteIssue(deleteInput: DeleteIssueInput!): DeleteIssuePayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
 }
 
 type MutationError {
@@ -336,6 +342,10 @@ input ComparableInt32OperationFilterInput {
   nlt: Int
   lte: Int
   nlte: Int
+}
+
+input DeleteIssueInput {
+  issueId: String!
 }
 
 input ListFilterInputTypeOfClComponentFilterInput {
