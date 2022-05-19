@@ -2,11 +2,9 @@ import React from 'react'
 import {Box, Button, Grid, IconButton, List, ListItem, ListItemText, Typography} from '@mui/material'
 import AddIssueIcon from '@mui/icons-material/AddCircle'
 import DetailIcon from '@mui/icons-material/List'
-import DeleteIcon from '@mui/icons-material/Delete'
+import DeleteIcon from '@mui/icons-material/DeleteOutline'
 import {
-  showAddIssueModal,
-  showDeleteIssueConfirm,
-  showEditComponentModal,
+  showAddIssueModal, showDeleteIssueConfirm, showEditComponentModal,
   showEditIssueTypeModal, showEditUserModal, showEditWorkflowModal
 } from '../../config/modalMap'
 import {ClIssue} from '../../data/graphQlTypes'
