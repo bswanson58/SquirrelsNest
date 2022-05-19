@@ -33,7 +33,9 @@ export const descriptionDetails = ( issue: ClIssue ) => {
   return createSubTypography( issue.description )
 }
 
-export const fullDetails = ( issue: ClIssue, onClickIssueType: ( issue: ClIssue ) => void ) => {
+export const fullDetails = ( issue: ClIssue,
+                             onClickComponent: ( issue: ClIssue ) => void,
+                             onClickIssueType: ( issue: ClIssue ) => void ) => {
   return (
     <>
       <SubTypography variant='body2'>{issue.description}</SubTypography>
@@ -43,8 +45,13 @@ export const fullDetails = ( issue: ClIssue, onClickIssueType: ( issue: ClIssue 
           <UncasedButton variant='text' size='small' color='inherit'
                          onClick={() => onClickIssueType( issue )}>{createSubTypography( issue.issueType.name )}</UncasedButton>
         </Grid>
-        <Grid item xs={3}>{createSubTypography( issue.workflowState.name )}</Grid>
-        <Grid item xs={3}>{createSubTypography( issue.component.name )}</Grid>
+        <Grid item xs={3}>
+          {createSubTypography( issue.workflowState.name )}
+        </Grid>
+        <Grid item xs={3}>
+          <UncasedButton variant='text' size='small' color='inherit'
+                         onClick={() => onClickComponent( issue )}>{createSubTypography( issue.component.name )}</UncasedButton>
+        </Grid>
         <Grid item xs={3}>{createSubTypography( issue.assignedTo.name )}</Grid>
         <Grid item xs={1}/>
       </Grid>
@@ -52,10 +59,12 @@ export const fullDetails = ( issue: ClIssue, onClickIssueType: ( issue: ClIssue 
   )
 }
 
-export const createSecondary = ( displayStyle: eDisplayStyle, issue: ClIssue, onClickIssueType: ( issue: ClIssue ) => void ) => {
+export const createSecondary = ( displayStyle: eDisplayStyle, issue: ClIssue,
+                                 onClickComponent: ( issue: ClIssue ) => void,
+                                 onClickIssueType: ( issue: ClIssue ) => void ) => {
   switch( displayStyle ) {
     case eDisplayStyle.FULL_DETAILS:
-      return fullDetails( issue, onClickIssueType )
+      return fullDetails( issue, onClickComponent, onClickIssueType )
 
     case eDisplayStyle.TITLE_DESCRIPTION:
       return descriptionDetails( issue )

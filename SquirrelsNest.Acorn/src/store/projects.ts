@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {ClIssueType, ClProject, ClProjectCollectionSegment} from '../data/graphQlTypes'
+import {ClComponent, ClIssueType, ClProject, ClProjectCollectionSegment} from '../data/graphQlTypes'
 import {RootState} from './configureStore'
 
 interface ProjectState {
@@ -75,6 +75,16 @@ export function selectProjectIssueTypes( state: RootState ): ClIssueType[] {
 
   if( project !== null ) {
     return project.issueTypes
+  }
+
+  return []
+}
+
+export function selectProjectComponents( state: RootState ): ClComponent[] {
+  const project = state.entities.projects.currentProject
+
+  if( project !== null ) {
+    return project.components
   }
 
   return []

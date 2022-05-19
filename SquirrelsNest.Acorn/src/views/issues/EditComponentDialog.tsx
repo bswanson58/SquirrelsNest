@@ -1,40 +1,38 @@
 import {Dialog, DialogActions, DialogContent, DialogTitle, SelectChangeEvent,} from '@mui/material'
 import Button from '@mui/material/Button'
 import React, {PropsWithChildren, useState} from 'react'
-import {IssueTypeSelector} from '../../components/IssueTypeSelector'
+import {ComponentSelector} from '../../components/ComponentSelector'
 import {ClIssue, UpdateIssueInput} from '../../data/graphQlTypes'
 import {updateIssue} from '../../store/issueMutations'
 import {useAppDispatch} from '../../store/storeHooks'
 import {hideModal} from '../../store/uiActions'
 
-interface editIssueProps {
+interface editComponentProps {
   payload: {
     modalProps: ClIssue
   }
 }
 
-function EditIssueTypeDialog( props: PropsWithChildren<editIssueProps> ) {
+function EditComponentDialog( props: PropsWithChildren<editComponentProps> ) {
   const dispatch = useAppDispatch()
   const issue = props.payload.modalProps
-  const [issueType, setIssueType] = useState<string>( issue.issueType.id )
+  const [component, setComponent] = useState<string>( issue.component.id )
 
   const handleCancel = () => {
     dispatch( hideModal() )
   }
 
   const handleConfirm = () => {
-    if( (issueType !== undefined) &&
-      (issueType !== issue.issueType.id) ) {
+    if( (component !== undefined) &&
+      (component !== issue.component.id) ) {
       const updateInfo: UpdateIssueInput = {
         issueId: issue.id,
         operations: [{
           // @ts-ignore
-          path: 'ISSUE_TYPE_ID',
-          value: issueType,
+          path: 'COMPONENT_ID',
+          value: component,
         }]
       }
-
-      console.log( `update issue type to ${issueType}` )
 
       dispatch( updateIssue( updateInfo ) )
     }
@@ -42,16 +40,16 @@ function EditIssueTypeDialog( props: PropsWithChildren<editIssueProps> ) {
     dispatch( hideModal() )
   }
 
-  function handleIssueTypeChange( event: SelectChangeEvent ): void {
-    setIssueType( event.target.value )
+  function handleComponentChange( event: SelectChangeEvent ): void {
+    setComponent( event.target.value )
   }
 
   return (
-    <Dialog open={true} onClose={() => handleCancel()} aria-labelledby='Edit Issue Type'
+    <Dialog open={true} onClose={() => handleCancel()} aria-labelledby='Edit Component'
             PaperProps={{ sx: { width: '300px', height: '200px' } }}>
-      <DialogTitle>Edit Issue Type</DialogTitle>
+      <DialogTitle>Edit Component</DialogTitle>
       <DialogContent>
-        <IssueTypeSelector initialValue={issue.issueType.id} handleChange={handleIssueTypeChange}/>
+        <ComponentSelector initialValue={issue.component.id} handleChange={handleComponentChange}/>
       </DialogContent>
       <DialogActions>
         <Button onClick={() => handleCancel()} color='primary'>
@@ -64,4 +62,4 @@ function EditIssueTypeDialog( props: PropsWithChildren<editIssueProps> ) {
     </Dialog>)
 }
 
-export default EditIssueTypeDialog
+export default EditComponentDialog
