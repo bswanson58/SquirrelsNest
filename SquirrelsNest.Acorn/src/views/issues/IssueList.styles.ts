@@ -1,4 +1,5 @@
 import {Box, Stack, Typography} from '@mui/material'
+import Button from '@mui/material/Button'
 import styled from 'styled-components'
 
 export const RelativeBox = styled( Box )`
@@ -24,4 +25,7 @@ export const DimmedTypography = styled( Typography )`
 export const StrikeThruTypography = styled(SubTypography)`
   text-decoration: line-through;
   opacity: 0.5;
+`
+export const UncasedButton = styled( Button )`
+  text-transform: none;
 `
