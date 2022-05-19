@@ -1,14 +1,13 @@
 import React from 'react'
 import {Box, Button, Grid, IconButton, List, ListItem, ListItemText, Typography} from '@mui/material'
 import AddIssueIcon from '@mui/icons-material/AddCircle'
-import CheckIcon from '@mui/icons-material/Check'
 import DetailIcon from '@mui/icons-material/List'
 import DeleteIcon from '@mui/icons-material/Delete'
 import {
   showAddIssueModal,
   showDeleteIssueConfirm,
   showEditComponentModal,
-  showEditIssueTypeModal
+  showEditIssueTypeModal, showEditUserModal
 } from '../../config/modalMap'
 import {ClIssue} from '../../data/graphQlTypes'
 import {requestAdditionalIssues} from '../../store/issueActions'
@@ -32,6 +31,7 @@ function IssueList() {
 
   const handleDelete = ( issue: ClIssue ) => dispatch( showDeleteIssueConfirm( issue ) )
 
+  const onClickAssigned = ( issue: ClIssue ) => dispatch( showEditUserModal( issue ) )
   const onClickIssueType = ( issue: ClIssue ) => dispatch( showEditIssueTypeModal( issue ) )
   const onClickComponent = ( issue: ClIssue ) => dispatch( showEditComponentModal( issue ) )
 
@@ -69,7 +69,7 @@ function IssueList() {
                 <ListItemText
                   disableTypography={true}
                   primary={createPrimary( currentProject?.issuePrefix!, item )}
-                  secondary={createSecondary( issueListStyle, item, onClickComponent, onClickIssueType )}
+                  secondary={createSecondary( issueListStyle, item, onClickComponent, onClickIssueType, onClickAssigned )}
                 />
               </Grid>
               <Grid item xs='auto'>

@@ -35,7 +35,8 @@ export const descriptionDetails = ( issue: ClIssue ) => {
 
 export const fullDetails = ( issue: ClIssue,
                              onClickComponent: ( issue: ClIssue ) => void,
-                             onClickIssueType: ( issue: ClIssue ) => void ) => {
+                             onClickIssueType: ( issue: ClIssue ) => void,
+                             onClickAssigned: ( issue: ClIssue ) => void ) => {
   return (
     <>
       <SubTypography variant='body2'>{issue.description}</SubTypography>
@@ -52,7 +53,10 @@ export const fullDetails = ( issue: ClIssue,
           <UncasedButton variant='text' size='small' color='inherit'
                          onClick={() => onClickComponent( issue )}>{createSubTypography( issue.component.name )}</UncasedButton>
         </Grid>
-        <Grid item xs={3}>{createSubTypography( issue.assignedTo.name )}</Grid>
+        <Grid item xs={3}>
+          <UncasedButton variant='text' size='small' color='inherit'
+                         onClick={() => onClickAssigned( issue )}>{createSubTypography( issue.assignedTo.name )}</UncasedButton>
+        </Grid>
         <Grid item xs={1}/>
       </Grid>
     </>
@@ -61,10 +65,11 @@ export const fullDetails = ( issue: ClIssue,
 
 export const createSecondary = ( displayStyle: eDisplayStyle, issue: ClIssue,
                                  onClickComponent: ( issue: ClIssue ) => void,
-                                 onClickIssueType: ( issue: ClIssue ) => void ) => {
+                                 onClickIssueType: ( issue: ClIssue ) => void,
+                                 onClickAssigned: ( issue: ClIssue ) => void ) => {
   switch( displayStyle ) {
     case eDisplayStyle.FULL_DETAILS:
-      return fullDetails( issue, onClickComponent, onClickIssueType )
+      return fullDetails( issue, onClickComponent, onClickIssueType, onClickAssigned )
 
     case eDisplayStyle.TITLE_DESCRIPTION:
       return descriptionDetails( issue )
