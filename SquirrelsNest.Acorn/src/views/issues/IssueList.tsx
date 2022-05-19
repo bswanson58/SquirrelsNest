@@ -7,7 +7,7 @@ import {
   showAddIssueModal,
   showDeleteIssueConfirm,
   showEditComponentModal,
-  showEditIssueTypeModal, showEditUserModal
+  showEditIssueTypeModal, showEditUserModal, showEditWorkflowModal
 } from '../../config/modalMap'
 import {ClIssue} from '../../data/graphQlTypes'
 import {requestAdditionalIssues} from '../../store/issueActions'
@@ -34,6 +34,7 @@ function IssueList() {
   const onClickAssigned = ( issue: ClIssue ) => dispatch( showEditUserModal( issue ) )
   const onClickIssueType = ( issue: ClIssue ) => dispatch( showEditIssueTypeModal( issue ) )
   const onClickComponent = ( issue: ClIssue ) => dispatch( showEditComponentModal( issue ) )
+  const onClickWorkflow = ( issue: ClIssue ) => dispatch( showEditWorkflowModal( issue ) )
 
   const loadAdditionalIssues = () => dispatch( requestAdditionalIssues() )
 
@@ -69,7 +70,7 @@ function IssueList() {
                 <ListItemText
                   disableTypography={true}
                   primary={createPrimary( currentProject?.issuePrefix!, item )}
-                  secondary={createSecondary( issueListStyle, item, onClickComponent, onClickIssueType, onClickAssigned )}
+                  secondary={createSecondary( issueListStyle, item, onClickComponent, onClickIssueType, onClickAssigned, onClickWorkflow )}
                 />
               </Grid>
               <Grid item xs='auto'>

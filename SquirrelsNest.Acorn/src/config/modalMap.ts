@@ -5,6 +5,7 @@ import DeleteIssueDialog from '../views/issues/DeleteIssueDialog'
 import EditComponentDialog from '../views/issues/EditComponentDialog'
 import EditIssueTypeDialog from '../views/issues/EditIssueTypeDialog'
 import EditUserDialog from '../views/issues/EditUserDialog'
+import EditWorkflowDialog from '../views/issues/EditWorkflowDialog'
 
 // used by ModalRoot, allows the string key to be stored in the store.
 export const modalMap: Record<string, any> = {
@@ -12,6 +13,7 @@ export const modalMap: Record<string, any> = {
   'EditComponentDialog': EditComponentDialog,
   'EditIssueTypeDialog': EditIssueTypeDialog,
   'EditUserDialog': EditUserDialog,
+  'EditWorkflowDialog': EditWorkflowDialog,
   'ConfirmIssueDelete': DeleteIssueDialog,
 }
 
@@ -39,6 +41,13 @@ export function showEditIssueTypeModal( issue: ClIssue ) {
 export function showEditUserModal( issue: ClIssue ) {
   return showModal( {
     modalType: 'EditUserDialog',
+    modalProps: issue
+  } )
+}
+
+export function showEditWorkflowModal( issue: ClIssue ) {
+  return showModal( {
+    modalType: 'EditWorkflowDialog',
     modalProps: issue
   } )
 }

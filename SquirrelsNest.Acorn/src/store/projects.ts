@@ -1,5 +1,12 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {ClComponent, ClIssueType, ClProject, ClProjectCollectionSegment, ClUser} from '../data/graphQlTypes'
+import {
+  ClComponent,
+  ClIssueType,
+  ClProject,
+  ClProjectCollectionSegment,
+  ClUser,
+  ClWorkflowState
+} from '../data/graphQlTypes'
 import {RootState} from './configureStore'
 
 interface ProjectState {
@@ -99,6 +106,17 @@ export function selectProjectUsers( state: RootState ): ClUser[] {
 
   return []
 }
+
+export function selectProjectWorkflowStates( state: RootState ): ClWorkflowState[] {
+  const project = state.entities.projects.currentProject
+
+  if( project !== null ) {
+    return project.workflowStates
+  }
+
+  return []
+}
+
 export const {
   projectListPrepare,
   projectListRequested,
