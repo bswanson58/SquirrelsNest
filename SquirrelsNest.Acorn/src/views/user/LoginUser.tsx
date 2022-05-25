@@ -21,7 +21,7 @@ export default function Login() {
     if(isLoggedIn) {
       navigate('/')
     }
-  }, [isLoggedIn])
+  }, [isLoggedIn, navigate])
 
   function handleLogin(credentials: userCredentials) {
     dispatch(loginUser(credentials))
