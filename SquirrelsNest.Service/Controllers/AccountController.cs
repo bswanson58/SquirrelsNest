@@ -41,7 +41,7 @@ namespace SquirrelsNest.Service.Controllers {
         }
 
         [HttpGet( "listUsers" )]
-        [Authorize( AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin" )]
+        [Authorize( AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = PolicyNames.AdminPolicy )]
         public async Task<ActionResult<List<DbUser>>> GetListUsers( [FromQuery] PageInfo pageInfo ) {
             var queryable = mContext.Users.AsQueryable();
             await HttpContext.InsertParametersPaginationInHeader( queryable );
@@ -51,7 +51,7 @@ namespace SquirrelsNest.Service.Controllers {
         }
 
         [HttpPost( "makeAdmin" )]
-        [Authorize( AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin" )]
+        [Authorize( AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = PolicyNames.AdminPolicy )]
         public async Task<ActionResult> MakeAdmin( [FromBody] string userId ) {
             var user = await mUserManager.FindByIdAsync(userId);
             await mUserManager.AddClaimAsync( user, new Claim( ClaimValues.ClaimRole, ClaimValues.ClaimRoleAdmin ) );
@@ -60,7 +60,7 @@ namespace SquirrelsNest.Service.Controllers {
         }
 
         [HttpPost( "removeAdmin" )]
-        [Authorize( AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin" )]
+        [Authorize( AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = PolicyNames.AdminPolicy )]
         public async Task<ActionResult> RemoveAdmin( [FromBody] string userId ) {
             var user = await mUserManager.FindByIdAsync(userId);
             await mUserManager.RemoveClaimAsync( user, new Claim( ClaimValues.ClaimRole, ClaimValues.ClaimRoleAdmin ) );

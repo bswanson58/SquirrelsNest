@@ -13,6 +13,7 @@ using SquirrelsNest.Common.Values;
 using SquirrelsNest.Core.CompositeBuilders;
 using SquirrelsNest.Core.Interfaces;
 using SquirrelsNest.Service.Dto;
+using SquirrelsNest.Service.Support;
 
 namespace SquirrelsNest.Service.Issues {
     // ReSharper disable once ClassNeverInstantiated.Global
@@ -68,7 +69,7 @@ namespace SquirrelsNest.Service.Issues {
         [UseOffsetPaging(MaxPageSize = 30, IncludeTotalCount = true)]
         [UseFiltering]
         [UseSorting]
-        [Authorize( Policy = "IsUser" )]
+        [Authorize( Policy = PolicyNames.UserPolicy )]
         public async Task<IEnumerable<ClIssue>> IssueList([ID(nameof(ClProjectBase))] string projectId ) {
             var entityId = EntityId.For( projectId );
             var project = await GetProject( entityId );

@@ -11,6 +11,7 @@ using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Core.CompositeBuilders;
 using SquirrelsNest.Core.Interfaces;
 using SquirrelsNest.Service.Dto;
+using SquirrelsNest.Service.Support;
 
 namespace SquirrelsNest.Service.Projects {
     // ReSharper disable once ClassNeverInstantiated.Global
@@ -52,7 +53,7 @@ namespace SquirrelsNest.Service.Projects {
         [UseOffsetPaging(MaxPageSize = 10, IncludeTotalCount = true)]
         [UseFiltering]
         [UseSorting]
-        [Authorize( Policy = "IsUser" )]
+        [Authorize( Policy = PolicyNames.UserPolicy )]
         public async Task<IEnumerable<ClProject>> ProjectList() {
             var user = await GetUser();
             var projects = await user.BindAsync( async u => await mProjectProvider.GetProjects( u ));

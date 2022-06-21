@@ -11,6 +11,7 @@ using SquirrelsNest.Common.Values;
 using SquirrelsNest.Core.CompositeBuilders;
 using SquirrelsNest.Core.Interfaces;
 using SquirrelsNest.Service.Dto.Mutations;
+using SquirrelsNest.Service.Support;
 
 namespace SquirrelsNest.Service.Issues {
     // ReSharper disable once ClassNeverInstantiated.Global
@@ -37,7 +38,7 @@ namespace SquirrelsNest.Service.Issues {
             return users.Map( userList => userList.FirstOrDefault( SnUser.Default ));
         }
 
-        [Authorize( Policy = "IsUser" )]
+        [Authorize( Policy = PolicyNames.UserPolicy )]
         public async Task<AddIssuePayload> AddIssue( AddIssueInput issueInput ) {
             var user = await GetUser();
             var userId = EntityId.Default;
@@ -167,7 +168,7 @@ namespace SquirrelsNest.Service.Issues {
             return retValue;
         }
 
-        [Authorize( Policy = "IsUser" )]
+        [Authorize( Policy = PolicyNames.UserPolicy )]
         public async Task<UpdateIssuePayload> UpdateIssue( UpdateIssueInput updateInput ) {
             var issueId = EntityId.For( updateInput.IssueId );
             if( issueId.IsNone ) {
@@ -189,7 +190,7 @@ namespace SquirrelsNest.Service.Issues {
             return compositeIssue.Match( i => new UpdateIssuePayload( i ), e => new UpdateIssuePayload( e ));
         }
 
-        [Authorize( Policy = "IsUser" )]
+        [Authorize( Policy = PolicyNames.UserPolicy )]
         public async Task<DeleteIssuePayload> DeleteIssue( DeleteIssueInput deleteInput ) {
             var issueId = EntityId.For( deleteInput.IssueId );
             if( issueId.IsNone ) {
