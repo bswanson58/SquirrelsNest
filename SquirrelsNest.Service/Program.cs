@@ -27,6 +27,7 @@ using SquirrelsNest.Service.Users;
 
 const string    corsPolicy = "corsPolicy";
 const string    apiEndpoint = "/api";
+const string    jwtKey = "JwtKey";
 
 var appBuilder = WebApplication.CreateBuilder( args );
 
@@ -61,7 +62,7 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
     }).ConfigureApiBehaviorOptions( BadRequestsBehavior.Parse );
 
     services.AddDbContext<ServiceDbContext>( options =>
-        options.UseSqlServer( configuration.GetConnectionString( "ServiceConnection" )));
+        options.UseSqlServer( configuration.GetConnectionString( "DatabaseConnection" )));
     
     services.AddIdentity<IdentityUser, IdentityRole>( options => {
             options.Password.RequireDigit = false;
@@ -87,7 +88,7 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
                 ValidateAudience = false,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey( Encoding.UTF8.GetBytes( configuration["JwtKey"] ) ),
+                IssuerSigningKey = new SymmetricSecurityKey( Encoding.UTF8.GetBytes( configuration[jwtKey] ) ),
                 ClockSkew = TimeSpan.Zero
             };
         } );
