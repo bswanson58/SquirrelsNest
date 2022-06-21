@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using SquirrelsNest.Service.Database;
 using SquirrelsNest.Service.Issues;
 using SquirrelsNest.Service.Projects;
 using SquirrelsNest.Service.Users;
@@ -10,6 +11,8 @@ namespace SquirrelsNest.Service {
             builder.RegisterType<IssueQuery>().InstancePerDependency();
             builder.RegisterType<IssueMutations>().InstancePerDependency();
             builder.RegisterType<ProjectQuery>().InstancePerDependency();
+
+            builder.RegisterType<DatabaseInitializer>();
         }
     }
 }

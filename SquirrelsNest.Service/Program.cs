@@ -23,6 +23,7 @@ using SquirrelsNest.Service.Database;
 using SquirrelsNest.Service.Filters;
 using SquirrelsNest.Service.Issues;
 using SquirrelsNest.Service.Projects;
+using SquirrelsNest.Service.Support;
 using SquirrelsNest.Service.Users;
 
 const string    corsPolicy = "corsPolicy";
@@ -41,6 +42,8 @@ var app = appBuilder.Build();
 
 ConfigureMiddleware( app );
 ConfigureEndpoints( app );
+
+await SeedDatabase( app );
 
 app.Run();
 
@@ -94,15 +97,15 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
         } );
 
     services.AddAuthorization( options => {
-        options.AddPolicy( "IsAdmin", policy => {
-            policy.RequireClaim( "role", "admin" );
+        options.AddPolicy( PolicyNames.AdminPolicy, policy => {
+            policy.RequireClaim( ClaimValues.ClaimRole, ClaimValues.ClaimRoleAdmin );
             policy.AuthenticationSchemes.Add( JwtBearerDefaults.AuthenticationScheme );
         });
     });
 
     services.AddAuthorization( options => {
-        options.AddPolicy( "IsUser", policy => {
-            policy.RequireClaim( "role", "user" );
+        options.AddPolicy( PolicyNames.UserPolicy, policy => {
+            policy.RequireClaim( ClaimValues.ClaimRole, ClaimValues.ClaimRoleUser );
             policy.AuthenticationSchemes.Add( JwtBearerDefaults.AuthenticationScheme );
         });
     });
@@ -145,3 +148,24 @@ void ConfigureEndpoints( IEndpointRouteBuilder routeBuilder ) {
         return Task.CompletedTask;
     } );
 }
+
+static async Task SeedDatabase( IHost host ) {
+    var scopeFactory = host.Services.GetService<IServiceScopeFactory>();
+    var log = host.Services.GetService<ILog>();
+
+    if(( scopeFactory != null ) &&
+       ( log != null )) {
+        using var scope = scopeFactory.CreateScope();
+
+        var databaseSeeder = scope.ServiceProvider.GetService<DatabaseInitializer>();
+
+        if( databaseSeeder != null ) {
+            var initError = await databaseSeeder.InitializeDatabase();
+
+            initError.IfLeft( error => {
+                log.LogMessage( error.Message );
+            });
+        }
+    }
+}
+
