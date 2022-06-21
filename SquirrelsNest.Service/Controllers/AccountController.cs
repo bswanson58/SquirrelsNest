@@ -54,7 +54,7 @@ namespace SquirrelsNest.Service.Controllers {
         [Authorize( AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin" )]
         public async Task<ActionResult> MakeAdmin( [FromBody] string userId ) {
             var user = await mUserManager.FindByIdAsync(userId);
-            await mUserManager.AddClaimAsync( user, new Claim( "role", "admin" ) );
+            await mUserManager.AddClaimAsync( user, new Claim( ClaimValues.ClaimRole, ClaimValues.ClaimRoleAdmin ) );
 
             return NoContent();
         }
@@ -63,7 +63,7 @@ namespace SquirrelsNest.Service.Controllers {
         [Authorize( AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin" )]
         public async Task<ActionResult> RemoveAdmin( [FromBody] string userId ) {
             var user = await mUserManager.FindByIdAsync(userId);
-            await mUserManager.RemoveClaimAsync( user, new Claim( "role", "admin" ) );
+            await mUserManager.RemoveClaimAsync( user, new Claim( ClaimValues.ClaimRole, ClaimValues.ClaimRoleAdmin ) );
 
             return NoContent();
         }
@@ -76,12 +76,12 @@ namespace SquirrelsNest.Service.Controllers {
             if( result.Succeeded ) {
                 // make the first user to be created an admin
                 if( mContext.Users.Length() == 1 ) {
-                    result = await mUserManager.AddClaimAsync( user, new Claim( "role", "admin" ));
+                    result = await mUserManager.AddClaimAsync( user, new Claim( ClaimValues.ClaimRole, ClaimValues.ClaimRoleAdmin ));
                 }
 
                 // all users have the user role.
                 if( result.Succeeded ) {
-                    result = await mUserManager.AddClaimAsync( user, new Claim( "role", "user" ));
+                    result = await mUserManager.AddClaimAsync( user, new Claim( ClaimValues.ClaimRole, ClaimValues.ClaimRoleUser ));
                 }
 
                 if( result.Succeeded ) {
@@ -137,14 +137,14 @@ namespace SquirrelsNest.Service.Controllers {
 
         private async Task<List<Claim>> BuildUserClaims( string email ) {
             var claims = new List<Claim>() {
-                new Claim( "email", email )
+                new Claim( ClaimValues.ClaimEmail, email )
             };
 
             var user = await mUserProvider.GetUser( email );
 
             user.Do( u => {
-                claims.Add( new Claim( "name", u.Name ));
-                claims.Add( new Claim( "entityId", u.EntityId ));
+                claims.Add( new Claim( ClaimValues.ClaimName, u.Name ));
+                claims.Add( new Claim( ClaimValues.ClaimEntityId, u.EntityId ));
             });
 
             return claims;
