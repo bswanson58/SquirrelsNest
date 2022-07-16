@@ -10,6 +10,8 @@ import { ProjectsPageComponent } from './Projects/projects-page/projects-page.co
 import { ProjectListComponent } from './Projects/project-list/project-list.component';
 import { UsersPageComponent } from './Users/users-page/users-page.component';
 import { ContainerComponent } from './container/container.component';
+import { GraphQLModule } from './graphql.module';
+import { HttpClientModule } from '@angular/common/http';
 
 const appRoutes : Routes = [
   { path: 'projects', component: ProjectsPageComponent },
@@ -30,7 +32,9 @@ const appRoutes : Routes = [
   ],
   imports: [
     BrowserModule,
-    RouterModule.forRoot( appRoutes )
+    RouterModule.forRoot( appRoutes ),
+    GraphQLModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
