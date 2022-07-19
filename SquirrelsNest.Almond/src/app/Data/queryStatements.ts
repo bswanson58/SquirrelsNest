@@ -1,6 +1,13 @@
 import {gql} from 'apollo-angular'
+import {ClProjectSortInput, Query} from './graphQlTypes'
 
-export const AllProjectsQuery = gql`
+export interface ProjectQueryInput {
+  skip: number,
+  take: number,
+  order: ClProjectSortInput
+}
+
+export const AllProjectsQuery = gql<Query, ProjectQueryInput>`
   query projectsQuery($skip: Int!, $take: Int!, $order:[ClProjectSortInput!], $where:ClProjectFilterInput) {
     projectList(
       skip: $skip,
