@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { IssuesPageComponent } from './Issues/issues-page/issues-page.component';
 import { IssueListComponent } from './Issues/issue-list/issue-list.component';
+import {MaterialModule} from './material.module'
 import { ProjectsPageComponent } from './Projects/projects-page/projects-page.component';
 import { ProjectListComponent } from './Projects/project-list/project-list.component';
 import { UsersPageComponent } from './Users/users-page/users-page.component';
@@ -33,10 +34,11 @@ const appRoutes : Routes = [
   ],
   imports: [
     BrowserModule,
-    RouterModule.forRoot( appRoutes ),
-    GraphQLModule,
     HttpClientModule,
-    BrowserAnimationsModule
+    RouterModule.forRoot( appRoutes ),
+    BrowserAnimationsModule,
+    GraphQLModule,
+    MaterialModule
   ],
   providers: [],
   bootstrap: [AppComponent]
