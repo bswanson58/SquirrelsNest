@@ -12,6 +12,7 @@ import { UsersPageComponent } from './Users/users-page/users-page.component';
 import { ContainerComponent } from './container/container.component';
 import { GraphQLModule } from './graphql.module';
 import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const appRoutes : Routes = [
   { path: 'projects', component: ProjectsPageComponent },
@@ -34,7 +35,8 @@ const appRoutes : Routes = [
     BrowserModule,
     RouterModule.forRoot( appRoutes ),
     GraphQLModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
