@@ -10,22 +10,26 @@ import {ContainerComponent} from './container/container.component'
 import {HeaderComponent} from './header/header.component'
 import {IssuesPageComponent} from './Issues/issues-page/issues-page.component'
 import {IssueListComponent} from './Issues/issue-list/issue-list.component'
+import {LoginComponent} from './Auth/login/login.component'
 import {MaterialModule} from './material.module'
 import {ProjectsPageComponent} from './Projects/projects-page/projects-page.component'
 import {ProjectListComponent} from './Projects/project-list/project-list.component'
+import {RegisterComponent} from './Auth/register/register.component'
 import {UsersPageComponent} from './Users/users-page/users-page.component'
 
 
 @NgModule( {
   declarations: [
     AppComponent,
+    ContainerComponent,
     HeaderComponent,
     IssuesPageComponent,
     IssueListComponent,
+    LoginComponent,
     ProjectsPageComponent,
     ProjectListComponent,
+    RegisterComponent,
     UsersPageComponent,
-    ContainerComponent
   ],
   imports: [
     AppRoutingModule,
