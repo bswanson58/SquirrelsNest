@@ -1,4 +1,5 @@
 import {NgModule} from '@angular/core'
+import {FormsModule} from '@angular/forms'
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations'
 import {BrowserModule} from '@angular/platform-browser'
 import {FlexLayoutModule} from '@angular/flex-layout'
@@ -37,6 +38,7 @@ import {UsersPageComponent} from './Users/users-page/users-page.component'
     BrowserAnimationsModule,
     BrowserModule,
     FlexLayoutModule,
+    FormsModule,
     HttpClientModule,
     GraphQLModule,
     MaterialModule
