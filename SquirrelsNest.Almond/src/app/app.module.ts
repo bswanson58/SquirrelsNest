@@ -1,5 +1,6 @@
 import {NgModule} from '@angular/core'
 import {FormsModule} from '@angular/forms'
+import {MatIconModule} from '@angular/material/icon'
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations'
 import {BrowserModule} from '@angular/platform-browser'
 import {FlexLayoutModule} from '@angular/flex-layout'
@@ -41,7 +42,8 @@ import {UsersPageComponent} from './Users/users-page/users-page.component'
     FormsModule,
     HttpClientModule,
     GraphQLModule,
-    MaterialModule
+    MaterialModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]
