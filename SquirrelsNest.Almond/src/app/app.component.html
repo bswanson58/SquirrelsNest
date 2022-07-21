@@ -1,31 +1,9 @@
 <mat-sidenav-container>
   <mat-sidenav #sidenav role='navigation'>
-    <mat-nav-list>
-      <a mat-list-item routerLink='/login' (click)='sidenav.close()'>
-        <mat-icon>login</mat-icon>
-        <span class='nav-caption'>Login</span>
-      </a>
-      <a mat-list-item routerLink='/register' (click)='sidenav.close()'>
-        <mat-icon>how_to_reg</mat-icon>
-        <span class='nav-caption'>Register</span>
-      </a>
-    </mat-nav-list>
+  <app-sidenav (sidenavClose)='sidenav.close()'></app-sidenav>
   </mat-sidenav>
   <mat-sidenav-content>
-    <mat-toolbar color='primary'>
-      <div>
-        <button mat-icon-button (click)='sidenav.toggle()'>
-          <mat-icon>menu</mat-icon>
-        </button>
-      </div>
-      <div><a routerLink='/'>SquirrelsNest</a></div>
-      <div fxFlex fxLayout fxLayoutAlign='flex-end' fxHide.sm>
-        <ul fxLayout fxLayoutGap='10px' class='navigation-items'>
-          <li><a routerLink='/login'>Login</a></li>
-          <li><a routerLink='/register'>Register</a></li>
-        </ul>
-      </div>
-    </mat-toolbar>
+    <app-header (sidenavToggle)='sidenav.toggle()'></app-header>
     <main>
       <router-outlet></router-outlet>
     </main>
