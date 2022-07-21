@@ -9,8 +9,6 @@ import {HttpClientModule} from '@angular/common/http'
 
 import {AppComponent} from './app.component'
 import {AppRoutingModule} from './app.routing.module'
-import {ContainerComponent} from './container/container.component'
-import {HeaderComponent} from './header/header.component'
 import {IssuesPageComponent} from './Issues/issues-page/issues-page.component'
 import {IssueListComponent} from './Issues/issue-list/issue-list.component'
 import {LoginComponent} from './Auth/login/login.component'
@@ -24,8 +22,6 @@ import {UsersPageComponent} from './Users/users-page/users-page.component'
 @NgModule( {
   declarations: [
     AppComponent,
-    ContainerComponent,
-    HeaderComponent,
     IssuesPageComponent,
     IssueListComponent,
     LoginComponent,
