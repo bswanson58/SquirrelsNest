@@ -4,6 +4,7 @@ import {MatIconModule} from '@angular/material/icon'
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations'
 import {BrowserModule} from '@angular/platform-browser'
 import {FlexLayoutModule} from '@angular/flex-layout'
+import {StoreModule} from '@ngrx/store'
 import {GraphQLModule} from './graphql.module'
 import {HttpClientModule} from '@angular/common/http'
 
@@ -18,6 +19,7 @@ import {ProjectsPageComponent} from './Projects/projects-page/projects-page.comp
 import {ProjectListComponent} from './Projects/project-list/project-list.component'
 import {RegisterComponent} from './Auth/register/register.component'
 import {SidenavComponent} from './Navigation/sidenav/sidenav.component'
+import {appReducers} from './Store/app.reducer'
 import {UsersPageComponent} from './Users/users-page/users-page.component'
 
 
@@ -43,7 +45,8 @@ import {UsersPageComponent} from './Users/users-page/users-page.component'
     HttpClientModule,
     GraphQLModule,
     MaterialModule,
-    MatIconModule
+    MatIconModule,
+    StoreModule.forRoot(appReducers)
   ],
   providers: [],
   bootstrap: [AppComponent]
