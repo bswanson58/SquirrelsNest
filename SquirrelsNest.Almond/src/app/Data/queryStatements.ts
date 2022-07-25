@@ -1,5 +1,5 @@
 import {gql} from 'apollo-angular'
-import {ClProjectSortInput, Query} from './graphQlTypes'
+import {ClIssueSortInput, ClProjectSortInput, Query} from './graphQlTypes'
 
 export interface ProjectQueryInput {
   skip: number,
@@ -45,6 +45,13 @@ export const AllProjectsQuery = gql<Query, ProjectQueryInput>`
       totalCount
     }
   }`
+
+export interface IssueQueryInput {
+  projectId: string,
+  skip: number,
+  take: number,
+  order: ClIssueSortInput
+}
 
 export const IssuesQuery = gql`
   query issuesQuery($skip: Int!, $take: Int!, $projectId: ID!, $order:[ClIssueSortInput!], $where:ClIssueFilterInput) {

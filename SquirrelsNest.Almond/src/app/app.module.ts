@@ -12,6 +12,7 @@ import {HttpClientModule} from '@angular/common/http'
 
 import {AppComponent} from './app.component'
 import {AppRoutingModule} from './app.routing.module'
+import {IssueService} from './Issues/issues.service'
 import {HeaderComponent} from './Navigation/header/header.component'
 import {IssuesPageComponent} from './Issues/issues-page/issues-page.component'
 import {IssueListComponent} from './Issues/issue-list/issue-list.component'
@@ -51,7 +52,12 @@ import {UsersPageComponent} from './Users/users-page/users-page.component'
     MatIconModule,
     StoreModule.forRoot( appReducers )
   ],
-  providers: [AuthGuard, AuthService, ProjectService],
+  providers: [
+    AuthGuard,
+    AuthService,
+    IssueService,
+    ProjectService
+  ],
   bootstrap: [AppComponent]
 } )
 export class AppModule {
