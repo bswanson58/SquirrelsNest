@@ -5,6 +5,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations'
 import {BrowserModule} from '@angular/platform-browser'
 import {FlexLayoutModule} from '@angular/flex-layout'
 import {StoreModule} from '@ngrx/store'
+import {AuthService} from './Auth/auth.service'
 import {GraphQLModule} from './graphql.module'
 import {HttpClientModule} from '@angular/common/http'
 
@@ -46,9 +47,9 @@ import {UsersPageComponent} from './Users/users-page/users-page.component'
     GraphQLModule,
     MaterialModule,
     MatIconModule,
-    StoreModule.forRoot(appReducers)
+    StoreModule.forRoot( appReducers )
   ],
-  providers: [],
+  providers: [AuthService],
   bootstrap: [AppComponent]
 } )
 export class AppModule {
