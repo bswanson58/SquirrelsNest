@@ -18,3 +18,4 @@ export const initialAuthState: AuthState = {
 export const getAuthState = createFeatureSelector<AuthState>( 'auth' )
 
 export const getIsLoading = ( state: AuthState ) => state.loading
+export const getIsAuthenticated = ( state: AuthState ) => state.userClaims.length > 0

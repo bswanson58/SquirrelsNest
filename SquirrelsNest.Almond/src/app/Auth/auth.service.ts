@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core'
+import {Router} from '@angular/router'
 import {Store} from '@ngrx/store'
 import {Apollo} from 'apollo-angular'
 
@@ -9,7 +10,7 @@ import {AuthFailed, AuthRequested, LoginCompleted, Logout} from './auth.actions'
 
 @Injectable()
 export class AuthService {
-  constructor( private apollo: Apollo, private store: Store<AppState> ) {
+  constructor( private apollo: Apollo, private store: Store<AppState>, private router: Router ) {
   }
 
   Login( loginName: string, password: string ) {
@@ -29,11 +30,15 @@ export class AuthService {
           this.store.dispatch( new LoginCompleted( result.data.login ) )
         }
 
+        this.router.navigate( ['issues'] ).then()
+
         subscription.unsubscribe()
       } )
   }
 
   Logout() {
     this.store.dispatch( new Logout() )
+
+    this.router.navigate( ['login'] ).then()
   }
 }

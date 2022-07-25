@@ -1,5 +1,6 @@
 import {NgModule} from '@angular/core'
 import {RouterModule, Routes} from '@angular/router'
+import {AuthGuard} from './Auth/auth.guard'
 import {LoginComponent} from './Auth/login/login.component'
 import {RegisterComponent} from './Auth/register/register.component'
 
@@ -8,9 +9,9 @@ import {ProjectsPageComponent} from './Projects/projects-page/projects-page.comp
 import {UsersPageComponent} from './Users/users-page/users-page.component'
 
 const appRoutes: Routes = [
-  { path: 'projects', component: ProjectsPageComponent },
-  { path: 'issues', component: IssuesPageComponent },
-  { path: 'users', component: UsersPageComponent },
+  { path: 'projects', component: ProjectsPageComponent, canActivate: [AuthGuard] },
+  { path: 'issues', component: IssuesPageComponent, canActivate: [AuthGuard] },
+  { path: 'users', component: UsersPageComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent }
 ]

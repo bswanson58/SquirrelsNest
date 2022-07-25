@@ -7,8 +7,12 @@
   <div><a routerLink='/'>SquirrelsNest</a></div>
   <div fxFlex fxLayout fxLayoutAlign='flex-end' fxHide.sm>
     <ul fxLayout fxLayoutGap='10px' class='navigation-items'>
-      <li><a routerLink='/login'>Login</a></li>
-      <li><a routerLink='/register'>Register</a></li>
+      <li *ngIf='!(isAuthenticated$ | async)'><a routerLink='/login'>Login</a></li>
+      <li *ngIf='!(isAuthenticated$ | async)'><a routerLink='/register'>Register</a></li>
+      <li *ngIf='isAuthenticated$ | async'><a routerLink='/projects'>Projects</a></li>
+      <li *ngIf='isAuthenticated$ | async'><a routerLink='/issues'>Issues</a></li>
+      <li *ngIf='isAuthenticated$ | async'><a routerLink='/users'>Users</a></li>
+      <li *ngIf='isAuthenticated$ | async'><a style='cursor: pointer' (click)='onLogout()'>Logout</a></li>
     </ul>
   </div>
 </mat-toolbar>
