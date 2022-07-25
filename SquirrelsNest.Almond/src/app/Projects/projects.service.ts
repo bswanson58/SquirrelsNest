@@ -9,7 +9,7 @@ import {AllProjectsQuery, ProjectQueryInput} from '../Data/queryStatements'
 } )
 export class ProjectService {
   private readonly mProjectQuery: QueryRef<Query, ProjectQueryInput>
-  private readonly mPageLimit = 1
+  private readonly mPageLimit = 10
   private mProjects: Observable<ClProject[]> = new Observable<ClProject[]>()
   private mProjectListLength = 0
   private mProjectListCompleted = false;
@@ -46,7 +46,7 @@ export class ProjectService {
         variables: {
           skip: this.mProjectListLength
         }
-      } )
+      } ).then()
     }
   }
 }
