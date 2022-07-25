@@ -1,13 +1,13 @@
 import {Injectable} from '@angular/core'
 import {Apollo, QueryRef} from 'apollo-angular'
 import {map, Observable, tap} from 'rxjs'
-import {ClProject, Query} from './graphQlTypes'
-import {AllProjectsQuery, ProjectQueryInput} from './queryStatements'
+import {ClProject, Query} from '../Data/graphQlTypes'
+import {AllProjectsQuery, ProjectQueryInput} from '../Data/queryStatements'
 
 @Injectable( {
   providedIn: 'root'
 } )
-export class ProjectProviderService {
+export class ProjectService {
   private readonly mProjectQuery: QueryRef<Query, ProjectQueryInput>
   private readonly mPageLimit = 1
   private mProjects: Observable<ClProject[]> = new Observable<ClProject[]>()

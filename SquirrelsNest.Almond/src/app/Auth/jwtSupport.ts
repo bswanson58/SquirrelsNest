@@ -27,7 +27,7 @@ export function getAuthenticationClaims(): claim[] {
   const expirationDate = new Date( expiration )
 
   if( expirationDate <= new Date() ) {
-    logout()
+    clearAuthenticationToken()
     return [] // the token has expired
   }
 
@@ -47,7 +47,7 @@ export function hasRoleClaim(role: string, claims: claim[]): boolean {
     claims.findIndex((claim) => claim.name === 'role' && claim.value === role) > -1 )
 }
 */
-export function logout() {
+export function clearAuthenticationToken() {
   localStorage.removeItem( tokenKey )
   localStorage.removeItem( expirationKey )
 }

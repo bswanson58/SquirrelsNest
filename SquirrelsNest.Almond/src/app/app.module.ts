@@ -21,6 +21,7 @@ import {ProjectsPageComponent} from './Projects/projects-page/projects-page.comp
 import {ProjectListComponent} from './Projects/project-list/project-list.component'
 import {RegisterComponent} from './Auth/register/register.component'
 import {SidenavComponent} from './Navigation/sidenav/sidenav.component'
+import {ProjectService} from './Projects/projects.service'
 import {appReducers} from './Store/app.reducer'
 import {UsersPageComponent} from './Users/users-page/users-page.component'
 
@@ -50,7 +51,7 @@ import {UsersPageComponent} from './Users/users-page/users-page.component'
     MatIconModule,
     StoreModule.forRoot( appReducers )
   ],
-  providers: [AuthGuard, AuthService],
+  providers: [AuthGuard, AuthService, ProjectService],
   bootstrap: [AppComponent]
 } )
 export class AppModule {

@@ -7,6 +7,7 @@ import {LoginInput, Mutation} from '../Data/graphQlTypes'
 import {LoginMutation} from '../Data/mutationStatements'
 import {AppState} from '../Store/app.reducer'
 import {AuthFailed, AuthRequested, LoginCompleted, Logout} from './auth.actions'
+import {clearAuthenticationToken} from './jwtSupport'
 
 @Injectable()
 export class AuthService {
@@ -39,6 +40,8 @@ export class AuthService {
   Logout() {
     this.store.dispatch( new Logout() )
 
+    clearAuthenticationToken()
+    this.apollo.client.resetStore().then()
     this.router.navigate( ['login'] ).then()
   }
 }
