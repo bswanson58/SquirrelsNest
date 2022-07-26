@@ -1,6 +1,9 @@
 import {Component, OnInit} from '@angular/core'
+import {Store} from '@ngrx/store'
 import {Observable} from 'rxjs'
 import {ClProject} from '../../Data/graphQlTypes'
+import {AppState} from '../../Store/app.reducer'
+import {getProjects} from '../../Store/app.selectors'
 import {ProjectService} from '../projects.service'
 
 @Component( {
@@ -11,12 +14,14 @@ import {ProjectService} from '../projects.service'
 export class ProjectListComponent implements OnInit {
   projectList$: Observable<ClProject[]>
 
-  constructor( private projectService: ProjectService ) {
+  constructor( private projectService: ProjectService, private store: Store<AppState> ) {
     this.projectList$ = new Observable<ClProject[]>()
   }
 
   ngOnInit(): void {
-    this.projectList$ = this.projectService.LoadProjects()
+    this.projectList$ = this.store.select( getProjects )
+
+    this.projectService.LoadProjects()
   }
 
   onProjectSelected( selected: ClProject ) {
