@@ -1,5 +1,5 @@
 import {Action} from '@ngrx/store'
-import {initialProjectState, ProjectState} from './project.state'
+import {initialProjectQueryInfo, initialProjectState, ProjectState} from './project.state'
 import {
   APPEND_PROJECTS, AppendProjects,
   CLEAR_PROJECTS_LOADING,
@@ -14,7 +14,7 @@ export function projectsReducer( state: ProjectState = initialProjectState, acti
       return {
         ...state,
         projects: [],
-        queryInfo: { hasPreviousPage: false, hasNextPage: false, loadedProjects: 0, totalProjects: 0 }
+        queryInfo: initialProjectQueryInfo
       }
 
     case APPEND_PROJECTS:

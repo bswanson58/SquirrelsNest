@@ -8,6 +8,13 @@ export interface ProjectQueryInfo {
   totalProjects: number
 }
 
+export const initialProjectQueryInfo: ProjectQueryInfo = {
+  hasNextPage: false,
+  hasPreviousPage: false,
+  loadedProjects: 0,
+  totalProjects: 0
+}
+
 export interface ProjectState {
   projects: ClProject[],
   selectedProject: ClProject | null,
@@ -18,7 +25,7 @@ export interface ProjectState {
 export const initialProjectState: ProjectState = {
   projects: [],
   selectedProject: null,
-  queryInfo: { hasNextPage: false, hasPreviousPage: false, loadedProjects: 0, totalProjects: 0 },
+  queryInfo: initialProjectQueryInfo,
   isLoading: false
 }
 
