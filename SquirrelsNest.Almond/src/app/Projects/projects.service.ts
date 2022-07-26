@@ -1,63 +1,102 @@
-import {Injectable} from '@angular/core'
+import {Injectable, OnDestroy} from '@angular/core'
+import {GraphQLErrors} from '@apollo/client/errors'
 import {Store} from '@ngrx/store'
 import {Apollo, QueryRef} from 'apollo-angular'
-import {map, Observable, tap} from 'rxjs'
-import {ClProject, Query} from '../Data/graphQlTypes'
+import {map, Subscription, take, tap} from 'rxjs'
+import {ClProjectCollectionSegment, Query} from '../Data/graphQlTypes'
 import {AllProjectsQuery, ProjectQueryInput} from '../Data/queryStatements'
 import {AppState} from '../Store/app.reducer'
+import {getProjectQueryState} from '../Store/app.selectors'
+import {ProjectQueryInfo} from './project.state'
 import {ClearProjectLoading, ClearProjects, AppendProjects, SetProjectLoading} from './projects.actions'
 
 @Injectable( {
   providedIn: 'root'
 } )
-export class ProjectService {
+export class ProjectService implements OnDestroy {
   private readonly mProjectQuery: QueryRef<Query, ProjectQueryInput>
-  private readonly mPageLimit = 10
-  private mProjects: Observable<ClProject[]> = new Observable<ClProject[]>()
-  private mProjectListLength = 0
-  private mProjectListCompleted = false
+  private readonly mPageLimit = 1
+  private mProjectsSubscription: Subscription | null
 
   constructor( private apollo: Apollo, private store: Store<AppState> ) {
+    this.mProjectsSubscription = null
+
     this.mProjectQuery = this.apollo.watchQuery<Query, ProjectQueryInput>(
       {
         query: AllProjectsQuery,
-        variables: { skip: this.mProjectListLength, take: this.mPageLimit, order: {} }
+        variables: { skip: 0, take: this.mPageLimit, order: {} }
       } )
   }
 
   LoadProjects(): void {
+    this.unsubscribe()
     this.store.dispatch( new SetProjectLoading() )
     this.store.dispatch( new ClearProjects() )
 
-    this.mProjects = this.mProjectQuery.valueChanges.pipe(
-      tap( res => {
-        if( res.data.projectList?.pageInfo !== undefined ) {
-          this.mProjectListCompleted = !res.data.projectList.pageInfo.hasNextPage
-        }
-      } ),
-      map( res => {
-        const projectList = res?.data?.projectList?.items
+    this.mProjectsSubscription = this.mProjectQuery
+      .valueChanges
+      .pipe(
+        map( result => this.handleErrors( result.data, result.errors ) ),
+        map( result => this.handleProjectData( result ) ),
+        tap( _ => this.store.dispatch( new ClearProjectLoading() ) )
+      )
+      .subscribe()
+  }
 
-        return projectList !== undefined ? projectList! : []
-      } ),
-      tap( projectList => this.store.dispatch( new AppendProjects( projectList ) ) ),
-      tap( res => this.mProjectListLength = res.length ),
-      tap( _ => this.store.dispatch( new ClearProjectLoading() ) )
-    )
+  handleErrors( data: Query | null, errors: GraphQLErrors | undefined ): ClProjectCollectionSegment {
+    if( errors != null ) {
+      console.log( errors.entries() )
+    }
 
-    // this needs some thought:
-    const subscription = this.mProjects.subscribe( () => {
-      subscription.unsubscribe()
-    } )
+    if( (data?.projectList?.items != null) &&
+      (data.projectList.pageInfo != null) ) {
+      return data.projectList
+    }
+    else {
+      return { items: [], pageInfo: { hasNextPage: false, hasPreviousPage: false }, totalCount: 0 }
+    }
+  }
+
+  handleProjectData( projectData: ClProjectCollectionSegment ): void {
+    this.store.dispatch(
+      new AppendProjects( projectData.items!, {
+        hasNextPage: projectData.pageInfo.hasNextPage,
+        hasPreviousPage: projectData.pageInfo.hasPreviousPage,
+        totalProjects: projectData.totalCount,
+        loadedProjects: 0 // set by the reducer.
+      } ) )
   }
 
   LoadMoreProjects(): void {
-    if( !this.mProjectListCompleted ) {
+    const queryState = this.getProjectQueryState()
+
+    if( queryState.hasNextPage ) {
+      this.store.dispatch( new SetProjectLoading() )
+
       this.mProjectQuery.fetchMore( {
         variables: {
-          skip: this.mProjectListLength
+          skip: queryState.loadedProjects
         }
       } ).then()
+    }
+  }
+
+  getProjectQueryState(): ProjectQueryInfo {
+    let queryState: ProjectQueryInfo
+
+    this.store.select( getProjectQueryState ).pipe( take( 1 ) ).subscribe( state => queryState = state )
+
+    return queryState!
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe()
+  }
+
+  unsubscribe() {
+    if( this.mProjectsSubscription != null ) {
+      this.mProjectsSubscription.unsubscribe()
+      this.mProjectsSubscription = null
     }
   }
 }

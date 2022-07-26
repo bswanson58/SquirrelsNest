@@ -11,3 +11,5 @@ export const getIsAuthenticated = createSelector( fromAuth.getAuthState, fromAut
 export const getProjectsLoading = createSelector( fromProject.getProjectState, fromProject.getIsLoading )
 export const getProjects = createSelector( fromProject.getProjectState, fromProject.getProjects )
 export const getSelectedProject = createSelector( fromProject.getProjectState, fromProject.getSelectedProject )
+export const getProjectQueryState = createSelector( fromProject.getProjectState, fromProject.getProjectQueryState )
+export const getServerHasMoreProjects = createSelector( fromProject.getProjectState, fromProject.getServerHasMoreProjects )

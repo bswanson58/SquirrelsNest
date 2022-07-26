@@ -1,5 +1,6 @@
 import {Action} from '@ngrx/store'
 import {ClProject} from '../Data/graphQlTypes'
+import {ProjectQueryInfo} from './project.state'
 
 export const CLEAR_PROJECTS = '[Project] Clear Projects'
 export const APPEND_PROJECTS = '[Project] Append Projects'
@@ -14,7 +15,7 @@ export class ClearProjects implements Action {
 export class AppendProjects implements Action {
   readonly type = APPEND_PROJECTS
 
-  constructor( public projects: ClProject[] ) {
+  constructor( public projects: ClProject[], public queryInfo: ProjectQueryInfo ) {
   }
 }
 

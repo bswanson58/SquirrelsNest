@@ -13,15 +13,18 @@ export function projectsReducer( state: ProjectState = initialProjectState, acti
     case CLEAR_PROJECTS:
       return {
         ...state,
-        projects: []
+        projects: [],
+        queryInfo: { hasPreviousPage: false, hasNextPage: false, loadedProjects: 0, totalProjects: 0 }
       }
 
     case APPEND_PROJECTS:
       const appendPayload = action as AppendProjects
+      const newProjectList = [...state.projects, ...appendPayload.projects]
 
       return {
         ...state,
-        projects: [...state.projects, ...appendPayload.projects]
+        projects: newProjectList,
+        queryInfo: { ...appendPayload.queryInfo, loadedProjects: newProjectList.length }
       }
 
     case SELECT_PROJECT:

@@ -3,7 +3,7 @@ import {Store} from '@ngrx/store'
 import {Observable} from 'rxjs'
 import {ClProject} from '../../Data/graphQlTypes'
 import {AppState} from '../../Store/app.reducer'
-import {getProjects} from '../../Store/app.selectors'
+import {getProjects, getServerHasMoreProjects} from '../../Store/app.selectors'
 import {ProjectService} from '../projects.service'
 
 @Component( {
@@ -13,15 +13,22 @@ import {ProjectService} from '../projects.service'
 } )
 export class ProjectListComponent implements OnInit {
   projectList$: Observable<ClProject[]>
+  serverHasMoreProjects$: Observable<boolean>
 
   constructor( private projectService: ProjectService, private store: Store<AppState> ) {
     this.projectList$ = new Observable<ClProject[]>()
+    this.serverHasMoreProjects$ = new Observable<boolean>()
   }
 
   ngOnInit(): void {
     this.projectList$ = this.store.select( getProjects )
+    this.serverHasMoreProjects$ = this.store.select( getServerHasMoreProjects )
 
     this.projectService.LoadProjects()
+  }
+
+  onRetrieveMoreProjects() {
+    this.projectService.LoadMoreProjects()
   }
 
   onProjectSelected( selected: ClProject ) {
