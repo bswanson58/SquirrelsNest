@@ -43,15 +43,6 @@ export function createApollo( httpLink: HttpLink ): ApolloClientOptions<any> {
             }
           }
         },
-        ClProjectCollectionSegment: {
-          fields: {
-            items: {
-              merge( existing = [], incoming: any[] ) {
-                return [...existing, ...incoming]
-              }
-            }
-          }
-        }
       }
     } )
   }
