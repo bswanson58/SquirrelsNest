@@ -4,6 +4,7 @@ import {Observable} from 'rxjs'
 import {ClProject} from '../../Data/graphQlTypes'
 import {AppState} from '../../Store/app.reducer'
 import {getProjects, getServerHasMoreProjects} from '../../Store/app.selectors'
+import {SelectProject} from '../projects.actions'
 import {ProjectService} from '../projects.service'
 
 @Component( {
@@ -32,6 +33,8 @@ export class ProjectListComponent implements OnInit {
   }
 
   onProjectSelected( selected: ClProject ) {
-    console.log( selected )
+    if( selected != null ) {
+      this.store.dispatch( new SelectProject( selected ) )
+    }
   }
 }
