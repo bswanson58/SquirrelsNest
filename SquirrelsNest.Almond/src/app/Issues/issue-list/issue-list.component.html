@@ -1,5 +1,4 @@
 <section>
-  <h1>Issues:</h1>
   <mat-action-list>
     <button mat-list-item *ngFor='let issue of issueList$ | async'
             (click)='onIssueSelected(issue)'>{{issue.title}}</button>

@@ -25,6 +25,7 @@ import {SidenavComponent} from './Navigation/sidenav/sidenav.component'
 import {ProjectService} from './Projects/projects.service'
 import {appReducers} from './Store/app.reducer'
 import {UsersPageComponent} from './Users/users-page/users-page.component'
+import {IssueHeaderComponent} from './Issues/issue-header/issue-header.component'
 
 
 @NgModule( {
@@ -32,6 +33,7 @@ import {UsersPageComponent} from './Users/users-page/users-page.component'
     AppComponent,
     HeaderComponent,
     IssuesPageComponent,
+    IssueHeaderComponent,
     IssueListComponent,
     LoginComponent,
     ProjectsPageComponent,
