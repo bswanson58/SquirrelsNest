@@ -1,10 +1,19 @@
 <div fxLayout='column' style='margin-bottom: 5px'>
-  <span fxFlex>{{issue.title}}</span>
-  <span fxFlex style='margin-left: 1em; opacity: 70%;'>{{issue.description}}</span>
-  <div fxLayout='row'>
-    <span fxFlex fxFlexOffset='2em'>{{issue.issueType.name}}</span>
-    <span fxFlex fxFlexOffset='2em'>{{issue.workflowState.name}}</span>
-    <span fxFlex fxFlexOffset='2em'>{{issue.component.name}}</span>
-    <span fxFlex fxFlexOffset='2em'>{{issue.assignedTo.name}}</span>
-  </div>
+  <ng-container *ngIf='(issueListStyle$ | async) === 0'>
+    <span fxFlex>{{issue.title}}</span>
+  </ng-container>
+  <ng-container *ngIf='(issueListStyle$ | async) === 1'>
+    <span fxFlex>{{issue.title}}</span>
+    <span fxFlex style='margin-left: 1em; opacity: 70%;'>{{issue.description}}</span>
+  </ng-container>
+  <ng-container *ngIf='(issueListStyle$ | async) === 2'>
+    <span fxFlex>{{issue.title}}</span>
+    <span fxFlex style='margin-left: 1em; opacity: 70%;'>{{issue.description}}</span>
+    <div fxLayout='row'>
+      <span fxFlex fxFlexOffset='2em'>{{issue.issueType.name}}</span>
+      <span fxFlex fxFlexOffset='2em'>{{issue.workflowState.name}}</span>
+      <span fxFlex fxFlexOffset='2em'>{{issue.component.name}}</span>
+      <span fxFlex fxFlexOffset='2em'>{{issue.assignedTo.name}}</span>
+    </div>
+  </ng-container>
 </div>

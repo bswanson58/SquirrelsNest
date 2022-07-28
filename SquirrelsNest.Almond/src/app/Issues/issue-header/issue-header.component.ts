@@ -4,6 +4,7 @@ import {Observable} from 'rxjs'
 import {ClProject} from '../../Data/graphQlTypes'
 import {AppState} from '../../Store/app.reducer'
 import {getSelectedProject} from '../../Store/app.selectors'
+import {ToggleIssueListStyle} from '../../UI/ui.actions'
 
 @Component( {
   selector: 'sn-issue-header',
@@ -22,6 +23,7 @@ export class IssueHeaderComponent implements OnInit {
   }
 
   onToggleListStyle() {
+    this.store.dispatch(new ToggleIssueListStyle())
   }
 
   onCreateNewIssue() {
