@@ -15,7 +15,7 @@ import {ClearProjectLoading, ClearProjects, AppendProjects, SetProjectLoading} f
 } )
 export class ProjectService implements OnDestroy {
   private readonly mProjectQuery: QueryRef<Query, ProjectQueryInput>
-  private readonly mPageLimit = 1
+  private readonly mPageLimit = 10
   private mProjectsSubscription: Subscription | null
 
   constructor( private apollo: Apollo, private store: Store<AppState> ) {
