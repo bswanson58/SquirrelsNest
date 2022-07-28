@@ -38,8 +38,4 @@ export class IssueListComponent implements OnInit {
   onRetrieveMoreIssues() {
     this.issuesService.LoadMoreIssues()
   }
-
-  onIssueSelected( issue: ClIssue ) {
-    console.log( issue )
-  }
 }

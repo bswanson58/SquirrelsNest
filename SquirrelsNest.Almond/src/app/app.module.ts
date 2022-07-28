@@ -15,6 +15,8 @@ import {AppRoutingModule} from './app.routing.module'
 import {IssueService} from './Issues/issues.service'
 import {HeaderComponent} from './Navigation/header/header.component'
 import {IssuesPageComponent} from './Issues/issues-page/issues-page.component'
+import {IssueDetailComponent} from './Issues/issue-detail/issue-detail.component'
+import {IssueHeaderComponent} from './Issues/issue-header/issue-header.component'
 import {IssueListComponent} from './Issues/issue-list/issue-list.component'
 import {LoginComponent} from './Auth/login/login.component'
 import {MaterialModule} from './material.module'
@@ -25,7 +27,6 @@ import {SidenavComponent} from './Navigation/sidenav/sidenav.component'
 import {ProjectService} from './Projects/projects.service'
 import {appReducers} from './Store/app.reducer'
 import {UsersPageComponent} from './Users/users-page/users-page.component'
-import {IssueHeaderComponent} from './Issues/issue-header/issue-header.component'
 
 
 @NgModule( {
@@ -35,6 +36,7 @@ import {IssueHeaderComponent} from './Issues/issue-header/issue-header.component
     IssuesPageComponent,
     IssueHeaderComponent,
     IssueListComponent,
+    IssueDetailComponent,
     LoginComponent,
     ProjectsPageComponent,
     ProjectListComponent,

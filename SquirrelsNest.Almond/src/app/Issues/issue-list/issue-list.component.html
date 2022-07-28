@@ -1,8 +1,7 @@
-<section>
-  <mat-action-list>
-    <button mat-list-item *ngFor='let issue of issueList$ | async'
-            (click)='onIssueSelected(issue)'>{{issue.title}}</button>
-  </mat-action-list>
-  <button *ngIf='serverHasMoreIssues$ | async' mat-button (click)='onRetrieveMoreIssues()'>Load More Issues
-  </button>
-</section>
+<ul role='list'>
+  <li *ngFor='let issue of issueList$ | async'>
+    <sn-issue-detail [issue]='issue'></sn-issue-detail>
+  </li>
+</ul>
+<button *ngIf='serverHasMoreIssues$ | async' mat-button (click)='onRetrieveMoreIssues()'>Load More Issues
+</button>
