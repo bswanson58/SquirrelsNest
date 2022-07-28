@@ -9,11 +9,11 @@ import {ProjectsPageComponent} from './Projects/projects-page/projects-page.comp
 import {UsersPageComponent} from './Users/users-page/users-page.component'
 
 const appRoutes: Routes = [
-  { path: 'projects', component: ProjectsPageComponent, canActivate: [AuthGuard] },
-  { path: 'issues', component: IssuesPageComponent, canActivate: [AuthGuard] },
-  { path: 'users', component: UsersPageComponent, canActivate: [AuthGuard] },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent }
+  { path: 'projects', component: ProjectsPageComponent, canActivate: [AuthGuard], title: 'Projects' },
+  { path: 'issues', component: IssuesPageComponent, canActivate: [AuthGuard], title: 'Issues' },
+  { path: 'users', component: UsersPageComponent, canActivate: [AuthGuard], title: 'Users' },
+  { path: 'login', component: LoginComponent, title: 'Login' },
+  { path: 'register', component: RegisterComponent, title: 'Register' }
 ]
 
 @NgModule( {
