@@ -10,10 +10,10 @@
     <span fxFlex>{{issue.title}}</span>
     <span fxFlex style='margin-left: 1em; opacity: 70%;'>{{issue.description}}</span>
     <div fxLayout='row'>
-      <span fxFlex fxFlexOffset='2em'>{{issue.issueType.name}}</span>
-      <span fxFlex fxFlexOffset='2em'>{{issue.workflowState.name}}</span>
-      <span fxFlex fxFlexOffset='2em'>{{issue.component.name}}</span>
-      <span fxFlex fxFlexOffset='2em'>{{issue.assignedTo.name}}</span>
+      <button mat-button fxFlex fxFlexOffset='2em' onclick='this.blur()' (click)='onIssueType()'>{{issue.issueType.name}}</button>
+      <button mat-button fxFlex fxFlexOffset='2em' onclick='this.blur()' (click)='onWorkflowState()'>{{issue.workflowState.name}}</button>
+      <button mat-button fxFlex fxFlexOffset='2em' onclick='this.blur()' (click)='onComponentType()'>{{issue.component.name}}</button>
+      <button mat-button fxFlex fxFlexOffset='2em' onclick='this.blur()' (click)='onAssignedTo()'>{{issue.assignedTo.name}}</button>
     </div>
   </ng-container>
 </div>

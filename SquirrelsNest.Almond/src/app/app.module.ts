@@ -27,6 +27,7 @@ import {SidenavComponent} from './Navigation/sidenav/sidenav.component'
 import {ProjectService} from './Projects/projects.service'
 import {appReducers} from './Store/app.reducer'
 import {UsersPageComponent} from './Users/users-page/users-page.component'
+import {IssueDetailSelectorComponent} from './Issues/issue-detail-selector/issue-detail-selector.component'
 
 
 @NgModule( {
@@ -43,6 +44,7 @@ import {UsersPageComponent} from './Users/users-page/users-page.component'
     RegisterComponent,
     SidenavComponent,
     UsersPageComponent,
+    IssueDetailSelectorComponent,
   ],
   imports: [
     AppRoutingModule,
