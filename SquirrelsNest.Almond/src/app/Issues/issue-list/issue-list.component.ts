@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core'
+import {Component, OnDestroy, OnInit} from '@angular/core'
 import {Store} from '@ngrx/store'
-import {Observable} from 'rxjs'
+import {Observable, Subscription} from 'rxjs'
 import {ClIssue} from '../../Data/graphQlTypes'
 import {AppState} from '../../Store/app.reducer'
 import {getIssues, getSelectedProject, getServerHasMoreIssues} from '../../Store/app.selectors'
@@ -12,9 +12,10 @@ import {IssueService} from '../issues.service'
   templateUrl: './issue-list.component.html',
   styleUrls: ['./issue-list.component.css']
 } )
-export class IssueListComponent implements OnInit {
+export class IssueListComponent implements OnInit, OnDestroy {
   issueList$: Observable<ClIssue[]>
   serverHasMoreIssues$: Observable<boolean>
+  private mProjectSubscription: Subscription | undefined
 
   constructor( private store: Store<AppState>, private issuesService: IssueService ) {
     this.issueList$ = new Observable<ClIssue[]>()
@@ -25,7 +26,7 @@ export class IssueListComponent implements OnInit {
     this.issueList$ = this.store.select( getIssues )
     this.serverHasMoreIssues$ = this.store.select( getServerHasMoreIssues )
 
-    this.store.select( getSelectedProject ).subscribe( project => {
+    this.mProjectSubscription = this.store.select( getSelectedProject ).subscribe( project => {
       if( project != null ) {
         this.issuesService.LoadIssues( project.id )
       }
@@ -37,5 +38,10 @@ export class IssueListComponent implements OnInit {
 
   onRetrieveMoreIssues() {
     this.issuesService.LoadMoreIssues()
+  }
+
+  ngOnDestroy() {
+    this.mProjectSubscription?.unsubscribe()
+    this.mProjectSubscription = undefined
   }
 }
