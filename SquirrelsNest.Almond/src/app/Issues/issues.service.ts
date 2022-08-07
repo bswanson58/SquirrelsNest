@@ -3,12 +3,19 @@ import {GraphQLErrors} from '@apollo/client/errors'
 import {Store} from '@ngrx/store'
 import {Apollo, QueryRef} from 'apollo-angular'
 import {map, Subscription, take, tap} from 'rxjs'
-import {ClIssueCollectionSegment, Query} from '../Data/graphQlTypes'
-import {IssuesQuery, IssueQueryInput} from '../Data/queryStatements'
+import {
+  ClIssue,
+  ClIssueCollectionSegment, IssueUpdatePath,
+  Mutation,
+  Query,
+  UpdateIssueInput
+} from '../Data/graphQlTypes'
+import {UpdateIssueMutation} from '../Data/mutationStatements'
+import {IssueQueryInput, IssuesQuery} from '../Data/queryStatements'
 import {AppState} from '../Store/app.reducer'
+import {getIssueQueryState} from '../Store/app.selectors'
 import {AppendIssues, ClearIssues, ClearIssuesLoading, SetIssuesLoading} from './issues.actions'
 import {IssueQueryInfo} from './issues.state'
-import {getIssueQueryState} from '../Store/app.selectors'
 
 @Injectable( {
   providedIn: 'root'
@@ -57,6 +64,31 @@ export class IssueService {
         }
       } ).then()
     }
+  }
+
+  UpdateIssueIssueType( issue: ClIssue ) {
+    const input: UpdateIssueInput = {
+      issueId: issue.id,
+      operations: [{ path: 'ISSUE_TYPE_ID' as IssueUpdatePath.IssueTypeId, value: issue.issueType.id }]
+    }
+
+    this.updateIssue( input )
+  }
+
+  UpdateIssueComponent( issue: ClIssue ) {
+    const input: UpdateIssueInput = {
+      issueId: issue.id,
+      operations: [{ path: 'COMPONENT_ID' as IssueUpdatePath.ComponentId, value: issue.component.id }]
+    }
+
+    this.updateIssue( input )
+  }
+
+  private updateIssue( input: UpdateIssueInput ) {
+    this.apollo.mutate<Mutation>( { mutation: UpdateIssueMutation, variables: { updateInput: input } } )
+      .subscribe( result => {
+//        result.data?.updateIssue.issue
+      } )
   }
 
   handleErrors( data: Query | null, errors: GraphQLErrors | undefined ): ClIssueCollectionSegment {

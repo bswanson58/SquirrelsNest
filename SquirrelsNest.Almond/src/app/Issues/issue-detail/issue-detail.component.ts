@@ -10,6 +10,7 @@ import {
   DetailSelectorData, DetailSelectorResult,
   IssueDetailSelectorComponent
 } from '../issue-detail-selector/issue-detail-selector.component'
+import {IssueService} from '../issues.service'
 
 @Component( {
   selector: 'sn-issue-detail',
@@ -24,7 +25,7 @@ export class IssueDetailComponent implements OnInit, OnDestroy {
 
   issueListStyle$: Observable<eIssueDisplayStyle>
 
-  constructor( private store: Store<AppState>, private dialog: MatDialog ) {
+  constructor( private store: Store<AppState>, private dialog: MatDialog, private issueService: IssueService ) {
     this.issueListStyle$ = new Observable<eIssueDisplayStyle>()
   }
 
@@ -52,7 +53,13 @@ export class IssueDetailComponent implements OnInit, OnDestroy {
       .open( IssueDetailSelectorComponent, dialogConfig )
       .afterClosed()
       .subscribe( ( result: DetailSelectorResult ) => {
-        console.log( result )
+        if( result.accepted ) {
+          const newType = this.mProject?.issueTypes.find( i => i.id === result.selectedId )
+
+          if( newType !== undefined ) {
+            this.issueService.UpdateIssueIssueType( { ...this.issue, issueType: newType } )
+          }
+        }
       } )
   }
 
@@ -71,7 +78,13 @@ export class IssueDetailComponent implements OnInit, OnDestroy {
       .open( IssueDetailSelectorComponent, dialogConfig )
       .afterClosed()
       .subscribe( ( result: DetailSelectorResult ) => {
-        console.log( result )
+        if( result.accepted ) {
+          const newComponent = this.mProject?.components.find( c => c.id === result.selectedId )
+
+          if( newComponent !== undefined ) {
+            this.issueService.UpdateIssueComponent({...this.issue, component: newComponent })
+          }
+        }
       } )
   }
 
