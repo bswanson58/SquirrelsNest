@@ -4,7 +4,8 @@ import {
   APPEND_ISSUES, AppendIssues,
   CLEAR_ISSUES_LOADING,
   CLEAR_ISSUES,
-  SET_ISSUES_LOADING
+  SET_ISSUES_LOADING,
+  UPDATE_ISSUE, UpdateIssue
 } from './issues.actions'
 
 export function issuesReducer( state: IssueState = initialIssueState, action: Action ): IssueState {
@@ -24,6 +25,14 @@ export function issuesReducer( state: IssueState = initialIssueState, action: Ac
         ...state,
         issues: newIssueList,
         queryInfo: { ...appendPayload.queryInfo, loadedIssues: newIssueList.length }
+      }
+
+    case UPDATE_ISSUE:
+      const updatePayload = action as UpdateIssue
+      const updatedIssueList = state.issues.map( i => i.id === updatePayload.issue.id ? updatePayload.issue : i )
+      return {
+        ...state,
+        issues: updatedIssueList
       }
 
     case SET_ISSUES_LOADING:

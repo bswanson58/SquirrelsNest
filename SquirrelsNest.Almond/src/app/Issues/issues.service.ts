@@ -14,7 +14,7 @@ import {UpdateIssueMutation} from '../Data/mutationStatements'
 import {IssueQueryInput, IssuesQuery} from '../Data/queryStatements'
 import {AppState} from '../Store/app.reducer'
 import {getIssueQueryState} from '../Store/app.selectors'
-import {AppendIssues, ClearIssues, ClearIssuesLoading, SetIssuesLoading} from './issues.actions'
+import {AppendIssues, ClearIssues, ClearIssuesLoading, SetIssuesLoading, UpdateIssue} from './issues.actions'
 import {IssueQueryInfo} from './issues.state'
 
 @Injectable( {
@@ -44,7 +44,7 @@ export class IssueService {
     this.mIssuesSubscription = this.mIssueQuery
       .valueChanges
       .pipe(
-        map( result => this.handleErrors( result.data, result.errors ) ),
+        map( result => this.handleQueryErrors( result.data, result.errors ) ),
         map( result => this.handleIssueData( result ) ),
         tap( _ => this.store.dispatch( new ClearIssuesLoading() ) )
       )
@@ -84,14 +84,57 @@ export class IssueService {
     this.updateIssue( input )
   }
 
-  private updateIssue( input: UpdateIssueInput ) {
-    this.apollo.mutate<Mutation>( { mutation: UpdateIssueMutation, variables: { updateInput: input } } )
-      .subscribe( result => {
-//        result.data?.updateIssue.issue
-      } )
+  UpdateWorkflowState( issue: ClIssue ) {
+    const input: UpdateIssueInput = {
+      issueId: issue.id,
+      operations: [{ path: 'WORKFLOW_STATE_ID' as IssueUpdatePath.WorkflowStateId, value: issue.workflowState.id }]
+    }
+
+    this.updateIssue( input )
   }
 
-  handleErrors( data: Query | null, errors: GraphQLErrors | undefined ): ClIssueCollectionSegment {
+  UpdateAssignedUser( issue: ClIssue ) {
+    const input: UpdateIssueInput = {
+      issueId: issue.id,
+      operations: [{ path: 'ASSIGNED_TO_ID' as IssueUpdatePath.AssignedToId, value: issue.assignedTo.id }]
+    }
+
+    this.updateIssue( input )
+  }
+
+  private updateIssue( input: UpdateIssueInput ) {
+    this.store.dispatch( new SetIssuesLoading() )
+
+    this.apollo.mutate<Mutation>( { mutation: UpdateIssueMutation, variables: { updateInput: input } } )
+      .pipe(
+        map( result => IssueService.handleMutationErrors( result.data, result.errors ) ),
+        map( result => {
+          if( result !== null ) {
+            this.store.dispatch( new UpdateIssue( result ) )
+          }
+
+          return result
+        } ),
+        tap( _ => this.store.dispatch( new ClearIssuesLoading() ) ),
+        take( 1 )
+      )
+      .subscribe()
+  }
+
+  private static handleMutationErrors( data: Mutation | undefined | null, errors: GraphQLErrors | undefined ): ClIssue | null {
+    if( errors != null ) {
+      console.log( errors.entries() )
+    }
+
+    if( (data?.updateIssue?.errors !== undefined) &&
+      (data.updateIssue.issue !== undefined) ) {
+      return data.updateIssue.issue
+    }
+
+    return null
+  }
+
+  handleQueryErrors( data: Query | null, errors: GraphQLErrors | undefined ): ClIssueCollectionSegment {
     if( errors != null ) {
       console.log( errors.entries() )
     }

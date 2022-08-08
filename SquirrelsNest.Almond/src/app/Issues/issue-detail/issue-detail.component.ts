@@ -46,7 +46,6 @@ export class IssueDetailComponent implements OnInit, OnDestroy {
       items: this.mProject !== undefined ? this.mProject.issueTypes : [],
     }
     const dialogConfig = new MatDialogConfig()
-
     dialogConfig.data = selectorData
 
     this.mSubscription = this.dialog
@@ -71,7 +70,6 @@ export class IssueDetailComponent implements OnInit, OnDestroy {
       items: this.mProject !== undefined ? this.mProject.components : [],
     }
     const dialogConfig = new MatDialogConfig()
-
     dialogConfig.data = selectorData
 
     this.mSubscription = this.dialog
@@ -82,7 +80,7 @@ export class IssueDetailComponent implements OnInit, OnDestroy {
           const newComponent = this.mProject?.components.find( c => c.id === result.selectedId )
 
           if( newComponent !== undefined ) {
-            this.issueService.UpdateIssueComponent({...this.issue, component: newComponent })
+            this.issueService.UpdateIssueComponent( { ...this.issue, component: newComponent } )
           }
         }
       } )
@@ -96,14 +94,19 @@ export class IssueDetailComponent implements OnInit, OnDestroy {
       items: this.mProject !== undefined ? this.mProject.users : [],
     }
     const dialogConfig = new MatDialogConfig()
-
     dialogConfig.data = selectorData
 
     this.mSubscription = this.dialog
       .open( IssueDetailSelectorComponent, dialogConfig )
       .afterClosed()
       .subscribe( ( result: DetailSelectorResult ) => {
-        console.log( result )
+        if( result.accepted ) {
+          const newUser = this.mProject?.users.find( c => c.id === result.selectedId )
+
+          if( newUser !== undefined ) {
+            this.issueService.UpdateAssignedUser( { ...this.issue, assignedTo: newUser } )
+          }
+        }
       } )
   }
 
@@ -115,14 +118,19 @@ export class IssueDetailComponent implements OnInit, OnDestroy {
       items: this.mProject !== undefined ? this.mProject.workflowStates : [],
     }
     const dialogConfig = new MatDialogConfig()
-
     dialogConfig.data = selectorData
 
     this.mSubscription = this.dialog
       .open( IssueDetailSelectorComponent, dialogConfig )
       .afterClosed()
       .subscribe( ( result: DetailSelectorResult ) => {
-        console.log( result )
+        if( result.accepted ) {
+          const newState = this.mProject?.workflowStates.find( c => c.id === result.selectedId )
+
+          if( newState !== undefined ) {
+            this.issueService.UpdateWorkflowState( { ...this.issue, workflowState: newState } )
+          }
+        }
       } )
   }
 
