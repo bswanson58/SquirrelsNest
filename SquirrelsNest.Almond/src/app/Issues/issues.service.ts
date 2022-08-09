@@ -35,7 +35,7 @@ export class IssueService {
     this.store.dispatch( new SetIssuesLoading() )
     this.store.dispatch( new ClearIssues() )
 
-    this.mIssueQuery = this.apollo.watchQuery<Query, IssueQueryInput>(
+    this.mIssueQuery = this.apollo.use( 'issuesWatchClient' ).watchQuery<Query, IssueQueryInput>(
       {
         query: IssuesQuery,
         variables: { skip: 0, take: this.mPageLimit, order: {}, projectId: forProject }
@@ -48,7 +48,7 @@ export class IssueService {
         map( result => this.handleIssueData( result ) ),
         tap( _ => this.store.dispatch( new ClearIssuesLoading() ) )
       )
-      .subscribe()
+      .subscribe( { complete: () => console.log( 'LoadIssues completed.' ) } )
   }
 
   LoadMoreIssues(): void {
@@ -105,7 +105,10 @@ export class IssueService {
   private updateIssue( input: UpdateIssueInput ) {
     this.store.dispatch( new SetIssuesLoading() )
 
-    this.apollo.mutate<Mutation>( { mutation: UpdateIssueMutation, variables: { updateInput: input } } )
+    this.apollo.use( 'defaultClient' ).mutate<Mutation>( {
+      mutation: UpdateIssueMutation,
+      variables: { updateInput: input }
+    } )
       .pipe(
         map( result => IssueService.handleMutationErrors( result.data, result.errors ) ),
         map( result => {
@@ -116,7 +119,6 @@ export class IssueService {
           return result
         } ),
         tap( _ => this.store.dispatch( new ClearIssuesLoading() ) ),
-        take( 1 )
       )
       .subscribe()
   }

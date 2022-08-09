@@ -19,7 +19,7 @@ export class AuthService {
 
     this.store.dispatch( new AuthRequested() )
 
-    let subscription = this.apollo.mutate<Mutation, any>( {
+    let subscription = this.apollo.use('defaultClient').mutate<Mutation, any>( {
       mutation: LoginMutation,
       variables: { loginInput: loginInput }
     } )

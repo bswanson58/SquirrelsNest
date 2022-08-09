@@ -30,6 +30,7 @@ export function issuesReducer( state: IssueState = initialIssueState, action: Ac
     case UPDATE_ISSUE:
       const updatePayload = action as UpdateIssue
       const updatedIssueList = state.issues.map( i => i.id === updatePayload.issue.id ? updatePayload.issue : i )
+
       return {
         ...state,
         issues: updatedIssueList

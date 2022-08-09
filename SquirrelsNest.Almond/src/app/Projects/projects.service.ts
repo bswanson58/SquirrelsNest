@@ -21,7 +21,7 @@ export class ProjectService implements OnDestroy {
   constructor( private apollo: Apollo, private store: Store<AppState> ) {
     this.mProjectsSubscription = null
 
-    this.mProjectQuery = this.apollo.watchQuery<Query, ProjectQueryInput>(
+    this.mProjectQuery = this.apollo.use( 'projectsWatchClient' ).watchQuery<Query, ProjectQueryInput>(
       {
         query: AllProjectsQuery,
         variables: { skip: 0, take: this.mPageLimit, order: {} }
@@ -40,7 +40,7 @@ export class ProjectService implements OnDestroy {
         map( result => this.handleProjectData( result ) ),
         tap( _ => this.store.dispatch( new ClearProjectLoading() ) )
       )
-      .subscribe()
+      .subscribe( { complete: () => console.log( 'LoadProjects completed.' ) } )
   }
 
   handleErrors( data: Query | null, errors: GraphQLErrors | undefined ): ClProjectCollectionSegment {
