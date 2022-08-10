@@ -3,8 +3,8 @@ import {Store} from '@ngrx/store'
 import {Observable, Subscription} from 'rxjs'
 import {ClIssue} from '../../Data/graphQlTypes'
 import {AppState} from '../../Store/app.reducer'
-import {getIssues, getSelectedProject, getServerHasMoreIssues} from '../../Store/app.selectors'
-import {ClearIssues} from '../issues.actions'
+import {getSelectedProject} from '../../Store/app.selectors'
+import {IssuesFacade} from '../issues.facade'
 import {IssueService} from '../issues.service'
 
 @Component( {
@@ -17,27 +17,27 @@ export class IssueListComponent implements OnInit, OnDestroy {
   serverHasMoreIssues$: Observable<boolean>
   private mProjectSubscription: Subscription | undefined
 
-  constructor( private store: Store<AppState>, private issuesService: IssueService ) {
+  constructor( private store: Store<AppState>, private issuesService: IssueService, private issuesFacade: IssuesFacade ) {
     this.issueList$ = new Observable<ClIssue[]>()
     this.serverHasMoreIssues$ = new Observable<boolean>()
   }
 
   ngOnInit(): void {
-    this.issueList$ = this.store.select( getIssues )
-    this.serverHasMoreIssues$ = this.store.select( getServerHasMoreIssues )
+    this.issueList$ = this.issuesFacade.GetCurrentIssuesList()
+    this.serverHasMoreIssues$ = this.issuesFacade.GetServerHasMoreIssues()
 
     this.mProjectSubscription = this.store.select( getSelectedProject ).subscribe( project => {
       if( project != null ) {
-        this.issuesService.LoadIssues( project.id )
+        this.issuesFacade.LoadIssues()
       }
       else {
-        this.store.dispatch( new ClearIssues() )
+        this.issuesFacade.ClearIssues()
       }
     } )
   }
 
   onRetrieveMoreIssues() {
-    this.issuesService.LoadMoreIssues()
+    this.issuesFacade.LoadMoreIssues()
   }
 
   ngOnDestroy() {

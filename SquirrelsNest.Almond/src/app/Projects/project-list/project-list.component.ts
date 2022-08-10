@@ -1,11 +1,7 @@
 import {Component, OnInit} from '@angular/core'
-import {Store} from '@ngrx/store'
 import {Observable} from 'rxjs'
 import {ClProject} from '../../Data/graphQlTypes'
-import {AppState} from '../../Store/app.reducer'
-import {getProjects, getServerHasMoreProjects} from '../../Store/app.selectors'
-import {SelectProject} from '../projects.actions'
-import {ProjectService} from '../projects.service'
+import {ProjectFacade} from '../project.facade'
 
 @Component( {
   selector: 'sn-project-list',
@@ -16,25 +12,23 @@ export class ProjectListComponent implements OnInit {
   projectList$: Observable<ClProject[]>
   serverHasMoreProjects$: Observable<boolean>
 
-  constructor( private projectService: ProjectService, private store: Store<AppState> ) {
+  constructor( private projectFacade: ProjectFacade ) {
     this.projectList$ = new Observable<ClProject[]>()
     this.serverHasMoreProjects$ = new Observable<boolean>()
   }
 
   ngOnInit(): void {
-    this.projectList$ = this.store.select( getProjects )
-    this.serverHasMoreProjects$ = this.store.select( getServerHasMoreProjects )
+    this.projectList$ = this.projectFacade.GetProjectList$()
+    this.serverHasMoreProjects$ = this.projectFacade.GetServerHasMoreProjects()
 
-    this.projectService.LoadProjects()
+    this.projectFacade.LoadProjects()
   }
 
   onRetrieveMoreProjects() {
-    this.projectService.LoadMoreProjects()
+    this.projectFacade.LoadMoreProjects()
   }
 
   onProjectSelected( selected: ClProject ) {
-    if( selected != null ) {
-      this.store.dispatch( new SelectProject( selected ) )
-    }
+    this.projectFacade.SelectProject( selected )
   }
 }
