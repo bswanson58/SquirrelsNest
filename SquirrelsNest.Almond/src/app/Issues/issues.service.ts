@@ -4,9 +4,9 @@ import {Store} from '@ngrx/store'
 import {Apollo, QueryRef} from 'apollo-angular'
 import {map, Subscription, take, tap} from 'rxjs'
 import {
-  AddIssueInput,
+  AddIssueInput, ClComponent,
   ClIssue,
-  ClIssueCollectionSegment, IssueUpdatePath,
+  ClIssueCollectionSegment, ClIssueType, ClUser, ClWorkflowState, IssueUpdatePath,
   Mutation,
   Query,
   UpdateIssueInput
@@ -67,37 +67,37 @@ export class IssueService {
     }
   }
 
-  UpdateIssueIssueType( issue: ClIssue ) {
+  UpdateIssueIssueType( issue: ClIssue, issueType: ClIssueType ) {
     const input: UpdateIssueInput = {
       issueId: issue.id,
-      operations: [{ path: 'ISSUE_TYPE_ID' as IssueUpdatePath.IssueTypeId, value: issue.issueType.id }]
+      operations: [{ path: 'ISSUE_TYPE_ID' as IssueUpdatePath.IssueTypeId, value: issueType.id }]
     }
 
     this.updateIssue( input )
   }
 
-  UpdateIssueComponent( issue: ClIssue ) {
+  UpdateIssueComponent( issue: ClIssue, component: ClComponent ) {
     const input: UpdateIssueInput = {
       issueId: issue.id,
-      operations: [{ path: 'COMPONENT_ID' as IssueUpdatePath.ComponentId, value: issue.component.id }]
+      operations: [{ path: 'COMPONENT_ID' as IssueUpdatePath.ComponentId, value: component.id }]
     }
 
     this.updateIssue( input )
   }
 
-  UpdateWorkflowState( issue: ClIssue ) {
+  UpdateIssueWorkflowState( issue: ClIssue, state: ClWorkflowState ) {
     const input: UpdateIssueInput = {
       issueId: issue.id,
-      operations: [{ path: 'WORKFLOW_STATE_ID' as IssueUpdatePath.WorkflowStateId, value: issue.workflowState.id }]
+      operations: [{ path: 'WORKFLOW_STATE_ID' as IssueUpdatePath.WorkflowStateId, value: state.id }]
     }
 
     this.updateIssue( input )
   }
 
-  UpdateAssignedUser( issue: ClIssue ) {
+  UpdateIssueAssignedUser( issue: ClIssue, user: ClUser ) {
     const input: UpdateIssueInput = {
       issueId: issue.id,
-      operations: [{ path: 'ASSIGNED_TO_ID' as IssueUpdatePath.AssignedToId, value: issue.assignedTo.id }]
+      operations: [{ path: 'ASSIGNED_TO_ID' as IssueUpdatePath.AssignedToId, value: user.id }]
     }
 
     this.updateIssue( input )

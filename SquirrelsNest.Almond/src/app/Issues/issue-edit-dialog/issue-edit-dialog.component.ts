@@ -1,5 +1,6 @@
 import {Component, Inject} from '@angular/core'
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog'
+import {Observable} from 'rxjs'
 import {
   ClComponent,
   ClIssue,
@@ -8,6 +9,7 @@ import {
   ClUser,
   ClWorkflowState,
 } from '../../Data/graphQlTypes'
+import {ProjectFacade} from '../../Projects/project.facade'
 
 export interface IssueEditData {
   issue: ClIssue | null,
@@ -25,25 +27,28 @@ export interface IssueEditResult {
   styleUrls: ['./issue-edit-dialog.component.css']
 } )
 export class IssueEditDialogComponent {
+  components$: Observable<ClComponent[]>
+  issueTypes$: Observable<ClIssueType[]>
+  workflowStates$: Observable<ClWorkflowState[]>
+  users$: Observable<ClUser[]>
+
   issueTitle: string
   issueDescription: string
-  components: ClComponent[]
   selectedComponentId: string
-  issueTypes: ClIssueType[]
   selectedIssueTypeId: string
-  workflowStates: ClWorkflowState[]
   selectedWorkflowId: string
-  users: ClUser[]
   selectedUserId: string
 
   constructor( private dialogRef: MatDialogRef<IssueEditDialogComponent>,
-               @Inject( MAT_DIALOG_DATA ) private dialogData: IssueEditData ) {
-    this.issueTitle = dialogData.issue !== null ? dialogData.issue.title : ''
-    this.issueDescription = dialogData.issue !== null ? dialogData.issue?.description : ''
-    this.components = dialogData.project.components
-    this.issueTypes = dialogData.project.issueTypes
-    this.workflowStates = dialogData.project.workflowStates
-    this.users = dialogData.project.users
+               @Inject( MAT_DIALOG_DATA ) private dialogData: IssueEditData,
+               private projectFacade: ProjectFacade ) {
+    this.issueTitle = this.dialogData.issue !== null ? this.dialogData.issue.title : ''
+    this.issueDescription = this.dialogData.issue !== null ? this.dialogData.issue?.description : ''
+
+    this.components$ = this.projectFacade.GetCurrentProjectComponents$()
+    this.issueTypes$ = this.projectFacade.GetCurrentProjectIssueTypes$()
+    this.workflowStates$ = this.projectFacade.GetCurrentProjectWorkflowStates$()
+    this.users$ = this.projectFacade.GetCurrentProjectUsers$()
 
     this.selectedComponentId = ''
     this.selectedIssueTypeId = ''

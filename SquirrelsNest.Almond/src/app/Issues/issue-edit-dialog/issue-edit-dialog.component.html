@@ -13,13 +13,13 @@
     <mat-form-field style='width: 40%'>
       <mat-label>Issue Type</mat-label>
       <mat-select required [(value)]='selectedIssueTypeId'>
-        <mat-option *ngFor='let item of issueTypes' [value]='item.id'>{{item.name}}</mat-option>
+        <mat-option *ngFor='let item of issueTypes$ | async' [value]='item.id'>{{item.name}}</mat-option>
       </mat-select>
     </mat-form-field>
     <mat-form-field style='width: 40%'>
       <mat-label>Component</mat-label>
       <mat-select required [(value)]='selectedComponentId'>
-        <mat-option *ngFor='let item of components' [value]='item.id'>{{item.name}}</mat-option>
+        <mat-option *ngFor='let item of components$ | async' [value]='item.id'>{{item.name}}</mat-option>
       </mat-select>
     </mat-form-field>
   </div>
@@ -27,13 +27,13 @@
     <mat-form-field style='width: 40%'>
       <mat-label>Workflow State</mat-label>
       <mat-select required [(value)]='selectedWorkflowId'>
-        <mat-option *ngFor='let item of workflowStates' [value]='item.id'>{{item.name}}</mat-option>
+        <mat-option *ngFor='let item of workflowStates$ | async' [value]='item.id'>{{item.name}}</mat-option>
       </mat-select>
     </mat-form-field>
     <mat-form-field style='width: 40%'>
       <mat-label>Assigned User</mat-label>
       <mat-select [(value)]='selectedUserId'>
-        <mat-option *ngFor='let item of users' [value]='item.id'>{{item.name}}</mat-option>
+        <mat-option *ngFor='let item of users$ | async' [value]='item.id'>{{item.name}}</mat-option>
       </mat-select>
     </mat-form-field>
   </div>
