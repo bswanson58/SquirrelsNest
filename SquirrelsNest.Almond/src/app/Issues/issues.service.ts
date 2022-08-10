@@ -4,17 +4,18 @@ import {Store} from '@ngrx/store'
 import {Apollo, QueryRef} from 'apollo-angular'
 import {map, Subscription, take, tap} from 'rxjs'
 import {
+  AddIssueInput,
   ClIssue,
   ClIssueCollectionSegment, IssueUpdatePath,
   Mutation,
   Query,
   UpdateIssueInput
 } from '../Data/graphQlTypes'
-import {UpdateIssueMutation} from '../Data/mutationStatements'
+import {AddIssueMutation, UpdateIssueMutation} from '../Data/mutationStatements'
 import {IssueQueryInput, IssuesQuery} from '../Data/queryStatements'
 import {AppState} from '../Store/app.reducer'
 import {getIssueQueryState} from '../Store/app.selectors'
-import {AppendIssues, ClearIssues, ClearIssuesLoading, SetIssuesLoading, UpdateIssue} from './issues.actions'
+import {AddIssue, AppendIssues, ClearIssues, ClearIssuesLoading, SetIssuesLoading, UpdateIssue} from './issues.actions'
 import {IssueQueryInfo} from './issues.state'
 
 @Injectable( {
@@ -44,7 +45,7 @@ export class IssueService {
     this.mIssuesSubscription = this.mIssueQuery
       .valueChanges
       .pipe(
-        map( result => this.handleQueryErrors( result.data, result.errors ) ),
+        map( result => IssueService.handleQueryErrors( result.data, result.errors ) ),
         map( result => this.handleIssueData( result ) ),
         tap( _ => this.store.dispatch( new ClearIssuesLoading() ) )
       )
@@ -110,7 +111,7 @@ export class IssueService {
       variables: { updateInput: input }
     } )
       .pipe(
-        map( result => IssueService.handleMutationErrors( result.data, result.errors ) ),
+        map( result => IssueService.handleUpdateMutationErrors( result.data, result.errors ) ),
         map( result => {
           if( result !== null ) {
             this.store.dispatch( new UpdateIssue( result ) )
@@ -123,7 +124,7 @@ export class IssueService {
       .subscribe()
   }
 
-  private static handleMutationErrors( data: Mutation | undefined | null, errors: GraphQLErrors | undefined ): ClIssue | null {
+  private static handleUpdateMutationErrors( data: Mutation | undefined | null, errors: GraphQLErrors | undefined ): ClIssue | null {
     if( errors != null ) {
       console.log( errors.entries() )
     }
@@ -136,7 +137,7 @@ export class IssueService {
     return null
   }
 
-  handleQueryErrors( data: Query | null, errors: GraphQLErrors | undefined ): ClIssueCollectionSegment {
+  private static handleQueryErrors( data: Query | null, errors: GraphQLErrors | undefined ): ClIssueCollectionSegment {
     if( errors != null ) {
       console.log( errors.entries() )
     }
@@ -150,7 +151,7 @@ export class IssueService {
     }
   }
 
-  handleIssueData( issueData: ClIssueCollectionSegment ): void {
+  private handleIssueData( issueData: ClIssueCollectionSegment ): void {
     this.store.dispatch(
       new AppendIssues( issueData.items!, {
         hasNextPage: issueData.pageInfo.hasNextPage,
@@ -160,7 +161,7 @@ export class IssueService {
       } ) )
   }
 
-  getIssueQueryState(): IssueQueryInfo {
+  private getIssueQueryState(): IssueQueryInfo {
     let queryState: IssueQueryInfo
 
     this.store.select( getIssueQueryState ).pipe( take( 1 ) ).subscribe( state => queryState = state )
@@ -172,7 +173,48 @@ export class IssueService {
     this.unsubscribe()
   }
 
-  unsubscribe() {
+  AddIssue( issue: ClIssue ) {
+    const input: AddIssueInput = {
+      title: issue.title,
+      description: issue.description,
+      issueTypeId: issue.issueType.id,
+      projectId: issue.project.id
+    }
+
+    this.store.dispatch( new SetIssuesLoading() )
+
+    this.apollo.use( 'defaultClient' ).mutate<Mutation>( {
+      mutation: AddIssueMutation,
+      variables: { issueInput: input }
+    } )
+      .pipe(
+        map( result => IssueService.handleAddMutationErrors( result.data, result.errors ) ),
+        map( result => {
+          if( result !== null ) {
+            this.store.dispatch( new AddIssue( result ) )
+          }
+
+          return result
+        } ),
+        tap( _ => this.store.dispatch( new ClearIssuesLoading() ) ),
+      )
+      .subscribe()
+  }
+
+  private static handleAddMutationErrors( data: Mutation | undefined | null, errors: GraphQLErrors | undefined ): ClIssue | null {
+    if( errors != null ) {
+      console.log( errors.entries() )
+    }
+
+    if( (data?.addIssue?.errors !== undefined) &&
+      (data.addIssue.issue !== undefined) ) {
+      return data.addIssue.issue
+    }
+
+    return null
+  }
+
+  private unsubscribe() {
     if( this.mIssuesSubscription != null ) {
       this.mIssuesSubscription.unsubscribe()
       this.mIssuesSubscription = null

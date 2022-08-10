@@ -38,10 +38,10 @@ export class IssueDetailSelectorComponent {
   }
 
   onClose() {
-    this.dialogRef.close( { accepted: true, selectedId: this.selectedItemId } )
+    this.dialogRef.close( { accepted: true, selectedId: this.selectedItemId } as DetailSelectorResult )
   }
 
   onCancel() {
-    this.dialogRef.close( { accepted: false, selectedId: '' } )
+    this.dialogRef.close( { accepted: false, selectedId: '' } as DetailSelectorResult )
   }
 }

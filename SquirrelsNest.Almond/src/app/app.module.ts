@@ -28,6 +28,7 @@ import {ProjectService} from './Projects/projects.service'
 import {appReducers} from './Store/app.reducer'
 import {UsersPageComponent} from './Users/users-page/users-page.component'
 import {IssueDetailSelectorComponent} from './Issues/issue-detail-selector/issue-detail-selector.component'
+import {IssueEditDialogComponent} from './Issues/issue-edit-dialog/issue-edit-dialog.component'
 
 
 @NgModule( {
@@ -38,13 +39,14 @@ import {IssueDetailSelectorComponent} from './Issues/issue-detail-selector/issue
     IssueHeaderComponent,
     IssueListComponent,
     IssueDetailComponent,
+    IssueDetailSelectorComponent,
+    IssueEditDialogComponent,
     LoginComponent,
     ProjectsPageComponent,
     ProjectListComponent,
     RegisterComponent,
     SidenavComponent,
     UsersPageComponent,
-    IssueDetailSelectorComponent,
   ],
   imports: [
     AppRoutingModule,
