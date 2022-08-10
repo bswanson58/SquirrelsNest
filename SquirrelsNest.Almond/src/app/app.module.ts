@@ -12,6 +12,7 @@ import {HttpClientModule} from '@angular/common/http'
 
 import {AppComponent} from './app.component'
 import {AppRoutingModule} from './app.routing.module'
+import {IssuesFacade} from './Issues/issues.facade'
 import {IssueService} from './Issues/issues.service'
 import {HeaderComponent} from './Navigation/header/header.component'
 import {IssuesPageComponent} from './Issues/issues-page/issues-page.component'
@@ -20,6 +21,7 @@ import {IssueHeaderComponent} from './Issues/issue-header/issue-header.component
 import {IssueListComponent} from './Issues/issue-list/issue-list.component'
 import {LoginComponent} from './Auth/login/login.component'
 import {MaterialModule} from './material.module'
+import {ProjectFacade} from './Projects/project.facade'
 import {ProjectsPageComponent} from './Projects/projects-page/projects-page.component'
 import {ProjectListComponent} from './Projects/project-list/project-list.component'
 import {RegisterComponent} from './Auth/register/register.component'
@@ -63,7 +65,9 @@ import {IssueEditDialogComponent} from './Issues/issue-edit-dialog/issue-edit-di
   providers: [
     AuthGuard,
     AuthService,
+    IssuesFacade,
     IssueService,
+    ProjectFacade,
     ProjectService
   ],
   bootstrap: [AppComponent]

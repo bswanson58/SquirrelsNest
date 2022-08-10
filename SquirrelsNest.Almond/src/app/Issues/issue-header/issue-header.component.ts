@@ -1,17 +1,14 @@
 import {Component, OnDestroy, OnInit} from '@angular/core'
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog'
-import {Store} from '@ngrx/store'
-import {Observable, Subscription, take} from 'rxjs'
+import {Observable, Subscription} from 'rxjs'
 import {ClIssue, ClProject} from '../../Data/graphQlTypes'
-import {AppState} from '../../Store/app.reducer'
-import {getSelectedProject} from '../../Store/app.selectors'
-import {ToggleIssueListStyle} from '../../UI/ui.actions'
+import {ProjectFacade} from '../../Projects/project.facade'
 import {
   IssueEditData,
   IssueEditDialogComponent,
   IssueEditResult
 } from '../issue-edit-dialog/issue-edit-dialog.component'
-import {IssueService} from '../issues.service'
+import {IssuesFacade} from '../issues.facade'
 
 @Component( {
   selector: 'sn-issue-header',
@@ -23,20 +20,20 @@ export class IssueHeaderComponent implements OnInit, OnDestroy {
 
   currentProject$: Observable<ClProject | null>
 
-  constructor( private store: Store<AppState>, private dialog: MatDialog, private issueService: IssueService ) {
+  constructor( private dialog: MatDialog, private projectFacade: ProjectFacade, private issuesFacade: IssuesFacade ) {
     this.currentProject$ = new Observable<ClProject>()
   }
 
   ngOnInit(): void {
-    this.currentProject$ = this.store.select( getSelectedProject )
+    this.currentProject$ = this.projectFacade.GetCurrentProject$()
   }
 
   onToggleListStyle() {
-    this.store.dispatch( new ToggleIssueListStyle() )
+    this.issuesFacade.ToggleIssueListStyle()
   }
 
   onCreateNewIssue() {
-    const currentProject = this.getCurrentProject()
+    const currentProject = this.projectFacade.GetCurrentProject()
 
     if( currentProject !== null ) {
       const dialogData: IssueEditData = {
@@ -52,18 +49,10 @@ export class IssueHeaderComponent implements OnInit, OnDestroy {
         .subscribe( ( result: IssueEditResult ) => {
           if( (result.accepted) &&
             (result.issue !== null) ) {
-            this.issueService.AddIssue( result.issue )
+            this.issuesFacade.AddIssue( result.issue )
           }
         } )
     }
-  }
-
-  private getCurrentProject(): ClProject | null {
-    let currentProject: ClProject | null = null
-
-    this.store.select( getSelectedProject ).pipe( take( 1 ) ).subscribe( project => currentProject = project )
-
-    return currentProject
   }
 
   ngOnDestroy() {
