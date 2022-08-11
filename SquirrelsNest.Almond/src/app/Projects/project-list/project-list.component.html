@@ -1,9 +1,13 @@
 <section>
   <h1>Projects:</h1>
-  <mat-action-list>
-    <button mat-list-item *ngFor='let project of projectList$ | async'
-            (click)='onProjectSelected(project)'>{{project.name}}</button>
-  </mat-action-list>
-  <button *ngIf='serverHasMoreProjects$ | async' mat-button (click)='onRetrieveMoreProjects()'>Load More Projects
+  <ul>
+    <li *ngFor='let project of projectList$ | async'>
+      <div class='project-container' fxLayout='column' mat-ripple (click)='onProjectSelected(project)'>
+        <h3 style='margin: 0'>{{project.name}}</h3>
+        <span style='margin-left: 0.5em'>{{project.description}}</span>
+      </div>
+    </li>
+  </ul>
+  <button *ngIf='serverHasMoreProjects$ | async' mat-flat-button (click)='onRetrieveMoreProjects()'>Load More Projects
   </button>
 </section>
