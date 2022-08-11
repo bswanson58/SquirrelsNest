@@ -1,19 +1,32 @@
 <div fxLayout='column' style='margin-bottom: 5px'>
   <ng-container *ngIf='(issueListStyle$ | async) === 0'>
-    <span fxFlex>{{issue.title}}</span>
+    <div>
+      <span class='dimmed'>{{project?.issuePrefix}}-{{issue.issueNumber}}</span>
+      <span style='margin-left: 0.5em'>{{issue.title}}</span>
+    </div>
   </ng-container>
   <ng-container *ngIf='(issueListStyle$ | async) === 1'>
-    <span fxFlex>{{issue.title}}</span>
-    <span fxFlex style='margin-left: 1em; opacity: 70%;'>{{issue.description}}</span>
+    <div>
+      <span class='dimmed'>{{project?.issuePrefix}}-{{issue.issueNumber}}</span>
+      <span style='margin-left: 0.5em'>{{issue.title}}</span>
+    </div>
+    <span fxFlex class='dimmed' style='margin-left: 1em;'>{{issue.description}}</span>
   </ng-container>
   <ng-container *ngIf='(issueListStyle$ | async) === 2'>
-    <span fxFlex>{{issue.title}}</span>
-    <span fxFlex style='margin-left: 1em; opacity: 70%;'>{{issue.description}}</span>
+    <div>
+      <span class='dimmed'>{{project?.issuePrefix}}-{{issue.issueNumber}}</span>
+      <span style='margin-left: 0.5em'>{{issue.title}}</span>
+    </div>
+    <span fxFlex class='dimmed' style='margin-left: 1em;'>{{issue.description}}</span>
     <div fxLayout='row'>
-      <button mat-button fxFlex fxFlexOffset='2em' onclick='this.blur()' (click)='onIssueType()'>{{issue.issueType.name}}</button>
-      <button mat-button fxFlex fxFlexOffset='2em' onclick='this.blur()' (click)='onWorkflowState()'>{{issue.workflowState.name}}</button>
-      <button mat-button fxFlex fxFlexOffset='2em' onclick='this.blur()' (click)='onComponentType()'>{{issue.component.name}}</button>
-      <button mat-button fxFlex fxFlexOffset='2em' onclick='this.blur()' (click)='onAssignedTo()'>{{issue.assignedTo.name}}</button>
+      <button mat-button fxFlex fxFlexOffset='2em' onclick='this.blur()'
+              (click)='onIssueType()'>{{issue.issueType.name}}</button>
+      <button mat-button fxFlex fxFlexOffset='2em' onclick='this.blur()'
+              (click)='onWorkflowState()'>{{issue.workflowState.name}}</button>
+      <button mat-button fxFlex fxFlexOffset='2em' onclick='this.blur()'
+              (click)='onComponentType()'>{{issue.component.name}}</button>
+      <button mat-button fxFlex fxFlexOffset='2em' onclick='this.blur()'
+              (click)='onAssignedTo()'>{{issue.assignedTo.name}}</button>
     </div>
   </ng-container>
 </div>

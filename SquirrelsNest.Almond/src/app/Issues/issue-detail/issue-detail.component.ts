@@ -18,13 +18,13 @@ import {IssueService} from '../issues.service'
 } )
 export class IssueDetailComponent {
   @Input() issue!: ClIssue
-  private readonly mProject: ClProject | null
+  readonly project: ClProject | null
 
   issueListStyle$: Observable<eIssueDisplayStyle>
 
   constructor( private dialog: MatDialog, private issueService: IssueService, private issuesFacade: IssuesFacade, private projectFacade: ProjectFacade ) {
     this.issueListStyle$ = this.issuesFacade.GetIssueListDisplayStyle()
-    this.mProject = this.projectFacade.GetCurrentProject()
+    this.project = this.projectFacade.GetCurrentProject()
   }
 
   onIssueType() {
@@ -32,7 +32,7 @@ export class IssueDetailComponent {
       issueTitle: this.issue.title,
       dialogTitle: 'Issue Type:',
       currentItem: this.issue.issueType,
-      items: this.mProject !== null ? this.mProject.issueTypes : [],
+      items: this.project !== null ? this.project.issueTypes : [],
     }
     const dialogConfig = new MatDialogConfig()
     dialogConfig.data = selectorData
@@ -42,7 +42,7 @@ export class IssueDetailComponent {
       .afterClosed()
       .subscribe( ( result: DetailSelectorResult ) => {
         if( result.accepted ) {
-          const newType = this.mProject?.issueTypes.find( i => i.id === result.selectedId )
+          const newType = this.project?.issueTypes.find( i => i.id === result.selectedId )
 
           if( newType !== undefined ) {
             this.issuesFacade.UpdateIssueIssueType( this.issue, newType )
@@ -56,7 +56,7 @@ export class IssueDetailComponent {
       issueTitle: this.issue.title,
       dialogTitle: 'Component Type:',
       currentItem: this.issue.component,
-      items: this.mProject !== null ? this.mProject.components : [],
+      items: this.project !== null ? this.project.components : [],
     }
     const dialogConfig = new MatDialogConfig()
     dialogConfig.data = selectorData
@@ -66,7 +66,7 @@ export class IssueDetailComponent {
       .afterClosed()
       .subscribe( ( result: DetailSelectorResult ) => {
         if( result.accepted ) {
-          const newComponent = this.mProject?.components.find( c => c.id === result.selectedId )
+          const newComponent = this.project?.components.find( c => c.id === result.selectedId )
 
           if( newComponent !== undefined ) {
             this.issuesFacade.UpdateIssueComponent( this.issue, newComponent )
@@ -80,7 +80,7 @@ export class IssueDetailComponent {
       issueTitle: this.issue.title,
       dialogTitle: 'Assigned User:',
       currentItem: this.issue.assignedTo,
-      items: this.mProject !== null ? this.mProject.users : [],
+      items: this.project !== null ? this.project.users : [],
     }
     const dialogConfig = new MatDialogConfig()
     dialogConfig.data = selectorData
@@ -90,7 +90,7 @@ export class IssueDetailComponent {
       .afterClosed()
       .subscribe( ( result: DetailSelectorResult ) => {
         if( result.accepted ) {
-          const newUser = this.mProject?.users.find( c => c.id === result.selectedId )
+          const newUser = this.project?.users.find( c => c.id === result.selectedId )
 
           if( newUser !== undefined ) {
             this.issuesFacade.UpdateIssueAssignedUser( this.issue, newUser )
@@ -104,7 +104,7 @@ export class IssueDetailComponent {
       issueTitle: this.issue.title,
       dialogTitle: 'Workflow State:',
       currentItem: this.issue.workflowState,
-      items: this.mProject !== null ? this.mProject.workflowStates : [],
+      items: this.project !== null ? this.project.workflowStates : [],
     }
     const dialogConfig = new MatDialogConfig()
     dialogConfig.data = selectorData
@@ -114,7 +114,7 @@ export class IssueDetailComponent {
       .afterClosed()
       .subscribe( ( result: DetailSelectorResult ) => {
         if( result.accepted ) {
-          const newState = this.mProject?.workflowStates.find( c => c.id === result.selectedId )
+          const newState = this.project?.workflowStates.find( c => c.id === result.selectedId )
 
           if( newState !== undefined ) {
             this.issuesFacade.UpdateIssueWorkflowState( this.issue, newState )

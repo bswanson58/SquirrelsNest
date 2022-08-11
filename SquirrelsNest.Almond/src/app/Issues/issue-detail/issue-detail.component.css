@@ -1,3 +1,7 @@
 button {
   font-weight: normal;
 }
+
+.dimmed {
+  opacity: 70%;
+}
