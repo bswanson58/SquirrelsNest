@@ -31,6 +31,7 @@ import {appReducers} from './Store/app.reducer'
 import {UsersPageComponent} from './Users/users-page/users-page.component'
 import {IssueDetailSelectorComponent} from './Issues/issue-detail-selector/issue-detail-selector.component'
 import {IssueEditDialogComponent} from './Issues/issue-edit-dialog/issue-edit-dialog.component'
+import {IssueFooterComponent} from './Issues/issue-footer/issue-footer.component'
 
 
 @NgModule( {
@@ -49,6 +50,7 @@ import {IssueEditDialogComponent} from './Issues/issue-edit-dialog/issue-edit-di
     RegisterComponent,
     SidenavComponent,
     UsersPageComponent,
+    IssueFooterComponent,
   ],
   imports: [
     AppRoutingModule,

@@ -24,3 +24,5 @@ export const getServerHasMoreIssues = createSelector( fromIssue.getIssueState, f
 
 // UI
 export const getIssueDisplayStyle = createSelector( fromUI.getUiState, fromUI.getIssueDisplayStyle )
+export const getDisplayOnlyMyIssues = createSelector( fromUI.getUiState, fromUI.getDisplayOnlyMyIssues )
+export const getDisplayCompletedIssues = createSelector( fromUI.getUiState, fromUI.getDisplayCompletedIssues )

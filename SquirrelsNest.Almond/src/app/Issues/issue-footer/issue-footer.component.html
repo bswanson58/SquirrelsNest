@@ -1,0 +1,16 @@
+<section fxLayout='row' fxLayoutAlign='start center' fxShow='{{haveSelectedProject$ | async}}'>
+  <div fxFlex='33%' fxLayout='row' fxLayoutAlign='start center'>
+    <button mat-flat-button *ngIf='haveMoreIssues$ | async' style='background: transparent'
+            (click)='onLoadMoreIssues()'>Load More Issues
+    </button>
+  </div>
+  <div fxFlex='33%' fxLayoutAlign='center center' fxLayoutGap='3em'>
+    <mat-checkbox [checked]='displayCompletedIssues$ | async' (change)='onDisplayCompletedIssues($event)'>
+      Display Completed Issues
+    </mat-checkbox>
+    <mat-checkbox [checked]='displayOnlyMyIssues$ | async' (change)='onDisplayMyIssues($event)'>
+      Display Only My Issues
+    </mat-checkbox>
+  </div>
+  <div fxFlex='33%'></div>
+</section>

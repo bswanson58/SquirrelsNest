@@ -3,5 +3,3 @@
     <sn-issue-detail [issue]='issue'></sn-issue-detail>
   </li>
 </ul>
-<button *ngIf='serverHasMoreIssues$ | async' mat-button (click)='onRetrieveMoreIssues()'>Load More Issues
-</button>
