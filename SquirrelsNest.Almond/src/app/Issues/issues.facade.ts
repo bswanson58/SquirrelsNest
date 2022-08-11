@@ -4,9 +4,7 @@ import {Observable} from 'rxjs'
 import {ClComponent, ClIssue, ClIssueType, ClUser, ClWorkflowState} from '../Data/graphQlTypes'
 import {ProjectFacade} from '../Projects/project.facade'
 import {AppState} from '../Store/app.reducer'
-import {getIssueDisplayStyle, getIssues, getServerHasMoreIssues} from '../Store/app.selectors'
-import {ToggleIssueListStyle} from '../UI/ui.actions'
-import {eIssueDisplayStyle} from '../UI/ui.state'
+import {getIssues, getServerHasMoreIssues} from '../Store/app.selectors'
 import {ClearIssues} from './issues.actions'
 import {IssueService} from './issues.service'
 
@@ -25,11 +23,11 @@ export class IssuesFacade {
     this.store.dispatch( new ClearIssues() )
   }
 
-  GetCurrentIssuesList(): Observable<ClIssue[]> {
+  GetCurrentIssuesList$(): Observable<ClIssue[]> {
     return this.store.select( getIssues )
   }
 
-  GetServerHasMoreIssues(): Observable<boolean> {
+  GetServerHasMoreIssues$(): Observable<boolean> {
     return this.store.select( getServerHasMoreIssues )
   }
 
@@ -59,13 +57,5 @@ export class IssuesFacade {
 
   UpdateIssueAssignedUser( issue: ClIssue, user: ClUser ): void {
     this.issueService.UpdateIssueAssignedUser( issue, user )
-  }
-
-  ToggleIssueListStyle() {
-    this.store.dispatch( new ToggleIssueListStyle() )
-  }
-
-  GetIssueListDisplayStyle(): Observable<eIssueDisplayStyle> {
-    return this.store.select( getIssueDisplayStyle )
   }
 }

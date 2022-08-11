@@ -3,13 +3,13 @@ import {MatDialog, MatDialogConfig} from '@angular/material/dialog'
 import {Observable} from 'rxjs'
 import {ClIssue, ClProject} from '../../Data/graphQlTypes'
 import {ProjectFacade} from '../../Projects/project.facade'
+import {UiFacade} from '../../UI/ui.facade'
 import {eIssueDisplayStyle} from '../../UI/ui.state'
 import {
   DetailSelectorData, DetailSelectorResult,
   IssueDetailSelectorComponent
 } from '../issue-detail-selector/issue-detail-selector.component'
 import {IssuesFacade} from '../issues.facade'
-import {IssueService} from '../issues.service'
 
 @Component( {
   selector: 'sn-issue-detail',
@@ -22,8 +22,11 @@ export class IssueDetailComponent {
 
   issueListStyle$: Observable<eIssueDisplayStyle>
 
-  constructor( private dialog: MatDialog, private issueService: IssueService, private issuesFacade: IssuesFacade, private projectFacade: ProjectFacade ) {
-    this.issueListStyle$ = this.issuesFacade.GetIssueListDisplayStyle()
+  constructor( private dialog: MatDialog,
+               private issuesFacade: IssuesFacade,
+               private projectFacade: ProjectFacade,
+               private uiFacade: UiFacade ) {
+    this.issueListStyle$ = this.uiFacade.GetIssueListDisplayStyle()
     this.project = this.projectFacade.GetCurrentProject()
   }
 

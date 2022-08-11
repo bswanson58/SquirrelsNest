@@ -3,6 +3,7 @@ import {MatDialog, MatDialogConfig} from '@angular/material/dialog'
 import {Observable, Subscription} from 'rxjs'
 import {ClIssue, ClProject} from '../../Data/graphQlTypes'
 import {ProjectFacade} from '../../Projects/project.facade'
+import {UiFacade} from '../../UI/ui.facade'
 import {
   IssueEditData,
   IssueEditDialogComponent,
@@ -20,7 +21,7 @@ export class IssueHeaderComponent implements OnInit, OnDestroy {
 
   currentProject$: Observable<ClProject | null>
 
-  constructor( private dialog: MatDialog, private projectFacade: ProjectFacade, private issuesFacade: IssuesFacade ) {
+  constructor( private dialog: MatDialog, private projectFacade: ProjectFacade, private issuesFacade: IssuesFacade, private uiFacade: UiFacade ) {
     this.currentProject$ = new Observable<ClProject>()
   }
 
@@ -29,7 +30,7 @@ export class IssueHeaderComponent implements OnInit, OnDestroy {
   }
 
   onToggleListStyle() {
-    this.issuesFacade.ToggleIssueListStyle()
+    this.uiFacade.ToggleIssueListStyle()
   }
 
   onCreateNewIssue() {
