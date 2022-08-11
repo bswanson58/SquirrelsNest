@@ -39,7 +39,17 @@ export class IssueService {
     this.mIssueQuery = this.apollo.use( 'issuesWatchClient' ).watchQuery<Query, IssueQueryInput>(
       {
         query: IssuesQuery,
-        variables: { skip: 0, take: this.mPageLimit, order: {}, projectId: forProject }
+        variables: {
+          skip: 0,
+          take: this.mPageLimit,
+          order: {
+            // @ts-ignore - for an unknown reason, importing SortEnumType causes a module error
+            isFinalized: 'ASC',
+            // @ts-ignore - for an unknown reason, importing SortEnumType causes a module error
+            issueNumber: 'DESC'
+          },
+          projectId: forProject
+        } as IssueQueryInput
       } )
 
     this.mIssuesSubscription = this.mIssueQuery

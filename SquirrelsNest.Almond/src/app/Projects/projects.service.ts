@@ -24,7 +24,7 @@ export class ProjectService implements OnDestroy {
     this.mProjectQuery = this.apollo.use( 'projectsWatchClient' ).watchQuery<Query, ProjectQueryInput>(
       {
         query: AllProjectsQuery,
-        variables: { skip: 0, take: this.mPageLimit, order: {} }
+        variables: { skip: 0, take: this.mPageLimit, order: { name: 'ASC'} } as ProjectQueryInput
       } )
   }
 
