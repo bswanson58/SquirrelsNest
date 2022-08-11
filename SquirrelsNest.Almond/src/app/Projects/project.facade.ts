@@ -72,7 +72,11 @@ export class ProjectFacade {
   }
 
   SelectProject( project: ClProject ): void {
-    this.store.dispatch( new ClearIssues() )
-    this.store.dispatch( new SelectProject( project ) )
+    const currentProject = this.GetCurrentProject()
+
+    if( currentProject?.id !== project?.id ) {
+      this.store.dispatch( new ClearIssues() )
+      this.store.dispatch( new SelectProject( project ) )
+    }
   }
 }
