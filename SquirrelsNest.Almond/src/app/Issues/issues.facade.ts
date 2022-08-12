@@ -27,6 +27,12 @@ export class IssuesFacade {
     this.issueService.CompleteIssue( issue )
   }
 
+  DeleteIssue( issue: ClIssue ) {
+  }
+
+  EditIssue( issue: ClIssue ) {
+  }
+
   GetCurrentIssuesList$(): Observable<ClIssue[]> {
     return this.store.select( getIssues )
   }

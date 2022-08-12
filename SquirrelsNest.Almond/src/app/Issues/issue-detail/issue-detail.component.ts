@@ -36,9 +36,11 @@ export class IssueDetailComponent {
   }
 
   onEditIssue() {
+    this.issuesFacade.EditIssue( this.issue )
   }
 
   onDeleteIssue() {
+    this.issuesFacade.DeleteIssue( this.issue )
   }
 
   onIssueType() {
