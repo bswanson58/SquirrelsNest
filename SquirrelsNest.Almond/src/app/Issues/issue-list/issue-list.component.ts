@@ -1,5 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core'
-import {combineLatest, map, Observable, Subscription, tap} from 'rxjs'
+import {combineLatest, map, Observable, Subscription} from 'rxjs'
+import {AuthFacade} from '../../Auth/auth.facade'
 import {ClIssue} from '../../Data/graphQlTypes'
 import {ProjectFacade} from '../../Projects/project.facade'
 import {UiFacade} from '../../UI/ui.facade'
@@ -12,40 +13,51 @@ import {IssuesFacade} from '../issues.facade'
 } )
 export class IssueListComponent implements OnInit, OnDestroy {
   issueList$: Observable<ClIssue[]>
+  userId$: Observable<string>
 
   serverHasMoreIssues$: Observable<boolean>
   private mProjectSubscription: Subscription | undefined
 
-  constructor( private projectFacade: ProjectFacade, private issuesFacade: IssuesFacade, private uiFacade: UiFacade ) {
+  constructor( private projectFacade: ProjectFacade, private authFacade: AuthFacade, private issuesFacade: IssuesFacade, private uiFacade: UiFacade ) {
     this.serverHasMoreIssues$ = this.issuesFacade.GetServerHasMoreIssues$()
+
+    this.userId$ =
+      this.authFacade.GetAuthenticationClaims()
+        .pipe(
+          map( claims => {
+            const idClaim = claims.find( c => c.name === 'entityId' )
+
+            return idClaim ? idClaim.value : ''
+          } ) )
 
     this.issueList$ =
       combineLatest( [
         this.issuesFacade.GetCurrentIssuesList$(),
+        this.userId$,
         uiFacade.GetDisplayOnlyMyIssues$(),
         uiFacade.GetDisplayCompletedIssues$()] )
         .pipe(
-          map( ( [list, onlyMine, displayCompleted] ) => {
-            return { list, onlyMine, displayCompleted }
+          map( ( [list, userId, onlyMine, displayCompleted] ) => {
+            return { list, userId, onlyMine, displayCompleted }
           } ),
-//        tap( ( { list, onlyMine, displayCompleted } ) => console.log( 'OnlyMine: ' + onlyMine ) ),
-//        tap( ( { list, onlyMine, displayCompleted } ) => console.log( 'List Length: ' + list.length ) ),
-          map( ( { list, onlyMine, displayCompleted } ) => {
-            list = onlyMine ? list.filter( i => i.project != null ) : list
+//        tap( ( { list, userId, onlyMine, displayCompleted } ) => console.log( 'User ID: ' + userId ) ),
+//        tap( ( { list, userId, onlyMine, displayCompleted } ) => console.log( 'OnlyMine: ' + onlyMine ) ),
+//        tap( ( { list, userId, onlyMine, displayCompleted } ) => console.log( 'List Length: ' + list.length ) ),
+          map( ( { list, userId, onlyMine, displayCompleted } ) => {
+            list = onlyMine ? list.filter( i => i.assignedTo.id === userId ) : list
 
             return { list, displayCompleted }
           } ),
 //        tap( ( { list, displayCompleted } ) => console.log( 'Show Completed: ' + displayCompleted ) ),
 //        tap( ( { list, displayCompleted } ) => console.log( 'List Length: ' + list.length ) ),
           map( ( { list, displayCompleted } ) =>
-            displayCompleted ? list : list.filter( i => i.workflowState.category !== 'COMPLETED' )
+            displayCompleted ? list : list.filter( i => !i.isFinalized )
           ),
 //        tap( list => console.log( 'List Length: ' + list.length ) ),
         )
   }
 
   ngOnInit(): void {
-
     this.mProjectSubscription =
       this.projectFacade.GetCurrentProject$()
         .subscribe( project => {

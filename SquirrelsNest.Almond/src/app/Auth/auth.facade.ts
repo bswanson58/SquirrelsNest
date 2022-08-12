@@ -22,6 +22,6 @@ export class AuthFacade {
   }
 
   GetAuthenticationClaims(): Observable<claim[]> {
-    return = this.store.select(getAuthenticationClaims)
+    return this.store.select(getAuthenticationClaims)
   }
 }
