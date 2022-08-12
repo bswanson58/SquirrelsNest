@@ -23,6 +23,10 @@ export class IssuesFacade {
     this.store.dispatch( new ClearIssues() )
   }
 
+  CompleteIssue( issue: ClIssue ) {
+    this.issueService.CompleteIssue( issue )
+  }
+
   GetCurrentIssuesList$(): Observable<ClIssue[]> {
     return this.store.select( getIssues )
   }

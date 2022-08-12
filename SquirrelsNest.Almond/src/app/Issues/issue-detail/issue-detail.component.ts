@@ -32,6 +32,7 @@ export class IssueDetailComponent {
   }
 
   onCompleteIssue() {
+    this.issuesFacade.CompleteIssue( this.issue )
   }
 
   onEditIssue() {

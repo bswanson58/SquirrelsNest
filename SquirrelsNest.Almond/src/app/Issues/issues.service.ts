@@ -4,15 +4,22 @@ import {Store} from '@ngrx/store'
 import {Apollo, QueryRef} from 'apollo-angular'
 import {map, Subscription, take, tap} from 'rxjs'
 import {
-  AddIssueInput, ClComponent,
+  AddIssueInput,
+  ClComponent,
   ClIssue,
-  ClIssueCollectionSegment, ClIssueType, ClUser, ClWorkflowState, IssueUpdatePath,
+  ClIssueCollectionSegment,
+  ClIssueType,
+  ClUser,
+  ClWorkflowState,
+  IssueUpdatePath,
   Mutation,
   Query,
-  UpdateIssueInput
+  UpdateIssueInput,
+  UpdateOperationInput
 } from '../Data/graphQlTypes'
 import {AddIssueMutation, UpdateIssueMutation} from '../Data/mutationStatements'
 import {IssueQueryInput, IssuesQuery} from '../Data/queryStatements'
+import {ProjectFacade} from '../Projects/project.facade'
 import {AppState} from '../Store/app.reducer'
 import {getIssueQueryState} from '../Store/app.selectors'
 import {AddIssue, AppendIssues, ClearIssues, ClearIssuesLoading, SetIssuesLoading, UpdateIssue} from './issues.actions'
@@ -26,7 +33,7 @@ export class IssueService {
   private mIssueQuery: QueryRef<Query, IssueQueryInput> | null
   private mIssuesSubscription: Subscription | null
 
-  constructor( private apollo: Apollo, private store: Store<AppState> ) {
+  constructor( private apollo: Apollo, private store: Store<AppState>, private projectFacade: ProjectFacade ) {
     this.mIssuesSubscription = null
     this.mIssueQuery = null
   }
@@ -112,6 +119,20 @@ export class IssueService {
 
     this.updateIssue( input )
   }
+
+  CompleteIssue( issue: ClIssue ) {
+    const completedState = this.projectFacade.GetCurrentProject()?.workflowStates.find( s => s.category === 'COMPLETED' )
+
+    if( completedState !== undefined ) {
+      const operation: UpdateOperationInput = {
+        path: 'WORKFLOW_STATE_ID' as IssueUpdatePath.WorkflowStateId,
+        value: completedState.id
+      }
+
+      this.updateIssue({ issueId: issue.id, operations: [operation] } as UpdateIssueInput)
+    }
+  }
+
 
   private updateIssue( input: UpdateIssueInput ) {
     this.store.dispatch( new SetIssuesLoading() )
