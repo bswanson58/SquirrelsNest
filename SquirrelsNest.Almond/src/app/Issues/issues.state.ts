@@ -33,3 +33,5 @@ export const getIsLoading = ( state: IssueState ) => state.isLoading
 export const getIssues = ( state: IssueState ) => state.issues
 export const getIssueQueryState = ( state: IssueState ) => state.queryInfo
 export const getServerHasMoreIssues = ( state: IssueState ) => state.queryInfo.hasNextPage
+export const getTotalIssues = ( state: IssueState ) => state.queryInfo.totalIssues
+export const getLoadedIssues = ( state: IssueState ) => state.queryInfo.loadedIssues

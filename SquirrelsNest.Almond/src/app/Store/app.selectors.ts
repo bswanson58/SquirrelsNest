@@ -22,6 +22,8 @@ export const getIssuesLoading = createSelector( fromIssue.getIssueState, fromIss
 export const getIssues = createSelector( fromIssue.getIssueState, fromIssue.getIssues )
 export const getIssueQueryState = createSelector( fromIssue.getIssueState, fromIssue.getIssueQueryState )
 export const getServerHasMoreIssues = createSelector( fromIssue.getIssueState, fromIssue.getServerHasMoreIssues )
+export const getTotalIssues = createSelector( fromIssue.getIssueState, fromIssue.getTotalIssues )
+export const getLoadedIssues = createSelector( fromIssue.getIssueState, fromIssue.getLoadedIssues )
 
 // UI
 export const getIssueDisplayStyle = createSelector( fromUI.getUiState, fromUI.getIssueDisplayStyle )

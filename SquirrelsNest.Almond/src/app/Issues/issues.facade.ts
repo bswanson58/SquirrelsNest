@@ -4,7 +4,7 @@ import {Observable} from 'rxjs'
 import {ClComponent, ClIssue, ClIssueType, ClUser, ClWorkflowState} from '../Data/graphQlTypes'
 import {ProjectFacade} from '../Projects/project.facade'
 import {AppState} from '../Store/app.reducer'
-import {getIssues, getServerHasMoreIssues} from '../Store/app.selectors'
+import {getIssues, getLoadedIssues, getServerHasMoreIssues, getTotalIssues} from '../Store/app.selectors'
 import {ClearIssues} from './issues.actions'
 import {IssueService} from './issues.service'
 
@@ -29,6 +29,14 @@ export class IssuesFacade {
 
   GetServerHasMoreIssues$(): Observable<boolean> {
     return this.store.select( getServerHasMoreIssues )
+  }
+
+  GetTotalIssues$(): Observable<number> {
+    return this.store.select( getTotalIssues )
+  }
+
+  GetLoadedIssues$(): Observable<number> {
+    return this.store.select( getLoadedIssues )
   }
 
   LoadIssues() {

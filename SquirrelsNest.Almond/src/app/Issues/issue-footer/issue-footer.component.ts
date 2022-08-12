@@ -13,6 +13,8 @@ import {IssuesFacade} from '../issues.facade'
 export class IssueFooterComponent {
   haveSelectedProject$: Observable<boolean>
   haveMoreIssues$: Observable<boolean>
+  totalIssues$: Observable<number>
+  loadedIssues$: Observable<number>
   displayCompletedIssues$: Observable<boolean>
   displayOnlyMyIssues$: Observable<boolean>
 
@@ -20,6 +22,8 @@ export class IssueFooterComponent {
     this.displayCompletedIssues$ = uiFacade.GetDisplayCompletedIssues$()
     this.displayOnlyMyIssues$ = uiFacade.GetDisplayOnlyMyIssues$()
     this.haveMoreIssues$ = issuesFacade.GetServerHasMoreIssues$()
+    this.totalIssues$ = this.issuesFacade.GetTotalIssues$()
+    this.loadedIssues$ = this.issuesFacade.GetLoadedIssues$()
     this.haveSelectedProject$ =
       projectFacade.GetCurrentProject$()
         .pipe(

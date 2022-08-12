@@ -1,7 +1,7 @@
 <section fxLayout='row' fxLayoutAlign='start center' fxShow='{{haveSelectedProject$ | async}}'>
   <div fxFlex='33%' fxLayout='row' fxLayoutAlign='start center'>
     <button mat-flat-button *ngIf='haveMoreIssues$ | async' style='background: transparent'
-            (click)='onLoadMoreIssues()'>Load More Issues
+            (click)='onLoadMoreIssues()'>Load More Issues ({{loadedIssues$ | async}} of {{totalIssues$ | async}})
     </button>
   </div>
   <div fxFlex='33%' fxLayoutAlign='center center' fxLayoutGap='3em'>
