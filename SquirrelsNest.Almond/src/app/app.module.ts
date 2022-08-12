@@ -5,6 +5,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations'
 import {BrowserModule} from '@angular/platform-browser'
 import {FlexLayoutModule} from '@angular/flex-layout'
 import {StoreModule} from '@ngrx/store'
+import {AuthFacade} from './Auth/auth.facade'
 import {AuthGuard} from './Auth/auth.guard'
 import {AuthService} from './Auth/auth.service'
 import {GraphQLModule} from './graphql.module'
@@ -65,6 +66,7 @@ import {IssueFooterComponent} from './Issues/issue-footer/issue-footer.component
     StoreModule.forRoot( appReducers )
   ],
   providers: [
+    AuthFacade,
     AuthGuard,
     AuthService,
     IssuesFacade,

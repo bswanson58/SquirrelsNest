@@ -8,6 +8,7 @@ import * as fromUI from '../UI/ui.state'
 // Authentication
 export const getAuthLoading = createSelector( fromAuth.getAuthState, fromAuth.getIsLoading )
 export const getIsAuthenticated = createSelector( fromAuth.getAuthState, fromAuth.getIsAuthenticated )
+export const getAuthenticationClaims = createSelector( fromAuth.getAuthState, fromAuth.getAuthenticationClaims )
 
 // Projects
 export const getProjectsLoading = createSelector( fromProject.getProjectState, fromProject.getIsLoading )
