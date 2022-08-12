@@ -17,6 +17,7 @@ import {IssuesFacade} from '../issues.facade'
   styleUrls: ['./issue-detail.component.css']
 } )
 export class IssueDetailComponent {
+  isHovering: boolean = false
   @Input() issue!: ClIssue
   readonly project: ClProject | null
 
@@ -28,6 +29,15 @@ export class IssueDetailComponent {
                private uiFacade: UiFacade ) {
     this.issueListStyle$ = this.uiFacade.GetIssueListDisplayStyle()
     this.project = this.projectFacade.GetCurrentProject()
+  }
+
+  onCompleteIssue() {
+  }
+
+  onEditIssue() {
+  }
+
+  onDeleteIssue() {
   }
 
   onIssueType() {

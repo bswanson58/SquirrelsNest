@@ -5,3 +5,7 @@ button {
 .dimmed {
   opacity: 70%;
 }
+
+.highlight {
+  background: #80808020;
+}
