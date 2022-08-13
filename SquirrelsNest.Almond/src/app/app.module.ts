@@ -34,6 +34,7 @@ import {IssueDetailSelectorComponent} from './Issues/issue-detail-selector/issue
 import {IssueEditDialogComponent} from './Issues/issue-edit-dialog/issue-edit-dialog.component'
 import {IssueFooterComponent} from './Issues/issue-footer/issue-footer.component'
 import {ConfirmDialogComponent} from './UI/confirm-dialog/confirm-dialog.component'
+import {ProjectDetailComponent} from './Projects/project-detail/project-detail.component'
 
 
 @NgModule( {
@@ -49,6 +50,7 @@ import {ConfirmDialogComponent} from './UI/confirm-dialog/confirm-dialog.compone
     IssueEditDialogComponent,
     LoginComponent,
     ProjectsPageComponent,
+    ProjectDetailComponent,
     ProjectListComponent,
     RegisterComponent,
     SidenavComponent,
