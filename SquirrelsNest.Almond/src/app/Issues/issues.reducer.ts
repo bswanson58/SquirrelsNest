@@ -5,7 +5,7 @@ import {
   CLEAR_ISSUES_LOADING,
   CLEAR_ISSUES,
   SET_ISSUES_LOADING,
-  UPDATE_ISSUE, UpdateIssue, ADD_ISSUE, AddIssue
+  UPDATE_ISSUE, UpdateIssue, ADD_ISSUE, AddIssue, DELETE_ISSUE, DeleteIssue
 } from './issues.actions'
 
 export function issuesReducer( state: IssueState = initialIssueState, action: Action ): IssueState {
@@ -33,6 +33,19 @@ export function issuesReducer( state: IssueState = initialIssueState, action: Ac
         ...state,
         issues: [],
         queryInfo: initialIssueQueryInfo
+      }
+
+    case DELETE_ISSUE:
+      const deletePayload = action as DeleteIssue
+
+      return {
+        ...state,
+        queryInfo: {
+          ...state.queryInfo,
+          loadedIssues: state.queryInfo.loadedIssues - 1,
+          totalIssues: state.queryInfo.totalIssues - 1
+        },
+        issues: state.issues.filter( i => i.id !== deletePayload.issueId )
       }
 
     case UPDATE_ISSUE:

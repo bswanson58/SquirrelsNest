@@ -28,6 +28,7 @@ export class IssuesFacade {
   }
 
   DeleteIssue( issue: ClIssue ) {
+    this.issueService.DeleteIssue( issue )
   }
 
   EditIssue( issue: ClIssue ) {

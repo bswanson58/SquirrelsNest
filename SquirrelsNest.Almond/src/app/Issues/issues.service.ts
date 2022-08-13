@@ -10,19 +10,27 @@ import {
   ClIssueCollectionSegment,
   ClIssueType,
   ClUser,
-  ClWorkflowState,
+  ClWorkflowState, DeleteIssueInput,
   IssueUpdatePath,
   Mutation,
   Query,
   UpdateIssueInput,
   UpdateOperationInput
 } from '../Data/graphQlTypes'
-import {AddIssueMutation, UpdateIssueMutation} from '../Data/mutationStatements'
+import {AddIssueMutation, DeleteIssueMutation, UpdateIssueMutation} from '../Data/mutationStatements'
 import {IssueQueryInput, IssuesQuery} from '../Data/queryStatements'
 import {ProjectFacade} from '../Projects/project.facade'
 import {AppState} from '../Store/app.reducer'
 import {getIssueQueryState} from '../Store/app.selectors'
-import {AddIssue, AppendIssues, ClearIssues, ClearIssuesLoading, SetIssuesLoading, UpdateIssue} from './issues.actions'
+import {
+  AddIssue,
+  AppendIssues,
+  ClearIssues,
+  ClearIssuesLoading,
+  DeleteIssue,
+  SetIssuesLoading,
+  UpdateIssue
+} from './issues.actions'
 import {IssueQueryInfo} from './issues.state'
 
 @Injectable( {
@@ -129,7 +137,7 @@ export class IssueService {
         value: completedState.id
       }
 
-      this.updateIssue({ issueId: issue.id, operations: [operation] } as UpdateIssueInput)
+      this.updateIssue( { issueId: issue.id, operations: [operation] } as UpdateIssueInput )
     }
   }
 
@@ -240,6 +248,44 @@ export class IssueService {
     if( (data?.addIssue?.errors !== undefined) &&
       (data.addIssue.issue !== undefined) ) {
       return data.addIssue.issue
+    }
+
+    return null
+  }
+
+  DeleteIssue( issue: ClIssue ) {
+    const data: DeleteIssueInput = {
+      issueId: issue.id
+    }
+
+    this.store.dispatch( new SetIssuesLoading() )
+
+    this.apollo.use( 'defaultClient' ).mutate<Mutation>( {
+      mutation: DeleteIssueMutation,
+      variables: { deleteInput: data }
+    } )
+      .pipe(
+        map( result => IssueService.handleDeleteMutationErrors( result.data, result.errors ) ),
+        map( result => {
+          if( result !== null ) {
+            this.store.dispatch( new DeleteIssue( result ) )
+          }
+
+          return result
+        } ),
+        tap( _ => this.store.dispatch( new ClearIssuesLoading() ) ),
+      )
+      .subscribe()
+  }
+
+  private static handleDeleteMutationErrors( data: Mutation | undefined | null, errors: GraphQLErrors | undefined ): string | null {
+    if( errors != null ) {
+      console.log( errors.entries() )
+    }
+
+    if( (data?.deleteIssue?.errors !== undefined) &&
+      (data.deleteIssue.issueId !== undefined) ) {
+      return data.deleteIssue.issueId
     }
 
     return null

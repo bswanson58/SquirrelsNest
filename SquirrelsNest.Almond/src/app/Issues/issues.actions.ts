@@ -4,6 +4,7 @@ import {IssueQueryInfo} from './issues.state'
 
 export const ADD_ISSUE = '[Issue] Add Issue'
 export const CLEAR_ISSUES = '[Issue] Clear Issues'
+export const DELETE_ISSUE = '[Issue] Delete Issue'
 export const APPEND_ISSUES = '[Issue] Append Issues'
 export const UPDATE_ISSUE = '[Issue] Update Issue'
 export const SET_ISSUES_LOADING = '[Issue] SetLoading'
@@ -25,6 +26,13 @@ export class AppendIssues implements Action {
 
 export class ClearIssues implements Action {
   readonly type = CLEAR_ISSUES
+}
+
+export class DeleteIssue implements Action {
+  readonly type = DELETE_ISSUE
+
+  constructor( public issueId: string ) {
+  }
 }
 
 export class UpdateIssue implements Action {
