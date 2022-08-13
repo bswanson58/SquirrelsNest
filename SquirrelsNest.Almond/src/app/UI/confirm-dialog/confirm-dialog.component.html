@@ -1,0 +1,9 @@
+<h3 mat-dialog-title>Please Confirm:</h3>
+<mat-dialog-content fxLayout='column'>
+  <h4>{{prompt}}</h4>
+  <h4 style='margin-left:1em;'>{{promptDetail}}</h4>
+</mat-dialog-content>
+<mat-dialog-actions fxLayout='row' fxLayoutAlign='end center' fxLayoutGap='1em'>
+  <button class='mat-button' (click)='onCancel()'>Cancel</button>
+  <button class='mat-button' (click)='onConfirm()'>OK</button>
+</mat-dialog-actions>

@@ -33,11 +33,13 @@ import {UsersPageComponent} from './Users/users-page/users-page.component'
 import {IssueDetailSelectorComponent} from './Issues/issue-detail-selector/issue-detail-selector.component'
 import {IssueEditDialogComponent} from './Issues/issue-edit-dialog/issue-edit-dialog.component'
 import {IssueFooterComponent} from './Issues/issue-footer/issue-footer.component'
+import {ConfirmDialogComponent} from './UI/confirm-dialog/confirm-dialog.component'
 
 
 @NgModule( {
   declarations: [
     AppComponent,
+    ConfirmDialogComponent,
     HeaderComponent,
     IssuesPageComponent,
     IssueHeaderComponent,

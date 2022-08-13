@@ -1,10 +1,16 @@
 import {Injectable} from '@angular/core'
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog'
 import {Store} from '@ngrx/store'
 import {Observable} from 'rxjs'
 import {ClComponent, ClIssue, ClIssueType, ClUser, ClWorkflowState} from '../Data/graphQlTypes'
 import {ProjectFacade} from '../Projects/project.facade'
 import {AppState} from '../Store/app.reducer'
 import {getIssues, getLoadedIssues, getServerHasMoreIssues, getTotalIssues} from '../Store/app.selectors'
+import {
+  ConfirmDialogComponent,
+  ConfirmDialogData,
+  ConfirmDialogResult
+} from '../UI/confirm-dialog/confirm-dialog.component'
 import {ClearIssues} from './issues.actions'
 import {IssueService} from './issues.service'
 
@@ -12,7 +18,10 @@ import {IssueService} from './issues.service'
   providedIn: 'root'
 } )
 export class IssuesFacade {
-  constructor( private store: Store<AppState>, private issueService: IssueService, private projectFacade: ProjectFacade ) {
+  constructor( private store: Store<AppState>,
+               private issueService: IssueService,
+               private projectFacade: ProjectFacade,
+               private dialog: MatDialog ) {
   }
 
   AddIssue( issue: ClIssue ) {
@@ -28,7 +37,21 @@ export class IssuesFacade {
   }
 
   DeleteIssue( issue: ClIssue ) {
-    this.issueService.DeleteIssue( issue )
+    const dialogData: ConfirmDialogData = {
+      prompt: 'Do you want to delete this issue?',
+      promptDetail: issue.title
+    }
+    const dialogConfig = new MatDialogConfig()
+    dialogConfig.data = dialogData
+
+    this.dialog
+      .open( ConfirmDialogComponent, dialogConfig )
+      .afterClosed()
+      .subscribe( ( result: ConfirmDialogResult ) => {
+        if( result.accepted ) {
+          this.issueService.DeleteIssue( issue )
+        }
+      } )
   }
 
   EditIssue( issue: ClIssue ) {
