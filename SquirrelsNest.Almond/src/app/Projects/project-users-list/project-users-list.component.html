@@ -1,0 +1,13 @@
+<mat-card>
+  <mat-card-subtitle>Users:</mat-card-subtitle>
+  <mat-card-content fxLayout='column'>
+    <div style='overflow: auto; height: 100%'>
+      <ul>
+        <li *ngFor='let user of projectUsers$ | async'>{{user.name}}</li>
+      </ul>
+    </div>
+    <mat-card-actions align='end'>
+      <button mat-flat-button>Add User</button>
+    </mat-card-actions>
+  </mat-card-content>
+</mat-card>

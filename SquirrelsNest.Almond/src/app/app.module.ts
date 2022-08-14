@@ -35,27 +35,35 @@ import {IssueEditDialogComponent} from './Issues/issue-edit-dialog/issue-edit-di
 import {IssueFooterComponent} from './Issues/issue-footer/issue-footer.component'
 import {ConfirmDialogComponent} from './UI/confirm-dialog/confirm-dialog.component'
 import {ProjectDetailComponent} from './Projects/project-detail/project-detail.component'
+import {ComponentsListComponent} from './Projects/components-list/components-list.component'
+import {IssueTypesListComponent} from './Projects/issue-types-list/issue-types-list.component'
+import {WorkflowListComponent} from './Projects/workflow-list/workflow-list.component'
+import {ProjectUsersListComponent} from './Projects/project-users-list/project-users-list.component'
 
 
 @NgModule( {
   declarations: [
     AppComponent,
+    ComponentsListComponent,
     ConfirmDialogComponent,
     HeaderComponent,
     IssuesPageComponent,
+    IssueFooterComponent,
     IssueHeaderComponent,
     IssueListComponent,
     IssueDetailComponent,
     IssueDetailSelectorComponent,
     IssueEditDialogComponent,
+    IssueTypesListComponent,
     LoginComponent,
     ProjectsPageComponent,
     ProjectDetailComponent,
     ProjectListComponent,
+    ProjectUsersListComponent,
     RegisterComponent,
     SidenavComponent,
     UsersPageComponent,
-    IssueFooterComponent,
+    WorkflowListComponent,
   ],
   imports: [
     AppRoutingModule,

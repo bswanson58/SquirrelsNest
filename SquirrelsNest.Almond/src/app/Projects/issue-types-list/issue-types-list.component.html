@@ -1,0 +1,13 @@
+<mat-card>
+  <mat-card-subtitle>Issue Types:</mat-card-subtitle>
+  <mat-card-content fxLayout='column'>
+    <div style='overflow: auto; height: 100%'>
+      <ul>
+        <li *ngFor='let issueType of issueTypes$ | async'>{{issueType.name}}</li>
+      </ul>
+    </div>
+    <mat-card-actions align='end'>
+      <button mat-flat-button>Add Issue Type</button>
+    </mat-card-actions>
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,13 @@
+<mat-card>
+  <mat-card-subtitle>Components:</mat-card-subtitle>
+  <mat-card-content fxLayout='column'>
+    <div style='overflow: auto; height: 100%'>
+      <ul>
+        <li *ngFor='let state of workflowStates$ | async'>{{state.name}}</li>
+      </ul>
+    </div>
+    <mat-card-actions align='end'>
+      <button mat-flat-button>Add State</button>
+    </mat-card-actions>
+  </mat-card-content>
+</mat-card>
