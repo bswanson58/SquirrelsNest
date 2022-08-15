@@ -30,6 +30,18 @@ export type AddIssuePayload = {
   issue?: Maybe<ClIssue>;
 };
 
+export type AddProjectInput = {
+  description: Scalars['String'];
+  issuePrefix: Scalars['String'];
+  title: Scalars['String'];
+};
+
+export type AddProjectPayload = {
+  __typename?: 'AddProjectPayload';
+  errors: Array<MutationError>;
+  project?: Maybe<ClProject>;
+};
+
 export enum ApplyPolicy {
   AfterResolver = 'AFTER_RESOLVER',
   BeforeResolver = 'BEFORE_RESOLVER'
@@ -353,6 +365,16 @@ export type DeleteIssuePayload = {
   issueId: Scalars['String'];
 };
 
+export type DeleteProjectInput = {
+  projectId: Scalars['String'];
+};
+
+export type DeleteProjectPayload = {
+  __typename?: 'DeleteProjectPayload';
+  errors: Array<MutationError>;
+  projectId: Scalars['String'];
+};
+
 export enum IssueUpdatePath {
   AssignedToId = 'ASSIGNED_TO_ID',
   ComponentId = 'COMPONENT_ID',
@@ -406,9 +428,12 @@ export type LoginPayload = {
 export type Mutation = {
   __typename?: 'Mutation';
   addIssue: AddIssuePayload;
+  addProject: AddProjectPayload;
   deleteIssue: DeleteIssuePayload;
+  deleteProject: DeleteProjectPayload;
   login: LoginPayload;
   updateIssue: UpdateIssuePayload;
+  updateProject: UpdateProjectPayload;
 };
 
 
@@ -417,8 +442,18 @@ export type MutationAddIssueArgs = {
 };
 
 
+export type MutationAddProjectArgs = {
+  projectInput: AddProjectInput;
+};
+
+
 export type MutationDeleteIssueArgs = {
   deleteInput: DeleteIssueInput;
+};
+
+
+export type MutationDeleteProjectArgs = {
+  deleteInput: DeleteProjectInput;
 };
 
 
@@ -429,6 +464,11 @@ export type MutationLoginArgs = {
 
 export type MutationUpdateIssueArgs = {
   updateInput: UpdateIssueInput;
+};
+
+
+export type MutationUpdateProjectArgs = {
+  updateInput: UpdateProjectInput;
 };
 
 export type MutationError = {
@@ -508,4 +548,17 @@ export type UpdateIssuePayload = {
 export type UpdateOperationInput = {
   path: IssueUpdatePath;
   value: Scalars['String'];
+};
+
+export type UpdateProjectInput = {
+  description: Scalars['String'];
+  issuePrefix: Scalars['String'];
+  projectId: Scalars['String'];
+  title: Scalars['String'];
+};
+
+export type UpdateProjectPayload = {
+  __typename?: 'UpdateProjectPayload';
+  errors: Array<MutationError>;
+  project?: Maybe<ClProject>;
 };
