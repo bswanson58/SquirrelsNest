@@ -120,6 +120,7 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
         .AddTypeExtension<Authentication>()
         .AddMutationType()
         .AddTypeExtension<IssueMutations>()
+        .AddTypeExtension<ProjectMutations>()
         .AddFiltering()
         .AddSorting();
 
