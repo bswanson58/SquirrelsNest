@@ -5,11 +5,19 @@ import {
   CLEAR_PROJECTS_LOADING,
   CLEAR_PROJECTS,
   SELECT_PROJECT, SelectProject,
-  SET_PROJECTS_LOADING
+  SET_PROJECTS_LOADING, ADD_PROJECT, AddProject
 } from './projects.actions'
 
 export function projectsReducer( state: ProjectState = initialProjectState, action: Action ): ProjectState {
   switch( action.type ) {
+    case ADD_PROJECT:
+      const addPayload = action as AddProject
+
+      return {
+        ...state,
+        projects: [addPayload.project, ...state.projects]
+      }
+
     case CLEAR_PROJECTS:
       return {
         ...state,

@@ -1,10 +1,24 @@
 import {Injectable} from '@angular/core'
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog'
 import {Store} from '@ngrx/store'
 import {map, Observable, take} from 'rxjs'
-import {ClComponent, ClIssueType, ClProject, ClUser, ClWorkflowState} from '../Data/graphQlTypes'
+import {
+  AddProjectInput,
+  ClComponent,
+  ClIssueType,
+  ClProject,
+  ClUser,
+  ClWorkflowState,
+  UpdateProjectInput
+} from '../Data/graphQlTypes'
 import {ClearIssues} from '../Issues/issues.actions'
 import {AppState} from '../Store/app.reducer'
 import {getProjects, getSelectedProject, getServerHasMoreProjects} from '../Store/app.selectors'
+import {
+  ProjectEditData,
+  ProjectEditDialogComponent,
+  ProjectEditResult
+} from './project-edit-dialog/project-edit-dialog.component'
 import {SelectProject} from './projects.actions'
 import {ProjectService} from './projects.service'
 
@@ -12,7 +26,39 @@ import {ProjectService} from './projects.service'
   providedIn: 'root'
 } )
 export class ProjectFacade {
-  constructor( private store: Store<AppState>, private projectService: ProjectService ) {
+  constructor( private store: Store<AppState>, private projectService: ProjectService, private dialog: MatDialog ) {
+  }
+
+  CreateProject() {
+    const dialogData: ProjectEditData = {
+      project: null
+    }
+    const dialogConfig = new MatDialogConfig()
+    dialogConfig.data = dialogData
+
+    this.dialog
+      .open( ProjectEditDialogComponent, dialogConfig )
+      .afterClosed()
+      .subscribe( ( result: ProjectEditResult ) => {
+        if( (result.accepted) &&
+          (result.project !== null) ) {
+          const project: AddProjectInput = {
+            title: result.project?.title,
+            description: result.project?.description,
+            issuePrefix: result.project?.issuePrefix
+          }
+
+          this.projectService.AddProject( project )
+        }
+      } )
+  }
+
+  UpdateProject( project: UpdateProjectInput ) {
+    this.projectService.UpdateProject( project )
+  }
+
+  DeleteProject( project: ClProject ) {
+    this.projectService.DeleteProject( project )
   }
 
   GetProjectList$(): Observable<ClProject[]> {

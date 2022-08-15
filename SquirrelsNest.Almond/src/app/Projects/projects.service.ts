@@ -3,12 +3,19 @@ import {GraphQLErrors} from '@apollo/client/errors'
 import {Store} from '@ngrx/store'
 import {Apollo, QueryRef} from 'apollo-angular'
 import {map, Subscription, take, tap} from 'rxjs'
-import {ClProjectCollectionSegment, Query} from '../Data/graphQlTypes'
+import {
+  AddProjectInput,
+  ClProject,
+  ClProjectCollectionSegment, Mutation,
+  Query,
+  UpdateProjectInput
+} from '../Data/graphQlTypes'
+import {AddProjectMutation} from '../Data/projectMutations'
 import {AllProjectsQuery, ProjectQueryInput} from '../Data/queryStatements'
 import {AppState} from '../Store/app.reducer'
 import {getProjectQueryState} from '../Store/app.selectors'
 import {ProjectQueryInfo} from './project.state'
-import {ClearProjectLoading, ClearProjects, AppendProjects, SetProjectLoading} from './projects.actions'
+import {ClearProjectLoading, ClearProjects, AppendProjects, SetProjectLoading, AddProject} from './projects.actions'
 
 @Injectable( {
   providedIn: 'root'
@@ -24,7 +31,7 @@ export class ProjectService implements OnDestroy {
     this.mProjectQuery = this.apollo.use( 'projectsWatchClient' ).watchQuery<Query, ProjectQueryInput>(
       {
         query: AllProjectsQuery,
-        variables: { skip: 0, take: this.mPageLimit, order: { name: 'ASC'} } as ProjectQueryInput
+        variables: { skip: 0, take: this.mPageLimit, order: { name: 'ASC' } } as ProjectQueryInput
       } )
   }
 
@@ -87,6 +94,46 @@ export class ProjectService implements OnDestroy {
     this.store.select( getProjectQueryState ).pipe( take( 1 ) ).subscribe( state => queryState = state )
 
     return queryState!
+  }
+
+  AddProject( project: AddProjectInput ) {
+    this.store.dispatch( new SetProjectLoading() )
+
+    this.apollo.use( 'defaultClient' ).mutate<Mutation>( {
+      mutation: AddProjectMutation,
+      variables: { addInput: project }
+    } )
+      .pipe(
+        map( result => ProjectService.handleAddMutationErrors( result.data, result.errors ) ),
+        map( result => {
+          if( result !== null ) {
+            this.store.dispatch( new AddProject( result ) )
+          }
+
+          return result
+        } ),
+        tap( _ => this.store.dispatch( new ClearProjectLoading() ) ),
+      )
+      .subscribe()
+  }
+
+  private static handleAddMutationErrors( data: Mutation | undefined | null, errors: GraphQLErrors | undefined ): ClProject | null {
+    if( errors != null ) {
+      console.log( errors.entries() )
+    }
+
+    if( (data?.addProject?.errors !== undefined) &&
+      (data.addProject.project !== undefined) ) {
+      return data.addProject.project
+    }
+
+    return null
+  }
+
+  UpdateProject( project: UpdateProjectInput ) {
+  }
+
+  DeleteProject( project: ClProject ) {
   }
 
   ngOnDestroy() {
