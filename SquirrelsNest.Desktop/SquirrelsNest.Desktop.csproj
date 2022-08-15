@@ -11,6 +11,7 @@
 	<Version>0.1.0.1</Version>
 	<SourceRevisionId>build$([System.DateTime]::Now.ToString("yyyy-MM-ddTHH:mm:ss:fffZ"))</SourceRevisionId>
 	<ApplicationIcon>Resources\application.ico</ApplicationIcon>
+	<ImplicitUsings>disable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,10 +24,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="6.3.0" />
+    <PackageReference Include="Autofac" Version="6.4.0" />
     <PackageReference Include="Gu.Wpf.Adorners" Version="2.1.1" />
     <PackageReference Include="MahApps.Metro" Version="2.4.9" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.3">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
