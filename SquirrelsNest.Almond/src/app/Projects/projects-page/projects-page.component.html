@@ -1,6 +1,9 @@
-<section fxLayout fxLayoutGap='10px'>
-  <sn-project-list fxFlex='25em'></sn-project-list>
+<section fxLayout='row' fxLayoutGap='10px' style='height: 100%'>
+  <div fxLayout='column' fxFlex='25em'>
+    <sn-project-list fxFlex='grow'></sn-project-list>
+    <sn-project-commands fxFlexAlign='end'></sn-project-commands>
+  </div>
   <div fxLayout='column' fxFlex>
-    <sn-project-detail fxFlex></sn-project-detail>
+    <sn-project-detail></sn-project-detail>
   </div>
 </section>

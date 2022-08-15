@@ -39,6 +39,8 @@ import {ComponentsListComponent} from './Projects/components-list/components-lis
 import {IssueTypesListComponent} from './Projects/issue-types-list/issue-types-list.component'
 import {WorkflowListComponent} from './Projects/workflow-list/workflow-list.component'
 import {ProjectUsersListComponent} from './Projects/project-users-list/project-users-list.component'
+import {ProjectCommandsComponent} from './Projects/project-commands/project-commands.component'
+import {ProjectEditDialogComponent} from './Projects/project-edit-dialog/project-edit-dialog.component'
 
 
 @NgModule( {
@@ -57,6 +59,8 @@ import {ProjectUsersListComponent} from './Projects/project-users-list/project-u
     IssueTypesListComponent,
     LoginComponent,
     ProjectsPageComponent,
+    ProjectCommandsComponent,
+    ProjectEditDialogComponent,
     ProjectDetailComponent,
     ProjectListComponent,
     ProjectUsersListComponent,
