@@ -17,7 +17,7 @@ import {
   UpdateIssueInput,
   UpdateOperationInput
 } from '../Data/graphQlTypes'
-import {AddIssueMutation, DeleteIssueMutation, UpdateIssueMutation} from '../Data/mutationStatements'
+import {AddIssueMutation, DeleteIssueMutation, UpdateIssueMutation} from '../Data/issueMutations'
 import {IssueQueryInput, IssuesQuery} from '../Data/queryStatements'
 import {ProjectFacade} from '../Projects/project.facade'
 import {AppState} from '../Store/app.reducer'
