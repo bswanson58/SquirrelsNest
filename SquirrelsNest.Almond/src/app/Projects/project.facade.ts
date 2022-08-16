@@ -16,6 +16,11 @@ import {ClearIssues} from '../Issues/issues.actions'
 import {AppState} from '../Store/app.reducer'
 import {getProjects, getSelectedProject, getServerHasMoreProjects} from '../Store/app.selectors'
 import {
+  ConfirmDialogComponent,
+  ConfirmDialogData,
+  ConfirmDialogResult
+} from '../UI/confirm-dialog/confirm-dialog.component'
+import {
   ProjectEditData,
   ProjectEditDialogComponent,
   ProjectEditResult
@@ -59,7 +64,21 @@ export class ProjectFacade {
   }
 
   DeleteProject( project: ClProject ) {
-    this.projectService.DeleteProject( project )
+    const dialogData: ConfirmDialogData = {
+      prompt: 'Do you want to delete this project?',
+      promptDetail: project.name
+    }
+    const dialogConfig = new MatDialogConfig()
+    dialogConfig.data = dialogData
+
+    this.dialog
+      .open( ConfirmDialogComponent, dialogConfig )
+      .afterClosed()
+      .subscribe( ( result: ConfirmDialogResult ) => {
+        if( result.accepted ) {
+          this.projectService.DeleteProject( project )
+        }
+      } )
   }
 
   AddProjectDetail( details: AddProjectDetailInput ) {

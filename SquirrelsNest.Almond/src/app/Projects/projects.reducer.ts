@@ -5,7 +5,7 @@ import {
   CLEAR_PROJECTS_LOADING,
   CLEAR_PROJECTS,
   SELECT_PROJECT, SelectProject,
-  SET_PROJECTS_LOADING, ADD_PROJECT, AddProject, ADD_PROJECT_DETAIL, AddProjectDetail
+  SET_PROJECTS_LOADING, ADD_PROJECT, AddProject, ADD_PROJECT_DETAIL, AddProjectDetail, DELETE_PROJECT, DeleteProject
 } from './projects.actions'
 
 export function projectsReducer( state: ProjectState = initialProjectState, action: Action ): ProjectState {
@@ -21,16 +21,26 @@ export function projectsReducer( state: ProjectState = initialProjectState, acti
     case ADD_PROJECT_DETAIL:
       const addDetailPayload = action as AddProjectDetail
 
-      return {
+      const retValue = {
         ...state,
         projects: state.projects.map( p => p.id === addDetailPayload.project.id ? addDetailPayload.project : p )
       }
+      console.log(retValue.projects)
+      return retValue
 
     case CLEAR_PROJECTS:
       return {
         ...state,
         projects: [],
         queryInfo: initialProjectQueryInfo
+      }
+
+    case DELETE_PROJECT:
+      const deletePayload = action as DeleteProject
+
+      return {
+        ...state,
+        projects: state.projects.filter( p => p.id !== deletePayload.projectId )
       }
 
     case APPEND_PROJECTS:

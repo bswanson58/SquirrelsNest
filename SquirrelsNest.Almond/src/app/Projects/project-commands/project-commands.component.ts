@@ -16,5 +16,10 @@ export class ProjectCommandsComponent {
   }
 
   onDeleteProject() {
+    const currentProject = this.projectFacade.GetCurrentProject()
+
+    if( currentProject !== null ) {
+      this.projectFacade.DeleteProject( currentProject )
+    }
   }
 }

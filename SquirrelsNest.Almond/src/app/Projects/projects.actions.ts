@@ -5,6 +5,7 @@ import {ProjectQueryInfo} from './project.state'
 export const ADD_PROJECT = '[Project] Add Project'
 export const ADD_PROJECT_DETAIL = '[Project] Add Project Detail'
 export const CLEAR_PROJECTS = '[Project] Clear Projects'
+export const DELETE_PROJECT = '[Project] Delete Project'
 export const APPEND_PROJECTS = '[Project] Append Projects'
 export const SELECT_PROJECT = '[Project] Select Project'
 export const SET_PROJECTS_LOADING = '[Project] SetLoading'
@@ -32,6 +33,13 @@ export class AppendProjects implements Action {
   readonly type = APPEND_PROJECTS
 
   constructor( public projects: ClProject[], public queryInfo: ProjectQueryInfo ) {
+  }
+}
+
+export class DeleteProject implements Action {
+  readonly type = DELETE_PROJECT
+
+  constructor( public projectId: string ) {
   }
 }
 

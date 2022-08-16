@@ -7,12 +7,12 @@ import {
   AddProjectDetailInput,
   AddProjectInput,
   ClProject,
-  ClProjectCollectionSegment, Mutation,
+  ClProjectCollectionSegment, DeleteProjectInput, Mutation,
   Query,
   UpdateProjectInput
 } from '../Data/graphQlTypes'
 import {AddProjectDetailMutation} from '../Data/projectDetailMutations'
-import {AddProjectMutation} from '../Data/projectMutations'
+import {AddProjectMutation, DeleteProjectMutation} from '../Data/projectMutations'
 import {AllProjectsQuery, ProjectQueryInput} from '../Data/queryStatements'
 import {AppState} from '../Store/app.reducer'
 import {getProjectQueryState} from '../Store/app.selectors'
@@ -23,7 +23,7 @@ import {
   AppendProjects,
   SetProjectLoading,
   AddProject,
-  AddProjectDetail
+  AddProjectDetail, DeleteProject
 } from './projects.actions'
 
 @Injectable( {
@@ -143,7 +143,41 @@ export class ProjectService implements OnDestroy {
   }
 
   DeleteProject( project: ClProject ) {
+    this.store.dispatch( new SetProjectLoading() )
+    const deleteInput: DeleteProjectInput = {
+      projectId: project.id
+    }
+
+    this.apollo.use( 'defaultClient' ).mutate<Mutation>( {
+      mutation: DeleteProjectMutation,
+      variables: { deleteInput: deleteInput }
+    } )
+      .pipe(
+        map( result => ProjectService.handleDeleteMutationErrors( result.data, result.errors ) ),
+        map( result => {
+          if( result !== null ) {
+            this.store.dispatch( new DeleteProject( result ) )
+          }
+
+          return result
+        } ),
+        tap( _ => this.store.dispatch( new ClearProjectLoading() ) ),
+      )
+      .subscribe()
   }
+
+  private static handleDeleteMutationErrors( data: Mutation | undefined | null, errors: GraphQLErrors | undefined ): string | null {
+    if( errors != null ) {
+      console.log( errors.entries() )
+    }
+
+    if( data?.deleteProject?.errors !== undefined ) {
+      return data.deleteProject.projectId
+    }
+
+    return null
+  }
+
 
   AddProjectDetail( detail: AddProjectDetailInput ) {
     this.store.dispatch( new SetProjectLoading() )
