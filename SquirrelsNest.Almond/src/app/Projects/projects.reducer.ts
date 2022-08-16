@@ -23,9 +23,11 @@ export function projectsReducer( state: ProjectState = initialProjectState, acti
 
       const retValue = {
         ...state,
-        projects: state.projects.map( p => p.id === addDetailPayload.project.id ? addDetailPayload.project : p )
+        projects: state.projects.map( p => p.id === addDetailPayload.project.id ? addDetailPayload.project : p ),
+        // if the selected project is the project being updated, also change it to trigger observables on the selected project.
+        selectedProject: addDetailPayload.project.id === state.selectedProject?.id ? addDetailPayload.project : state.selectedProject
       }
-      console.log(retValue.projects)
+      console.log( retValue.projects )
       return retValue
 
     case CLEAR_PROJECTS:
@@ -40,7 +42,8 @@ export function projectsReducer( state: ProjectState = initialProjectState, acti
 
       return {
         ...state,
-        projects: state.projects.filter( p => p.id !== deletePayload.projectId )
+        projects: state.projects.filter( p => p.id !== deletePayload.projectId ),
+        selectedProject: state.selectedProject?.id === deletePayload.projectId ? null : state.selectedProject
       }
 
     case APPEND_PROJECTS:
