@@ -178,41 +178,6 @@ export class ProjectService implements OnDestroy {
     return null
   }
 
-
-  AddProjectDetail( detail: AddProjectDetailInput ) {
-    this.store.dispatch( new SetProjectLoading() )
-
-    this.apollo.use( 'defaultClient' ).mutate<Mutation>( {
-      mutation: AddProjectDetailMutation,
-      variables: { detailInput: detail }
-    } )
-      .pipe(
-        map( result => ProjectService.handleAddDetailMutationErrors( result.data, result.errors ) ),
-        map( result => {
-          if( result !== null ) {
-            this.store.dispatch( new AddProjectDetail( result ) )
-          }
-
-          return result
-        } ),
-        tap( _ => this.store.dispatch( new ClearProjectLoading() ) ),
-      )
-      .subscribe()
-  }
-
-  private static handleAddDetailMutationErrors( data: Mutation | undefined | null, errors: GraphQLErrors | undefined ): ClProject | null {
-    if( errors != null ) {
-      console.log( errors.entries() )
-    }
-
-    if( (data?.addProjectDetail?.errors !== undefined) &&
-      (data.addProjectDetail.project !== undefined) ) {
-      return data.addProjectDetail.project
-    }
-
-    return null
-  }
-
   ngOnDestroy() {
     this.unsubscribe()
   }

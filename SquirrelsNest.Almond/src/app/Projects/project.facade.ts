@@ -25,6 +25,7 @@ import {
   ProjectEditDialogComponent,
   ProjectEditResult
 } from './project-edit-dialog/project-edit-dialog.component'
+import {ProjectDetailsService} from './project.details.service'
 import {SelectProject} from './projects.actions'
 import {ProjectService} from './projects.service'
 
@@ -32,7 +33,10 @@ import {ProjectService} from './projects.service'
   providedIn: 'root'
 } )
 export class ProjectFacade {
-  constructor( private store: Store<AppState>, private projectService: ProjectService, private dialog: MatDialog ) {
+  constructor( private store: Store<AppState>,
+               private projectService: ProjectService,
+               private projectDetailsService: ProjectDetailsService,
+               private dialog: MatDialog ) {
   }
 
   CreateProject() {
@@ -82,7 +86,7 @@ export class ProjectFacade {
   }
 
   AddProjectDetail( details: AddProjectDetailInput ) {
-    this.projectService.AddProjectDetail( details )
+    this.projectDetailsService.AddProjectDetail( details )
   }
 
   GetProjectList$(): Observable<ClProject[]> {
