@@ -61,7 +61,7 @@ namespace SquirrelsNest.Service.Projects {
             }
 
             foreach( var component in detailInput.Components ) {
-                var result = await mComponentProvider.AddComponent( component.ToEntity());
+                var result = await mComponentProvider.AddComponent( component.ToNewEntity());
 
                 if( result.IsLeft ) {
                     return result.Match( _ => new AddProjectDetailPayload( String.Empty ), e => new AddProjectDetailPayload( e ) );
@@ -69,7 +69,7 @@ namespace SquirrelsNest.Service.Projects {
             }
 
             foreach( var issueType in detailInput.IssueTypes ) {
-                var result = await mIssueTypeProvider.AddIssue( issueType.ToEntity());
+                var result = await mIssueTypeProvider.AddIssue( issueType.ToNewEntity());
 
                 if( result.IsLeft ) {
                     return result.Match( _ => new AddProjectDetailPayload( String.Empty ), e => new AddProjectDetailPayload( e ) );
@@ -77,7 +77,7 @@ namespace SquirrelsNest.Service.Projects {
             }
 
             foreach( var state in detailInput.States ) {
-                var result = await mStateProvider.AddState( state.ToEntity());
+                var result = await mStateProvider.AddState( state.ToNewEntity());
 
                 if( result.IsLeft ) {
                     return result.Match( _ => new AddProjectDetailPayload( String.Empty ), e => new AddProjectDetailPayload( e ) );
