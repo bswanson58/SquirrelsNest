@@ -16,6 +16,7 @@ import {ProjectFacade} from '../project.facade'
 } )
 export class ComponentsListComponent {
   components$: Observable<ClComponent[]>
+  isHovering: boolean = false
 
   constructor( private projectFacade: ProjectFacade, private dialog: MatDialog ) {
     this.components$ = projectFacade.GetCurrentProject$()

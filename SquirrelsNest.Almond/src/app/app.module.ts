@@ -42,12 +42,14 @@ import {ProjectUsersListComponent} from './Projects/project-users-list/project-u
 import {ProjectCommandsComponent} from './Projects/project-commands/project-commands.component'
 import {ProjectEditDialogComponent} from './Projects/project-edit-dialog/project-edit-dialog.component'
 import {ComponentEditDialogComponent} from './Projects/component-edit-dialog/component-edit-dialog.component'
+import {ComponentItemComponent} from './Projects/components-list/component-item/component-item.component'
 
 
 @NgModule( {
   declarations: [
     AppComponent,
     ComponentEditDialogComponent,
+    ComponentItemComponent,
     ComponentsListComponent,
     ConfirmDialogComponent,
     HeaderComponent,
