@@ -25,6 +25,10 @@ namespace SquirrelsNest.Service.Dto {
         public static ClIssueType ToCl( this SnIssueType issue ) {
             return new ClIssueType( issue.EntityId, issue.ProjectId, issue.Name, issue.Description );
         }
+
+        public static SnIssueType ToEntity( this ClIssueType it ) {
+            return new SnIssueType( EntityId.Default, String.Empty, it.ProjectId, it.Name, it.Description );
+        }
     }
 
 }

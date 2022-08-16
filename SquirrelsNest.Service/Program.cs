@@ -121,6 +121,7 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
         .AddMutationType()
         .AddTypeExtension<IssueMutations>()
         .AddTypeExtension<ProjectMutations>()
+        .AddTypeExtension<ProjectDetailMutations>()
         .AddFiltering()
         .AddSorting();
 

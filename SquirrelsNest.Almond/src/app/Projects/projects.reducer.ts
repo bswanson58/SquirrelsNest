@@ -5,7 +5,7 @@ import {
   CLEAR_PROJECTS_LOADING,
   CLEAR_PROJECTS,
   SELECT_PROJECT, SelectProject,
-  SET_PROJECTS_LOADING, ADD_PROJECT, AddProject
+  SET_PROJECTS_LOADING, ADD_PROJECT, AddProject, ADD_PROJECT_DETAIL, AddProjectDetail
 } from './projects.actions'
 
 export function projectsReducer( state: ProjectState = initialProjectState, action: Action ): ProjectState {
@@ -16,6 +16,14 @@ export function projectsReducer( state: ProjectState = initialProjectState, acti
       return {
         ...state,
         projects: [addPayload.project, ...state.projects]
+      }
+
+    case ADD_PROJECT_DETAIL:
+      const addDetailPayload = action as AddProjectDetail
+
+      return {
+        ...state,
+        projects: state.projects.map( p => p.id === addDetailPayload.project.id ? addDetailPayload.project : p )
       }
 
     case CLEAR_PROJECTS:

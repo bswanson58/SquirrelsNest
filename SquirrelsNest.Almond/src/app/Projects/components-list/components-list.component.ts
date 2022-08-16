@@ -1,6 +1,12 @@
 import {Component} from '@angular/core'
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog'
 import {map, Observable} from 'rxjs'
-import {ClComponent} from '../../Data/graphQlTypes'
+import {AddProjectDetailInput, ClComponent} from '../../Data/graphQlTypes'
+import {
+  ComponentEditData,
+  ComponentEditDialogComponent,
+  ComponentEditResult
+} from '../component-edit-dialog/component-edit-dialog.component'
 import {ProjectFacade} from '../project.facade'
 
 @Component( {
@@ -11,11 +17,45 @@ import {ProjectFacade} from '../project.facade'
 export class ComponentsListComponent {
   components$: Observable<ClComponent[]>
 
-  constructor( private projectFacade: ProjectFacade ) {
+  constructor( private projectFacade: ProjectFacade, private dialog: MatDialog ) {
     this.components$ = projectFacade.GetCurrentProject$()
       .pipe(
         map( project => {
           return project ? project.components : []
         } ) )
+  }
+
+  onAddComponent() {
+    const currentProject = this.projectFacade.GetCurrentProject()
+
+    if( currentProject !== null ) {
+      const input: ComponentEditData = {
+        name: '',
+        description: ''
+      }
+      const dialogConfig = new MatDialogConfig()
+      dialogConfig.data = input
+
+      this.dialog
+        .open( ComponentEditDialogComponent, dialogConfig )
+        .afterClosed()
+        .subscribe( ( result: ComponentEditResult ) => {
+          if( result.accepted ) {
+            const detail: AddProjectDetailInput = {
+              projectId: currentProject.id,
+              components: [{
+                id: '',
+                projectId: currentProject.id,
+                name: result.name,
+                description: result.description,
+              }],
+              states: [],
+              issueTypes: []
+            }
+
+            this.projectFacade.AddProjectDetail( detail )
+          }
+        } )
+    }
   }
 }

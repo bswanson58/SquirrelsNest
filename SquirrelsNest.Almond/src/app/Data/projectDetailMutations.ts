@@ -1,0 +1,35 @@
+import {gql} from 'apollo-angular'
+
+export const AddProjectDetailMutation = gql`
+  mutation addProjectDetail($detailInput: AddProjectDetailInput!) {
+    addProjectDetail(detailInput: $detailInput) {
+      project {
+        id
+        name
+        description
+        issuePrefix
+        components {
+          id
+          name
+        }
+        issueTypes {
+          id
+          name
+        }
+        workflowStates {
+          id
+          name
+          category
+        }
+        users {
+          id
+          email
+          name
+        }
+      }
+      errors {
+        message
+        suggestion
+      }
+    }
+  }`

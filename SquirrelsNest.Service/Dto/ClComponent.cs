@@ -8,8 +8,8 @@ namespace SquirrelsNest.Service.Dto {
         public string Name { get; }
         public string Description { get; }
 
-        public ClComponent( string entityId, string projectId, string name, string description ) :
-        base( entityId ) {
+        public ClComponent( string Id, string projectId, string name, string description ) :
+        base( Id ) {
             ProjectId = projectId;
             Name = name;
             Description = description;
@@ -24,6 +24,10 @@ namespace SquirrelsNest.Service.Dto {
     public static class ClComponentEx {
         public static ClComponent ToCl( this SnComponent component ) {
             return new ClComponent( component.EntityId, component.ProjectId, component.Name, component.Description );
+        }
+
+        public static SnComponent ToEntity( this ClComponent component ) {
+            return new SnComponent( EntityId.Default, String.Empty, component.ProjectId, component.Name, component.Description );
         }
     }
 }

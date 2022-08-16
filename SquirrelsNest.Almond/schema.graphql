@@ -8,6 +8,11 @@ type AddIssuePayload {
   errors: [MutationError!]!
 }
 
+type AddProjectDetailPayload {
+  project: ClProject
+  errors: [MutationError!]!
+}
+
 type AddProjectPayload {
   project: ClProject
   errors: [MutationError!]!
@@ -134,6 +139,7 @@ type Mutation {
   addProject(projectInput: AddProjectInput!): AddProjectPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   updateProject(updateInput: UpdateProjectInput!): UpdateProjectPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   deleteProject(deleteInput: DeleteProjectInput!): DeleteProjectPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
+  addProjectDetail(detailInput: AddProjectDetailInput!): AddProjectDetailPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
 }
 
 type MutationError {
@@ -163,6 +169,13 @@ input AddIssueInput {
   issueTypeId: String!
 }
 
+input AddProjectDetailInput {
+  projectId: String!
+  issueTypes: [ClIssueTypeInput!]!
+  components: [ClComponentInput!]!
+  states: [ClWorkflowStateInput!]!
+}
+
 input AddProjectInput {
   title: String!
   description: String!
@@ -181,6 +194,13 @@ input ClComponentFilterInput {
   name: StringOperationFilterInput
   description: StringOperationFilterInput
   id: StringOperationFilterInput
+}
+
+input ClComponentInput {
+  projectId: String!
+  name: String!
+  description: String!
+  id: String!
 }
 
 input ClComponentSortInput {
@@ -231,6 +251,13 @@ input ClIssueTypeFilterInput {
   name: StringOperationFilterInput
   description: StringOperationFilterInput
   id: StringOperationFilterInput
+}
+
+input ClIssueTypeInput {
+  projectId: String!
+  name: String!
+  description: String!
+  id: String!
 }
 
 input ClIssueTypeSortInput {
@@ -328,6 +355,14 @@ input ClWorkflowStateFilterInput {
   description: StringOperationFilterInput
   category: StateCategoryOperationFilterInput
   id: StringOperationFilterInput
+}
+
+input ClWorkflowStateInput {
+  projectId: String!
+  name: String!
+  description: String!
+  category: StateCategory!
+  id: String!
 }
 
 input ClWorkflowStateSortInput {

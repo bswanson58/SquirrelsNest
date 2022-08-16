@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using LanguageExt.Common;
 
 namespace SquirrelsNest.Service.Dto.Mutations {
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class UpdateProjectInput {
         public  string      ProjectId {  get; set; }
         public  string      Title { get; set; }

@@ -30,6 +30,19 @@ export type AddIssuePayload = {
   issue?: Maybe<ClIssue>;
 };
 
+export type AddProjectDetailInput = {
+  components: Array<ClComponentInput>;
+  issueTypes: Array<ClIssueTypeInput>;
+  projectId: Scalars['String'];
+  states: Array<ClWorkflowStateInput>;
+};
+
+export type AddProjectDetailPayload = {
+  __typename?: 'AddProjectDetailPayload';
+  errors: Array<MutationError>;
+  project?: Maybe<ClProject>;
+};
+
 export type AddProjectInput = {
   description: Scalars['String'];
   issuePrefix: Scalars['String'];
@@ -67,6 +80,13 @@ export type ClComponentFilterInput = {
   name?: InputMaybe<StringOperationFilterInput>;
   or?: InputMaybe<Array<ClComponentFilterInput>>;
   projectId?: InputMaybe<StringOperationFilterInput>;
+};
+
+export type ClComponentInput = {
+  description: Scalars['String'];
+  id: Scalars['String'];
+  name: Scalars['String'];
+  projectId: Scalars['String'];
 };
 
 export type ClComponentSortInput = {
@@ -150,6 +170,13 @@ export type ClIssueTypeFilterInput = {
   name?: InputMaybe<StringOperationFilterInput>;
   or?: InputMaybe<Array<ClIssueTypeFilterInput>>;
   projectId?: InputMaybe<StringOperationFilterInput>;
+};
+
+export type ClIssueTypeInput = {
+  description: Scalars['String'];
+  id: Scalars['String'];
+  name: Scalars['String'];
+  projectId: Scalars['String'];
 };
 
 export type ClIssueTypeSortInput = {
@@ -308,6 +335,14 @@ export type ClWorkflowStateFilterInput = {
   projectId?: InputMaybe<StringOperationFilterInput>;
 };
 
+export type ClWorkflowStateInput = {
+  category: StateCategory;
+  description: Scalars['String'];
+  id: Scalars['String'];
+  name: Scalars['String'];
+  projectId: Scalars['String'];
+};
+
 export type ClWorkflowStateSortInput = {
   category?: InputMaybe<SortEnumType>;
   description?: InputMaybe<SortEnumType>;
@@ -429,6 +464,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   addIssue: AddIssuePayload;
   addProject: AddProjectPayload;
+  addProjectDetail: AddProjectDetailPayload;
   deleteIssue: DeleteIssuePayload;
   deleteProject: DeleteProjectPayload;
   login: LoginPayload;
@@ -444,6 +480,11 @@ export type MutationAddIssueArgs = {
 
 export type MutationAddProjectArgs = {
   projectInput: AddProjectInput;
+};
+
+
+export type MutationAddProjectDetailArgs = {
+  detailInput: AddProjectDetailInput;
 };
 
 

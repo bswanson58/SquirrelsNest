@@ -41,11 +41,13 @@ import {WorkflowListComponent} from './Projects/workflow-list/workflow-list.comp
 import {ProjectUsersListComponent} from './Projects/project-users-list/project-users-list.component'
 import {ProjectCommandsComponent} from './Projects/project-commands/project-commands.component'
 import {ProjectEditDialogComponent} from './Projects/project-edit-dialog/project-edit-dialog.component'
+import {ComponentEditDialogComponent} from './Projects/component-edit-dialog/component-edit-dialog.component'
 
 
 @NgModule( {
   declarations: [
     AppComponent,
+    ComponentEditDialogComponent,
     ComponentsListComponent,
     ConfirmDialogComponent,
     HeaderComponent,

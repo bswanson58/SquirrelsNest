@@ -4,18 +4,27 @@ import {Store} from '@ngrx/store'
 import {Apollo, QueryRef} from 'apollo-angular'
 import {map, Subscription, take, tap} from 'rxjs'
 import {
+  AddProjectDetailInput,
   AddProjectInput,
   ClProject,
   ClProjectCollectionSegment, Mutation,
   Query,
   UpdateProjectInput
 } from '../Data/graphQlTypes'
+import {AddProjectDetailMutation} from '../Data/projectDetailMutations'
 import {AddProjectMutation} from '../Data/projectMutations'
 import {AllProjectsQuery, ProjectQueryInput} from '../Data/queryStatements'
 import {AppState} from '../Store/app.reducer'
 import {getProjectQueryState} from '../Store/app.selectors'
 import {ProjectQueryInfo} from './project.state'
-import {ClearProjectLoading, ClearProjects, AppendProjects, SetProjectLoading, AddProject} from './projects.actions'
+import {
+  ClearProjectLoading,
+  ClearProjects,
+  AppendProjects,
+  SetProjectLoading,
+  AddProject,
+  AddProjectDetail
+} from './projects.actions'
 
 @Injectable( {
   providedIn: 'root'
@@ -134,6 +143,40 @@ export class ProjectService implements OnDestroy {
   }
 
   DeleteProject( project: ClProject ) {
+  }
+
+  AddProjectDetail( detail: AddProjectDetailInput ) {
+    this.store.dispatch( new SetProjectLoading() )
+
+    this.apollo.use( 'defaultClient' ).mutate<Mutation>( {
+      mutation: AddProjectDetailMutation,
+      variables: { detailInput: detail }
+    } )
+      .pipe(
+        map( result => ProjectService.handleAddDetailMutationErrors( result.data, result.errors ) ),
+        map( result => {
+          if( result !== null ) {
+            this.store.dispatch( new AddProjectDetail( result ) )
+          }
+
+          return result
+        } ),
+        tap( _ => this.store.dispatch( new ClearProjectLoading() ) ),
+      )
+      .subscribe()
+  }
+
+  private static handleAddDetailMutationErrors( data: Mutation | undefined | null, errors: GraphQLErrors | undefined ): ClProject | null {
+    if( errors != null ) {
+      console.log( errors.entries() )
+    }
+
+    if( (data?.addProjectDetail?.errors !== undefined) &&
+      (data.addProjectDetail.project !== undefined) ) {
+      return data.addProjectDetail.project
+    }
+
+    return null
   }
 
   ngOnDestroy() {

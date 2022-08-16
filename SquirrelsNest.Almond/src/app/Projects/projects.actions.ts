@@ -3,6 +3,7 @@ import {AddProjectPayload, ClProject} from '../Data/graphQlTypes'
 import {ProjectQueryInfo} from './project.state'
 
 export const ADD_PROJECT = '[Project] Add Project'
+export const ADD_PROJECT_DETAIL = '[Project] Add Project Detail'
 export const CLEAR_PROJECTS = '[Project] Clear Projects'
 export const APPEND_PROJECTS = '[Project] Append Projects'
 export const SELECT_PROJECT = '[Project] Select Project'
@@ -11,6 +12,13 @@ export const CLEAR_PROJECTS_LOADING = '[Project] Clear Loading'
 
 export class AddProject implements Action {
   readonly type = ADD_PROJECT
+
+  constructor( public project: ClProject ) {
+  }
+}
+
+export class AddProjectDetail implements Action {
+  readonly type = ADD_PROJECT_DETAIL
 
   constructor( public project: ClProject ) {
   }

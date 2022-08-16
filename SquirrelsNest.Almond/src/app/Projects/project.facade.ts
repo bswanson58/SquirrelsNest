@@ -3,6 +3,7 @@ import {MatDialog, MatDialogConfig} from '@angular/material/dialog'
 import {Store} from '@ngrx/store'
 import {map, Observable, take} from 'rxjs'
 import {
+  AddProjectDetailInput,
   AddProjectInput,
   ClComponent,
   ClIssueType,
@@ -59,6 +60,10 @@ export class ProjectFacade {
 
   DeleteProject( project: ClProject ) {
     this.projectService.DeleteProject( project )
+  }
+
+  AddProjectDetail( details: AddProjectDetailInput ) {
+    this.projectService.AddProjectDetail( details )
   }
 
   GetProjectList$(): Observable<ClProject[]> {
