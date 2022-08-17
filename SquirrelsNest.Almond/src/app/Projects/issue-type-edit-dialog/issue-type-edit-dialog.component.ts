@@ -42,5 +42,4 @@ export class IssueTypeEditDialogComponent {
   onCancel() {
     this.dialogRef.close( { accepted: false } as IssueTypeEditResult )
   }
-
 }

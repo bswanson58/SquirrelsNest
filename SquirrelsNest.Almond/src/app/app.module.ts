@@ -45,6 +45,7 @@ import {ProjectEditDialogComponent} from './Projects/project-edit-dialog/project
 import {ComponentEditDialogComponent} from './Projects/component-edit-dialog/component-edit-dialog.component'
 import {ComponentItemComponent} from './Projects/components-list/component-item/component-item.component'
 import {IssueTypeEditDialogComponent} from './Projects/issue-type-edit-dialog/issue-type-edit-dialog.component'
+import {WorkflowEditDialogComponent} from './Projects/workflow-edit-dialog/workflow-edit-dialog.component'
 
 
 @NgModule( {
@@ -74,6 +75,7 @@ import {IssueTypeEditDialogComponent} from './Projects/issue-type-edit-dialog/is
     RegisterComponent,
     SidenavComponent,
     UsersPageComponent,
+    WorkflowEditDialogComponent,
     WorkflowListComponent,
   ],
   imports: [
