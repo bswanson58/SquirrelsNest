@@ -47,6 +47,7 @@ import {ComponentItemComponent} from './Projects/components-list/component-item/
 import {IssueTypeEditDialogComponent} from './Projects/issue-type-edit-dialog/issue-type-edit-dialog.component'
 import {WorkflowEditDialogComponent} from './Projects/workflow-edit-dialog/workflow-edit-dialog.component'
 import {IssueTypeItemComponent} from './Projects/issue-types-list/issue-type-item/issue-type-item.component'
+import {WorkflowItemComponent} from './Projects/workflow-list/workflow-item/workflow-item.component'
 
 
 @NgModule( {
@@ -79,6 +80,7 @@ import {IssueTypeItemComponent} from './Projects/issue-types-list/issue-type-ite
     UsersPageComponent,
     WorkflowEditDialogComponent,
     WorkflowListComponent,
+    WorkflowItemComponent,
   ],
   imports: [
     AppRoutingModule,
