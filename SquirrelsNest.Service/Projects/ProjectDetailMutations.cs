@@ -161,7 +161,13 @@ namespace SquirrelsNest.Service.Projects {
                 return new ProjectDetailPayload( "Project could not be loaded" );
             }
             foreach( var component in detailInput.Components ) {
-                var result = await mComponentProvider.UpdateComponent( component.ToEntity());
+                var entityId = EntityId.For( component.Id );
+                var existing = await entityId.MapAsync( id => mComponentProvider.GetComponent( id ));
+                var result = await existing.BindAsync( c => {
+                    var updated = c.With( name: component.Name, description: component.Description );
+
+                    return mComponentProvider.UpdateComponent( updated );
+                });
 
                 if( result.IsLeft ) {
                     return result.Match( _ => new ProjectDetailPayload( String.Empty ), e => new ProjectDetailPayload( e ) );
@@ -169,7 +175,13 @@ namespace SquirrelsNest.Service.Projects {
             }
 
             foreach( var issueType in detailInput.IssueTypes ) {
-                var result = await mIssueTypeProvider.UpdateIssue( issueType.ToEntity());
+                var entityId = EntityId.For( issueType.Id );
+                var existing = await entityId.MapAsync( id => mIssueTypeProvider.GetIssue( id ));
+                var result = await existing.BindAsync( it => {
+                    var updated = it.With( name: issueType.Name, description: issueType.Description );
+
+                    return mIssueTypeProvider.UpdateIssue( updated );
+                });
 
                 if( result.IsLeft ) {
                     return result.Match( _ => new ProjectDetailPayload( String.Empty ), e => new ProjectDetailPayload( e ) );
@@ -177,7 +189,13 @@ namespace SquirrelsNest.Service.Projects {
             }
 
             foreach( var state in detailInput.States ) {
-                var result = await mStateProvider.UpdateState( state.ToEntity());
+                var entityId = EntityId.For( state.Id );
+                var existing = await entityId.MapAsync( id => mStateProvider.GetState( id ));
+                var result = await existing.BindAsync( s => {
+                    var updated = s.With( name: state.Name, description: state.Description, category: state.Category );
+
+                    return mStateProvider.UpdateState( updated );
+                });
 
                 if( result.IsLeft ) {
                     return result.Match( _ => new ProjectDetailPayload( String.Empty ), e => new ProjectDetailPayload( e ) );

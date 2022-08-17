@@ -24,14 +24,12 @@ export function projectsReducer( state: ProjectState = initialProjectState, acti
     case UPDATE_PROJECT_DETAIL:
       const updateDetailPayload = action as UpdateProjectDetail
 
-      const retValue = {
+      return {
         ...state,
         projects: state.projects.map( p => p.id === updateDetailPayload.project.id ? updateDetailPayload.project : p ),
         // if the selected project is the project being updated, also change it to trigger observables on the selected project.
         selectedProject: updateDetailPayload.project.id === state.selectedProject?.id ? updateDetailPayload.project : state.selectedProject
       }
-      console.log( retValue.projects )
-      return retValue
 
     case CLEAR_PROJECTS:
       return {

@@ -89,6 +89,10 @@ export class ProjectFacade {
     this.projectDetailsService.AddProjectDetail( details )
   }
 
+  UpdateProjectDetail( details: ProjectDetailInput ) {
+    this.projectDetailsService.UpdateProjectDetail( details )
+  }
+
   DeleteProjectDetail( details: ProjectDetailInput ) {
     this.projectDetailsService.DeleteProjectDetail( details )
   }

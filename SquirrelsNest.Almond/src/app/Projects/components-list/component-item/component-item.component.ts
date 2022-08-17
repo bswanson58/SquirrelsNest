@@ -6,6 +6,10 @@ import {
   ConfirmDialogData,
   ConfirmDialogResult
 } from '../../../UI/confirm-dialog/confirm-dialog.component'
+import {
+  ComponentEditData,
+  ComponentEditDialogComponent, ComponentEditResult
+} from '../../component-edit-dialog/component-edit-dialog.component'
 import {ProjectFacade} from '../../project.facade'
 
 @Component( {
@@ -21,6 +25,37 @@ export class ComponentItemComponent {
   }
 
   onEdit() {
+    const currentProject = this.projectFacade.GetCurrentProject()
+
+    if( currentProject !== null ) {
+      const input: ComponentEditData = {
+        name: this.component.name,
+        description: this.component.description,
+      }
+      const dialogConfig = new MatDialogConfig()
+      dialogConfig.data = input
+
+      this.dialog
+        .open( ComponentEditDialogComponent, dialogConfig )
+        .afterClosed()
+        .subscribe( ( result: ComponentEditResult ) => {
+          if( result.accepted ) {
+            const detail: ProjectDetailInput = {
+              projectId: currentProject.id,
+              components: [{
+                id: this.component.id,
+                projectId: currentProject.id,
+                name: result.name,
+                description: result.description ? result.description : ''
+              }],
+              states: [],
+              issueTypes: []
+            }
+
+            this.projectFacade.UpdateProjectDetail( detail )
+          }
+        } )
+    }
   }
 
   onDelete() {

@@ -11,14 +11,17 @@ export const AddProjectDetailMutation = gql`
         components {
           id
           name
+          description
         }
         issueTypes {
           id
           name
+          description
         }
         workflowStates {
           id
           name
+          description
           category
         }
         users {
@@ -34,8 +37,46 @@ export const AddProjectDetailMutation = gql`
     }
   }`
 
+export const UpdateProjectDetailMutation = gql`
+  mutation updateProjectDetail($detailInput: ProjectDetailInput!) {
+    updateProjectDetail(detailInput: $detailInput) {
+      project {
+        id
+        name
+        description
+        issuePrefix
+        components {
+          id
+          name
+          description
+        }
+        issueTypes {
+          id
+          name
+          description
+        }
+        workflowStates {
+          id
+          name
+          description
+          category
+        }
+        users {
+          id
+          email
+          name
+        }
+      }
+      errors {
+        message
+        suggestion
+      }
+    }
+  }
+`
+
 export const DeleteProjectDetailMutation = gql`
-  mutation deleteProjectDetail($detailInput: ProjectDetailInput!){
+  mutation deleteProjectDetail($detailInput: ProjectDetailInput!) {
     deleteProjectDetail(detailInput: $detailInput) {
       project {
         id
@@ -45,14 +86,17 @@ export const DeleteProjectDetailMutation = gql`
         components {
           id
           name
+          description
         }
         issueTypes {
           id
           name
+          description
         }
         workflowStates {
           id
           name
+          description
           category
         }
         users {
