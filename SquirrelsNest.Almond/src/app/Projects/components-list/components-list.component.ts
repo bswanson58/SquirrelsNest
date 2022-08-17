@@ -1,7 +1,7 @@
 import {Component} from '@angular/core'
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog'
 import {map, Observable} from 'rxjs'
-import {AddProjectDetailInput, ClComponent} from '../../Data/graphQlTypes'
+import {ProjectDetailInput, ClComponent} from '../../Data/graphQlTypes'
 import {
   ComponentEditData,
   ComponentEditDialogComponent,
@@ -42,7 +42,7 @@ export class ComponentsListComponent {
         .afterClosed()
         .subscribe( ( result: ComponentEditResult ) => {
           if( result.accepted ) {
-            const detail: AddProjectDetailInput = {
+            const detail: ProjectDetailInput = {
               projectId: currentProject.id,
               components: [{
                 id: '',

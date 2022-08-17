@@ -3,13 +3,13 @@ import {MatDialog, MatDialogConfig} from '@angular/material/dialog'
 import {Store} from '@ngrx/store'
 import {map, Observable, take} from 'rxjs'
 import {
-  AddProjectDetailInput,
   AddProjectInput,
   ClComponent,
   ClIssueType,
   ClProject,
   ClUser,
   ClWorkflowState,
+  ProjectDetailInput,
   UpdateProjectInput
 } from '../Data/graphQlTypes'
 import {ClearIssues} from '../Issues/issues.actions'
@@ -85,8 +85,12 @@ export class ProjectFacade {
       } )
   }
 
-  AddProjectDetail( details: AddProjectDetailInput ) {
+  AddProjectDetail( details: ProjectDetailInput ) {
     this.projectDetailsService.AddProjectDetail( details )
+  }
+
+  DeleteProjectDetail( details: ProjectDetailInput ) {
+    this.projectDetailsService.DeleteProjectDetail( details )
   }
 
   GetProjectList$(): Observable<ClProject[]> {

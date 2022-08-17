@@ -5,7 +5,10 @@ import {
   CLEAR_PROJECTS_LOADING,
   CLEAR_PROJECTS,
   SELECT_PROJECT, SelectProject,
-  SET_PROJECTS_LOADING, ADD_PROJECT, AddProject, ADD_PROJECT_DETAIL, AddProjectDetail, DELETE_PROJECT, DeleteProject
+  SET_PROJECTS_LOADING,
+  ADD_PROJECT, AddProject,
+  UPDATE_PROJECT_DETAIL, UpdateProjectDetail,
+  DELETE_PROJECT, DeleteProject
 } from './projects.actions'
 
 export function projectsReducer( state: ProjectState = initialProjectState, action: Action ): ProjectState {
@@ -18,14 +21,14 @@ export function projectsReducer( state: ProjectState = initialProjectState, acti
         projects: [addPayload.project, ...state.projects]
       }
 
-    case ADD_PROJECT_DETAIL:
-      const addDetailPayload = action as AddProjectDetail
+    case UPDATE_PROJECT_DETAIL:
+      const updateDetailPayload = action as UpdateProjectDetail
 
       const retValue = {
         ...state,
-        projects: state.projects.map( p => p.id === addDetailPayload.project.id ? addDetailPayload.project : p ),
+        projects: state.projects.map( p => p.id === updateDetailPayload.project.id ? updateDetailPayload.project : p ),
         // if the selected project is the project being updated, also change it to trigger observables on the selected project.
-        selectedProject: addDetailPayload.project.id === state.selectedProject?.id ? addDetailPayload.project : state.selectedProject
+        selectedProject: updateDetailPayload.project.id === state.selectedProject?.id ? updateDetailPayload.project : state.selectedProject
       }
       console.log( retValue.projects )
       return retValue

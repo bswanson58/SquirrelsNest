@@ -26,6 +26,10 @@ namespace SquirrelsNest.Service.Dto {
             return new ClComponent( component.EntityId, component.ProjectId, component.Name, component.Description );
         }
 
+        public static SnComponent ToEntity( this ClComponent component ) {
+            return new SnComponent( component.Id, String.Empty, component.ProjectId, component.Name, component.Description );
+        }
+
         public static SnComponent ToNewEntity( this ClComponent component ) {
             return new SnComponent( Guid.NewGuid().ToString(), String.Empty, component.ProjectId, component.Name, component.Description );
         }

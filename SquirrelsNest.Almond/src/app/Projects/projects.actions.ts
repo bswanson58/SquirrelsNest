@@ -1,9 +1,9 @@
 import {Action} from '@ngrx/store'
-import {AddProjectPayload, ClProject} from '../Data/graphQlTypes'
+import {ClProject} from '../Data/graphQlTypes'
 import {ProjectQueryInfo} from './project.state'
 
 export const ADD_PROJECT = '[Project] Add Project'
-export const ADD_PROJECT_DETAIL = '[Project] Add Project Detail'
+export const UPDATE_PROJECT_DETAIL = '[Project] Update Project Detail'
 export const CLEAR_PROJECTS = '[Project] Clear Projects'
 export const DELETE_PROJECT = '[Project] Delete Project'
 export const APPEND_PROJECTS = '[Project] Append Projects'
@@ -18,8 +18,8 @@ export class AddProject implements Action {
   }
 }
 
-export class AddProjectDetail implements Action {
-  readonly type = ADD_PROJECT_DETAIL
+export class UpdateProjectDetail implements Action {
+  readonly type = UPDATE_PROJECT_DETAIL
 
   constructor( public project: ClProject ) {
   }

@@ -30,19 +30,6 @@ export type AddIssuePayload = {
   issue?: Maybe<ClIssue>;
 };
 
-export type AddProjectDetailInput = {
-  components: Array<ClComponentInput>;
-  issueTypes: Array<ClIssueTypeInput>;
-  projectId: Scalars['String'];
-  states: Array<ClWorkflowStateInput>;
-};
-
-export type AddProjectDetailPayload = {
-  __typename?: 'AddProjectDetailPayload';
-  errors: Array<MutationError>;
-  project?: Maybe<ClProject>;
-};
-
 export type AddProjectInput = {
   description: Scalars['String'];
   issuePrefix: Scalars['String'];
@@ -464,12 +451,14 @@ export type Mutation = {
   __typename?: 'Mutation';
   addIssue: AddIssuePayload;
   addProject: AddProjectPayload;
-  addProjectDetail: AddProjectDetailPayload;
+  addProjectDetail: ProjectDetailPayload;
   deleteIssue: DeleteIssuePayload;
   deleteProject: DeleteProjectPayload;
+  deleteProjectDetail: ProjectDetailPayload;
   login: LoginPayload;
   updateIssue: UpdateIssuePayload;
   updateProject: UpdateProjectPayload;
+  updateProjectDetail: ProjectDetailPayload;
 };
 
 
@@ -484,7 +473,7 @@ export type MutationAddProjectArgs = {
 
 
 export type MutationAddProjectDetailArgs = {
-  detailInput: AddProjectDetailInput;
+  detailInput: ProjectDetailInput;
 };
 
 
@@ -495,6 +484,11 @@ export type MutationDeleteIssueArgs = {
 
 export type MutationDeleteProjectArgs = {
   deleteInput: DeleteProjectInput;
+};
+
+
+export type MutationDeleteProjectDetailArgs = {
+  detailInput: ProjectDetailInput;
 };
 
 
@@ -512,10 +506,28 @@ export type MutationUpdateProjectArgs = {
   updateInput: UpdateProjectInput;
 };
 
+
+export type MutationUpdateProjectDetailArgs = {
+  detailInput: ProjectDetailInput;
+};
+
 export type MutationError = {
   __typename?: 'MutationError';
   message: Scalars['String'];
   suggestion: Scalars['String'];
+};
+
+export type ProjectDetailInput = {
+  components: Array<ClComponentInput>;
+  issueTypes: Array<ClIssueTypeInput>;
+  projectId: Scalars['String'];
+  states: Array<ClWorkflowStateInput>;
+};
+
+export type ProjectDetailPayload = {
+  __typename?: 'ProjectDetailPayload';
+  errors: Array<MutationError>;
+  project?: Maybe<ClProject>;
 };
 
 export type Query = {

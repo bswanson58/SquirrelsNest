@@ -8,11 +8,6 @@ type AddIssuePayload {
   errors: [MutationError!]!
 }
 
-type AddProjectDetailPayload {
-  project: ClProject
-  errors: [MutationError!]!
-}
-
 type AddProjectPayload {
   project: ClProject
   errors: [MutationError!]!
@@ -139,12 +134,19 @@ type Mutation {
   addProject(projectInput: AddProjectInput!): AddProjectPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   updateProject(updateInput: UpdateProjectInput!): UpdateProjectPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   deleteProject(deleteInput: DeleteProjectInput!): DeleteProjectPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
-  addProjectDetail(detailInput: AddProjectDetailInput!): AddProjectDetailPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
+  addProjectDetail(detailInput: ProjectDetailInput!): ProjectDetailPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
+  deleteProjectDetail(detailInput: ProjectDetailInput!): ProjectDetailPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
+  updateProjectDetail(detailInput: ProjectDetailInput!): ProjectDetailPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
 }
 
 type MutationError {
   message: String!
   suggestion: String!
+}
+
+type ProjectDetailPayload {
+  project: ClProject
+  errors: [MutationError!]!
 }
 
 type Query {
@@ -167,13 +169,6 @@ input AddIssueInput {
   title: String!
   description: String!
   issueTypeId: String!
-}
-
-input AddProjectDetailInput {
-  projectId: String!
-  issueTypes: [ClIssueTypeInput!]!
-  components: [ClComponentInput!]!
-  states: [ClWorkflowStateInput!]!
 }
 
 input AddProjectInput {
@@ -442,6 +437,13 @@ input ListFilterInputTypeOfClWorkflowStateFilterInput {
 input LoginInput {
   email: String!
   password: String!
+}
+
+input ProjectDetailInput {
+  projectId: String!
+  issueTypes: [ClIssueTypeInput!]!
+  components: [ClComponentInput!]!
+  states: [ClWorkflowStateInput!]!
 }
 
 input StateCategoryOperationFilterInput {

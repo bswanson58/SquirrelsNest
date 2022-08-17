@@ -4,14 +4,12 @@ import {Store} from '@ngrx/store'
 import {Apollo, QueryRef} from 'apollo-angular'
 import {map, Subscription, take, tap} from 'rxjs'
 import {
-  AddProjectDetailInput,
   AddProjectInput,
   ClProject,
   ClProjectCollectionSegment, DeleteProjectInput, Mutation,
   Query,
   UpdateProjectInput
 } from '../Data/graphQlTypes'
-import {AddProjectDetailMutation} from '../Data/projectDetailMutations'
 import {AddProjectMutation, DeleteProjectMutation} from '../Data/projectMutations'
 import {AllProjectsQuery, ProjectQueryInput} from '../Data/queryStatements'
 import {AppState} from '../Store/app.reducer'
@@ -23,7 +21,7 @@ import {
   AppendProjects,
   SetProjectLoading,
   AddProject,
-  AddProjectDetail, DeleteProject
+  DeleteProject
 } from './projects.actions'
 
 @Injectable( {

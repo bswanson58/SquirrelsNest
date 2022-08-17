@@ -28,6 +28,10 @@ namespace SquirrelsNest.Service.Dto {
             return new ClWorkflowState( state.EntityId, state.ProjectId, state.Name, state.Description, state.Category );
         }
 
+        public static SnWorkflowState ToEntity( this ClWorkflowState state ) {
+            return new SnWorkflowState( state.Id, String.Empty, state.ProjectId, state.Name, state.Description, state.Category );
+        }
+
         public static SnWorkflowState ToNewEntity( this ClWorkflowState state ) {
             return new SnWorkflowState( Guid.NewGuid().ToString(), String.Empty, state.ProjectId, state.Name, state.Description, state.Category );
         }
