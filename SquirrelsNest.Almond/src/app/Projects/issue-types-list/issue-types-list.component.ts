@@ -1,6 +1,11 @@
 import {Component} from '@angular/core'
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog'
 import {map, Observable} from 'rxjs'
-import {ClIssueType} from '../../Data/graphQlTypes'
+import {ClIssueType, ProjectDetailInput} from '../../Data/graphQlTypes'
+import {
+  IssueTypeEditData,
+  IssueTypeEditDialogComponent, IssueTypeEditResult
+} from '../issue-type-edit-dialog/issue-type-edit-dialog.component'
 import {ProjectFacade} from '../project.facade'
 
 @Component( {
@@ -11,11 +16,45 @@ import {ProjectFacade} from '../project.facade'
 export class IssueTypesListComponent {
   issueTypes$: Observable<ClIssueType[]>
 
-  constructor( private projectFacade: ProjectFacade ) {
+  constructor( private projectFacade: ProjectFacade, private dialog: MatDialog ) {
     this.issueTypes$ = projectFacade.GetCurrentProject$()
       .pipe(
         map( project => {
           return project ? project.issueTypes : []
         } ) )
+  }
+
+  onAddIssueType() {
+    const currentProject = this.projectFacade.GetCurrentProject()
+
+    if( currentProject !== null ) {
+      const input: IssueTypeEditData = {
+        name: '',
+        description: ''
+      }
+      const dialogConfig = new MatDialogConfig()
+      dialogConfig.data = input
+
+      this.dialog
+        .open( IssueTypeEditDialogComponent, dialogConfig )
+        .afterClosed()
+        .subscribe( ( result: IssueTypeEditResult ) => {
+          if( result.accepted ) {
+            const detail: ProjectDetailInput = {
+              projectId: currentProject.id,
+              components: [],
+              issueTypes: [{
+                id: '',
+                projectId: currentProject.id,
+                name: result.name,
+                description: result.description,
+              }],
+              states: [],
+            }
+
+            this.projectFacade.AddProjectDetail( detail )
+          }
+        } )
+    }
   }
 }

@@ -44,6 +44,7 @@ import {ProjectCommandsComponent} from './Projects/project-commands/project-comm
 import {ProjectEditDialogComponent} from './Projects/project-edit-dialog/project-edit-dialog.component'
 import {ComponentEditDialogComponent} from './Projects/component-edit-dialog/component-edit-dialog.component'
 import {ComponentItemComponent} from './Projects/components-list/component-item/component-item.component'
+import {IssueTypeEditDialogComponent} from './Projects/issue-type-edit-dialog/issue-type-edit-dialog.component'
 
 
 @NgModule( {
@@ -61,6 +62,7 @@ import {ComponentItemComponent} from './Projects/components-list/component-item/
     IssueDetailComponent,
     IssueDetailSelectorComponent,
     IssueEditDialogComponent,
+    IssueTypeEditDialogComponent,
     IssueTypesListComponent,
     LoginComponent,
     ProjectsPageComponent,
