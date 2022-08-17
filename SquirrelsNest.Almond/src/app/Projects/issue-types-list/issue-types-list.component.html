@@ -3,7 +3,9 @@
   <mat-card-content fxLayout='column'>
     <div style='overflow: auto; height: 100%'>
       <ul>
-        <li *ngFor='let issueType of issueTypes$ | async'>{{issueType.name}}</li>
+        <li *ngFor='let issueType of issueTypes$ | async'>
+          <sn-issue-type-item [issueType]='issueType'></sn-issue-type-item>
+        </li>
       </ul>
     </div>
     <mat-card-actions align='end'>
