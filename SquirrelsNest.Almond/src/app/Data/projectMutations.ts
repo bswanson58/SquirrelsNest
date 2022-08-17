@@ -11,14 +11,17 @@ export const AddProjectMutation = gql`
         components {
           id
           name
+          description
         }
         issueTypes {
           id
           name
+          description
         }
         workflowStates {
           id
           name
+          description
           category
         }
         users {
@@ -45,14 +48,17 @@ export const UpdateProjectMutation = gql`
         components {
           id
           name
+          description
         }
         issueTypes {
           id
           name
+          description
         }
         workflowStates {
           id
           name
+          description
           category
         }
         users {

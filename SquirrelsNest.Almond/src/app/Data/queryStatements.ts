@@ -26,14 +26,17 @@ export const AllProjectsQuery = gql<Query, ProjectQueryInput>`
         components {
           id
           name
+          description
         }
         issueTypes {
           id
           name
+          description
         }
         workflowStates {
           id
           name
+          description
           category
         }
         users {
