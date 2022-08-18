@@ -32,6 +32,7 @@ export class WorkflowItemComponent {
       const input: WorkflowStateEditData = {
         name: this.workflow.name,
         description: this.workflow.description,
+        category: this.workflow.category
       }
       const dialogConfig = new MatDialogConfig()
       dialogConfig.data = input
@@ -50,7 +51,7 @@ export class WorkflowItemComponent {
                 projectId: currentProject.id,
                 name: result.name,
                 description: result.description ? result.description : '',
-                category: 'INTERMEDIATE' as StateCategory.Intermediate
+                category: result.category as StateCategory
               }],
             }
 

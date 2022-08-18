@@ -22,6 +22,7 @@ import {IssueHeaderComponent} from './Issues/issue-header/issue-header.component
 import {IssueListComponent} from './Issues/issue-list/issue-list.component'
 import {LoginComponent} from './Auth/login/login.component'
 import {MaterialModule} from './material.module'
+import {ProjectConstants} from './Projects/project.const'
 import {ProjectDetailsService} from './Projects/project.details.service'
 import {ProjectFacade} from './Projects/project.facade'
 import {ProjectsPageComponent} from './Projects/projects-page/projects-page.component'
@@ -100,6 +101,7 @@ import {WorkflowItemComponent} from './Projects/workflow-list/workflow-item/work
     AuthService,
     IssuesFacade,
     IssueService,
+    ProjectConstants,
     ProjectFacade,
     ProjectService,
     ProjectDetailsService,

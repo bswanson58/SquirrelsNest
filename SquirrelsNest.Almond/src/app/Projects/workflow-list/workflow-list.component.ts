@@ -30,7 +30,8 @@ export class WorkflowListComponent {
     if( currentProject !== null ) {
       const input: WorkflowStateEditData = {
         name: '',
-        description: ''
+        description: '',
+        category: ''
       }
       const dialogConfig = new MatDialogConfig()
       dialogConfig.data = input
@@ -49,7 +50,7 @@ export class WorkflowListComponent {
                 projectId: currentProject.id,
                 name: result.name,
                 description: result.description,
-                category: 'INTERMEDIATE' as StateCategory.Intermediate
+                category: result.category as StateCategory
               }],
             }
 

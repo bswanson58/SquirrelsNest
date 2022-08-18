@@ -25,6 +25,7 @@ import {
   ProjectEditDialogComponent,
   ProjectEditResult
 } from './project-edit-dialog/project-edit-dialog.component'
+import {CategoryValues, ProjectConstants} from './project.const'
 import {ProjectDetailsService} from './project.details.service'
 import {SelectProject} from './projects.actions'
 import {ProjectService} from './projects.service'
@@ -34,6 +35,7 @@ import {ProjectService} from './projects.service'
 } )
 export class ProjectFacade {
   constructor( private store: Store<AppState>,
+               private projectConstants: ProjectConstants,
                private projectService: ProjectService,
                private projectDetailsService: ProjectDetailsService,
                private dialog: MatDialog ) {
@@ -95,6 +97,14 @@ export class ProjectFacade {
 
   DeleteProjectDetail( details: ProjectDetailInput ) {
     this.projectDetailsService.DeleteProjectDetail( details )
+  }
+
+  GetWorkflowStateCategoryValues$(): Observable<CategoryValues[]> {
+    return this.projectConstants.GetWorkflowStateCategoryValues$()
+  }
+
+  GetWorkflowStateCategoryValues(): CategoryValues[] {
+    return this.projectConstants.GetWorkflowStateCategoryValues()
   }
 
   GetProjectList$(): Observable<ClProject[]> {
