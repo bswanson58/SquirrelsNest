@@ -34,10 +34,10 @@ export class IssueEditDialogComponent {
 
   issueTitle: string
   issueDescription: string
-  selectedComponentId: string
-  selectedIssueTypeId: string
-  selectedWorkflowId: string
-  selectedUserId: string
+  selectedComponentId: string | undefined
+  selectedIssueTypeId: string | undefined
+  selectedWorkflowId: string | undefined
+  selectedUserId: string | undefined
 
   constructor( private dialogRef: MatDialogRef<IssueEditDialogComponent>,
                @Inject( MAT_DIALOG_DATA ) private dialogData: IssueEditData,
@@ -50,17 +50,17 @@ export class IssueEditDialogComponent {
     this.workflowStates$ = this.projectFacade.GetCurrentProjectWorkflowStates$()
     this.users$ = this.projectFacade.GetCurrentProjectUsers$()
 
-    this.selectedComponentId = ''
-    this.selectedIssueTypeId = ''
-    const initialState = dialogData.project.workflowStates.find( s => s.category === 'INITIAL' )
-    this.selectedWorkflowId = initialState ? initialState.id : ''
-    this.selectedUserId = ''
+    this.selectedComponentId = dialogData.project.components.find( c => c.id === dialogData.issue?.component?.id )?.id
+    this.selectedIssueTypeId = dialogData.project.issueTypes.find( i => i.id === dialogData.issue?.issueType?.id )?.id
+    this.selectedWorkflowId = dialogData.project.workflowStates.find( s => s.id === dialogData.issue?.workflowState?.id )?.id
+    this.selectedUserId = dialogData.project.users.find( u => u.id === dialogData.issue?.assignedTo?.id )?.id
 
     this.dialogRef.updateSize( '650px' )
   }
 
   onClose() {
     const newIssue = {
+      id: this.dialogData.issue?.id,
       title: this.issueTitle,
       description: this.issueDescription,
       component: this.dialogData.project.components.find( c => c.id === this.selectedComponentId ),
@@ -70,7 +70,6 @@ export class IssueEditDialogComponent {
       project: this.dialogData.project as ClProjectBase
     } as ClIssue
 
-    console.log( newIssue )
     this.dialogRef.close( { accepted: true, issue: newIssue } as IssueEditResult )
   }
 

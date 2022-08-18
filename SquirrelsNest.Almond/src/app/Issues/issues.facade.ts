@@ -54,7 +54,8 @@ export class IssuesFacade {
       } )
   }
 
-  EditIssue( issue: ClIssue ) {
+  UpdateIssue( issue: ClIssue ) {
+    this.issueService.UpdateIssue( issue )
   }
 
   GetCurrentIssuesList$(): Observable<ClIssue[]> {

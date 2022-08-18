@@ -9,6 +9,11 @@ import {
   DetailSelectorData, DetailSelectorResult,
   IssueDetailSelectorComponent
 } from '../issue-detail-selector/issue-detail-selector.component'
+import {
+  IssueEditData,
+  IssueEditDialogComponent,
+  IssueEditResult
+} from '../issue-edit-dialog/issue-edit-dialog.component'
 import {IssuesFacade} from '../issues.facade'
 
 @Component( {
@@ -36,7 +41,26 @@ export class IssueDetailComponent {
   }
 
   onEditIssue() {
-    this.issuesFacade.EditIssue( this.issue )
+    const currentProject = this.projectFacade.GetCurrentProject()
+
+    if( currentProject !== null ) {
+      const dialogData: IssueEditData = {
+        issue: this.issue,
+        project: currentProject
+      }
+      const dialogConfig = new MatDialogConfig()
+      dialogConfig.data = dialogData
+
+      this.dialog
+        .open( IssueEditDialogComponent, dialogConfig )
+        .afterClosed()
+        .subscribe( ( result: IssueEditResult ) => {
+          if( (result.accepted) &&
+            (result.issue !== null) ) {
+            this.issuesFacade.UpdateIssue( result.issue )
+          }
+        } )
+    }
   }
 
   onDeleteIssue() {

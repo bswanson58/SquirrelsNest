@@ -10,7 +10,8 @@ import {
   ClIssueCollectionSegment,
   ClIssueType,
   ClUser,
-  ClWorkflowState, DeleteIssueInput,
+  ClWorkflowState,
+  DeleteIssueInput,
   IssueUpdatePath,
   Mutation,
   Query,
@@ -141,6 +142,21 @@ export class IssueService {
     }
   }
 
+  UpdateIssue( issue: ClIssue ) {
+    const issueInput: UpdateIssueInput = {
+      operations: [
+        { path: 'TITLE' as IssueUpdatePath.Title, value: issue.title },
+        { path: 'DESCRIPTION' as IssueUpdatePath.Description, value: issue.description },
+        { path: 'ISSUE_TYPE_ID' as IssueUpdatePath.IssueTypeId, value: issue.issueType?.id },
+        { path: 'WORKFLOW_STATE_ID' as IssueUpdatePath.WorkflowStateId, value: issue.workflowState?.id },
+        { path: 'COMPONENT_ID' as IssueUpdatePath.ComponentId, value: issue.component?.id },
+        { path: 'ASSIGNED_TO_ID' as IssueUpdatePath.AssignedToId, value: issue.assignedTo?.id }
+      ],
+      issueId: issue.id
+    }
+
+    this.updateIssue( issueInput )
+  }
 
   private updateIssue( input: UpdateIssueInput ) {
     this.store.dispatch( new SetIssuesLoading() )
