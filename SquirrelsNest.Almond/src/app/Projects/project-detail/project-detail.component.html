@@ -1,14 +1,12 @@
-<section fxLayout='column' fxLayoutGap='1em'>
-  <div fxFlex='20em' style='background: antiquewhite'></div>
-
-  <div fxFlex='15em' fxLayout='row' fxLayoutGap='1em'>
-    <sn-issue-types-list fxFlex='50%'></sn-issue-types-list>
-    <sn-workflow-list fxFlex='50%'></sn-workflow-list>
+<mat-card style='height: 12em'>
+  <div *ngIf='(project | async) as currentProject'>
+    <mat-card-title>{{currentProject.name}}</mat-card-title>
+    <div style='margin-left: 1em;'>
+      <mat-card-subtitle>{{currentProject.description}}</mat-card-subtitle>
+      <mat-card-subtitle>Issue Prefix: {{currentProject.issuePrefix}}</mat-card-subtitle>
+    </div>
+    <mat-card-actions align='end'>
+      <button mat-flat-button (click)='onEditProject()'>Edit Project</button>
+    </mat-card-actions>
   </div>
-
-  <div fxFlex='15em' fxLayout='row' fxLayoutGap='1em'>
-    <sn-components-list fxFlex='50%'></sn-components-list>
-    <sn-project-users-list fxFlex='50%'></sn-project-users-list>
-  </div>
-
-</section>
+</mat-card>

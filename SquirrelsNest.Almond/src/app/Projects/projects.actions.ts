@@ -3,16 +3,24 @@ import {ClProject} from '../Data/graphQlTypes'
 import {ProjectQueryInfo} from './project.state'
 
 export const ADD_PROJECT = '[Project] Add Project'
-export const UPDATE_PROJECT_DETAIL = '[Project] Update Project Detail'
 export const CLEAR_PROJECTS = '[Project] Clear Projects'
 export const DELETE_PROJECT = '[Project] Delete Project'
 export const APPEND_PROJECTS = '[Project] Append Projects'
+export const UPDATE_PROJECT = '[Project] Update Project'
+export const UPDATE_PROJECT_DETAIL = '[Project] Update Project Detail'
 export const SELECT_PROJECT = '[Project] Select Project'
 export const SET_PROJECTS_LOADING = '[Project] SetLoading'
 export const CLEAR_PROJECTS_LOADING = '[Project] Clear Loading'
 
 export class AddProject implements Action {
   readonly type = ADD_PROJECT
+
+  constructor( public project: ClProject ) {
+  }
+}
+
+export class UpdateProject implements Action {
+  readonly type = UPDATE_PROJECT
 
   constructor( public project: ClProject ) {
   }

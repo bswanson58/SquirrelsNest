@@ -10,7 +10,7 @@ import {
   Query,
   UpdateProjectInput
 } from '../Data/graphQlTypes'
-import {AddProjectMutation, DeleteProjectMutation} from '../Data/projectMutations'
+import {AddProjectMutation, DeleteProjectMutation, UpdateProjectMutation} from '../Data/projectMutations'
 import {AllProjectsQuery, ProjectQueryInput} from '../Data/queryStatements'
 import {AppState} from '../Store/app.reducer'
 import {getProjectQueryState} from '../Store/app.selectors'
@@ -21,7 +21,7 @@ import {
   AppendProjects,
   SetProjectLoading,
   AddProject,
-  DeleteProject
+  DeleteProject, UpdateProject
 } from './projects.actions'
 
 @Injectable( {
@@ -138,6 +138,37 @@ export class ProjectService implements OnDestroy {
   }
 
   UpdateProject( project: UpdateProjectInput ) {
+    this.store.dispatch( new SetProjectLoading() )
+
+    this.apollo.use( 'defaultClient' ).mutate<Mutation>( {
+      mutation: UpdateProjectMutation,
+      variables: { updateInput: project }
+    } )
+      .pipe(
+        map( result => ProjectService.handleUpdateMutationErrors( result.data, result.errors ) ),
+        map( result => {
+          if( result !== null ) {
+            this.store.dispatch( new UpdateProject( result ) )
+          }
+
+          return result
+        } ),
+        tap( _ => this.store.dispatch( new ClearProjectLoading() ) ),
+      )
+      .subscribe()
+  }
+
+  private static handleUpdateMutationErrors( data: Mutation | undefined | null, errors: GraphQLErrors | undefined ): ClProject | null {
+    if( errors != null ) {
+      console.log( errors.entries() )
+    }
+
+    if( (data?.updateProject?.errors !== undefined) &&
+      (data.updateProject.project !== undefined) ) {
+      return data.updateProject.project
+    }
+
+    return null
   }
 
   DeleteProject( project: ClProject ) {

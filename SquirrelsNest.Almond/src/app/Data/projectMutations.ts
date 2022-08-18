@@ -38,7 +38,7 @@ export const AddProjectMutation = gql`
   }`
 
 export const UpdateProjectMutation = gql`
-  mutation updateProject($updateInput: UpdateOperationInput!) {
+  mutation updateProject($updateInput: UpdateProjectInput!) {
     updateProject(updateInput: $updateInput){
       project {
         id

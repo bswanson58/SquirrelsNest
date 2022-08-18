@@ -1,14 +1,15 @@
 import {Action} from '@ngrx/store'
 import {initialProjectQueryInfo, initialProjectState, ProjectState} from './project.state'
 import {
+  ADD_PROJECT, AddProject,
   APPEND_PROJECTS, AppendProjects,
   CLEAR_PROJECTS_LOADING,
   CLEAR_PROJECTS,
+  DELETE_PROJECT, DeleteProject,
   SELECT_PROJECT, SelectProject,
   SET_PROJECTS_LOADING,
-  ADD_PROJECT, AddProject,
   UPDATE_PROJECT_DETAIL, UpdateProjectDetail,
-  DELETE_PROJECT, DeleteProject
+  UPDATE_PROJECT, UpdateProject
 } from './projects.actions'
 
 export function projectsReducer( state: ProjectState = initialProjectState, action: Action ): ProjectState {
@@ -19,6 +20,16 @@ export function projectsReducer( state: ProjectState = initialProjectState, acti
       return {
         ...state,
         projects: [addPayload.project, ...state.projects]
+      }
+
+    case UPDATE_PROJECT:
+      const updatePayload = action as UpdateProject
+
+      return {
+        ...state,
+        projects: state.projects.map( p => p.id === updatePayload.project.id ? updatePayload.project : p ),
+        // if the selected project is the project being updated, also change it to trigger observables on the selected project.
+        selectedProject: updatePayload.project.id === state.selectedProject?.id ? updatePayload.project : state.selectedProject
       }
 
     case UPDATE_PROJECT_DETAIL:
