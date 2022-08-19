@@ -287,6 +287,14 @@ export type ClUser = {
   name: Scalars['String'];
 };
 
+export type ClUserCollectionSegment = {
+  __typename?: 'ClUserCollectionSegment';
+  items?: Maybe<Array<ClUser>>;
+  /** Information to aid in pagination. */
+  pageInfo: CollectionSegmentInfo;
+  totalCount: Scalars['Int'];
+};
+
 export type ClUserFilterInput = {
   and?: InputMaybe<Array<ClUserFilterInput>>;
   email?: InputMaybe<StringOperationFilterInput>;
@@ -534,6 +542,7 @@ export type Query = {
   __typename?: 'Query';
   issueList?: Maybe<ClIssueCollectionSegment>;
   projectList?: Maybe<ClProjectCollectionSegment>;
+  userList?: Maybe<ClUserCollectionSegment>;
 };
 
 
@@ -551,6 +560,14 @@ export type QueryProjectListArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   take?: InputMaybe<Scalars['Int']>;
   where?: InputMaybe<ClProjectFilterInput>;
+};
+
+
+export type QueryUserListArgs = {
+  order?: InputMaybe<Array<ClUserSortInput>>;
+  skip?: InputMaybe<Scalars['Int']>;
+  take?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<ClUserFilterInput>;
 };
 
 export enum SortEnumType {

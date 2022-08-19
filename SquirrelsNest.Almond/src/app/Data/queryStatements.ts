@@ -1,5 +1,5 @@
 import {gql} from 'apollo-angular'
-import {ClIssueSortInput, ClProjectSortInput, Query} from './graphQlTypes'
+import {ClIssueSortInput, ClProjectSortInput, ClUserSortInput, Query} from './graphQlTypes'
 
 export interface ProjectQueryInput {
   skip: number,
@@ -95,3 +95,29 @@ export const IssuesQuery = gql`
       totalCount
     }
   }`
+
+export interface UserQueryInput {
+  skip: number,
+  take: number,
+  order: ClUserSortInput
+}
+
+export const UserQuery = gql`
+  query usersQuery($skip: Int!, $take: Int!, $order:[ClUserSortInput!], $where:ClUserFilterInput) {
+    userList(
+      skip: $skip
+      take: $take
+      order: $order,
+      where: $where ) {
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+      }
+      items {
+        name
+        loginName
+        email
+      }
+    }
+  }
+`

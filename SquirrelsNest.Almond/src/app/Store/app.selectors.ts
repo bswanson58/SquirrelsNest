@@ -3,6 +3,7 @@ import {createSelector} from '@ngrx/store'
 import * as fromAuth from '../Auth/auth.state'
 import * as fromProject from '../Projects/project.state'
 import * as fromIssue from '../Issues/issues.state'
+import * as fromUser from '../Users/user.state'
 import * as fromUI from '../UI/ui.state'
 
 // Authentication
@@ -24,6 +25,14 @@ export const getIssueQueryState = createSelector( fromIssue.getIssueState, fromI
 export const getServerHasMoreIssues = createSelector( fromIssue.getIssueState, fromIssue.getServerHasMoreIssues )
 export const getTotalIssues = createSelector( fromIssue.getIssueState, fromIssue.getTotalIssues )
 export const getLoadedIssues = createSelector( fromIssue.getIssueState, fromIssue.getLoadedIssues )
+
+// Users
+export const getUsersLoading = createSelector( fromUser.getUserState, fromUser.getIsLoading )
+export const getUsers = createSelector( fromUser.getUserState, fromUser.getUsers )
+export const getUserQueryState = createSelector( fromUser.getUserState, fromUser.getUserQueryState )
+export const getServerHasMoreUsers = createSelector( fromUser.getUserState, fromUser.getServerHasMoreUsers )
+export const getTotalUsers = createSelector( fromUser.getUserState, fromUser.getTotalUsers )
+export const getLoadedUsers = createSelector( fromUser.getUserState, fromUser.getLoadedUsers )
 
 // UI
 export const getIssueDisplayStyle = createSelector( fromUI.getUiState, fromUI.getIssueDisplayStyle )

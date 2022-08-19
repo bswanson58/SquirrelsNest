@@ -61,7 +61,7 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
 
     services.AddControllers(options => {
         options.Filters.Add( typeof( ExceptionFilter ));
-        options.Filters.Add(typeof( BadRequestParser ));
+        options.Filters.Add( typeof( BadRequestParser ));
     }).ConfigureApiBehaviorOptions( BadRequestsBehavior.Parse );
 
     services.AddDbContext<ServiceDbContext>( options =>
@@ -117,6 +117,7 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
         .AddQueryType()
         .AddTypeExtension<ProjectQuery>()
         .AddTypeExtension<IssueQuery>()
+        .AddTypeExtension<UserQuery>()
         .AddTypeExtension<Authentication>()
         .AddMutationType()
         .AddTypeExtension<IssueMutations>()

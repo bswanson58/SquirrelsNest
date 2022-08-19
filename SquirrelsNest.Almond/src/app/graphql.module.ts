@@ -58,6 +58,20 @@ export function createApollo( httpLink: HttpLink ): NamedOptions {
         }
       } )
     },
+    usersWatchClient: {
+      link: ApolloLink.from( [basic, auth, httpLink.create( { uri } )] ),
+      cache: new InMemoryCache( {
+        typePolicies: {
+          Query: {
+            fields: {
+              userList: {
+                keyArgs: false
+              },
+            }
+          },
+        }
+      } )
+    },
     defaultClient: {
       link: ApolloLink.from( [basic, auth, httpLink.create( { uri } )] ),
       cache: new InMemoryCache()

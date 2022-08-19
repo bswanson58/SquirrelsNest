@@ -1,0 +1,11 @@
+button {
+  font-weight: normal;
+}
+
+.dimmed {
+  opacity: 70%;
+}
+
+.highlight {
+  background: #80808020;
+}

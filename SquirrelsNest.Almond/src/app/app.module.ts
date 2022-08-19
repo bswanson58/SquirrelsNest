@@ -31,6 +31,8 @@ import {RegisterComponent} from './Auth/register/register.component'
 import {SidenavComponent} from './Navigation/sidenav/sidenav.component'
 import {ProjectService} from './Projects/projects.service'
 import {appReducers} from './Store/app.reducer'
+import {UsersFacade} from './Users/user.facade'
+import {UserService} from './Users/user.service'
 import {UsersPageComponent} from './Users/users-page/users-page.component'
 import {IssueDetailSelectorComponent} from './Issues/issue-detail-selector/issue-detail-selector.component'
 import {IssueEditDialogComponent} from './Issues/issue-edit-dialog/issue-edit-dialog.component'
@@ -49,6 +51,8 @@ import {IssueTypeEditDialogComponent} from './Projects/issue-type-edit-dialog/is
 import {WorkflowEditDialogComponent} from './Projects/workflow-edit-dialog/workflow-edit-dialog.component'
 import {IssueTypeItemComponent} from './Projects/issue-types-list/issue-type-item/issue-type-item.component'
 import {WorkflowItemComponent} from './Projects/workflow-list/workflow-item/workflow-item.component'
+import {UserListComponent} from './Users/user-list/user-list.component'
+import {UserDetailComponent} from './Users/user-detail/user-detail.component'
 
 
 @NgModule( {
@@ -82,6 +86,8 @@ import {WorkflowItemComponent} from './Projects/workflow-list/workflow-item/work
     WorkflowEditDialogComponent,
     WorkflowListComponent,
     WorkflowItemComponent,
+    UserListComponent,
+    UserDetailComponent,
   ],
   imports: [
     AppRoutingModule,
@@ -105,6 +111,8 @@ import {WorkflowItemComponent} from './Projects/workflow-list/workflow-item/work
     ProjectFacade,
     ProjectService,
     ProjectDetailsService,
+    UsersFacade,
+    UserService,
   ],
   bootstrap: [AppComponent]
 } )

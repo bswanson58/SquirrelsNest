@@ -95,6 +95,13 @@ type ClUser {
   id: String!
 }
 
+type ClUserCollectionSegment {
+  items: [ClUser!]
+  "Information to aid in pagination."
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
 type ClWorkflowState {
   projectId: String!
   name: String!
@@ -152,6 +159,7 @@ type ProjectDetailPayload {
 type Query {
   projectList(skip: Int take: Int where: ClProjectFilterInput order: [ClProjectSortInput!]): ClProjectCollectionSegment @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   issueList(skip: Int take: Int projectId: ID! where: ClIssueFilterInput order: [ClIssueSortInput!]): ClIssueCollectionSegment @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
+  userList(skip: Int take: Int where: ClUserFilterInput order: [ClUserSortInput!]): ClUserCollectionSegment @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
 }
 
 type UpdateIssuePayload {

@@ -1,0 +1,5 @@
+<ul role='list'>
+  <li *ngFor='let user of users$ | async'>
+    <sn-user-detail [user]='user'></sn-user-detail>
+  </li>
+</ul>
