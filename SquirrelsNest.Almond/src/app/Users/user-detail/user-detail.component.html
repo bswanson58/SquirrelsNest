@@ -2,10 +2,11 @@
      [class.highlight]='isHovering'
      (mouseover)='isHovering = true'
      (mouseleave)='isHovering = false'>
-  <div fxLayout='row' fxLayoutGap='1em'>
-    <span>{{user.name}}</span>
-    <span>{{user.loginName}}</span>
-    <span>{{user.email}}</span>
+  <div fxLayout='row' fxFlex='grow' fxLayoutGap='1em'>
+    <div fxFlex>{{user.name}}</div>
+    <div fxFlex>{{user.loginName}}</div>
+    <div fxFlex>{{user.email}}</div>
+    <div fxFlex>{{role()}}</div>
   </div>
 
   <div fxLayout='row' fxLayoutAlign='center center' fxLayoutGap='0.5em' fxFlex='4em'>

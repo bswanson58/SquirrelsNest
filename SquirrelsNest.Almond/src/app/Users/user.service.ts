@@ -89,7 +89,7 @@ export class UserService {
   }
 
   private unsubscribe() {
-    if( this.mUsersSubscription != null ) {
+    if( this.mUsersSubscription !== null ) {
       this.mUsersSubscription.unsubscribe()
       this.mUsersSubscription = null
     }

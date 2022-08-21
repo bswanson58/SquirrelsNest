@@ -52,6 +52,19 @@ export type BooleanOperationFilterInput = {
   neq?: InputMaybe<Scalars['Boolean']>;
 };
 
+export type ClClaim = {
+  __typename?: 'ClClaim';
+  type: Scalars['String'];
+  value: Scalars['String'];
+};
+
+export type ClClaimFilterInput = {
+  and?: InputMaybe<Array<ClClaimFilterInput>>;
+  or?: InputMaybe<Array<ClClaimFilterInput>>;
+  type?: InputMaybe<StringOperationFilterInput>;
+  value?: InputMaybe<StringOperationFilterInput>;
+};
+
 export type ClComponent = {
   __typename?: 'ClComponent';
   description: Scalars['String'];
@@ -281,6 +294,7 @@ export type ClReleaseSortInput = {
 
 export type ClUser = {
   __typename?: 'ClUser';
+  claims: Array<ClClaim>;
   email: Scalars['String'];
   id: Scalars['String'];
   loginName: Scalars['String'];
@@ -297,6 +311,7 @@ export type ClUserCollectionSegment = {
 
 export type ClUserFilterInput = {
   and?: InputMaybe<Array<ClUserFilterInput>>;
+  claims?: InputMaybe<ListFilterInputTypeOfClClaimFilterInput>;
   email?: InputMaybe<StringOperationFilterInput>;
   id?: InputMaybe<StringOperationFilterInput>;
   loginName?: InputMaybe<StringOperationFilterInput>;
@@ -415,6 +430,13 @@ export enum IssueUpdatePath {
   Unknown = 'UNKNOWN',
   WorkflowStateId = 'WORKFLOW_STATE_ID'
 }
+
+export type ListFilterInputTypeOfClClaimFilterInput = {
+  all?: InputMaybe<ClClaimFilterInput>;
+  any?: InputMaybe<Scalars['Boolean']>;
+  none?: InputMaybe<ClClaimFilterInput>;
+  some?: InputMaybe<ClClaimFilterInput>;
+};
 
 export type ListFilterInputTypeOfClComponentFilterInput = {
   all?: InputMaybe<ClComponentFilterInput>;

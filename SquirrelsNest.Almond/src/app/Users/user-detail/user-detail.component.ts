@@ -13,6 +13,21 @@ export class UserDetailComponent {
   constructor() {
   }
 
+  role() : string {
+    let retValue = ''
+
+    if( this.user !== null ) {
+      if( this.user.claims.find( c => c.type === 'role' && c.value === 'user')) {
+        retValue = 'user'
+      }
+      if( this.user.claims.find( c => c.type === 'role' && c.value === 'admin')) {
+        retValue = 'administrator'
+      }
+    }
+
+    return retValue
+  }
+
   onEditUser() {
   }
 

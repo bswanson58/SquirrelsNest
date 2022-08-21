@@ -13,6 +13,11 @@ type AddProjectPayload {
   errors: [MutationError!]!
 }
 
+type ClClaim {
+  type: String!
+  value: String!
+}
+
 type ClComponent {
   projectId: String!
   name: String!
@@ -92,6 +97,7 @@ type ClUser {
   name: String!
   loginName: String!
   email: String!
+  claims: [ClClaim!]!
   id: String!
 }
 
@@ -188,6 +194,13 @@ input AddProjectInput {
 input BooleanOperationFilterInput {
   eq: Boolean
   neq: Boolean
+}
+
+input ClClaimFilterInput {
+  and: [ClClaimFilterInput!]
+  or: [ClClaimFilterInput!]
+  type: StringOperationFilterInput
+  value: StringOperationFilterInput
 }
 
 input ClComponentFilterInput {
@@ -340,6 +353,7 @@ input ClUserFilterInput {
   name: StringOperationFilterInput
   loginName: StringOperationFilterInput
   email: StringOperationFilterInput
+  claims: ListFilterInputTypeOfClClaimFilterInput
   id: StringOperationFilterInput
 }
 
@@ -412,6 +426,13 @@ input DeleteIssueInput {
 
 input DeleteProjectInput {
   projectId: String!
+}
+
+input ListFilterInputTypeOfClClaimFilterInput {
+  all: ClClaimFilterInput
+  none: ClClaimFilterInput
+  some: ClClaimFilterInput
+  any: Boolean
 }
 
 input ListFilterInputTypeOfClComponentFilterInput {

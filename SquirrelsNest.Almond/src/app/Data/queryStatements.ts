@@ -117,6 +117,10 @@ export const UserQuery = gql`
         name
         loginName
         email
+        claims {
+          type
+          value
+        }
       }
     }
   }
