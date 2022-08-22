@@ -1,22 +1,14 @@
-<div fxLayout='column'>
-  <h1>Users List:</h1>
-  <div fxLayout='row' fxFlex='grow' fxLayoutGap='1em'>
-    <div fxFlex>Name:</div>
-    <div fxFlex>Login:</div>
-    <div fxFlex>EMail:</div>
-    <div fxFlex>Role</div>
-    <div fxLayout='row' fxLayoutAlign='center center' fxLayoutGap='0.5em' fxFlex='4em'>
-      <button mat-icon-button>
-        <mat-icon>edit</mat-icon>
-      </button>
-      <button mat-icon-button>
-        <mat-icon>delete</mat-icon>
-      </button>
+<div fxLayout='row' style='margin-top: 0.75em'>
+  <div fxFlex='15%' fxLayout='row'></div>
+  <div fxFlex='grow' fxLayout='row'>
+    <div fxLayout='column' style='width: 100%'>
+      <h1 style='padding: 0; margin:0'>Users List:</h1>
+      <ul role='list' style='margin-top: 0.25em'>
+        <li *ngFor='let user of users$ | async'>
+          <sn-user-detail [user]='user'></sn-user-detail>
+        </li>
+      </ul>
     </div>
   </div>
-  <ul role='list' style='background: antiquewhite'>
-    <li *ngFor='let user of users$ | async'>
-      <sn-user-detail [user]='user'></sn-user-detail>
-    </li>
-  </ul>
+  <div fxFlex='15%' fxLayout='row'></div>
 </div>
