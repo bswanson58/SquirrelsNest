@@ -30,9 +30,12 @@ namespace SquirrelsNest.Service.Users {
         private async Task<LoginPayload> BuildToken( LoginInput userCredentials ) {
             var claims = await BuildUserClaims( userCredentials.Email );
             var user = await mUserManager.FindByNameAsync( userCredentials.Email );
-            var dbClaims = await mUserManager.GetClaimsAsync( user );
 
-            claims.AddRange( dbClaims );
+            if( user != null ) {
+                var dbClaims = await mUserManager.GetClaimsAsync( user );
+
+                claims.AddRange( dbClaims );
+            }
 
             var key = new SymmetricSecurityKey( Encoding.UTF8.GetBytes( mConfiguration["JwtKey"]));
             var credentials = new SigningCredentials( key, SecurityAlgorithms.HmacSha256 );
