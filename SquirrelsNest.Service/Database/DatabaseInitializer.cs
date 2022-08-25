@@ -48,7 +48,7 @@ namespace SquirrelsNest.Service.Database {
         }
 
         private async Task<Either<Error, SnUser>> CreateAdminUser() {
-            var user = new IdentityUser { UserName = mConfiguration["DefaultAdmin:Name"], Email = mConfiguration["DefaultAdmin:Email"] };
+            var user = new IdentityUser { UserName = mConfiguration["DefaultAdmin:Email"], Email = mConfiguration["DefaultAdmin:Email"] };
             var result = await mUserManager.CreateAsync( user, mConfiguration["DefaultAdmin:Password"] );
 
             if( result.Succeeded ) {
