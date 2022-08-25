@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using LanguageExt;
 using LanguageExt.Common;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
@@ -14,20 +15,22 @@ namespace SquirrelsNest.Service.Database {
         private readonly IUserProvider                  mUserProvider;
         private readonly UserManager<IdentityUser>      mUserManager;
         private readonly IConfiguration                 mConfiguration;
-        private readonly ServiceDbContext               mContext;
+        private readonly ServiceDbContext               mIdentityContext;
 
-        public DatabaseInitializer( UserManager<IdentityUser> userManager, IConfiguration configuration, 
-                                    ServiceDbContext context, IUserProvider userProvider ) {
+        public DatabaseInitializer( UserManager<IdentityUser> userManager, IConfiguration configuration,
+                                    ServiceDbContext identityContext, IUserProvider userProvider ) {
             mUserManager = userManager;
             mConfiguration = configuration;
             mUserProvider = userProvider;
-            mContext = context;
+            mIdentityContext = identityContext;
         }
 
         public async Task<Either<Error, SnUser>> InitializeDatabase() {
+            await mIdentityContext.Database.MigrateAsync();
+
             var haveAdmin = false;
 
-            foreach( var user in mContext.Users ) {
+            foreach( var user in mIdentityContext.Users ) {
                 var claims = await mUserManager.GetClaimsAsync( user );
 
                 haveAdmin = claims.Any( claim => claim.Type.Equals( ClaimValues.ClaimRole ) && claim.Value.Equals( ClaimValues.ClaimRoleAdmin ));
