@@ -1,0 +1,15 @@
+<h3 mat-dialog-title>User Details</h3>
+<mat-dialog-content fxLayout='column'>
+  <mat-form-field style='width: 100%'>
+    <mat-label>User Name</mat-label>
+    <input type='text' required matInput [(ngModel)]='name' placeholder='Name'>
+  </mat-form-field>
+  <mat-form-field style='width: 100%'>
+    <mat-label>Email Address</mat-label>
+    <input type='email' required matInput [(ngModel)]='email' placeholder='Email Address'>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions fxLayout='row' fxLayoutAlign='end center' fxLayoutGap='1em'>
+  <button class='mat-button' (click)='onCancel()'>Cancel</button>
+  <button class='mat-button' (click)='onClose()'>OK</button>
+</mat-dialog-actions>

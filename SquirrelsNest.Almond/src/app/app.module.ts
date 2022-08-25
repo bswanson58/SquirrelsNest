@@ -54,6 +54,7 @@ import {WorkflowItemComponent} from './Projects/workflow-list/workflow-item/work
 import {UserListComponent} from './Users/user-list/user-list.component'
 import {UserDetailComponent} from './Users/user-detail/user-detail.component'
 import {UserHeaderComponent} from './Users/user-header/user-header.component'
+import {UserEditDialogComponent} from './Users/user-edit-dialog/user-edit-dialog.component'
 
 
 @NgModule( {
@@ -87,9 +88,10 @@ import {UserHeaderComponent} from './Users/user-header/user-header.component'
     WorkflowEditDialogComponent,
     WorkflowListComponent,
     WorkflowItemComponent,
-    UserListComponent,
     UserDetailComponent,
+    UserEditDialogComponent,
     UserHeaderComponent,
+    UserListComponent,
   ],
   imports: [
     AppRoutingModule,
