@@ -1,14 +1,9 @@
-<div fxLayout='row' style='margin-top: 0.75em'>
-  <div fxFlex='15%' fxLayout='row'></div>
-  <div fxFlex='grow' fxLayout='row'>
-    <div fxLayout='column' style='width: 100%'>
-      <h1 style='padding: 0; margin:0'>Users List:</h1>
-      <ul role='list' style='margin-top: 0.25em'>
-        <li *ngFor='let user of users$ | async'>
-          <sn-user-detail [user]='user'></sn-user-detail>
-        </li>
-      </ul>
-    </div>
+<div fxFlex='grow' fxLayout='row'>
+  <div fxLayout='column' style='width: 100%'>
+    <ul role='list' style='margin-top: 0.25em'>
+      <li *ngFor='let user of users$ | async'>
+        <sn-user-detail [user]='user'></sn-user-detail>
+      </li>
+    </ul>
   </div>
-  <div fxFlex='15%' fxLayout='row'></div>
 </div>

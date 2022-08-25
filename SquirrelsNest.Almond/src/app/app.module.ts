@@ -53,6 +53,7 @@ import {IssueTypeItemComponent} from './Projects/issue-types-list/issue-type-ite
 import {WorkflowItemComponent} from './Projects/workflow-list/workflow-item/workflow-item.component'
 import {UserListComponent} from './Users/user-list/user-list.component'
 import {UserDetailComponent} from './Users/user-detail/user-detail.component'
+import {UserHeaderComponent} from './Users/user-header/user-header.component'
 
 
 @NgModule( {
@@ -88,6 +89,7 @@ import {UserDetailComponent} from './Users/user-detail/user-detail.component'
     WorkflowItemComponent,
     UserListComponent,
     UserDetailComponent,
+    UserHeaderComponent,
   ],
   imports: [
     AppRoutingModule,
