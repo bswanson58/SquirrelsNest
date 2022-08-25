@@ -35,7 +35,7 @@ namespace SquirrelsNest.Service.Dto {
             mDefaultUser ??= new ClUser( EntityId.Default.Value, "Unspecified", "Unspecified", String.Empty, new List<ClClaim>());
     }
 
-    public static class ClUserEx {
+    public static class UserExtensions {
         private static ClClaim NewClClaim( Claim fromClaim ) {
             return new ClClaim() { 
                 Type = fromClaim.Type,

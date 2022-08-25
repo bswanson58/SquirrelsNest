@@ -3,13 +3,15 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog'
 
 export interface UserEditData {
   name: string,
-  email: string
+  email: string,
+  password: string
 }
 
 export interface UserEditResult {
   accepted: boolean,
   name: string,
-  email: string
+  email: string,
+  password: string,
 }
 
 @Component({
@@ -20,11 +22,13 @@ export interface UserEditResult {
 export class UserEditDialogComponent {
   name: string
   email: string
+  password: string
 
   constructor( private dialogRef: MatDialogRef<UserEditDialogComponent>,
                @Inject( MAT_DIALOG_DATA ) private dialogData: UserEditData ) {
     this.name = dialogData.name
     this.email = dialogData.email
+    this.password = dialogData.password
 
     this.dialogRef.updateSize( '500px' )
   }
@@ -34,6 +38,7 @@ export class UserEditDialogComponent {
       accepted: true,
       name: this.name,
       email: this.email,
+      password: this.password,
     }
 
     this.dialogRef.close( result )

@@ -32,6 +32,7 @@ import {SidenavComponent} from './Navigation/sidenav/sidenav.component'
 import {ProjectService} from './Projects/projects.service'
 import {appReducers} from './Store/app.reducer'
 import {UsersFacade} from './Users/user.facade'
+import {UserMutationsService} from './Users/user.mutations.service'
 import {UserService} from './Users/user.service'
 import {UsersPageComponent} from './Users/users-page/users-page.component'
 import {IssueDetailSelectorComponent} from './Issues/issue-detail-selector/issue-detail-selector.component'
@@ -117,6 +118,7 @@ import {UserEditDialogComponent} from './Users/user-edit-dialog/user-edit-dialog
     ProjectDetailsService,
     UsersFacade,
     UserService,
+    UserMutationsService,
   ],
   bootstrap: [AppComponent]
 } )

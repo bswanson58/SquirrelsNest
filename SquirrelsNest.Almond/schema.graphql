@@ -13,6 +13,11 @@ type AddProjectPayload {
   errors: [MutationError!]!
 }
 
+type AddUserPayload {
+  user: ClUser
+  errors: [MutationError!]!
+}
+
 type ClClaim {
   type: String!
   value: String!
@@ -141,15 +146,16 @@ type LoginPayload {
 
 type Mutation {
   login(loginInput: LoginInput!): LoginPayload!
-  addIssue(issueInput: AddIssueInput!): AddIssuePayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
-  updateIssue(updateInput: UpdateIssueInput!): UpdateIssuePayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
-  deleteIssue(deleteInput: DeleteIssueInput!): DeleteIssuePayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   addProject(projectInput: AddProjectInput!): AddProjectPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   updateProject(updateInput: UpdateProjectInput!): UpdateProjectPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   deleteProject(deleteInput: DeleteProjectInput!): DeleteProjectPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   addProjectDetail(detailInput: ProjectDetailInput!): ProjectDetailPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   deleteProjectDetail(detailInput: ProjectDetailInput!): ProjectDetailPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   updateProjectDetail(detailInput: ProjectDetailInput!): ProjectDetailPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
+  addIssue(issueInput: AddIssueInput!): AddIssuePayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
+  updateIssue(updateInput: UpdateIssueInput!): UpdateIssuePayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
+  deleteIssue(deleteInput: DeleteIssueInput!): DeleteIssuePayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
+  addUser(userInput: AddUserInput!): AddUserPayload!
 }
 
 type MutationError {
@@ -189,6 +195,13 @@ input AddProjectInput {
   title: String!
   description: String!
   issuePrefix: String!
+}
+
+input AddUserInput {
+  name: String!
+  loginName: String!
+  email: String!
+  password: String!
 }
 
 input BooleanOperationFilterInput {

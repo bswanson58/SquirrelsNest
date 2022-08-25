@@ -42,6 +42,19 @@ export type AddProjectPayload = {
   project?: Maybe<ClProject>;
 };
 
+export type AddUserInput = {
+  email: Scalars['String'];
+  loginName: Scalars['String'];
+  name: Scalars['String'];
+  password: Scalars['String'];
+};
+
+export type AddUserPayload = {
+  __typename?: 'AddUserPayload';
+  errors: Array<MutationError>;
+  user?: Maybe<ClUser>;
+};
+
 export enum ApplyPolicy {
   AfterResolver = 'AFTER_RESOLVER',
   BeforeResolver = 'BEFORE_RESOLVER'
@@ -482,6 +495,7 @@ export type Mutation = {
   addIssue: AddIssuePayload;
   addProject: AddProjectPayload;
   addProjectDetail: ProjectDetailPayload;
+  addUser: AddUserPayload;
   deleteIssue: DeleteIssuePayload;
   deleteProject: DeleteProjectPayload;
   deleteProjectDetail: ProjectDetailPayload;
@@ -504,6 +518,11 @@ export type MutationAddProjectArgs = {
 
 export type MutationAddProjectDetailArgs = {
   detailInput: ProjectDetailInput;
+};
+
+
+export type MutationAddUserArgs = {
+  userInput: AddUserInput;
 };
 
 

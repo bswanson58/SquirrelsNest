@@ -115,14 +115,15 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
         .RegisterDbContext<ServiceDbContext>()
         .AddAuthorization()
         .AddQueryType()
+        .AddTypeExtension<Authentication>()
         .AddTypeExtension<ProjectQuery>()
         .AddTypeExtension<IssueQuery>()
         .AddTypeExtension<UserQuery>()
-        .AddTypeExtension<Authentication>()
         .AddMutationType()
-        .AddTypeExtension<IssueMutations>()
         .AddTypeExtension<ProjectMutations>()
         .AddTypeExtension<ProjectDetailMutations>()
+        .AddTypeExtension<IssueMutations>()
+        .AddTypeExtension<UserMutations>()
         .AddFiltering()
         .AddSorting();
 

@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core'
 import {MatDialog} from '@angular/material/dialog'
 import {Store} from '@ngrx/store'
 import {Observable} from 'rxjs'
-import {ClIssue, ClUser} from '../Data/graphQlTypes'
+import {AddUserInput, ClIssue, ClUser} from '../Data/graphQlTypes'
 import {AppState} from '../Store/app.reducer'
 import {
   getIssues,
@@ -13,6 +13,7 @@ import {
   getUsers
 } from '../Store/app.selectors'
 import {ClearUsers} from './user.actions'
+import {UserMutationsService} from './user.mutations.service'
 import {UserService} from './user.service'
 
 @Injectable( {
@@ -21,7 +22,12 @@ import {UserService} from './user.service'
 export class UsersFacade {
   constructor( private store: Store<AppState>,
                private userService: UserService,
+               private userMutationService: UserMutationsService,
                private dialog: MatDialog ) {
+  }
+
+  AddUser( user: AddUserInput ) {
+    this.userMutationService.AddUser( user )
   }
 
   ClearUsers() {
