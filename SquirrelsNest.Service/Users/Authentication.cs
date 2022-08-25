@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HotChocolate.Types;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SquirrelsNest.Common.Interfaces;
@@ -15,28 +16,14 @@ namespace SquirrelsNest.Service.Users {
     [ExtendObjectType(OperationTypeNames.Mutation)]
     public class Authentication {
         private readonly IUserProvider                  mUserProvider;
-        private readonly UserManager<IdentityUser>      mUserManager;
-        private readonly SignInManager<IdentityUser>    mSignInManager;
         private readonly IConfiguration                 mConfiguration;
 
-        public Authentication( IUserProvider userProvider, UserManager<IdentityUser> userManager, 
-                               SignInManager<IdentityUser> signInManager, IConfiguration configuration ) {
+        public Authentication( IUserProvider userProvider, IConfiguration configuration ) {
             mUserProvider = userProvider;
-            mUserManager = userManager;
-            mSignInManager = signInManager;
             mConfiguration = configuration;
         }
 
-        private async Task<LoginPayload> BuildToken( LoginInput userCredentials ) {
-            var claims = await BuildUserClaims( userCredentials.Email );
-            var user = await mUserManager.FindByNameAsync( userCredentials.Email );
-
-            if( user != null ) {
-                var dbClaims = await mUserManager.GetClaimsAsync( user );
-
-                claims.AddRange( dbClaims );
-            }
-
+        private LoginPayload BuildToken( IEnumerable<Claim> claims ) {
             var key = new SymmetricSecurityKey( Encoding.UTF8.GetBytes( mConfiguration["JwtKey"]));
             var credentials = new SigningCredentials( key, SecurityAlgorithms.HmacSha256 );
 
@@ -65,12 +52,23 @@ namespace SquirrelsNest.Service.Users {
         }
 
         // ReSharper disable once UnusedMember.Global
-        public async Task<LoginPayload> Login( LoginInput loginInput ) {
-            var result = await mSignInManager.PasswordSignInAsync( loginInput.Email, loginInput.Password,
-                                                                   isPersistent: false, lockoutOnFailure: false);
+        public async Task<LoginPayload> Login([FromServices] UserManager<IdentityUser> userManager,
+                                              [FromServices] SignInManager<IdentityUser> signInManager, 
+                                              LoginInput loginInput ) {
+            var result = await signInManager.PasswordSignInAsync( loginInput.Email, loginInput.Password,
+                                                                  isPersistent: false, lockoutOnFailure: false);
 
             if( result.Succeeded ) {
-                return await BuildToken( loginInput );
+                var user = await userManager.FindByNameAsync( loginInput.Email );
+
+                if( user != null ) {
+                    var claims = await BuildUserClaims( loginInput.Email );
+                    var dbClaims = await userManager.GetClaimsAsync( user );
+
+                    claims.AddRange( dbClaims );
+
+                    return BuildToken( claims );
+                }
             }
 
             return new LoginPayload();
