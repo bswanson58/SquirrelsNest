@@ -4,6 +4,7 @@ export const AddUserMutation = gql`
   mutation AddUserMutation($userInput: AddUserInput!) {
     addUser(userInput: $userInput) {
       user {
+        id
         name
         loginName
         email

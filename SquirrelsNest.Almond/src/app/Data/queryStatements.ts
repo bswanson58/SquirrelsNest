@@ -114,6 +114,7 @@ export const UserQuery = gql`
         hasPreviousPage
       }
       items {
+        id
         name
         loginName
         email
