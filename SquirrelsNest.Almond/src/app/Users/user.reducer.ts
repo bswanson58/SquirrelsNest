@@ -42,7 +42,7 @@ export function usersReducer( state: UserState = initialUserState, action: Actio
 
       return {
         ...state,
-        users: state.users.filter( u => u.email !== deletePayload.email )
+        users: state.users.filter( u => u.id !== deletePayload.user.id )
       }
 
     case UPDATE_USER:

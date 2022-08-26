@@ -31,7 +31,7 @@ export class ClearUsers implements Action {
 export class DeleteUser implements Action {
   readonly type = DELETE_USER
 
-  constructor( public email: string ) {
+  constructor( public user: ClUser ) {
   }
 }
 

@@ -444,8 +444,8 @@ export type DeleteUserInput = {
 
 export type DeleteUserPayload = {
   __typename?: 'DeleteUserPayload';
-  email: Scalars['String'];
   errors: Array<MutationError>;
+  user?: Maybe<ClUser>;
 };
 
 export type EditUserRolesInput = {

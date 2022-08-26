@@ -74,14 +74,14 @@ export class UserMutationsService {
       .subscribe()
   }
 
-  private static handleDeleteMutationErrors( data: Mutation | undefined | null, errors: GraphQLErrors | undefined ): string | null {
+  private static handleDeleteMutationErrors( data: Mutation | undefined | null, errors: GraphQLErrors | undefined ): ClUser | null {
     if( errors != null ) {
       console.log( errors.entries() )
     }
 
     if( (data?.deleteUser?.errors !== undefined) &&
-      (data.deleteUser.email !== undefined) ) {
-      return data.deleteUser.email
+      (data.deleteUser.user !== undefined) ) {
+      return data.deleteUser.user
     }
 
     return null

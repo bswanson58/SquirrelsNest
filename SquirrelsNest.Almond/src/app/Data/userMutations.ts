@@ -24,7 +24,16 @@ export const AddUserMutation = gql`
 export const DeleteUserMutation = gql`
   mutation DeleteUserMutation($deleteInput: DeleteUserInput!) {
     deleteUser(deleteInput: $deleteInput) {
-      email
+      user {
+        id
+        name
+        loginName
+        email
+        claims {
+          type
+          value
+        }
+      }
       errors {
         message
         suggestion
