@@ -46,6 +46,10 @@ export class UsersFacade {
     this.userService.LoadMoreUsers()
   }
 
+  UpdateUserRoles( user: ClUser ) {
+    this.userMutationService.UpdateUserRoles( user )
+  }
+
   GetCurrentUsersList$(): Observable<ClUser[]> {
     return this.store.select( getUsers )
   }

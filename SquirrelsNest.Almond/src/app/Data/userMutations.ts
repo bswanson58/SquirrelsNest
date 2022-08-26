@@ -31,3 +31,24 @@ export const DeleteUserMutation = gql`
     }
   }
 `
+
+export const EditUserRolesMutation = gql`
+  mutation EditUserRoles($rolesInput: EditUserRolesInput!) {
+    editUserRoles(rolesInput: $rolesInput) {
+      user {
+        id
+        name
+        loginName
+        email
+        claims {
+          type
+          value
+        }
+      }
+      errors {
+        message
+        suggestion
+      }
+    }
+  }
+`

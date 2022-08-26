@@ -6,6 +6,7 @@ export const ADD_USER = '[User] Add User'
 export const APPEND_USERS = '[User] Append Users'
 export const CLEAR_USERS = '[User] Clear Users'
 export const DELETE_USER = '[User] Delete User'
+export const UPDATE_USER = '[User] Update User'
 export const SET_USERS_LOADING = '[User] Set Loading'
 export const CLEAR_USERS_LOADING = '[User] Clear Loading'
 
@@ -31,6 +32,13 @@ export class DeleteUser implements Action {
   readonly type = DELETE_USER
 
   constructor( public email: string ) {
+  }
+}
+
+export class UpdateUser implements Action {
+  readonly type = UPDATE_USER
+
+  constructor( public user: ClUser ) {
   }
 }
 

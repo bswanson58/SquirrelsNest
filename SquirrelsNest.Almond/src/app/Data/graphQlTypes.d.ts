@@ -78,6 +78,11 @@ export type ClClaimFilterInput = {
   value?: InputMaybe<StringOperationFilterInput>;
 };
 
+export type ClClaimInput = {
+  type: Scalars['String'];
+  value: Scalars['String'];
+};
+
 export type ClComponent = {
   __typename?: 'ClComponent';
   description: Scalars['String'];
@@ -443,6 +448,17 @@ export type DeleteUserPayload = {
   errors: Array<MutationError>;
 };
 
+export type EditUserRolesInput = {
+  claims: Array<ClClaimInput>;
+  email: Scalars['String'];
+};
+
+export type EditUserRolesPayload = {
+  __typename?: 'EditUserRolesPayload';
+  errors: Array<MutationError>;
+  user?: Maybe<ClUser>;
+};
+
 export enum IssueUpdatePath {
   AssignedToId = 'ASSIGNED_TO_ID',
   ComponentId = 'COMPONENT_ID',
@@ -510,6 +526,7 @@ export type Mutation = {
   deleteProject: DeleteProjectPayload;
   deleteProjectDetail: ProjectDetailPayload;
   deleteUser: DeleteUserPayload;
+  editUserRoles: EditUserRolesPayload;
   login: LoginPayload;
   updateIssue: UpdateIssuePayload;
   updateProject: UpdateProjectPayload;
@@ -554,6 +571,11 @@ export type MutationDeleteProjectDetailArgs = {
 
 export type MutationDeleteUserArgs = {
   deleteInput: DeleteUserInput;
+};
+
+
+export type MutationEditUserRolesArgs = {
+  rolesInput: EditUserRolesInput;
 };
 
 

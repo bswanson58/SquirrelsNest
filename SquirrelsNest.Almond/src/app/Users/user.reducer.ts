@@ -5,7 +5,8 @@ import {
   CLEAR_USERS,
   CLEAR_USERS_LOADING,
   DELETE_USER, DeleteUser,
-  SET_USERS_LOADING
+  SET_USERS_LOADING,
+  UPDATE_USER, UpdateUser
 } from './user.actions'
 import {initialUserQueryInfo, initialUserState, UserState} from './user.state'
 
@@ -42,6 +43,14 @@ export function usersReducer( state: UserState = initialUserState, action: Actio
       return {
         ...state,
         users: state.users.filter( u => u.email !== deletePayload.email )
+      }
+
+    case UPDATE_USER:
+      const updatePayload = action as UpdateUser
+
+      return {
+        ...state,
+        users: state.users.map( u => u.id === updatePayload.user.id ? updatePayload.user : u )
       }
 
     case SET_USERS_LOADING:

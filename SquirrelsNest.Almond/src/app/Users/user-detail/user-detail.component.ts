@@ -1,11 +1,15 @@
 import {Component, Input} from '@angular/core'
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog'
-import {ClUser} from '../../Data/graphQlTypes'
+import {ClUser, EditUserRolesInput} from '../../Data/graphQlTypes'
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
   ConfirmDialogResult
 } from '../../UI/confirm-dialog/confirm-dialog.component'
+import {
+  UserEditRolesData,
+  UserEditRolesDialogComponent, UserEditRolesResult
+} from '../user-edit-roles-dialog/user-edit-roles-dialog.component'
 import {UsersFacade} from '../user.facade'
 
 @Component( {
@@ -24,6 +28,9 @@ export class UserDetailComponent {
     let retValue = ''
 
     if( this.user !== null ) {
+      if( this.user.claims.length === 0 ) {
+        retValue = 'disabled'
+      }
       if( this.user.claims.find( c => c.type === 'role' && c.value === 'user' ) ) {
         retValue = 'user'
       }
@@ -36,6 +43,21 @@ export class UserDetailComponent {
   }
 
   onEditUser() {
+    const dialogData: UserEditRolesData = {
+      user: this.user
+    }
+    const dialogConfig = new MatDialogConfig()
+    dialogConfig.data = dialogData
+
+    this.dialog
+      .open( UserEditRolesDialogComponent, dialogConfig )
+      .afterClosed()
+      .subscribe( ( result: UserEditRolesResult ) => {
+          if( result.accepted ) {
+            this.usersFacade.UpdateUserRoles( { ...result.user, claims: result.roles } )
+          }
+        }
+      )
   }
 
   onDeleteUser() {

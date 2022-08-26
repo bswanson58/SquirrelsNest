@@ -56,7 +56,8 @@ import {UserListComponent} from './Users/user-list/user-list.component'
 import {UserDetailComponent} from './Users/user-detail/user-detail.component'
 import {UserHeaderComponent} from './Users/user-header/user-header.component'
 import {UserEditDialogComponent} from './Users/user-edit-dialog/user-edit-dialog.component'
-import {UserCreateDialogComponent} from './Users/user-create-dialog/user-create-dialog.component'
+import {UserCreateDialogComponent} from './Users/user-create-dialog/user-create-dialog.component';
+import { UserEditRolesDialogComponent } from './Users/user-edit-roles-dialog/user-edit-roles-dialog.component'
 
 
 @NgModule( {
@@ -93,6 +94,7 @@ import {UserCreateDialogComponent} from './Users/user-create-dialog/user-create-
     UserCreateDialogComponent,
     UserDetailComponent,
     UserEditDialogComponent,
+    UserEditRolesDialogComponent,
     UserHeaderComponent,
     UserListComponent,
   ],

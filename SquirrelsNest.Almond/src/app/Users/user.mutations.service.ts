@@ -3,10 +3,10 @@ import {GraphQLErrors} from '@apollo/client/errors'
 import {Store} from '@ngrx/store'
 import {Apollo} from 'apollo-angular'
 import {map, tap} from 'rxjs'
-import {AddUserInput, ClUser, DeleteUserInput, Mutation} from '../Data/graphQlTypes'
-import {AddUserMutation, DeleteUserMutation} from '../Data/userMutations'
+import {AddUserInput, ClUser, DeleteUserInput, EditUserRolesInput, Mutation} from '../Data/graphQlTypes'
+import {AddUserMutation, DeleteUserMutation, EditUserRolesMutation} from '../Data/userMutations'
 import {AppState} from '../Store/app.reducer'
-import {AddUser, ClearUsersLoading, DeleteUser, SetUsersLoading} from './user.actions'
+import {AddUser, ClearUsersLoading, DeleteUser, SetUsersLoading, UpdateUser} from './user.actions'
 
 @Injectable( {
   providedIn: 'root'
@@ -82,6 +82,45 @@ export class UserMutationsService {
     if( (data?.deleteUser?.errors !== undefined) &&
       (data.deleteUser.email !== undefined) ) {
       return data.deleteUser.email
+    }
+
+    return null
+  }
+
+  UpdateUserRoles( user: ClUser ) {
+    const rolesInput: EditUserRolesInput = {
+      email: user.email,
+      claims: user.claims
+    }
+
+    this.store.dispatch( new SetUsersLoading() )
+
+    this.apollo.use( 'defaultClient' ).mutate<Mutation>( {
+      mutation: EditUserRolesMutation,
+      variables: { rolesInput: rolesInput }
+    } )
+      .pipe(
+        map( result => UserMutationsService.handleUpdateRolesMutationErrors( result.data, result.errors ) ),
+        map( result => {
+          if( result !== null ) {
+            this.store.dispatch( new UpdateUser( result ) )
+          }
+
+          return result
+        } ),
+        tap( _ => this.store.dispatch( new ClearUsersLoading() ) ),
+      )
+      .subscribe()
+  }
+
+  private static handleUpdateRolesMutationErrors( data: Mutation | undefined | null, errors: GraphQLErrors | undefined ): ClUser | null {
+    if( errors != null ) {
+      console.log( errors.entries() )
+    }
+
+    if( (data?.editUserRoles?.errors !== undefined) &&
+      (data.editUserRoles.user !== undefined) ) {
+      return data.editUserRoles.user
     }
 
     return null

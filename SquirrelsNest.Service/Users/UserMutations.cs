@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using HotChocolate.Types;
 using LanguageExt;
@@ -21,6 +22,12 @@ namespace SquirrelsNest.Service.Users {
 
         public UserMutations( IUserProvider userProvider ) {
             mUserProvider = userProvider;
+        }
+
+        private async Task<Either<Error, SnUser ?>> GetUser( string email ) {
+            var userList = await mUserProvider.GetUsers();
+
+            return userList.Map( list => list.FirstOrDefault( u => u.Email.Equals( email, StringComparison.InvariantCultureIgnoreCase )));
         }
 
         private async Task<Either<Error, SnUser>> CreateUser( AddUserInput user ) {
@@ -89,6 +96,44 @@ namespace SquirrelsNest.Service.Users {
             }
 
             return new DeleteUserPayload( "SnUser does not exist" );
+        }
+
+        [Authorize( Policy = PolicyNames.AdminPolicy )]
+        public async Task<EditUserRolesPayload> EditUserRoles( EditUserRolesInput rolesInput,
+                                                              [FromServices] UserManager<IdentityUser> userManager ) {
+            var user = await userManager.FindByEmailAsync( rolesInput.Email );
+
+            if( user == null ) {
+                return new EditUserRolesPayload( "User does not exist with that email." );
+            }
+
+            var claims = await userManager.GetClaimsAsync( user );
+
+            foreach( var claim in claims ) {
+                if( claim.Type.Equals( ClaimValues.ClaimRole )) {
+                    var result = await userManager.RemoveClaimAsync( user, claim );
+
+                    if(!result.Succeeded ) {
+                        return new EditUserRolesPayload( result.ToString());
+                    }
+                }
+            }
+
+            foreach( var claim in rolesInput.Claims ) {
+                var result = await userManager.AddClaimAsync( user, new Claim( claim.Type, claim.Value ));
+
+                if(!result.Succeeded ) {
+                    return new EditUserRolesPayload( result.ToString());
+                }
+            }
+
+            var returnUser = await GetUser( rolesInput.Email );
+            var returnClaims = await userManager.GetClaimsAsync( user );
+
+            return returnUser.Match( 
+                    u => u != null ? new EditUserRolesPayload( u.ToCl().With( returnClaims )) : 
+                                     new EditUserRolesPayload( "User could not be found" ), 
+                    e => new EditUserRolesPayload( e ));
         }
     }
 }
