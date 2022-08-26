@@ -4,6 +4,7 @@ import {
   APPEND_USERS, AppendUsers,
   CLEAR_USERS,
   CLEAR_USERS_LOADING,
+  DELETE_USER, DeleteUser,
   SET_USERS_LOADING
 } from './user.actions'
 import {initialUserQueryInfo, initialUserState, UserState} from './user.state'
@@ -33,6 +34,14 @@ export function usersReducer( state: UserState = initialUserState, action: Actio
         ...state,
         users: [],
         queryInfo: initialUserQueryInfo
+      }
+
+    case DELETE_USER:
+      const deletePayload = action as DeleteUser
+
+      return {
+        ...state,
+        users: state.users.filter( u => u.email !== deletePayload.email )
       }
 
     case SET_USERS_LOADING:

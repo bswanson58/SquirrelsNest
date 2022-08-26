@@ -433,6 +433,16 @@ export type DeleteProjectPayload = {
   projectId: Scalars['String'];
 };
 
+export type DeleteUserInput = {
+  email: Scalars['String'];
+};
+
+export type DeleteUserPayload = {
+  __typename?: 'DeleteUserPayload';
+  email: Scalars['String'];
+  errors: Array<MutationError>;
+};
+
 export enum IssueUpdatePath {
   AssignedToId = 'ASSIGNED_TO_ID',
   ComponentId = 'COMPONENT_ID',
@@ -499,6 +509,7 @@ export type Mutation = {
   deleteIssue: DeleteIssuePayload;
   deleteProject: DeleteProjectPayload;
   deleteProjectDetail: ProjectDetailPayload;
+  deleteUser: DeleteUserPayload;
   login: LoginPayload;
   updateIssue: UpdateIssuePayload;
   updateProject: UpdateProjectPayload;
@@ -538,6 +549,11 @@ export type MutationDeleteProjectArgs = {
 
 export type MutationDeleteProjectDetailArgs = {
   detailInput: ProjectDetailInput;
+};
+
+
+export type MutationDeleteUserArgs = {
+  deleteInput: DeleteUserInput;
 };
 
 

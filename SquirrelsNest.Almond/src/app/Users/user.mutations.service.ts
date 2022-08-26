@@ -3,10 +3,10 @@ import {GraphQLErrors} from '@apollo/client/errors'
 import {Store} from '@ngrx/store'
 import {Apollo} from 'apollo-angular'
 import {map, tap} from 'rxjs'
-import {AddUserInput, ClUser, Mutation} from '../Data/graphQlTypes'
-import {AddUserMutation} from '../Data/userMutations'
+import {AddUserInput, ClUser, DeleteUserInput, Mutation} from '../Data/graphQlTypes'
+import {AddUserMutation, DeleteUserMutation} from '../Data/userMutations'
 import {AppState} from '../Store/app.reducer'
-import {AddUser, ClearUsersLoading, SetUsersLoading} from './user.actions'
+import {AddUser, ClearUsersLoading, DeleteUser, SetUsersLoading} from './user.actions'
 
 @Injectable( {
   providedIn: 'root'
@@ -44,6 +44,44 @@ export class UserMutationsService {
     if( (data?.addUser?.errors !== undefined) &&
       (data.addUser.user !== undefined) ) {
       return data.addUser.user
+    }
+
+    return null
+  }
+
+  DeleteUser( user: ClUser ) {
+    const deleteUser: DeleteUserInput = {
+      email: user.email
+    }
+
+    this.store.dispatch( new SetUsersLoading() )
+
+    this.apollo.use( 'defaultClient' ).mutate<Mutation>( {
+      mutation: DeleteUserMutation,
+      variables: { deleteInput: deleteUser }
+    } )
+      .pipe(
+        map( result => UserMutationsService.handleDeleteMutationErrors( result.data, result.errors ) ),
+        map( result => {
+          if( result !== null ) {
+            this.store.dispatch( new DeleteUser( result ) )
+          }
+
+          return result
+        } ),
+        tap( _ => this.store.dispatch( new ClearUsersLoading() ) ),
+      )
+      .subscribe()
+  }
+
+  private static handleDeleteMutationErrors( data: Mutation | undefined | null, errors: GraphQLErrors | undefined ): string | null {
+    if( errors != null ) {
+      console.log( errors.entries() )
+    }
+
+    if( (data?.deleteUser?.errors !== undefined) &&
+      (data.deleteUser.email !== undefined) ) {
+      return data.deleteUser.email
     }
 
     return null

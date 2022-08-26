@@ -139,6 +139,11 @@ type DeleteProjectPayload {
   errors: [MutationError!]!
 }
 
+type DeleteUserPayload {
+  email: String!
+  errors: [MutationError!]!
+}
+
 type LoginPayload {
   token: String!
   expiration: DateTime!
@@ -156,6 +161,7 @@ type Mutation {
   updateIssue(updateInput: UpdateIssueInput!): UpdateIssuePayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   deleteIssue(deleteInput: DeleteIssueInput!): DeleteIssuePayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   addUser(userInput: AddUserInput!): AddUserPayload!
+  deleteUser(deleteInput: DeleteUserInput!): DeleteUserPayload!
 }
 
 type MutationError {
@@ -439,6 +445,10 @@ input DeleteIssueInput {
 
 input DeleteProjectInput {
   projectId: String!
+}
+
+input DeleteUserInput {
+  email: String!
 }
 
 input ListFilterInputTypeOfClClaimFilterInput {

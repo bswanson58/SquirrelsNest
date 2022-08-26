@@ -19,3 +19,15 @@ export const AddUserMutation = gql`
     }
   }
 `
+
+export const DeleteUserMutation = gql`
+  mutation DeleteUserMutation($deleteInput: DeleteUserInput!) {
+    deleteUser(deleteInput: $deleteInput) {
+      email
+      errors {
+        message
+        suggestion
+      }
+    }
+  }
+`

@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using HotChocolate.Types;
 using LanguageExt;
 using LanguageExt.Common;
@@ -34,7 +36,8 @@ namespace SquirrelsNest.Service.Users {
         }
 
         [Authorize( Policy = PolicyNames.AdminPolicy )]
-        public async Task<AddUserPayload> AddUser( [FromServices] UserManager<IdentityUser> userManager, AddUserInput userInput ) {
+        public async Task<AddUserPayload> AddUser( AddUserInput userInput,
+                                                  [FromServices] UserManager<IdentityUser> userManager ) {
             var existingUser = await userManager.FindByEmailAsync( userInput.Email );
 
             if( existingUser != null ) {
@@ -55,6 +58,37 @@ namespace SquirrelsNest.Service.Users {
             var newUser = await CreateUser( userInput );
 
             return newUser.Match( u => new AddUserPayload( u.ToCl()), e => new AddUserPayload( e ));
+        }
+
+
+        [Authorize( Policy = PolicyNames.AdminPolicy )]
+        public async Task<DeleteUserPayload> DeleteUser( DeleteUserInput deleteInput,
+                                                        [FromServices] UserManager<IdentityUser> userManager ) {
+            var existingUser = await userManager.FindByEmailAsync( deleteInput.Email );
+
+            if( existingUser == null ) {
+                return new DeleteUserPayload( "User does not exist with that email." );
+            }
+
+            var deleteResult = await userManager.DeleteAsync( existingUser );
+
+            if(!deleteResult.Succeeded ) {
+                return new DeleteUserPayload( deleteResult.ToString());
+            }
+
+            var userList = await mUserProvider.GetUsers();
+            var user = default( SnUser );
+
+            userList.Do( list => 
+                user = list.FirstOrDefault( u => u.Email.Equals( deleteInput.Email, StringComparison.InvariantCultureIgnoreCase )));
+
+            if( user != null ) {
+                var result = await mUserProvider.DeleteUser( user );
+
+                return result.Match( _ => new DeleteUserPayload( user.ToCl()), e => new DeleteUserPayload( e ));
+            }
+
+            return new DeleteUserPayload( "SnUser does not exist" );
         }
     }
 }

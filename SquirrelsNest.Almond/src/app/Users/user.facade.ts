@@ -34,6 +34,10 @@ export class UsersFacade {
     this.store.dispatch( new ClearUsers() )
   }
 
+  DeleteUser( user: ClUser ) {
+    this.userMutationService.DeleteUser( user )
+  }
+
   LoadUsers() {
     this.userService.LoadUsers()
   }
