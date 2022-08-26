@@ -47,7 +47,7 @@ namespace SquirrelsNest.Service.Users {
         [UseOffsetPaging(MaxPageSize = 10, IncludeTotalCount = true)]
         [UseFiltering]
         [UseSorting]
-        [Authorize( Policy = PolicyNames.UserPolicy )]
+        [Authorize( Policy = PolicyNames.AdminPolicy )]
         public async Task<IEnumerable<ClUser>> UserList( [FromServices] UserManager<IdentityUser> userManager ) {
             var users = await mUserProvider.GetUsers();
             var clUsers = await users.MapAsync( list => AddUserClaims(list, userManager ));
