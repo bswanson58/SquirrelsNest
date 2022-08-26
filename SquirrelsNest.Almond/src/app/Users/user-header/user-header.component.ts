@@ -1,7 +1,7 @@
 import {Component} from '@angular/core'
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog'
 import {AddUserInput} from '../../Data/graphQlTypes'
-import {UserEditData, UserEditDialogComponent, UserEditResult} from '../user-edit-dialog/user-edit-dialog.component'
+import {UserCreateDialogComponent, UserCreateResult} from '../user-create-dialog/user-create-dialog.component'
 import {UsersFacade} from '../user.facade'
 
 @Component( {
@@ -10,24 +10,16 @@ import {UsersFacade} from '../user.facade'
   styleUrls: ['./user-header.component.css']
 } )
 export class UserHeaderComponent {
-
   constructor( private dialog: MatDialog, private userFacade: UsersFacade ) {
   }
 
   onAddUser() {
-    const newUser: UserEditData = {
-      name: '',
-      email: '',
-      password: '',
-    }
-
     const dialogConfig = new MatDialogConfig()
-    dialogConfig.data = newUser
 
     this.dialog
-      .open( UserEditDialogComponent, dialogConfig )
+      .open( UserCreateDialogComponent, dialogConfig )
       .afterClosed()
-      .subscribe( ( result: UserEditResult ) => {
+      .subscribe( ( result: UserCreateResult ) => {
         if( result.accepted ) {
           const newUser: AddUserInput = {
             name: result.name,
@@ -38,6 +30,5 @@ export class UserHeaderComponent {
           this.userFacade.AddUser( newUser )
         }
       } )
-
   }
 }
