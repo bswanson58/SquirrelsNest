@@ -60,6 +60,9 @@ import {UserCreateDialogComponent} from './Users/user-create-dialog/user-create-
 import {UserEditRolesDialogComponent} from './Users/user-edit-roles-dialog/user-edit-roles-dialog.component'
 import {UserEditPasswordDialogComponent} from './Users/user-edit-password-dialog/user-edit-password-dialog.component'
 import {MessageDialogComponent} from './UI/message-dialog/message-dialog.component'
+import {
+  ProjectTransferCommandsComponent
+} from './Projects/project-transfer-commands/project-transfer-commands.component'
 
 
 @NgModule( {
@@ -87,6 +90,7 @@ import {MessageDialogComponent} from './UI/message-dialog/message-dialog.compone
     ProjectEditDialogComponent,
     ProjectDetailComponent,
     ProjectListComponent,
+    ProjectTransferCommandsComponent,
     ProjectUsersListComponent,
     RegisterComponent,
     SidenavComponent,
