@@ -62,3 +62,15 @@ export const EditUserRolesMutation = gql`
     }
   }
 `
+
+export const EditUserPasswordMutation = gql`
+  mutation EditUserPassword($passwordInput: EditUserPasswordInput!) {
+    editUserPassword(passwordInput: $passwordInput) {
+      email
+      errors {
+        message
+        suggestion
+      }
+    }
+  }
+`

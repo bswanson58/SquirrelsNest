@@ -9,9 +9,12 @@
     <div fxFlex>{{role()}}</div>
   </div>
 
-  <div fxLayout='row' fxLayoutAlign='center center' fxLayoutGap='0.5em' fxFlex='4em'>
+  <div fxLayout='row' fxLayoutAlign='center center' fxLayoutGap='0.25em' fxFlex='5em'>
     <button mat-icon-button *ngIf='isHovering' class='dimmed' (click)='onEditUser()'>
       <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button *ngIf='isHovering' class='dimmed' (click)='onEditPassword()'>
+      <mat-icon>password</mat-icon>
     </button>
     <button mat-icon-button *ngIf='isHovering' class='dimmed' (click)='onDeleteUser()'>
       <mat-icon>delete</mat-icon>

@@ -448,6 +448,18 @@ export type DeleteUserPayload = {
   user?: Maybe<ClUser>;
 };
 
+export type EditUserPasswordInput = {
+  currentPassword: Scalars['String'];
+  email: Scalars['String'];
+  newPassword: Scalars['String'];
+};
+
+export type EditUserPasswordPayload = {
+  __typename?: 'EditUserPasswordPayload';
+  email: Scalars['String'];
+  errors: Array<MutationError>;
+};
+
 export type EditUserRolesInput = {
   claims: Array<ClClaimInput>;
   email: Scalars['String'];
@@ -526,6 +538,7 @@ export type Mutation = {
   deleteProject: DeleteProjectPayload;
   deleteProjectDetail: ProjectDetailPayload;
   deleteUser: DeleteUserPayload;
+  editUserPassword: EditUserPasswordPayload;
   editUserRoles: EditUserRolesPayload;
   login: LoginPayload;
   updateIssue: UpdateIssuePayload;
@@ -571,6 +584,11 @@ export type MutationDeleteProjectDetailArgs = {
 
 export type MutationDeleteUserArgs = {
   deleteInput: DeleteUserInput;
+};
+
+
+export type MutationEditUserPasswordArgs = {
+  passwordInput: EditUserPasswordInput;
 };
 
 

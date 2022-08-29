@@ -2,14 +2,12 @@ import {Injectable} from '@angular/core'
 import {MatDialog} from '@angular/material/dialog'
 import {Store} from '@ngrx/store'
 import {Observable} from 'rxjs'
-import {AddUserInput, ClIssue, ClUser} from '../Data/graphQlTypes'
+import {AddUserInput, ClUser} from '../Data/graphQlTypes'
 import {AppState} from '../Store/app.reducer'
 import {
-  getIssues,
-  getLoadedIssues, getLoadedUsers,
-  getServerHasMoreIssues,
+  getLoadedUsers,
   getServerHasMoreUsers,
-  getTotalIssues, getTotalUsers,
+  getTotalUsers,
   getUsers
 } from '../Store/app.selectors'
 import {ClearUsers} from './user.actions'
@@ -48,6 +46,10 @@ export class UsersFacade {
 
   UpdateUserRoles( user: ClUser ) {
     this.userMutationService.UpdateUserRoles( user )
+  }
+
+  UpdateUserPassword( user: ClUser, currentPassword: string, newPassword: string ) {
+    this.userMutationService.UpdateUserPassword( user, currentPassword, newPassword )
   }
 
   GetCurrentUsersList$(): Observable<ClUser[]> {

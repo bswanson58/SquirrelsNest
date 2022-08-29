@@ -135,5 +135,21 @@ namespace SquirrelsNest.Service.Users {
                                      new EditUserRolesPayload( "User could not be found" ), 
                     e => new EditUserRolesPayload( e ));
         }
+
+        [Authorize( Policy = PolicyNames.AdminPolicy )]
+        public async Task<EditUserPasswordPayload> EditUserPassword( EditUserPasswordInput passwordInput,
+                                                                    [FromServices] UserManager<IdentityUser> userManager ) {
+            var user = await userManager.FindByEmailAsync( passwordInput.Email );
+
+            if( user == null ) {
+                return new EditUserPasswordPayload( "User does not exist with that email." );
+            }
+
+            var result = await userManager.ChangePasswordAsync( user, passwordInput.CurrentPassword, passwordInput.NewPassword );
+
+            return result.Succeeded ? 
+                new EditUserPasswordPayload( user ) : 
+                new EditUserPasswordPayload( result.ToString());
+        }
     }
 }

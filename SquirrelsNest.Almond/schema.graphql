@@ -144,6 +144,11 @@ type DeleteUserPayload {
   errors: [MutationError!]!
 }
 
+type EditUserPasswordPayload {
+  email: String!
+  errors: [MutationError!]!
+}
+
 type EditUserRolesPayload {
   user: ClUser
   errors: [MutationError!]!
@@ -168,6 +173,7 @@ type Mutation {
   addUser(userInput: AddUserInput!): AddUserPayload!
   deleteUser(deleteInput: DeleteUserInput!): DeleteUserPayload!
   editUserRoles(rolesInput: EditUserRolesInput!): EditUserRolesPayload!
+  editUserPassword(passwordInput: EditUserPasswordInput!): EditUserPasswordPayload!
 }
 
 type MutationError {
@@ -460,6 +466,12 @@ input DeleteProjectInput {
 
 input DeleteUserInput {
   email: String!
+}
+
+input EditUserPasswordInput {
+  email: String!
+  currentPassword: String!
+  newPassword: String!
 }
 
 input EditUserRolesInput {

@@ -1,11 +1,15 @@
 import {Component, Input} from '@angular/core'
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog'
-import {ClUser, EditUserRolesInput} from '../../Data/graphQlTypes'
+import {ClUser} from '../../Data/graphQlTypes'
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
   ConfirmDialogResult
 } from '../../UI/confirm-dialog/confirm-dialog.component'
+import {
+  EditUserPasswordInput, EditUserPasswordResult,
+  UserEditPasswordDialogComponent
+} from '../user-edit-password-dialog/user-edit-password-dialog.component'
 import {
   UserEditRolesData,
   UserEditRolesDialogComponent, UserEditRolesResult
@@ -55,6 +59,24 @@ export class UserDetailComponent {
       .subscribe( ( result: UserEditRolesResult ) => {
           if( result.accepted ) {
             this.usersFacade.UpdateUserRoles( { ...result.user, claims: result.roles } )
+          }
+        }
+      )
+  }
+
+  onEditPassword() {
+    const dialogData: EditUserPasswordInput = {
+      user: this.user
+    }
+    const dialogConfig = new MatDialogConfig()
+    dialogConfig.data = dialogData
+
+    this.dialog
+      .open( UserEditPasswordDialogComponent, dialogConfig )
+      .afterClosed()
+      .subscribe( ( result: EditUserPasswordResult ) => {
+          if( result.accepted ) {
+            this.usersFacade.UpdateUserPassword( this.user, result.currentPassword, result.newPassword )
           }
         }
       )

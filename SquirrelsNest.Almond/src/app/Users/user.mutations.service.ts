@@ -3,16 +3,29 @@ import {GraphQLErrors} from '@apollo/client/errors'
 import {Store} from '@ngrx/store'
 import {Apollo} from 'apollo-angular'
 import {map, tap} from 'rxjs'
-import {AddUserInput, ClUser, DeleteUserInput, EditUserRolesInput, Mutation} from '../Data/graphQlTypes'
-import {AddUserMutation, DeleteUserMutation, EditUserRolesMutation} from '../Data/userMutations'
+import {
+  AddUserInput,
+  ClUser,
+  DeleteUserInput,
+  EditUserPasswordInput,
+  EditUserRolesInput,
+  Mutation
+} from '../Data/graphQlTypes'
+import {
+  AddUserMutation,
+  DeleteUserMutation,
+  EditUserPasswordMutation,
+  EditUserRolesMutation
+} from '../Data/userMutations'
 import {AppState} from '../Store/app.reducer'
+import {UiFacade} from '../UI/ui.facade'
 import {AddUser, ClearUsersLoading, DeleteUser, SetUsersLoading, UpdateUser} from './user.actions'
 
 @Injectable( {
   providedIn: 'root'
 } )
 export class UserMutationsService {
-  constructor( private apollo: Apollo, private store: Store<AppState> ) {
+  constructor( private apollo: Apollo, private store: Store<AppState>, private uiFacade: UiFacade ) {
   }
 
   AddUser( userInput: AddUserInput ) {
@@ -125,4 +138,45 @@ export class UserMutationsService {
 
     return null
   }
+
+  UpdateUserPassword( user: ClUser, currentPassword: string, newPassword: string ) {
+    const passwordInput: EditUserPasswordInput = {
+      email: user.email,
+      currentPassword: currentPassword,
+      newPassword: newPassword
+    }
+
+    this.store.dispatch( new SetUsersLoading() )
+
+    this.apollo.use( 'defaultClient' ).mutate<Mutation>( {
+      mutation: EditUserPasswordMutation,
+      variables: { passwordInput: passwordInput }
+    } )
+      .pipe(
+        map( result => UserMutationsService.handleUpdatePasswordMutationErrors( result.data, result.errors ) ),
+        map( result => {
+          if( result !== null ) {
+            this.uiFacade.DisplayMessage( 'Password Change', 'Your password was successfully updated.' )
+          }
+
+          return result
+        } ),
+        tap( _ => this.store.dispatch( new ClearUsersLoading() ) ),
+      )
+      .subscribe()
+  }
+
+  private static handleUpdatePasswordMutationErrors( data: Mutation | undefined | null, errors: GraphQLErrors | undefined ): string | null {
+    if( errors != null ) {
+      console.log( errors.entries() )
+    }
+
+    if( (data?.editUserPassword?.errors !== undefined) &&
+      (data.editUserPassword.email !== undefined) ) {
+      return data.editUserPassword.email
+    }
+
+    return null
+  }
+
 }
