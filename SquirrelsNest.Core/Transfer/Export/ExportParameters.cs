@@ -11,5 +11,9 @@ namespace SquirrelsNest.Core.Transfer.Export {
             IncludeCompletedIssues = includeCompletedIssues;
             ExportFilePath = toFilePath;
         }
+
+        public ExportParameters( SnProject forProject, bool includeCompletedIssues ) :
+            this( forProject, includeCompletedIssues, String.Empty) {
+        }
     }
 }

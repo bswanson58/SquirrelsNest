@@ -25,6 +25,7 @@ import {MaterialModule} from './material.module'
 import {ProjectConstants} from './Projects/project.const'
 import {ProjectDetailsService} from './Projects/project.details.service'
 import {ProjectFacade} from './Projects/project.facade'
+import {ProjectTransferService} from './Projects/project.transfer.service'
 import {ProjectsPageComponent} from './Projects/projects-page/projects-page.component'
 import {ProjectListComponent} from './Projects/project-list/project-list.component'
 import {RegisterComponent} from './Auth/register/register.component'
@@ -126,8 +127,9 @@ import {
     IssueService,
     ProjectConstants,
     ProjectFacade,
-    ProjectService,
     ProjectDetailsService,
+    ProjectService,
+    ProjectTransferService,
     UsersFacade,
     UserService,
     UserMutationsService,

@@ -9,6 +9,8 @@ namespace SquirrelsNest.Core.Platform {
 
         Either<Error, Unit>         Save<T>( string filePath, T toSave );
         EitherAsync<Error, Unit>    SaveAsync<T>( string filePath, T toSave );
+        Either<Error, Unit>         Save<T>( Stream stream, T toSave );
+        EitherAsync<Error, Unit>    SaveAsync<T>( Stream stream, T toSave );
     }
 
     public class FileWriter : IFileWriter {
@@ -17,7 +19,7 @@ namespace SquirrelsNest.Core.Platform {
         public FileWriter() {
             mOptions = new JsonSerializerOptions( JsonSerializerDefaults.Web );
 
-            mOptions.Converters.Add(new DateOnlyConverter());
+            mOptions.Converters.Add( new DateOnlyConverter());
             mOptions.WriteIndented = true;
         }
 
@@ -26,7 +28,7 @@ namespace SquirrelsNest.Core.Platform {
                 return new T();
             }
 
-            return 
+            return
                 Prelude.Try( () => JsonSerializer.Deserialize<T>( File.ReadAllText( filePath ), mOptions ) ?? new T())
                     .ToEither( Error.New );
         }
@@ -36,29 +38,55 @@ namespace SquirrelsNest.Core.Platform {
                 return new T();
             }
 
-            return 
-                Prelude.TryAsync( async () => 
-                        JsonSerializer.Deserialize<T>( await File.ReadAllTextAsync( filePath ).ConfigureAwait( false ), mOptions ) ?? new T())
-                    .ToEither( error => Error.New( error ));
+            return
+                Prelude.TryAsync( async () =>
+                        JsonSerializer.Deserialize<T>( await File.ReadAllTextAsync( filePath ).ConfigureAwait( false ), mOptions ) ?? new T() )
+                    .ToEither( error => Error.New( error ) );
         }
 
         public Either<Error, Unit> Save<T>( string filePath, T toSave ) {
-            return 
+            return
                 Prelude.Try( () => {
                     File.WriteAllText( filePath, JsonSerializer.Serialize( toSave, mOptions ));
 
                     return Unit.Default;
-                })
+                } )
                 .ToEither( Error.New );
         }
 
         public EitherAsync<Error, Unit> SaveAsync<T>( string filePath, T toSave ) {
-            return 
+            return
                 Prelude.TryAsync( async () => {
-                        await File.WriteAllTextAsync( filePath, JsonSerializer.Serialize( toSave, mOptions )).ConfigureAwait( false );
+                    await File.WriteAllTextAsync( filePath, JsonSerializer.Serialize( toSave, mOptions )).ConfigureAwait( false );
 
-                        return Unit.Default;
-                    })
+                    return Unit.Default;
+                } )
+                    .ToEither( error => Error.New( error ));
+        }
+
+        public Either<Error, Unit> Save<T>( Stream stream, T toSave ) {
+            return
+                Prelude.Try( () => {
+                    var streamWriter = new StreamWriter( stream );
+
+                    streamWriter.Write( JsonSerializer.Serialize( toSave, mOptions ));
+                    streamWriter.Flush();
+
+                    return Unit.Default;
+                } )
+                    .ToEither( Error.New );
+        }
+
+        public EitherAsync<Error, Unit> SaveAsync<T>( Stream stream, T toSave ) {
+            return
+                Prelude.TryAsync( async () => {
+                    var streamWriter = new StreamWriter( stream );
+
+                    await streamWriter.WriteAsync( JsonSerializer.Serialize( toSave, mOptions )).ConfigureAwait( false );
+                    await streamWriter.FlushAsync();
+
+                    return Unit.Default;
+                } )
                     .ToEither( error => Error.New( error ));
         }
     }

@@ -27,6 +27,7 @@ import {
 } from './project-edit-dialog/project-edit-dialog.component'
 import {CategoryValues, ProjectConstants} from './project.const'
 import {ProjectDetailsService} from './project.details.service'
+import {ProjectTransferService} from './project.transfer.service'
 import {SelectProject} from './projects.actions'
 import {ProjectService} from './projects.service'
 
@@ -38,6 +39,7 @@ export class ProjectFacade {
                private projectConstants: ProjectConstants,
                private projectService: ProjectService,
                private projectDetailsService: ProjectDetailsService,
+               private projectTransferService: ProjectTransferService,
                private dialog: MatDialog ) {
   }
 
@@ -170,5 +172,9 @@ export class ProjectFacade {
       this.store.dispatch( new ClearIssues() )
       this.store.dispatch( new SelectProject( project ) )
     }
+  }
+
+  DownloadProject( project: ClProject ): Observable<Blob> {
+    return this.projectTransferService.DownloadProject( project )
   }
 }
