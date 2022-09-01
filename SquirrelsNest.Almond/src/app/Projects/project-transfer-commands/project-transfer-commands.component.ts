@@ -12,8 +12,16 @@ export class ProjectTransferCommandsComponent {
   constructor( private projectFacade: ProjectFacade ) {
   }
 
-  onImportProject() {
-    if( this.projectFacade.GetCurrentProject() !== null ) {
+  onImportProject( $event: Event ) {
+    const element = $event.target as HTMLInputElement
+
+    if( (element.files !== null) &&
+      (element.files[0] !== null) ) {
+      const formData = new FormData()
+
+      formData.append( 'file', element.files[0] )
+
+      this.projectFacade.UploadProject( 'New Project', formData ).subscribe()
     }
   }
 

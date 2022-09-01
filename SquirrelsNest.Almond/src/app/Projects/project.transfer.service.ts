@@ -13,4 +13,8 @@ export class ProjectTransferService {
   DownloadProject( project: ClProject ): Observable<Blob> {
     return this.http.get( `https://localhost:8200/transfer/export?projectId=${project.id}`, { responseType: 'blob' } )
   }
+
+  UploadProject( projectName: string, formData: FormData ): Observable<any> {
+    return this.http.post( `https://localhost:8200/transfer/import?projectName=${projectName}`, formData )
+  }
 }

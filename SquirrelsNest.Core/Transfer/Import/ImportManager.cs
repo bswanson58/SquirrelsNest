@@ -167,7 +167,19 @@ namespace SquirrelsNest.Core.Transfer.Import {
                 .BindAsync( CreateReleases )
                 .BindAsync( AssimilateUsers )
                 .BindAsync( CreateIssues )
-                .BindAsync( entities => CreateProject( entities, parameters, forUser ));
+                .BindAsync( e => CreateProject( e, parameters, forUser ));
+        }
+
+        public async Task<Either<Error, SnProject>> ImportProject( Stream stream, ImportParameters parameters, SnUser forUser ) {
+            var imported = await mFileWriter.LoadAsync<TransferEntities>( stream );
+
+            return await imported.BindAsync( CreateComponents )
+                .BindAsync( CreateIssueTypes )
+                .BindAsync( CreateWorkflowStates )
+                .BindAsync( CreateReleases )
+                .BindAsync( AssimilateUsers )
+                .BindAsync( CreateIssues )
+                .BindAsync( e => CreateProject( e, parameters, forUser ));
         }
     }
 }

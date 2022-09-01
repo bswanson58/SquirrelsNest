@@ -6,6 +6,8 @@ namespace SquirrelsNest.Core.Platform {
     public interface IFileWriter {
         Either<Error, T>            Load<T>( string filePath ) where T : new();
         EitherAsync<Error, T>       LoadAsync<T>( string filePath ) where T : new();
+        Either<Error, T>            Load<T>( Stream stream ) where T : new();
+        EitherAsync<Error, T>       LoadAsync<T>( Stream stream ) where T : new ();
 
         Either<Error, Unit>         Save<T>( string filePath, T toSave );
         EitherAsync<Error, Unit>    SaveAsync<T>( string filePath, T toSave );
@@ -42,6 +44,19 @@ namespace SquirrelsNest.Core.Platform {
                 Prelude.TryAsync( async () =>
                         JsonSerializer.Deserialize<T>( await File.ReadAllTextAsync( filePath ).ConfigureAwait( false ), mOptions ) ?? new T() )
                     .ToEither( error => Error.New( error ) );
+        }
+
+        public Either<Error, T> Load<T>( Stream stream ) where T : new() {
+            return 
+                Prelude.Try( () => JsonSerializer.Deserialize<T>( stream, mOptions ) ?? new T())
+                    .ToEither( Error.New );
+        }
+
+        public EitherAsync<Error, T> LoadAsync<T>( Stream stream ) where T : new() {
+            return
+                Prelude.TryAsync( async () =>
+                        await JsonSerializer.DeserializeAsync<T>( stream, mOptions ) ?? new T())
+                    .ToEither( error => Error.New( error ));
         }
 
         public Either<Error, Unit> Save<T>( string filePath, T toSave ) {

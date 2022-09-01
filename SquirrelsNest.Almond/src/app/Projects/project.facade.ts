@@ -177,4 +177,8 @@ export class ProjectFacade {
   DownloadProject( project: ClProject ): Observable<Blob> {
     return this.projectTransferService.DownloadProject( project )
   }
+
+  UploadProject( projectName: string, formData: FormData ): Observable<any> {
+    return this.projectTransferService.UploadProject( projectName, formData )
+  }
 }

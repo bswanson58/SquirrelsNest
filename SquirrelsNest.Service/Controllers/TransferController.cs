@@ -1,13 +1,17 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+using LanguageExt;
+using LanguageExt.Common;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Values;
 using SquirrelsNest.Core.Interfaces;
 using SquirrelsNest.Core.Transfer.Export;
-using SquirrelsNest.Service.Support;
+using SquirrelsNest.Core.Transfer.Import;
 
 namespace SquirrelsNest.Service.Controllers {
     [ApiController]
@@ -15,10 +19,21 @@ namespace SquirrelsNest.Service.Controllers {
     public class TransferController : ControllerBase {
         private readonly IProjectProvider   mProjectProvider;
         private readonly IExportManager     mExportManager;
+        private readonly IImportManager     mImportManager;
+        private readonly IUserProvider      mUserProvider;
 
-        public TransferController( IExportManager exportManager, IProjectProvider projectProvider ) {
+        public TransferController( IExportManager exportManager, IImportManager importManager,
+                                   IProjectProvider projectProvider,  IUserProvider userProvider ) {
             mExportManager = exportManager;
             mProjectProvider = projectProvider;
+            mImportManager = importManager;
+            mUserProvider = userProvider;
+        }
+
+        private async Task<Either<Error, SnUser>> GetUser() {
+            var users = await mUserProvider.GetUsers();
+
+            return users.Map( userList => userList.FirstOrDefault( SnUser.Default ));
         }
 
         [HttpGet( "export" )]
@@ -30,6 +45,16 @@ namespace SquirrelsNest.Service.Controllers {
             var projectStream = await parameters.BindAsync( p => mExportManager.StreamProject( p ));
 
             return projectStream.Match( s => s, e => new MemoryStream( Encoding.UTF8.GetBytes( e.Message )));
+        }
+
+        [HttpPost( "import" )]
+//        [Authorize( Policy = PolicyNames.AdminPolicy )]
+        public async Task<IActionResult> ImportProject( string projectName, IFormFile file ) {
+            var importParameters = new ImportParameters( projectName );
+            var user = await GetUser();
+            var project = await user.BindAsync( u => mImportManager.ImportProject( file.OpenReadStream(), importParameters, u ));
+
+            return project.Match( _ => Ok(), e => StatusCode( 500, e.Message ) as IActionResult );
         }
     }
 }

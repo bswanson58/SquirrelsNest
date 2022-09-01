@@ -1,4 +1,5 @@
 <section fxLayout='row' fxLayoutGap='0.5em'>
-  <button mat-flat-button (click)='onImportProject()'>Import Project</button>
+  <input type='file' class='file-input' (change)='onImportProject($event)' #fileUpload>
+  <button mat-flat-button (click)='fileUpload.click()'>Import Project</button>
   <button mat-flat-button (click)='onExportProject()'>Export Project</button>
 </section>

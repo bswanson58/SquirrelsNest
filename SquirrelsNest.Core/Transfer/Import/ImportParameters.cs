@@ -7,5 +7,8 @@
             ImportFilePath = filePath;
             ProjectName = projectName;
         }
+
+        public ImportParameters( string projectName ) :
+            this( String.Empty, projectName ) { }
     }
 }
