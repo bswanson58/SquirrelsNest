@@ -1,4 +1,9 @@
 import {Component} from '@angular/core'
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog'
+import {
+  ProjectImportDialogComponent,
+  ProjectImportResult
+} from '../project-import-dialog/project-import-dialog.component'
 import {ProjectFacade} from '../project.facade'
 import {saveAs} from 'file-saver'
 
@@ -9,20 +14,24 @@ import {saveAs} from 'file-saver'
 } )
 export class ProjectTransferCommandsComponent {
 
-  constructor( private projectFacade: ProjectFacade ) {
+  constructor( private projectFacade: ProjectFacade, private dialog: MatDialog ) {
   }
 
-  onImportProject( $event: Event ) {
-    const element = $event.target as HTMLInputElement
+  onImportProject() {
+    const dialogConfig = new MatDialogConfig()
 
-    if( (element.files !== null) &&
-      (element.files[0] !== null) ) {
-      const formData = new FormData()
+    this.dialog
+      .open( ProjectImportDialogComponent, dialogConfig )
+      .afterClosed()
+      .subscribe( ( result: ProjectImportResult ) => {
+        if( result.accepted ) {
+          const formData = new FormData()
 
-      formData.append( 'file', element.files[0] )
+          formData.append( 'file', result.importFile )
 
-      this.projectFacade.UploadProject( 'New Project', formData ).subscribe()
-    }
+          this.projectFacade.UploadProject( result.projectName, formData ).subscribe()
+        }
+      } )
   }
 
   onExportProject() {

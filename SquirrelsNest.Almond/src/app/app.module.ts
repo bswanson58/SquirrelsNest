@@ -64,6 +64,7 @@ import {MessageDialogComponent} from './UI/message-dialog/message-dialog.compone
 import {
   ProjectTransferCommandsComponent
 } from './Projects/project-transfer-commands/project-transfer-commands.component'
+import {ProjectImportDialogComponent} from './Projects/project-import-dialog/project-import-dialog.component'
 
 
 @NgModule( {
@@ -90,6 +91,7 @@ import {
     ProjectCommandsComponent,
     ProjectEditDialogComponent,
     ProjectDetailComponent,
+    ProjectImportDialogComponent,
     ProjectListComponent,
     ProjectTransferCommandsComponent,
     ProjectUsersListComponent,
