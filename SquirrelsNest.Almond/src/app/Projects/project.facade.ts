@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core'
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog'
 import {Store} from '@ngrx/store'
-import {map, Observable, take} from 'rxjs'
+import {map, Observable, take, tap} from 'rxjs'
 import {
   AddProjectInput,
   ClComponent,
@@ -28,7 +28,7 @@ import {
 import {CategoryValues, ProjectConstants} from './project.const'
 import {ProjectDetailsService} from './project.details.service'
 import {ProjectTransferService} from './project.transfer.service'
-import {SelectProject} from './projects.actions'
+import {ClearProjects, SelectProject} from './projects.actions'
 import {ProjectService} from './projects.service'
 
 @Injectable( {
@@ -180,5 +180,11 @@ export class ProjectFacade {
 
   UploadProject( projectName: string, formData: FormData ): Observable<any> {
     return this.projectTransferService.UploadProject( projectName, formData )
+      .pipe(
+        tap( _ => {
+          this.store.dispatch( new ClearProjects() )
+          this.LoadProjects()
+        } )
+      )
   }
 }
