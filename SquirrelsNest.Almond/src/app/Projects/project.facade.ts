@@ -113,7 +113,7 @@ export class ProjectFacade {
     return this.store.select( getProjects )
   }
 
-  GetServerHasMoreProjects(): Observable<boolean> {
+  GetServerHasMoreProjects$(): Observable<boolean> {
     return this.store.select( getServerHasMoreProjects )
   }
 
