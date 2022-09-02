@@ -35,6 +35,7 @@ export class UserService {
           skip: 0,
           take: this.mPageLimit,
           order: {
+            loginName: 'ASC'
           },
         } as UserQueryInput
       } )
@@ -94,6 +95,7 @@ export class UserService {
       this.mUsersSubscription = null
     }
   }
+
   private getUsersQueryState(): UserQueryInfo {
     let queryState: UserQueryInfo
 
