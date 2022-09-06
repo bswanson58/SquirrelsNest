@@ -12,7 +12,7 @@ namespace SquirrelsNest.Service {
             builder.RegisterType<IssueMutations>().InstancePerDependency();
             builder.RegisterType<ProjectQuery>().InstancePerDependency();
 
-            builder.RegisterType<DatabaseInitializer>();
+            builder.RegisterType<IdentityDatabaseInitializer>();
         }
     }
 }

@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using SquirrelsNest.Common.Interfaces;
+using SquirrelsNest.Common.Interfaces.Database;
 using SquirrelsNest.Core;
 using SquirrelsNest.Core.Preferences;
 using SquirrelsNest.EfDb;
@@ -161,14 +162,20 @@ static async Task SeedDatabase( IHost host ) {
        ( log != null )) {
         using var scope = scopeFactory.CreateScope();
 
-        var databaseSeeder = scope.ServiceProvider.GetService<DatabaseInitializer>();
+        var databaseSeeder = scope.ServiceProvider.GetService<IdentityDatabaseInitializer>();
 
         if( databaseSeeder != null ) {
             var initError = await databaseSeeder.InitializeDatabase();
 
-            initError.IfLeft( error => {
-                log.LogMessage( error.Message );
-            });
+            initError.IfLeft( error => log.LogMessage( error.Message ));
+        }
+
+        var snDatabaseInitializer = scope.ServiceProvider.GetService<IDatabaseInitializer>();
+
+        if( snDatabaseInitializer != null ) {
+            var initError = await snDatabaseInitializer.InitializeDatabase();
+
+            initError.IfLeft( error => log.LogMessage( error.Message ));
         }
     }
 }

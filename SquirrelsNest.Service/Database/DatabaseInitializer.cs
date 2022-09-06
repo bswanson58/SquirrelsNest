@@ -11,14 +11,14 @@ using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Service.Support;
 
 namespace SquirrelsNest.Service.Database {
-    public class DatabaseInitializer {
+    public class IdentityDatabaseInitializer {
         private readonly IUserProvider                  mUserProvider;
         private readonly UserManager<IdentityUser>      mUserManager;
         private readonly IConfiguration                 mConfiguration;
         private readonly ServiceDbContext               mIdentityContext;
 
-        public DatabaseInitializer( UserManager<IdentityUser> userManager, IConfiguration configuration,
-                                    ServiceDbContext identityContext, IUserProvider userProvider ) {
+        public IdentityDatabaseInitializer( UserManager<IdentityUser> userManager, IConfiguration configuration,
+                                            ServiceDbContext identityContext, IUserProvider userProvider ) {
             mUserManager = userManager;
             mConfiguration = configuration;
             mUserProvider = userProvider;
