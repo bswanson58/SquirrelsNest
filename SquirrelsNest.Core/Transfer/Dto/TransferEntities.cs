@@ -5,8 +5,8 @@ using SquirrelsNest.Core.CompositeBuilders;
 namespace SquirrelsNest.Core.Transfer.Dto {
     internal class TransferEntities {
         [JsonIgnore]
-        public  CompositeProject                CompositeProject { get; }
-        public  TrProject                       Project { get; set; }
+        public  CompositeProject       CompositeProject { get; }
+        public  TrProject              Project { get; set; }
         public  List<TrComponent>      Components { get; set; }
         public  List<TrIssueType>      IssueTypes { get; set; }
         public  List<TrRelease>        Releases { get; set; }

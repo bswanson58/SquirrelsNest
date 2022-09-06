@@ -2,6 +2,7 @@
 using LanguageExt.Common;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
+using SquirrelsNest.Common.Values;
 using SquirrelsNest.Core.Interfaces;
 using SquirrelsNest.Core.Platform;
 using SquirrelsNest.Core.Transfer.Dto;
@@ -172,8 +173,16 @@ namespace SquirrelsNest.Core.Transfer.Import {
 
         public async Task<Either<Error, SnProject>> ImportProject( Stream stream, ImportParameters parameters, SnUser forUser ) {
             var imported = await mFileWriter.LoadAsync<TransferEntities>( stream );
+            var existingProject = await imported.BindAsync( async e => {
+                var projectId = EntityId.For( e.Project.EntityId );
+                var project = await projectId.MapAsync( id => mProjectProvider.GetProject( id ));
 
-            return await imported.BindAsync( CreateComponents )
+                return project.IsRight ? 
+                    Prelude.Left<Error, TransferEntities>( Error.New( "Imported project ID conflicts with existing project." )) :
+                    e;
+            });
+
+            return await existingProject.BindAsync( CreateComponents )
                 .BindAsync( CreateIssueTypes )
                 .BindAsync( CreateWorkflowStates )
                 .BindAsync( CreateReleases )
