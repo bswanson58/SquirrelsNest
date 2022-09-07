@@ -5,6 +5,7 @@ using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types;
 using LanguageExt;
 using LanguageExt.Common;
+using Microsoft.AspNetCore.Http;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Values;
@@ -23,22 +24,28 @@ namespace SquirrelsNest.Service.Projects {
         private readonly IIssueTypeProvider     mIssueTypeProvider;
         private readonly IWorkflowStateProvider mStateProvider;
         private readonly IUserProvider          mUserProvider;
+        private readonly IHttpContextAccessor   mContextAccessor;
 
         public ProjectDetailMutations( IProjectProvider projectProvider, IProjectBuilder projectBuilder,
                                        IComponentProvider componentProvider, IIssueTypeProvider issueTypeProvider,
-                                       IWorkflowStateProvider stateProvider, IUserProvider userProvider ) {
+                                       IWorkflowStateProvider stateProvider, IUserProvider userProvider,
+                                       IHttpContextAccessor contextAccessor ) {
             mProjectProvider = projectProvider;
             mProjectBuilder = projectBuilder;
             mComponentProvider = componentProvider;
             mIssueTypeProvider = issueTypeProvider;
             mStateProvider = stateProvider;
             mUserProvider = userProvider;
+            mContextAccessor = contextAccessor;
         }
 
         private async Task<Either<Error, SnUser>> GetUser() {
             var users = await mUserProvider.GetUsers();
+            var email = mContextAccessor.HttpContext?.User.Claims.FirstOrDefault( c => c.Type == "email" )?.Value;
 
-            return users.Map( userList => userList.FirstOrDefault( SnUser.Default ));
+            return email != null ? 
+                users.Map( userList => userList.FirstOrDefault( u => u.Email.Equals( email ), SnUser.Default )) : 
+                SnUser.Default;
         }
 
         [Authorize( Policy = PolicyNames.UserPolicy )]
