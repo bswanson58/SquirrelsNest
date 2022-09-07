@@ -17,31 +17,20 @@ using SquirrelsNest.Service.Support;
 namespace SquirrelsNest.Service.Issues {
     // ReSharper disable once ClassNeverInstantiated.Global
     [ExtendObjectType(OperationTypeNames.Mutation)]
-    public class IssueMutations {
-        private readonly IUserProvider          mUserProvider;
+    public class IssueMutations : BaseGraphProvider {
         private readonly IProjectProvider       mProjectProvider;
         private readonly IProjectBuilder        mProjectBuilder;
         private readonly IIssueProvider         mIssueProvider;
         private readonly IIssueBuilder          mIssueBuilder;
-        private readonly IHttpContextAccessor   mContextAccessor;
 
         public IssueMutations( IUserProvider userProvider, IProjectProvider projectProvider, IProjectBuilder projectBuilder,
-                               IIssueProvider issueProvider, IIssueBuilder issueBuilder, IHttpContextAccessor contextAccessor ) {
-            mUserProvider = userProvider;
+                               IIssueProvider issueProvider, IIssueBuilder issueBuilder, IHttpContextAccessor contextAccessor,
+                               IApplicationLog log ) :
+            base( userProvider, contextAccessor, log ){
             mProjectProvider = projectProvider;
             mProjectBuilder = projectBuilder;
             mIssueProvider = issueProvider;
             mIssueBuilder = issueBuilder;
-            mContextAccessor = contextAccessor;
-        }
-
-        private async Task<Either<Error, SnUser>> GetUser() {
-            var users = await mUserProvider.GetUsers();
-            var email = mContextAccessor.HttpContext?.User.Claims.FirstOrDefault( c => c.Type == "email" )?.Value;
-
-            return email != null ? 
-                users.Map( userList => userList.FirstOrDefault( u => u.Email.Equals( email ), SnUser.Default )) : 
-                SnUser.Default;
         }
 
         [Authorize( Policy = PolicyNames.UserPolicy )]

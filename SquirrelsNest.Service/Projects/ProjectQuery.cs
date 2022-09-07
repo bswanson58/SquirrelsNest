@@ -17,27 +17,15 @@ using SquirrelsNest.Service.Support;
 namespace SquirrelsNest.Service.Projects {
     // ReSharper disable once ClassNeverInstantiated.Global
     [ExtendObjectType(OperationTypeNames.Query)]
-    public class ProjectQuery {
-        private readonly IUserProvider          mUserProvider;
+    public class ProjectQuery : BaseGraphProvider {
         private readonly IProjectProvider       mProjectProvider;
         private readonly IProjectBuilder        mProjectBuilder;
-        private readonly IHttpContextAccessor   mContextAccessor;
 
         public ProjectQuery( IUserProvider userProvider, IProjectProvider projectProvider, IProjectBuilder projectBuilder,
-                             IHttpContextAccessor contextAccessor ) {
-            mUserProvider = userProvider;
+                             IHttpContextAccessor contextAccessor, IApplicationLog log ) :
+            base( userProvider, contextAccessor, log ){
             mProjectProvider = projectProvider;
             mProjectBuilder = projectBuilder;
-            mContextAccessor = contextAccessor;
-        }
-
-        private async Task<Either<Error, SnUser>> GetUser() {
-            var users = await mUserProvider.GetUsers();
-            var email = mContextAccessor.HttpContext?.User.Claims.FirstOrDefault( c => c.Type == "email" )?.Value;
-
-            return email != null ? 
-                users.Map( userList => userList.FirstOrDefault( u => u.Email.Equals( email ), SnUser.Default )) : 
-                SnUser.Default;
         }
 
         private async Task<Either<Error, List<CompositeProject>>> BuildComposites( IEnumerable<SnProject> projects ) {

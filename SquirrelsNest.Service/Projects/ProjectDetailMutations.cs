@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types;
-using LanguageExt;
-using LanguageExt.Common;
 using Microsoft.AspNetCore.Http;
-using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Values;
 using SquirrelsNest.Core.Interfaces;
@@ -17,35 +13,23 @@ using SquirrelsNest.Service.Support;
 namespace SquirrelsNest.Service.Projects {
     // ReSharper disable once ClassNeverInstantiated.Global
     [ExtendObjectType(OperationTypeNames.Mutation)]
-    public class ProjectDetailMutations {
+    public class ProjectDetailMutations : BaseGraphProvider {
         private readonly IProjectProvider       mProjectProvider;
         private readonly IProjectBuilder        mProjectBuilder;
         private readonly IComponentProvider     mComponentProvider;
         private readonly IIssueTypeProvider     mIssueTypeProvider;
         private readonly IWorkflowStateProvider mStateProvider;
-        private readonly IUserProvider          mUserProvider;
-        private readonly IHttpContextAccessor   mContextAccessor;
 
         public ProjectDetailMutations( IProjectProvider projectProvider, IProjectBuilder projectBuilder,
                                        IComponentProvider componentProvider, IIssueTypeProvider issueTypeProvider,
                                        IWorkflowStateProvider stateProvider, IUserProvider userProvider,
-                                       IHttpContextAccessor contextAccessor ) {
+                                       IHttpContextAccessor contextAccessor, IApplicationLog log ) :
+            base( userProvider, contextAccessor, log ){
             mProjectProvider = projectProvider;
             mProjectBuilder = projectBuilder;
             mComponentProvider = componentProvider;
             mIssueTypeProvider = issueTypeProvider;
             mStateProvider = stateProvider;
-            mUserProvider = userProvider;
-            mContextAccessor = contextAccessor;
-        }
-
-        private async Task<Either<Error, SnUser>> GetUser() {
-            var users = await mUserProvider.GetUsers();
-            var email = mContextAccessor.HttpContext?.User.Claims.FirstOrDefault( c => c.Type == "email" )?.Value;
-
-            return email != null ? 
-                users.Map( userList => userList.FirstOrDefault( u => u.Email.Equals( email ), SnUser.Default )) : 
-                SnUser.Default;
         }
 
         [Authorize( Policy = PolicyNames.UserPolicy )]

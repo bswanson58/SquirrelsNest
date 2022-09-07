@@ -19,29 +19,17 @@ using SquirrelsNest.Service.Support;
 namespace SquirrelsNest.Service.Issues {
     // ReSharper disable once ClassNeverInstantiated.Global
     [ExtendObjectType(OperationTypeNames.Query)]
-    public class IssueQuery {
-        private readonly IUserProvider          mUserProvider;
+    public class IssueQuery : BaseGraphProvider {
         private readonly IProjectProvider       mProjectProvider;
         private readonly IIssueBuilder          mIssueBuilder;
         private readonly IIssueProvider         mIssueProvider;
-        private readonly IHttpContextAccessor   mContextAccessor;
 
         public IssueQuery( IIssueBuilder issueBuilder, IIssueProvider issueProvider, IProjectProvider projectProvider, 
-                           IUserProvider userProvider, IHttpContextAccessor contextAccessor ) {
+                           IUserProvider userProvider, IHttpContextAccessor contextAccessor, IApplicationLog log ) :
+            base( userProvider, contextAccessor, log ){
             mIssueProvider = issueProvider;
             mProjectProvider = projectProvider;
-            mUserProvider = userProvider;
             mIssueBuilder = issueBuilder;
-            mContextAccessor = contextAccessor;
-        }
-
-        private async Task<Either<Error, SnUser>> GetUser() {
-            var users = await mUserProvider.GetUsers();
-            var email = mContextAccessor.HttpContext?.User.Claims.FirstOrDefault( c => c.Type == "email" )?.Value;
-
-            return email != null ? 
-                users.Map( userList => userList.FirstOrDefault( u => u.Email.Equals( email ), SnUser.Default )) : 
-                SnUser.Default;
         }
 
         private async Task<Either<Error, SnProject>> GetProject( Option<EntityId> id ) {
