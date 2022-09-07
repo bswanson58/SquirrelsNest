@@ -46,6 +46,7 @@ export function projectsReducer( state: ProjectState = initialProjectState, acti
       return {
         ...state,
         projects: [],
+        selectedProject: null,
         queryInfo: initialProjectQueryInfo
       }
 
