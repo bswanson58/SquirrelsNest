@@ -182,7 +182,6 @@ export class ProjectFacade {
     return this.projectTransferService.UploadProject( projectName, formData )
       .pipe(
         tap( _ => {
-          this.store.dispatch( new ClearProjects() )
           this.LoadProjects()
         } )
       )
