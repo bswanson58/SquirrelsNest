@@ -28,7 +28,7 @@ import {
 import {CategoryValues, ProjectConstants} from './project.const'
 import {ProjectDetailsService} from './project.details.service'
 import {ProjectTransferService} from './project.transfer.service'
-import {ClearProjects, SelectProject} from './projects.actions'
+import {SelectProject} from './projects.actions'
 import {ProjectService} from './projects.service'
 
 @Injectable( {
