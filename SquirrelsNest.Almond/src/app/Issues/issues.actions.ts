@@ -2,13 +2,13 @@ import {Action} from '@ngrx/store'
 import {ClIssue} from '../Data/graphQlTypes'
 import {IssueQueryInfo} from './issues.state'
 
-export const ADD_ISSUE = '[Issue] Add Issue'
-export const CLEAR_ISSUES = '[Issue] Clear Issues'
-export const DELETE_ISSUE = '[Issue] Delete Issue'
-export const APPEND_ISSUES = '[Issue] Append Issues'
-export const UPDATE_ISSUE = '[Issue] Update Issue'
-export const SET_ISSUES_LOADING = '[Issue] SetLoading'
-export const CLEAR_ISSUES_LOADING = '[Issue] Clear Loading'
+export const ADD_ISSUE = '[ISSU] Add Issue'
+export const CLEAR_ISSUES = '[ISSU] Clear Issues'
+export const DELETE_ISSUE = '[ISSU] Delete Issue'
+export const APPEND_ISSUES = '[ISSU] Append Issues'
+export const UPDATE_ISSUE = '[ISSU] Update Issue'
+export const SET_ISSUES_LOADING = '[ISSU] SetLoading'
+export const CLEAR_ISSUES_LOADING = '[ISSU] Clear Loading'
 
 export class AddIssue implements Action {
   readonly type = ADD_ISSUE

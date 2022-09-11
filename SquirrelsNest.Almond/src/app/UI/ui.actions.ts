@@ -1,8 +1,8 @@
 import {Action} from '@ngrx/store'
 
-export const TOGGLE_ISSUE_LIST_STYLE = '[UI] Toggle Issue List Style'
-export const DISPLAY_ONLY_MY_ISSUES = '[UI] Display ONly My Issues'
-export const DISPLAY_COMPLETED_ISSUES = '[UI] Display Completed Issues'
+export const TOGGLE_ISSUE_LIST_STYLE = '[INTF] Toggle Issue List Style'
+export const DISPLAY_ONLY_MY_ISSUES = '[INTF] Display Only My Issues'
+export const DISPLAY_COMPLETED_ISSUES = '[INTF] Display Completed Issues'
 
 export class ToggleIssueListStyle implements Action {
   readonly type = TOGGLE_ISSUE_LIST_STYLE

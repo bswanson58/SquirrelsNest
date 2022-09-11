@@ -1,10 +1,10 @@
 import {Action} from '@ngrx/store'
 import {LoginPayload} from '../Data/graphQlTypes'
 
-export const AUTH_REQUESTED = '[Auth] Requested'
-export const AUTH_FAILED = '[Auth] Failed'
-export const AUTH_LOGIN = '[Auth] Login'
-export const AUTH_LOGOUT = '[Auth] Logout'
+export const AUTH_REQUESTED = '[AUTH] Requested'
+export const AUTH_FAILED = '[AUTH] Failed'
+export const AUTH_LOGIN = '[AUTH] Login'
+export const AUTH_LOGOUT = '[AUTH] Logout'
 
 export class AuthRequested implements Action {
   readonly type = AUTH_REQUESTED

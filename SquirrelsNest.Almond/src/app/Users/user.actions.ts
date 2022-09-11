@@ -2,13 +2,13 @@ import {Action} from '@ngrx/store'
 import {ClUser} from '../Data/graphQlTypes'
 import {UserQueryInfo} from './user.state'
 
-export const ADD_USER = '[User] Add User'
-export const APPEND_USERS = '[User] Append Users'
-export const CLEAR_USERS = '[User] Clear Users'
-export const DELETE_USER = '[User] Delete User'
-export const UPDATE_USER = '[User] Update User'
-export const SET_USERS_LOADING = '[User] Set Loading'
-export const CLEAR_USERS_LOADING = '[User] Clear Loading'
+export const ADD_USER = '[USER] Add User'
+export const APPEND_USERS = '[USER] Append Users'
+export const CLEAR_USERS = '[USER] Clear Users'
+export const DELETE_USER = '[USER] Delete User'
+export const UPDATE_USER = '[USER] Update User'
+export const SET_USERS_LOADING = '[USER] Set Loading'
+export const CLEAR_USERS_LOADING = '[USER] Clear Loading'
 
 export class AddUser implements Action {
   readonly type = ADD_USER
