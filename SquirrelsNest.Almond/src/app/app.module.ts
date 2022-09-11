@@ -5,6 +5,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations'
 import {BrowserModule} from '@angular/platform-browser'
 import {FlexLayoutModule} from '@angular/flex-layout'
 import {StoreModule} from '@ngrx/store'
+import {StoreDevtoolsModule} from '@ngrx/store-devtools'
 import {AuthFacade} from './Auth/auth.facade'
 import {AuthGuard} from './Auth/auth.guard'
 import {AuthService} from './Auth/auth.service'
@@ -119,7 +120,8 @@ import {ProjectImportDialogComponent} from './Projects/project-import-dialog/pro
     GraphQLModule,
     MaterialModule,
     MatIconModule,
-    StoreModule.forRoot( appReducers )
+    StoreModule.forRoot( appReducers ),
+    StoreDevtoolsModule.instrument()
   ],
   providers: [
     AuthFacade,
