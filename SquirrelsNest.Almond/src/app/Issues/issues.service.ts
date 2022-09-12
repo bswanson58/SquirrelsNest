@@ -232,9 +232,9 @@ export class IssueService {
     const input: AddIssueInput = {
       title: issue.title,
       description: issue.description,
-      issueTypeId: issue.issueType.id,
-      componentId: issue.component.id,
-      workflowId: issue.workflowState.id,
+      issueTypeId: issue.issueType?.id ?? '',
+      componentId: issue.component?.id ?? '',
+      workflowId: issue.workflowState?.id ?? '',
       projectId: issue.project.id
     }
 

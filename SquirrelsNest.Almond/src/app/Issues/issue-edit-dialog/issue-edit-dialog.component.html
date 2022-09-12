@@ -12,13 +12,13 @@
   <div fxLayout='row' fxLayoutGap='2em'>
     <mat-form-field style='width: 40%'>
       <mat-label>Issue Type</mat-label>
-      <mat-select required [(value)]='selectedIssueTypeId'>
+      <mat-select [(value)]='selectedIssueTypeId'>
         <mat-option *ngFor='let item of issueTypes$ | async' [value]='item.id'>{{item.name}}</mat-option>
       </mat-select>
     </mat-form-field>
     <mat-form-field style='width: 40%'>
       <mat-label>Component</mat-label>
-      <mat-select required [(value)]='selectedComponentId'>
+      <mat-select [(value)]='selectedComponentId'>
         <mat-option *ngFor='let item of components$ | async' [value]='item.id'>{{item.name}}</mat-option>
       </mat-select>
     </mat-form-field>
@@ -26,7 +26,7 @@
   <div fxLayout='row' fxLayoutGap='2em'>
     <mat-form-field style='width: 40%'>
       <mat-label>Workflow State</mat-label>
-      <mat-select required [(value)]='selectedWorkflowId'>
+      <mat-select [(value)]='selectedWorkflowId'>
         <mat-option *ngFor='let item of workflowStates$ | async' [value]='item.id'>{{item.name}}</mat-option>
       </mat-select>
     </mat-form-field>

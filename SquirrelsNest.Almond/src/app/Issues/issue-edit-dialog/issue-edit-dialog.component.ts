@@ -61,8 +61,8 @@ export class IssueEditDialogComponent {
   onClose() {
     const newIssue = {
       id: this.dialogData.issue?.id,
-      title: this.issueTitle,
-      description: this.issueDescription,
+      title: this.issueTitle ?? '',
+      description: this.issueDescription ?? '',
       component: this.dialogData.project.components.find( c => c.id === this.selectedComponentId ),
       issueType: this.dialogData.project.issueTypes.find( it => it.id === this.selectedIssueTypeId ),
       workflowState: this.dialogData.project.workflowStates.find( s => s.id === this.selectedWorkflowId ),
