@@ -207,6 +207,8 @@ input AddIssueInput {
   title: String!
   description: String!
   issueTypeId: String!
+  componentId: String!
+  workflowId: String!
 }
 
 input AddProjectInput {

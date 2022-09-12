@@ -18,10 +18,12 @@ export type Scalars = {
 };
 
 export type AddIssueInput = {
+  componentId: Scalars['String'];
   description: Scalars['String'];
   issueTypeId: Scalars['String'];
   projectId: Scalars['String'];
   title: Scalars['String'];
+  workflowId: Scalars['String'];
 };
 
 export type AddIssuePayload = {

@@ -35,28 +35,17 @@ namespace SquirrelsNest.Service.Issues {
 
         [Authorize( Policy = PolicyNames.UserPolicy )]
         public async Task<AddIssuePayload> AddIssue( AddIssueInput issueInput ) {
-            var user = await GetUser();
-            var userId = EntityId.Default;
-
-            user.IfRight( u => {
-                userId = u.EntityId;
-            });
-
-            if( user.IsLeft ) {
-                return new AddIssuePayload( "The user could not be determined" );
-            }
-
             var projectId = EntityId.For( issueInput.ProjectId );
+
             if( projectId.IsNone ) {
                 return new AddIssuePayload( "A proper project ID was not specified" );
             }
 
             var project = await projectId.MapAsync( id => mProjectProvider.GetProject( id ));
             var newIssue = project.Map( p => new SnIssue( issueInput.Title, p.NextIssueNumber, p.EntityId ))
-                                  .Map( i => i.With( description: issueInput.Description ))
-                                  .Map( i => i.With( assignedTo: userId ));
-
+                                  .Map( i => i.With( description: issueInput.Description ));
             var compositeProject = await project.BindAsync( p => mProjectBuilder.BuildCompositeProject( p ));
+
             if( compositeProject.IsLeft ) {
                 return new AddIssuePayload( "The composite project could not be built for the issue to be added" );
             }
@@ -65,6 +54,18 @@ namespace SquirrelsNest.Service.Issues {
                 var issueType = composite.IssueTypes.FirstOrDefault( it => it.EntityId.Value.Equals( issueInput.IssueTypeId ));
 
                 return issueType != null ? issue.With( issueType ) : issue;
+            }));
+
+            newIssue = newIssue.Bind( issue => compositeProject.Map( composite => {
+                var component = composite.Components.FirstOrDefault( it => it.EntityId.Value.Equals( issueInput.ComponentId ));
+
+                return component != null ? issue.With( component ) : issue;
+            }));
+
+            newIssue = newIssue.Bind( issue => compositeProject.Map( composite => {
+                var workflow = composite.WorkflowStates.FirstOrDefault( it => it.EntityId.Value.Equals( issueInput.WorkflowId ));
+
+                return workflow != null ? issue.With( workflow ) : issue;
             }));
 
             var addedIssue = await newIssue.BindAsync( issue => mIssueProvider.AddIssue( issue ));

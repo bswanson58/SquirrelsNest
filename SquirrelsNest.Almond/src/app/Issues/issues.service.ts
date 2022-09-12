@@ -233,6 +233,8 @@ export class IssueService {
       title: issue.title,
       description: issue.description,
       issueTypeId: issue.issueType.id,
+      componentId: issue.component.id,
+      workflowId: issue.workflowState.id,
       projectId: issue.project.id
     }
 
