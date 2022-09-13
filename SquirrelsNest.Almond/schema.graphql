@@ -89,6 +89,11 @@ type ClProjectCollectionSegment {
   totalCount: Int!
 }
 
+type ClProjectTemplate {
+  name: String!
+  description: String!
+}
+
 type ClRelease {
   projectId: String!
   name: String!
@@ -129,6 +134,11 @@ type CollectionSegmentInfo {
   hasPreviousPage: Boolean!
 }
 
+type CreateTemplatePayload {
+  succeeded: Boolean!
+  errors: [MutationError!]!
+}
+
 type DeleteIssuePayload {
   issueId: String!
   errors: [MutationError!]!
@@ -164,6 +174,7 @@ type Mutation {
   addProject(projectInput: AddProjectInput!): AddProjectPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   updateProject(updateInput: UpdateProjectInput!): UpdateProjectPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   deleteProject(deleteInput: DeleteProjectInput!): DeleteProjectPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
+  createProjectTemplate(templateInput: CreateTemplateInput!): CreateTemplatePayload!
   addProjectDetail(detailInput: ProjectDetailInput!): ProjectDetailPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   deleteProjectDetail(detailInput: ProjectDetailInput!): ProjectDetailPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   updateProjectDetail(detailInput: ProjectDetailInput!): ProjectDetailPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
@@ -456,6 +467,12 @@ input ComparableInt32OperationFilterInput {
   nlt: Int
   lte: Int
   nlte: Int
+}
+
+input CreateTemplateInput {
+  projectId: String!
+  name: String!
+  description: String!
 }
 
 input DeleteIssueInput {

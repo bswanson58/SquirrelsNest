@@ -84,3 +84,14 @@ export const DeleteProjectMutation = gql`
       }
     }
   }`
+
+export const CreateProjectTemplate = gql`
+  mutation createProjectTemplate($templateInput: CreateTemplateInput!) {
+    createProjectTemplate(templateInput: $templateInput) {
+      succeeded
+      errors {
+        message
+        suggestion
+      }
+    }
+  }`

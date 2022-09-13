@@ -6,6 +6,7 @@ using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Values;
 using SquirrelsNest.Core.Interfaces;
+using SquirrelsNest.Core.ProjectTemplates;
 using SquirrelsNest.Service.Dto;
 using SquirrelsNest.Service.Dto.Mutations;
 using SquirrelsNest.Service.Support;
@@ -14,14 +15,16 @@ namespace SquirrelsNest.Service.Projects {
     // ReSharper disable once ClassNeverInstantiated.Global
     [ExtendObjectType(OperationTypeNames.Mutation)]
     public class ProjectMutations : BaseGraphProvider {
-        private readonly IProjectProvider       mProjectProvider;
-        private readonly IProjectBuilder        mProjectBuilder;
+        private readonly IProjectProvider           mProjectProvider;
+        private readonly IProjectBuilder            mProjectBuilder;
+        private readonly IProjectTemplateManager    mTemplateManager;
 
         public ProjectMutations( IUserProvider userProvider, IProjectProvider projectProvider, IProjectBuilder projectBuilder,
-                                 IHttpContextAccessor contextAccessor, IApplicationLog log ) :
+                                 IProjectTemplateManager templateManager, IHttpContextAccessor contextAccessor, IApplicationLog log ) :
             base( userProvider, contextAccessor, log ){
             mProjectProvider = projectProvider;
             mProjectBuilder = projectBuilder;
+            mTemplateManager = templateManager;
         }
 
         [Authorize( Policy = PolicyNames.UserPolicy )]
@@ -82,6 +85,18 @@ namespace SquirrelsNest.Service.Projects {
             } );
 
             return result.Match( _ => new DeleteProjectPayload( retValue ), e => new DeleteProjectPayload( e ));
+        }
+
+        public async Task<CreateTemplatePayload> CreateProjectTemplate( CreateTemplateInput templateInput ) {
+            var templateParameters = new TemplateParameters {
+                TemplateName = templateInput.Name, 
+                TemplateDescription = templateInput.Description
+            };
+            var projectId = EntityId.For( templateInput.ProjectId );
+            var project = await projectId.MapAsync( id => mProjectProvider.GetProject( id ));
+            var result = await project.BindAsync( p => mTemplateManager.CreateTemplate( p, templateParameters ));
+
+            return result.Match( _ => new CreateTemplatePayload(), e => new CreateTemplatePayload( e ));
         }
     }
 }

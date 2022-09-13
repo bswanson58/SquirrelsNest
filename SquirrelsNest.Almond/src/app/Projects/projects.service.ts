@@ -207,6 +207,33 @@ export class ProjectService implements OnDestroy {
     return null
   }
 
+
+  CreateProjectTemplate( templateInput: CreateTemplateInput ) {
+    this.store.dispatch( new SetProjectLoading() )
+
+    this.apollo.use( 'defaultClient' ).mutate<Mutation>( {
+      mutation: CreateProjectTemplate,
+      variables: { templateInput: templateInput }
+    } )
+      .pipe(
+        map( result => ProjectService.handleTemplateMutationErrors( result.data, result.errors ) ),
+        tap( _ => this.store.dispatch( new ClearProjectLoading() ) ),
+      )
+      .subscribe()
+  }
+
+  private static handleTemplateMutationErrors( data: Mutation | undefined | null, errors: GraphQLErrors | undefined ): boolean {
+    if( errors != null ) {
+      console.log( errors.entries() )
+    }
+
+    if( data?.createProjectTemplate?.errors !== undefined ) {
+      return data.createProjectTemplate.succeeded
+    }
+
+    return false
+  }
+
   ngOnDestroy() {
     this.unsubscribe()
   }

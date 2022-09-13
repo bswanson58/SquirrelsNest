@@ -282,6 +282,12 @@ export type ClProjectSortInput = {
   repositoryUrl?: InputMaybe<SortEnumType>;
 };
 
+export type ClProjectTemplate = {
+  __typename?: 'ClProjectTemplate';
+  description: Scalars['String'];
+  name: Scalars['String'];
+};
+
 export type ClRelease = {
   __typename?: 'ClRelease';
   description: Scalars['String'];
@@ -420,6 +426,18 @@ export type ComparableInt32OperationFilterInput = {
   nlte?: InputMaybe<Scalars['Int']>;
 };
 
+export type CreateTemplateInput = {
+  description: Scalars['String'];
+  name: Scalars['String'];
+  projectId: Scalars['String'];
+};
+
+export type CreateTemplatePayload = {
+  __typename?: 'CreateTemplatePayload';
+  errors: Array<MutationError>;
+  succeeded: Scalars['Boolean'];
+};
+
 export type DeleteIssueInput = {
   issueId: Scalars['String'];
 };
@@ -536,6 +554,7 @@ export type Mutation = {
   addProject: AddProjectPayload;
   addProjectDetail: ProjectDetailPayload;
   addUser: AddUserPayload;
+  createProjectTemplate: CreateTemplatePayload;
   deleteIssue: DeleteIssuePayload;
   deleteProject: DeleteProjectPayload;
   deleteProjectDetail: ProjectDetailPayload;
@@ -566,6 +585,11 @@ export type MutationAddProjectDetailArgs = {
 
 export type MutationAddUserArgs = {
   userInput: AddUserInput;
+};
+
+
+export type MutationCreateProjectTemplateArgs = {
+  templateInput: CreateTemplateInput;
 };
 
 

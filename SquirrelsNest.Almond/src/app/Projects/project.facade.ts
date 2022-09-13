@@ -157,6 +157,10 @@ export class ProjectFacade {
       )
   }
 
+  CreateProjectTemplate( templateInput: CreateTemplateInput ): void {
+    this.projectService.CreateProjectTemplate( templateInput )
+  }
+
   LoadProjects(): void {
     this.projectService.LoadProjects()
   }
