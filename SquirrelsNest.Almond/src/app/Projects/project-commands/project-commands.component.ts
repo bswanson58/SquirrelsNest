@@ -1,10 +1,16 @@
 import {Component} from '@angular/core'
-import {MatDialog} from '@angular/material/dialog'
-import {CreateTemplateInput} from '../../Data/graphQlTypes'
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog'
+import {saveAs} from 'file-saver'
+import {Observable} from 'rxjs'
+import {ClProject, CreateTemplateInput} from '../../Data/graphQlTypes'
 import {
   CreateTemplateDialogComponent,
   CreateTemplateResult
 } from '../create-template-dialog/create-template-dialog.component'
+import {
+  ProjectImportDialogComponent,
+  ProjectImportResult
+} from '../project-import-dialog/project-import-dialog.component'
 import {ProjectFacade} from '../project.facade'
 
 @Component( {
@@ -13,8 +19,10 @@ import {ProjectFacade} from '../project.facade'
   styleUrls: ['./project-commands.component.css']
 } )
 export class ProjectCommandsComponent {
+  project$ : Observable<ClProject | null>
 
   constructor( private projectFacade: ProjectFacade, private dialog: MatDialog ) {
+    this.project$ = projectFacade.GetCurrentProject$()
   }
 
   onCreateProject() {
@@ -47,6 +55,37 @@ export class ProjectCommandsComponent {
 
     if( currentProject !== null ) {
       this.projectFacade.DeleteProject( currentProject )
+    }
+  }
+
+  onImportProject() {
+    const dialogConfig = new MatDialogConfig()
+
+    this.dialog
+      .open( ProjectImportDialogComponent, dialogConfig )
+      .afterClosed()
+      .subscribe( ( result: ProjectImportResult ) => {
+        if( result.accepted ) {
+          const formData = new FormData()
+
+          formData.append( 'file', result.importFile )
+
+          this.projectFacade.UploadProject( result.projectName, formData ).subscribe()
+        }
+      } )
+  }
+
+  onExportProject() {
+    const project = this.projectFacade.GetCurrentProject()
+
+    if( project !== null ) {
+      this.projectFacade.DownloadProject( project )
+        .subscribe( ( response ) => {
+          const today = (new Date()).toLocaleDateString().replaceAll( '/', '-' )
+          const fileName = `${project.name} project export on ${today}.json`
+
+          saveAs( response, fileName )
+        } )
     }
   }
 }

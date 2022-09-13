@@ -1,5 +1,7 @@
-<section fxLayout='row' fxFlexAlign='end center' fxLayoutGap='0.5em'>
-  <button mat-flat-button (click)='onCreateTemplate()'>Create Template</button>
-  <button mat-flat-button (click)='onCreateProject()'>Add Project</button>
-  <button mat-flat-button (click)='onDeleteProject()'>Delete Project</button>
+<section fxLayout='row' fxFlexAlign='end center' fxLayoutGap='0.5em' *ngVar='project$ | async as project'>
+  <button mat-flat-button (click)='onCreateProject()'>Add</button>
+  <button mat-flat-button (click)='onDeleteProject()' *ngIf='project'>Delete</button>
+  <button mat-flat-button (click)='onImportProject()'>Import</button>
+  <button mat-flat-button (click)='onExportProject()' *ngIf='project'>Export</button>
+  <button mat-flat-button (click)='onCreateTemplate()' *ngIf='project'>Create Template</button>
 </section>
