@@ -1,11 +1,11 @@
-﻿using SquirrelsNest.Common.Entities;
-using System;
-using SquirrelsNest.Core.ProjectTemplates;
+﻿using SquirrelsNest.Core.ProjectTemplates;
 
 namespace SquirrelsNest.Service.Dto {
     public class ClProjectTemplate {
+        // ReSharper disable UnusedAutoPropertyAccessor.Global
         public string Name { get; }
         public string Description { get; }
+        // ReSharper restore UnusedAutoPropertyAccessor.Global
 
         public ClProjectTemplate( string name, string description ) {
             Name = name;
