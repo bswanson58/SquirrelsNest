@@ -2,7 +2,6 @@ import {Component, EventEmitter, OnInit, Output} from '@angular/core'
 import {Store} from '@ngrx/store'
 import {Observable} from 'rxjs'
 import {AuthFacade} from '../../Auth/auth.facade'
-import {AuthService} from '../../Auth/auth.service'
 import {AppState} from '../../Store/app.reducer'
 import {getIsAuthenticated} from '../../Store/app.selectors'
 
