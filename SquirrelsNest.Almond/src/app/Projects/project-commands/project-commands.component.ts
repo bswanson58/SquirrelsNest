@@ -19,7 +19,7 @@ import {ProjectFacade} from '../project.facade'
   styleUrls: ['./project-commands.component.css']
 } )
 export class ProjectCommandsComponent {
-  project$ : Observable<ClProject | null>
+  project$: Observable<ClProject | null>
 
   constructor( private projectFacade: ProjectFacade, private dialog: MatDialog ) {
     this.project$ = projectFacade.GetCurrentProject$()
