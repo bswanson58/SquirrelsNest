@@ -199,6 +199,7 @@ type ProjectDetailPayload {
 
 type Query {
   projectList(skip: Int take: Int where: ClProjectFilterInput order: [ClProjectSortInput!]): ClProjectCollectionSegment @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
+  projectTemplateList: [ClProjectTemplate!]! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   issueList(skip: Int take: Int projectId: ID! where: ClIssueFilterInput order: [ClIssueSortInput!]): ClIssueCollectionSegment @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   userList(skip: Int take: Int where: ClUserFilterInput order: [ClUserSortInput!]): ClUserCollectionSegment @authorize(policy: "IsAdmin", apply: BEFORE_RESOLVER)
 }

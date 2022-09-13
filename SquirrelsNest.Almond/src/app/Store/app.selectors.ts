@@ -17,6 +17,7 @@ export const getProjects = createSelector( fromProject.getProjectState, fromProj
 export const getSelectedProject = createSelector( fromProject.getProjectState, fromProject.getSelectedProject )
 export const getProjectQueryState = createSelector( fromProject.getProjectState, fromProject.getProjectQueryState )
 export const getServerHasMoreProjects = createSelector( fromProject.getProjectState, fromProject.getServerHasMoreProjects )
+export const getProjectTemplates = createSelector( fromProject.getProjectState, fromProject.getProjectTemplates )
 
 // Issues
 export const getIssuesLoading = createSelector( fromIssue.getIssueState, fromIssue.getIsLoading )

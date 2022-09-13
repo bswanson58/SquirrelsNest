@@ -1,5 +1,5 @@
 import {createFeatureSelector} from '@ngrx/store'
-import {ClProject} from '../Data/graphQlTypes'
+import {ClProject, ClProjectTemplate} from '../Data/graphQlTypes'
 
 export interface ProjectQueryInfo {
   hasNextPage: boolean,
@@ -17,6 +17,7 @@ export const initialProjectQueryInfo: ProjectQueryInfo = {
 
 export interface ProjectState {
   projects: ClProject[],
+  projectTemplates: ClProjectTemplate[],
   selectedProject: ClProject | null,
   queryInfo: ProjectQueryInfo,
   isLoading: boolean
@@ -24,6 +25,7 @@ export interface ProjectState {
 
 export const initialProjectState: ProjectState = {
   projects: [],
+  projectTemplates: [],
   selectedProject: null,
   queryInfo: initialProjectQueryInfo,
   isLoading: false
@@ -36,3 +38,4 @@ export const getProjects = ( state: ProjectState ) => state.projects
 export const getSelectedProject = ( state: ProjectState ) => state.selectedProject
 export const getProjectQueryState = ( state: ProjectState ) => state.queryInfo
 export const getServerHasMoreProjects = ( state: ProjectState ) => state.queryInfo.hasNextPage
+export const getProjectTemplates = ( state: ProjectState ) => state.projectTemplates

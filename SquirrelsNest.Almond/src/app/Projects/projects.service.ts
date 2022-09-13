@@ -6,12 +6,17 @@ import {map, Subscription, take, tap} from 'rxjs'
 import {
   AddProjectInput,
   ClProject,
-  ClProjectCollectionSegment, DeleteProjectInput, Mutation,
+  ClProjectCollectionSegment, ClProjectTemplate, CreateTemplateInput, DeleteProjectInput, Mutation,
   Query,
   UpdateProjectInput
 } from '../Data/graphQlTypes'
-import {AddProjectMutation, DeleteProjectMutation, UpdateProjectMutation} from '../Data/projectMutations'
-import {AllProjectsQuery, ProjectQueryInput} from '../Data/queryStatements'
+import {
+  AddProjectMutation,
+  CreateProjectTemplate,
+  DeleteProjectMutation,
+  UpdateProjectMutation
+} from '../Data/projectMutations'
+import {AllProjectsQuery, ProjectQueryInput, ProjectTemplateQuery} from '../Data/queryStatements'
 import {AppState} from '../Store/app.reducer'
 import {getProjectQueryState} from '../Store/app.selectors'
 import {ProjectQueryInfo} from './project.state'
@@ -21,7 +26,7 @@ import {
   AppendProjects,
   SetProjectLoading,
   AddProject,
-  DeleteProject, UpdateProject
+  DeleteProject, UpdateProject, UpdateTemplates
 } from './projects.actions'
 
 @Injectable( {
@@ -207,6 +212,29 @@ export class ProjectService implements OnDestroy {
     return null
   }
 
+  LoadProjectTemplates() {
+    this.store.dispatch( new SetProjectLoading() )
+
+    this.apollo.use( 'defaultClient' ).query<Query>( { query: ProjectTemplateQuery } )
+      .pipe(
+        map( result => ProjectService.handleTemplateQueryErrors( result.data, result.errors ) ),
+        map( result => {
+          if( result !== null ) {
+            this.store.dispatch( new UpdateTemplates( result ) )
+          }
+        } ),
+        tap( _ => this.store.dispatch( new ClearProjectLoading() ) ),
+      )
+      .subscribe()
+  }
+
+  private static handleTemplateQueryErrors( data: Query | undefined | null, errors: GraphQLErrors | undefined ): ClProjectTemplate[] {
+    if( errors != null ) {
+      console.log( errors.entries() )
+    }
+
+    return data?.projectTemplateList ?? []
+  }
 
   CreateProjectTemplate( templateInput: CreateTemplateInput ) {
     this.store.dispatch( new SetProjectLoading() )

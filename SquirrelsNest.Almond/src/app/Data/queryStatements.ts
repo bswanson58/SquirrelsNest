@@ -126,3 +126,12 @@ export const UserQuery = gql`
     }
   }
 `
+
+export const ProjectTemplateQuery = gql`
+  query projectTemplateQuery {
+    projectTemplateList {
+      name
+      description
+    }
+  }
+`

@@ -157,6 +157,10 @@ export class ProjectFacade {
       )
   }
 
+  GetProjectTemplates$(): Observable<ClProjectTemplate[]> {
+    return this.store.select( getProjectTemplates )
+  }
+
   CreateProjectTemplate( templateInput: CreateTemplateInput ): void {
     this.projectService.CreateProjectTemplate( templateInput )
   }
@@ -189,5 +193,9 @@ export class ProjectFacade {
           this.LoadProjects()
         } )
       )
+  }
+
+  LoadProjectTemplates() {
+    this.projectService.LoadProjectTemplates()
   }
 }

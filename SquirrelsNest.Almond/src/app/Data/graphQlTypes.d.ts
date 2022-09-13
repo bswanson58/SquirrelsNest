@@ -665,6 +665,7 @@ export type Query = {
   __typename?: 'Query';
   issueList?: Maybe<ClIssueCollectionSegment>;
   projectList?: Maybe<ClProjectCollectionSegment>;
+  projectTemplateList: Array<ClProjectTemplate>;
   userList?: Maybe<ClUserCollectionSegment>;
 };
 

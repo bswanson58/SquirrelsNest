@@ -9,7 +9,7 @@ import {
   SELECT_PROJECT, SelectProject,
   SET_PROJECTS_LOADING,
   UPDATE_PROJECT_DETAIL, UpdateProjectDetail,
-  UPDATE_PROJECT, UpdateProject
+  UPDATE_PROJECT, UpdateProject, UPDATE_PROJECT_TEMPLATES, UpdateTemplates
 } from './projects.actions'
 
 export function projectsReducer( state: ProjectState = initialProjectState, action: Action ): ProjectState {
@@ -71,9 +71,18 @@ export function projectsReducer( state: ProjectState = initialProjectState, acti
 
     case SELECT_PROJECT:
       const selectPayload = action as SelectProject
+
       return {
         ...state,
         selectedProject: selectPayload.selectedProject
+      }
+
+    case UPDATE_PROJECT_TEMPLATES:
+      const templatePayload = action as UpdateTemplates
+
+      return {
+        ...state,
+        projectTemplates: templatePayload.templates
       }
 
     case SET_PROJECTS_LOADING:
