@@ -41,7 +41,6 @@ export class AuthService {
     this.store.dispatch( new Logout() )
 
     clearAuthenticationToken()
-    this.apollo.client.resetStore().then()
     this.router.navigate( ['login'] ).then()
   }
 }

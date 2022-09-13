@@ -1,6 +1,7 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core'
 import {Store} from '@ngrx/store'
 import {Observable} from 'rxjs'
+import {AuthFacade} from '../../Auth/auth.facade'
 import {AuthService} from '../../Auth/auth.service'
 import {AppState} from '../../Store/app.reducer'
 import {getIsAuthenticated} from '../../Store/app.selectors'
@@ -16,7 +17,7 @@ export class HeaderComponent implements OnInit {
   @Output()
   sidenavToggle = new EventEmitter<void>()
 
-  constructor( private store: Store<AppState>, private authService: AuthService ) {
+  constructor( private store: Store<AppState>, private authFacade: AuthFacade ) {
     this.isAuthenticated$ = new Observable<boolean>()
   }
 
@@ -25,7 +26,7 @@ export class HeaderComponent implements OnInit {
   }
 
   onLogout() {
-    this.authService.Logout()
+    this.authFacade.Logout()
   }
 
   onToggleSidenav() {
