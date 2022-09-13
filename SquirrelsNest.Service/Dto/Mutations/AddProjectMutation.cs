@@ -8,11 +8,13 @@ namespace SquirrelsNest.Service.Dto.Mutations {
         public  string      Title { get; set; }
         public  string      Description { get; set; }
         public  string      IssuePrefix { get; set; }
+        public  string      ProjectTemplate { get; set; }
 
         public AddProjectInput() {
             Title = String.Empty;
             Description = String.Empty;
             IssuePrefix = String.Empty;
+            ProjectTemplate = String.Empty;
         }
     }
 

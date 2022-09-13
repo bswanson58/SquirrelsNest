@@ -1,6 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types;
+using LanguageExt;
+using LanguageExt.Common;
 using Microsoft.AspNetCore.Http;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
@@ -27,6 +31,31 @@ namespace SquirrelsNest.Service.Projects {
             mTemplateManager = templateManager;
         }
 
+        private async Task<Either<Error, SnProject>> CreateProjectFromTemplate( AddProjectInput projectInput, 
+                                                                                Either<Error, SnUser> user ) {
+            var templateParameters = new ProjectParameters {
+                ProjectName = projectInput.Title,
+                ProjectDescription = projectInput.Description,
+                ProjectPrefix = projectInput.IssuePrefix
+            };
+            var template = mTemplateManager.GetAvailableTemplates()
+                .FirstOrDefault( t => t.TemplateName.Equals( projectInput.ProjectTemplate, StringComparison.InvariantCultureIgnoreCase ));
+
+            if( template == null ) {
+                return Error.New( $"Template named ${projectInput.ProjectTemplate} could not be found" );
+            }
+
+            return await user.BindAsync( u => mTemplateManager.CreateProject( template, templateParameters, u  ));
+        }
+
+        private async Task<Either<Error, SnProject>> CreateProject( AddProjectInput projectInput, 
+                                                                    Either<Error, SnUser> user ) {
+            var newProject = ( new SnProject( projectInput.Title, projectInput.IssuePrefix ))
+                                .With( description: projectInput.Description );
+
+            return await user.BindAsync( u => mProjectProvider.AddProject( newProject, u ));
+        }
+
         [Authorize( Policy = PolicyNames.UserPolicy )]
         public async Task<AddProjectPayload> AddProject( AddProjectInput projectInput ) {
             var user = await GetUser();
@@ -35,8 +64,9 @@ namespace SquirrelsNest.Service.Projects {
                 return new AddProjectPayload( "The user could not be determined" );
             }
 
-            var newProject = ( new SnProject( projectInput.Title, projectInput.IssuePrefix )).With( description: projectInput.Description );
-            var addedProject = await user.BindAsync( u => mProjectProvider.AddProject( newProject, u ));
+            var addedProject = String.IsNullOrWhiteSpace( projectInput.ProjectTemplate ) ? 
+                CreateProject( projectInput, user ) :
+                CreateProjectFromTemplate( projectInput, user );
             var compositeProject = await addedProject.BindAsync( p => mProjectBuilder.BuildCompositeProject( p ));
 
             return compositeProject.Match( p => new AddProjectPayload( p.ToCl()), e => new AddProjectPayload( e ));

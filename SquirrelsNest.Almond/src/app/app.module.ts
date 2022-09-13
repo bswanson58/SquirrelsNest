@@ -66,6 +66,7 @@ import {
   ProjectTransferCommandsComponent
 } from './Projects/project-transfer-commands/project-transfer-commands.component'
 import {ProjectImportDialogComponent} from './Projects/project-import-dialog/project-import-dialog.component'
+import {ProjectCreateDialogComponent} from './Projects/project-create-dialog/project-create-dialog.component'
 import {CreateTemplateDialogComponent} from './Projects/create-template-dialog/create-template-dialog.component'
 
 
@@ -92,6 +93,7 @@ import {CreateTemplateDialogComponent} from './Projects/create-template-dialog/c
     MessageDialogComponent,
     ProjectsPageComponent,
     ProjectCommandsComponent,
+    ProjectCreateDialogComponent,
     ProjectEditDialogComponent,
     ProjectDetailComponent,
     ProjectImportDialogComponent,

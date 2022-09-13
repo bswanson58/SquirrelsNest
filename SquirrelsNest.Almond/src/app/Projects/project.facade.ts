@@ -6,25 +6,24 @@ import {
   AddProjectInput,
   ClComponent,
   ClIssueType,
-  ClProject,
+  ClProject, ClProjectTemplate,
   ClUser,
-  ClWorkflowState,
+  ClWorkflowState, CreateTemplateInput,
   ProjectDetailInput,
   UpdateProjectInput
 } from '../Data/graphQlTypes'
 import {ClearIssues} from '../Issues/issues.actions'
 import {AppState} from '../Store/app.reducer'
-import {getProjects, getSelectedProject, getServerHasMoreProjects} from '../Store/app.selectors'
+import {getProjects, getProjectTemplates, getSelectedProject, getServerHasMoreProjects} from '../Store/app.selectors'
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
   ConfirmDialogResult
 } from '../UI/confirm-dialog/confirm-dialog.component'
 import {
-  ProjectEditData,
-  ProjectEditDialogComponent,
-  ProjectEditResult
-} from './project-edit-dialog/project-edit-dialog.component'
+  ProjectCreateDialogComponent,
+  ProjectCreateResult
+} from './project-create-dialog/project-create-dialog.component'
 import {CategoryValues, ProjectConstants} from './project.const'
 import {ProjectDetailsService} from './project.details.service'
 import {ProjectTransferService} from './project.transfer.service'
@@ -44,25 +43,20 @@ export class ProjectFacade {
   }
 
   CreateProject() {
-    const dialogData: ProjectEditData = {
-      project: null
-    }
-    const dialogConfig = new MatDialogConfig()
-    dialogConfig.data = dialogData
-
     this.dialog
-      .open( ProjectEditDialogComponent, dialogConfig )
+      .open( ProjectCreateDialogComponent )
       .afterClosed()
-      .subscribe( ( result: ProjectEditResult ) => {
+      .subscribe( ( result: ProjectCreateResult ) => {
         if( (result.accepted) &&
           (result.project !== null) ) {
-          const project: AddProjectInput = {
+          const projectInput: AddProjectInput = {
             title: result.project?.title,
             description: result.project?.description,
-            issuePrefix: result.project?.issuePrefix
+            issuePrefix: result.project?.issuePrefix,
+            projectTemplate: result.project?.projectTemplate
           }
 
-          this.projectService.AddProject( project )
+          this.projectService.AddProject( projectInput )
         }
       } )
   }

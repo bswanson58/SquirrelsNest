@@ -35,6 +35,7 @@ export type AddIssuePayload = {
 export type AddProjectInput = {
   description: Scalars['String'];
   issuePrefix: Scalars['String'];
+  projectTemplate: Scalars['String'];
   title: Scalars['String'];
 };
 

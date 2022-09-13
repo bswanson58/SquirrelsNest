@@ -227,6 +227,7 @@ input AddProjectInput {
   title: String!
   description: String!
   issuePrefix: String!
+  projectTemplate: String!
 }
 
 input AddUserInput {

@@ -61,6 +61,7 @@ namespace SquirrelsNest.Service.Projects {
             return clProjects.Match( list => list, _ => new List<ClProject>());
         }
 
+        // ReSharper disable once UnusedMember.Global
         [Authorize( Policy = PolicyNames.UserPolicy )]
         public IEnumerable<ClProjectTemplate> ProjectTemplateList() {
             return mTemplateManager.GetAvailableTemplates().Select( t => t.ToCl());

@@ -42,7 +42,8 @@ export class ProjectEditDialogComponent implements OnInit {
     const projectInput: AddProjectInput = {
       title: this.projectTitle,
       description: this.projectDescription,
-      issuePrefix: this.issuePrefix
+      issuePrefix: this.issuePrefix,
+      projectTemplate: ''
     }
 
     this.dialogRef.close( { accepted: true, project: projectInput } as ProjectEditResult )
