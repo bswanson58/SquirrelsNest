@@ -33,6 +33,7 @@ import {RegisterComponent} from './Auth/register/register.component'
 import {SidenavComponent} from './Navigation/sidenav/sidenav.component'
 import {ProjectService} from './Projects/projects.service'
 import {appReducers} from './Store/app.reducer'
+import {VariableDirective} from './UI/ng-var.directive'
 import {UsersFacade} from './Users/user.facade'
 import {UserMutationsService} from './Users/user.mutations.service'
 import {UserService} from './Users/user.service'
@@ -113,6 +114,7 @@ import {CreateTemplateDialogComponent} from './Projects/create-template-dialog/c
     UserEditRolesDialogComponent,
     UserHeaderComponent,
     UserListComponent,
+    VariableDirective
   ],
   imports: [
     AppRoutingModule,
