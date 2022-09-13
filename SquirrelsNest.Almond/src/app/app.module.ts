@@ -66,6 +66,7 @@ import {MessageDialogComponent} from './UI/message-dialog/message-dialog.compone
 import {ProjectImportDialogComponent} from './Projects/project-import-dialog/project-import-dialog.component'
 import {ProjectCreateDialogComponent} from './Projects/project-create-dialog/project-create-dialog.component'
 import {CreateTemplateDialogComponent} from './Projects/create-template-dialog/create-template-dialog.component'
+import {HomePageComponent} from './UI/home-page/home-page.component'
 
 
 @NgModule( {
@@ -77,6 +78,7 @@ import {CreateTemplateDialogComponent} from './Projects/create-template-dialog/c
     ConfirmDialogComponent,
     CreateTemplateDialogComponent,
     HeaderComponent,
+    HomePageComponent,
     IssuesPageComponent,
     IssueFooterComponent,
     IssueHeaderComponent,
@@ -110,7 +112,7 @@ import {CreateTemplateDialogComponent} from './Projects/create-template-dialog/c
     UserEditRolesDialogComponent,
     UserHeaderComponent,
     UserListComponent,
-    VariableDirective
+    VariableDirective,
   ],
   imports: [
     AppRoutingModule,

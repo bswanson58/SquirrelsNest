@@ -41,6 +41,6 @@ export class AuthService {
     this.store.dispatch( new Logout() )
 
     clearAuthenticationToken()
-    this.router.navigate( ['login'] ).then()
+    this.router.navigate( ['home'] ).then()
   }
 }
