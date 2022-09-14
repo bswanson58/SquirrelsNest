@@ -1,1 +1,32 @@
-<p>register works!</p>
+<section fxLayout='column' fxLayoutAlign='center center' fxLayoutGap='5px'>
+  <form #form='ngForm' (ngSubmit)='onRegister()'>
+    <mat-form-field>
+      <mat-label>User Name</mat-label>
+      <input type='text' matInput required [(ngModel)]='name' name='name' placeholder='Name'>
+    </mat-form-field>
+    <mat-form-field>
+      <input type='email' matInput email [(ngModel)]='email' name='email' placeholder='Login Name (email)'>
+    </mat-form-field>
+    <mat-form-field>
+      <input type='password' matInput required minlength='6' [(ngModel)]='password' name='password' placeholder='Password'>
+      <mat-hint>Passwords have a minimum length of 6 characters</mat-hint>
+    </mat-form-field>
+    <mat-form-field>
+      <input type='password' matInput required minlength='6' [(ngModel)]='retypedPassword' name='retypedPassword'
+             placeholder='Retype Password'>
+      <mat-hint>Passwords have a minimum length of 6 characters</mat-hint>
+    </mat-form-field>
+    <div fxLayout='column'>
+      <button mat-button type='submit' color='primary' fxFlexAlign='end' [disabled]='form.invalid'>Register</button>
+    </div>
+    <div *ngIf='registrationSucceeded$ | async' style='margin-top: 2em'>
+      <h3>Your registration succeeded.</h3>
+      <h3>An administrator will need to assign your rights before your can use the system.</h3>
+    </div>
+    <div *ngIf='registrationFailed$ | async' style='margin-top: 2em'>
+      <h3>Your registration failed due to:</h3>
+      <h3>{{registrationMessage}}</h3>
+      <h3>Please ask an administrator for help in proceeding.</h3>
+    </div>
+  </form>
+</section>

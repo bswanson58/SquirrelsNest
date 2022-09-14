@@ -25,7 +25,12 @@ export class UsersFacade {
   }
 
   AddUser( user: AddUserInput ) {
-    this.userMutationService.AddUser( user )
+    this.userMutationService.AddUser( user, () => {
+    } )
+  }
+
+  AddUserWithCallback( user: AddUserInput, callback: ( success: boolean, message: string ) => void ) {
+    this.userMutationService.AddUser( user, callback )
   }
 
   ClearUsers() {

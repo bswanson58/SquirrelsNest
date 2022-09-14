@@ -3,7 +3,7 @@ import {NgForm} from '@angular/forms'
 import {AuthService} from '../auth.service'
 
 @Component( {
-  selector: 'app-login',
+  selector: 'sn-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 } )

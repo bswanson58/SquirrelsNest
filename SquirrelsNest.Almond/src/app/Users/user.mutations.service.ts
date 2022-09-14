@@ -28,7 +28,7 @@ export class UserMutationsService {
   constructor( private apollo: Apollo, private store: Store<AppState>, private uiFacade: UiFacade ) {
   }
 
-  AddUser( userInput: AddUserInput ) {
+  AddUser( userInput: AddUserInput, callback: ( succeeded: boolean, message: string ) => void ) {
     this.store.dispatch( new SetUsersLoading() )
 
     this.apollo.use( 'defaultClient' ).mutate<Mutation>( {
@@ -36,6 +36,13 @@ export class UserMutationsService {
       variables: { userInput: userInput }
     } )
       .pipe(
+        tap( result => {
+          if(( result.data?.addUser?.errors != null ) &&
+            (result.data.addUser.errors.length > 0 )) {
+            const message = result.data?.addUser?.errors[0].message ?? ''
+            callback( false, message )
+          }
+        } ),
         map( result => UserMutationsService.handleAddMutationErrors( result.data, result.errors ) ),
         map( result => {
           if( result !== null ) {
@@ -43,6 +50,11 @@ export class UserMutationsService {
           }
 
           return result
+        } ),
+        tap( result => {
+          if( result !== null ) {
+            callback( true, '' )
+          }
         } ),
         tap( _ => this.store.dispatch( new ClearUsersLoading() ) ),
       )
