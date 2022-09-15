@@ -18,3 +18,8 @@ a:active {
   display: inline-block;
   padding-left: 6px;
 }
+
+.active-route {
+  color: darkorange;
+  font-weight: bold;
+}

@@ -1,4 +1,5 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core'
+import {Router} from '@angular/router'
 import {Store} from '@ngrx/store'
 import {Observable} from 'rxjs'
 import {AuthFacade} from '../../Auth/auth.facade'
@@ -16,12 +17,16 @@ export class HeaderComponent implements OnInit {
   @Output()
   sidenavToggle = new EventEmitter<void>()
 
-  constructor( private store: Store<AppState>, private authFacade: AuthFacade ) {
+  constructor( private store: Store<AppState>, private authFacade: AuthFacade, private router: Router ) {
     this.isAuthenticated$ = new Observable<boolean>()
   }
 
   ngOnInit(): void {
     this.isAuthenticated$ = this.store.select( getIsAuthenticated )
+  }
+
+  isActiveRoute( route: string ): boolean {
+    return this.router.url.startsWith( route )
   }
 
   onLogout() {
