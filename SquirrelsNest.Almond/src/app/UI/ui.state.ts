@@ -7,6 +7,9 @@ export interface UiState {
     displayStyle: eIssueDisplayStyle
     displayOnlyMyIssues: boolean
     displayCompletedIssues: boolean
+  },
+  errors: {
+    lastError: string
   }
 }
 
@@ -16,6 +19,9 @@ export const initialUiState: UiState = {
     displayOnlyMyIssues: false,
     displayCompletedIssues: true
   },
+  errors: {
+    lastError: ''
+  }
 }
 
 export const getUiState = createFeatureSelector<UiState>( 'ui' )
@@ -23,3 +29,4 @@ export const getUiState = createFeatureSelector<UiState>( 'ui' )
 export const getIssueDisplayStyle = ( state: UiState ) => state.issueList.displayStyle
 export const getDisplayOnlyMyIssues = ( state: UiState ) => state.issueList.displayOnlyMyIssues
 export const getDisplayCompletedIssues = ( state: UiState ) => state.issueList.displayCompletedIssues
+export const getLastError = ( state: UiState ) => state.errors.lastError

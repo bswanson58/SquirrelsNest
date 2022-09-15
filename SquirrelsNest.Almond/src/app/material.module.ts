@@ -11,17 +11,18 @@ import {MatInputModule} from '@angular/material/input'
 import {MatListModule} from '@angular/material/list'
 import {MatSelectModule} from '@angular/material/select'
 import {MatSidenavModule} from '@angular/material/sidenav'
+import {MatSnackBarModule} from '@angular/material/snack-bar'
 import {MatToolbarModule} from '@angular/material/toolbar'
 
 @NgModule( {
   imports: [
     MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatDividerModule, MatFormFieldModule,
-    MatIconModule, MatInputModule, MatListModule, MatRippleModule, MatSelectModule,
+    MatIconModule, MatInputModule, MatListModule, MatRippleModule, MatSelectModule, MatSnackBarModule,
     MatSidenavModule, MatToolbarModule
   ],
   exports: [
     MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatDividerModule, MatFormFieldModule,
-    MatIconModule, MatInputModule, MatListModule, MatRippleModule, MatSelectModule,
+    MatIconModule, MatInputModule, MatListModule, MatRippleModule, MatSelectModule, MatSnackBarModule,
     MatSidenavModule, MatToolbarModule
   ]
 } )

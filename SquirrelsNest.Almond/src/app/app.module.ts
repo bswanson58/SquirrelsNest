@@ -33,6 +33,7 @@ import {RegisterComponent} from './Auth/register/register.component'
 import {SidenavComponent} from './Navigation/sidenav/sidenav.component'
 import {ProjectService} from './Projects/projects.service'
 import {appReducers} from './Store/app.reducer'
+import {MessageReporter} from './UI/message.reporter'
 import {VariableDirective} from './UI/ng-var.directive'
 import {UsersFacade} from './Users/user.facade'
 import {UserMutationsService} from './Users/user.mutations.service'
@@ -67,6 +68,7 @@ import {ProjectImportDialogComponent} from './Projects/project-import-dialog/pro
 import {ProjectCreateDialogComponent} from './Projects/project-create-dialog/project-create-dialog.component'
 import {CreateTemplateDialogComponent} from './Projects/create-template-dialog/create-template-dialog.component'
 import {HomePageComponent} from './UI/home-page/home-page.component'
+import {ErrorPanelComponent} from './UI/error-panel/error-panel.component'
 
 
 @NgModule( {
@@ -77,6 +79,7 @@ import {HomePageComponent} from './UI/home-page/home-page.component'
     ComponentsListComponent,
     ConfirmDialogComponent,
     CreateTemplateDialogComponent,
+    ErrorPanelComponent,
     HeaderComponent,
     HomePageComponent,
     IssuesPageComponent,
@@ -133,6 +136,7 @@ import {HomePageComponent} from './UI/home-page/home-page.component'
     AuthService,
     IssuesFacade,
     IssueService,
+    MessageReporter,
     ProjectConstants,
     ProjectFacade,
     ProjectDetailsService,

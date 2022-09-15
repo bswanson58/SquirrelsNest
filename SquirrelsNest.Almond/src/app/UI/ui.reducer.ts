@@ -2,7 +2,7 @@ import {Action} from '@ngrx/store'
 import {
   DISPLAY_COMPLETED_ISSUES,
   DISPLAY_ONLY_MY_ISSUES,
-  DisplayCompletedIssues, DisplayOnlyMyIssues,
+  DisplayCompletedIssues, DisplayOnlyMyIssues, REPORT_ERROR, ReportError,
   TOGGLE_ISSUE_LIST_STYLE
 } from './ui.actions'
 import {eIssueDisplayStyle, initialUiState, UiState} from './ui.state'
@@ -53,6 +53,17 @@ export function uiReducer( state: UiState = initialUiState, action: Action ): Ui
         issueList: {
           ...state.issueList,
           displayOnlyMyIssues: myIssuesState.state
+        }
+      }
+
+    case REPORT_ERROR:
+      const errorReport = action as ReportError
+
+      return {
+        ...state,
+        errors: {
+          ...state.errors,
+          lastError: errorReport.errorMessage
         }
       }
 

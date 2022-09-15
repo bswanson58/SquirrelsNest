@@ -5,6 +5,7 @@ import {Store} from '@ngrx/store'
 import {Subscription, tap} from 'rxjs'
 import {ProjectFacade} from './Projects/project.facade'
 import {AppState} from './Store/app.reducer'
+import {MessageReporter} from './UI/message.reporter'
 
 @Component( {
   selector: 'app-root',
@@ -20,7 +21,8 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor( private store: Store<AppState>,
                private title: Title,
                private router: Router,
-               private projectFacade: ProjectFacade ) {
+               private projectFacade: ProjectFacade,
+               private errorReporter: MessageReporter ) {
     this.currentProject = ''
     this.currentRoute = ''
   }

@@ -39,3 +39,4 @@ export const getLoadedUsers = createSelector( fromUser.getUserState, fromUser.ge
 export const getIssueDisplayStyle = createSelector( fromUI.getUiState, fromUI.getIssueDisplayStyle )
 export const getDisplayOnlyMyIssues = createSelector( fromUI.getUiState, fromUI.getDisplayOnlyMyIssues )
 export const getDisplayCompletedIssues = createSelector( fromUI.getUiState, fromUI.getDisplayCompletedIssues )
+export const getLastError = createSelector( fromUI.getUiState, fromUI.getLastError )
