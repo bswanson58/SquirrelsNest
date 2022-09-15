@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core'
+import {Component, Input, OnInit} from '@angular/core'
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog'
 import {Observable} from 'rxjs'
 import {ClIssue, ClProject} from '../../Data/graphQlTypes'
@@ -21,8 +21,9 @@ import {IssuesFacade} from '../issues.facade'
   templateUrl: './issue-detail.component.html',
   styleUrls: ['./issue-detail.component.css']
 } )
-export class IssueDetailComponent {
+export class IssueDetailComponent implements OnInit {
   isHovering: boolean = false
+  isCompleted: boolean = true
   @Input() issue!: ClIssue
   readonly project: ClProject | null
 
@@ -34,6 +35,12 @@ export class IssueDetailComponent {
                private uiFacade: UiFacade ) {
     this.issueListStyle$ = this.uiFacade.GetIssueListDisplayStyle()
     this.project = this.projectFacade.GetCurrentProject()
+  }
+
+  ngOnInit() {
+    const currentState = this.issue.workflowState?.category ?? ''
+
+    this.isCompleted = currentState === 'TERMINAL' || currentState === 'COMPLETED'
   }
 
   onCompleteIssue() {

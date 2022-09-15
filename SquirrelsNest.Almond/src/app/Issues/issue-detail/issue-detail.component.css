@@ -9,3 +9,11 @@ button {
 .highlight {
   background: #80808020;
 }
+
+.isCompletedText {
+  text-decoration: line-through;
+}
+
+.isCompletedColor {
+  color: green;
+}

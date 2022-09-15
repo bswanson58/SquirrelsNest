@@ -3,32 +3,33 @@
      (mouseover)='isHovering = true'
      (mouseleave)='isHovering = false'>
   <div fxFlex='3em' fxLayoutAlign='center center'>
-    <button mat-icon-button *ngIf='isHovering' class='dimmed' (click)='onCompleteIssue()'>
+    <button mat-icon-button *ngIf='isHovering && !isCompleted' class='dimmed' (click)='onCompleteIssue()'>
       <mat-icon>done</mat-icon>
     </button>
+    <mat-icon *ngIf='isCompleted' [class.isCompletedColor]='isCompleted'>done</mat-icon>
   </div>
 
   <div fxLayout='column' fxFlex='grow'>
     <ng-container *ngIf='(issueListStyle$ | async) === 0'>
       <div>
         <span class='dimmed'>{{project?.issuePrefix}}-{{issue.issueNumber}}</span>
-        <span style='margin-left: 0.5em'>{{issue.title}}</span>
+        <span style='margin-left: 0.5em' [class.isCompletedText]='isCompleted'>{{issue.title}}</span>
       </div>
     </ng-container>
     <ng-container *ngIf='(issueListStyle$ | async) === 1'>
       <div>
         <span class='dimmed'>{{project?.issuePrefix}}-{{issue.issueNumber}}</span>
-        <span style='margin-left: 0.5em'>{{issue.title}}</span>
+        <span style='margin-left: 0.5em' [class.isCompletedText]='isCompleted'>{{issue.title}}</span>
       </div>
       <span fxFlex class='dimmed' style='margin-left: 1em;'>{{issue.description}}</span>
     </ng-container>
     <ng-container *ngIf='(issueListStyle$ | async) === 2'>
       <div>
         <span class='dimmed'>{{project?.issuePrefix}}-{{issue.issueNumber}}</span>
-        <span style='margin-left: 0.5em'>{{issue.title}}</span>
+        <span style='margin-left: 0.5em' [class.isCompletedText]='isCompleted'>{{issue.title}}</span>
       </div>
       <span fxFlex class='dimmed' style='margin-left: 1em;'>{{issue.description}}</span>
-      <div fxLayout='row'>
+      <div fxLayout='row' [class.dimmed]='isCompleted'>
         <button mat-button fxFlex fxFlexOffset='2em' onclick='this.blur()'
                 (click)='onIssueType()'>{{issue.issueType.name}}</button>
         <button mat-button fxFlex fxFlexOffset='2em' onclick='this.blur()'
