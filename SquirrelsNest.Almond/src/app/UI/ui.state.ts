@@ -11,6 +11,10 @@ export interface UiState {
   errors: {
     lastError: string
   }
+  service: {
+    isActive: boolean,
+    serviceActivity: string
+  }
 }
 
 export const initialUiState: UiState = {
@@ -21,6 +25,10 @@ export const initialUiState: UiState = {
   },
   errors: {
     lastError: ''
+  },
+  service: {
+    isActive: false,
+    serviceActivity: ''
   }
 }
 
@@ -30,3 +38,5 @@ export const getIssueDisplayStyle = ( state: UiState ) => state.issueList.displa
 export const getDisplayOnlyMyIssues = ( state: UiState ) => state.issueList.displayOnlyMyIssues
 export const getDisplayCompletedIssues = ( state: UiState ) => state.issueList.displayCompletedIssues
 export const getLastError = ( state: UiState ) => state.errors.lastError
+export const getServiceIsActive = ( state: UiState ) => state.service.isActive
+export const getServiceActivity = ( state: UiState ) => state.service.serviceActivity

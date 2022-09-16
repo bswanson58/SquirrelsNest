@@ -2,7 +2,13 @@ import {Action} from '@ngrx/store'
 import {
   DISPLAY_COMPLETED_ISSUES,
   DISPLAY_ONLY_MY_ISSUES,
-  DisplayCompletedIssues, DisplayOnlyMyIssues, REPORT_ERROR, ReportError,
+  DisplayCompletedIssues,
+  DisplayOnlyMyIssues,
+  REPORT_ERROR,
+  ReportError,
+  SERVICE_ENDED,
+  SERVICE_STARTED,
+  ServiceCallStarted,
   TOGGLE_ISSUE_LIST_STYLE
 } from './ui.actions'
 import {eIssueDisplayStyle, initialUiState, UiState} from './ui.state'
@@ -64,6 +70,28 @@ export function uiReducer( state: UiState = initialUiState, action: Action ): Ui
         errors: {
           ...state.errors,
           lastError: errorReport.errorMessage
+        }
+      }
+
+    case SERVICE_STARTED:
+      const serviceStartedPayload = action as ServiceCallStarted
+
+      return {
+        ...state,
+        service: {
+          ...state.service,
+          isActive: true,
+          serviceActivity: serviceStartedPayload.activity
+        }
+      }
+
+    case SERVICE_ENDED:
+      return {
+        ...state,
+        service: {
+          ...state.service,
+          isActive: false,
+          serviceActivity: ''
         }
       }
 

@@ -12,7 +12,6 @@ export const getIsAuthenticated = createSelector( fromAuth.getAuthState, fromAut
 export const getAuthenticationClaims = createSelector( fromAuth.getAuthState, fromAuth.getAuthenticationClaims )
 
 // Projects
-export const getProjectsLoading = createSelector( fromProject.getProjectState, fromProject.getIsLoading )
 export const getProjects = createSelector( fromProject.getProjectState, fromProject.getProjects )
 export const getSelectedProject = createSelector( fromProject.getProjectState, fromProject.getSelectedProject )
 export const getProjectQueryState = createSelector( fromProject.getProjectState, fromProject.getProjectQueryState )
@@ -20,7 +19,6 @@ export const getServerHasMoreProjects = createSelector( fromProject.getProjectSt
 export const getProjectTemplates = createSelector( fromProject.getProjectState, fromProject.getProjectTemplates )
 
 // Issues
-export const getIssuesLoading = createSelector( fromIssue.getIssueState, fromIssue.getIsLoading )
 export const getIssues = createSelector( fromIssue.getIssueState, fromIssue.getIssues )
 export const getIssueQueryState = createSelector( fromIssue.getIssueState, fromIssue.getIssueQueryState )
 export const getServerHasMoreIssues = createSelector( fromIssue.getIssueState, fromIssue.getServerHasMoreIssues )
@@ -40,3 +38,5 @@ export const getIssueDisplayStyle = createSelector( fromUI.getUiState, fromUI.ge
 export const getDisplayOnlyMyIssues = createSelector( fromUI.getUiState, fromUI.getDisplayOnlyMyIssues )
 export const getDisplayCompletedIssues = createSelector( fromUI.getUiState, fromUI.getDisplayCompletedIssues )
 export const getLastError = createSelector( fromUI.getUiState, fromUI.getLastError )
+export const getServiceIsActive = createSelector( fromUI.getUiState, fromUI.getServiceIsActive )
+export const getServiceActivity = createSelector( fromUI.getUiState, fromUI.getServiceActivity )

@@ -69,6 +69,7 @@ import {ProjectCreateDialogComponent} from './Projects/project-create-dialog/pro
 import {CreateTemplateDialogComponent} from './Projects/create-template-dialog/create-template-dialog.component'
 import {HomePageComponent} from './UI/home-page/home-page.component'
 import {ErrorPanelComponent} from './UI/error-panel/error-panel.component'
+import {ServiceActivityPanelComponent} from './UI/service-activity-panel/service-activity-panel.component'
 
 
 @NgModule( {
@@ -103,6 +104,7 @@ import {ErrorPanelComponent} from './UI/error-panel/error-panel.component'
     ProjectListComponent,
     ProjectUsersListComponent,
     RegisterComponent,
+    ServiceActivityPanelComponent,
     SidenavComponent,
     UsersPageComponent,
     WorkflowEditDialogComponent,

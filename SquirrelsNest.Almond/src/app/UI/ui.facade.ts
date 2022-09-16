@@ -1,9 +1,14 @@
 import {Injectable} from '@angular/core'
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog'
 import {Store} from '@ngrx/store'
-import {Observable} from 'rxjs'
+import {Observable, take} from 'rxjs'
 import {AppState} from '../Store/app.reducer'
-import {getDisplayCompletedIssues, getDisplayOnlyMyIssues, getIssueDisplayStyle} from '../Store/app.selectors'
+import {
+  getDisplayCompletedIssues,
+  getDisplayOnlyMyIssues,
+  getIssueDisplayStyle,
+  getServiceActivity
+} from '../Store/app.selectors'
 import {MessageDialogComponent, MessageInput} from './message-dialog/message-dialog.component'
 import {DisplayCompletedIssues, DisplayOnlyMyIssues} from './ui.actions'
 import {eIssueDisplayStyle} from './ui.state'
@@ -53,5 +58,13 @@ export class UiFacade {
       .open( MessageDialogComponent, dialogConfig )
       .afterClosed()
       .subscribe()
+  }
+
+  GetServiceActivity(): string {
+    let retValue = ''
+
+    this.store.select( getServiceActivity ).pipe( take( 1 ) ).subscribe( value => retValue = value )
+
+    return retValue
   }
 }
