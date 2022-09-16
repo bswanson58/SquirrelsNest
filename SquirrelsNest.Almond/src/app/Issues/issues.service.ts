@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core'
 import {GraphQLErrors} from '@apollo/client/errors'
 import {Store} from '@ngrx/store'
 import {Apollo, QueryRef} from 'apollo-angular'
-import {map, Subscription, take} from 'rxjs'
+import {map, Subscription, take, tap} from 'rxjs'
 import {GraphQlBaseService} from '../Common/graphql.base.service'
 import {
   AddIssueInput, AddIssuePayload,
@@ -24,7 +24,7 @@ import {IssueQueryInput, IssuesQuery} from '../Data/queryStatements'
 import {ProjectFacade} from '../Projects/project.facade'
 import {AppState} from '../Store/app.reducer'
 import {getIssueQueryState} from '../Store/app.selectors'
-import {ReportError, ServiceCallStarted} from '../UI/ui.actions'
+import {ReportError, ServiceCallEnded, ServiceCallStarted} from '../UI/ui.actions'
 import {
   AddIssue,
   AppendIssues,
@@ -74,6 +74,7 @@ export class IssueService extends GraphQlBaseService {
       .pipe(
         map( result => this.handleQueryErrors( result.data, result.errors ) ),
         map( result => this.handleIssueData( result ) ),
+        tap( () => this.store.dispatch( new ServiceCallEnded() ) )
       )
       .subscribe( this.getServiceObserver() )
   }
