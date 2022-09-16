@@ -2,10 +2,10 @@ import {Action} from '@ngrx/store'
 import {initialIssueQueryInfo, initialIssueState, IssueState} from './issues.state'
 import {
   APPEND_ISSUES, AppendIssues,
-  CLEAR_ISSUES_LOADING,
   CLEAR_ISSUES,
-  SET_ISSUES_LOADING,
-  UPDATE_ISSUE, UpdateIssue, ADD_ISSUE, AddIssue, DELETE_ISSUE, DeleteIssue
+  UPDATE_ISSUE, UpdateIssue,
+  ADD_ISSUE, AddIssue,
+  DELETE_ISSUE, DeleteIssue
 } from './issues.actions'
 
 export function issuesReducer( state: IssueState = initialIssueState, action: Action ): IssueState {
@@ -55,18 +55,6 @@ export function issuesReducer( state: IssueState = initialIssueState, action: Ac
       return {
         ...state,
         issues: updatedIssueList
-      }
-
-    case SET_ISSUES_LOADING:
-      return {
-        ...state,
-        isLoading: true
-      }
-
-    case CLEAR_ISSUES_LOADING:
-      return {
-        ...state,
-        isLoading: false
       }
 
     default: {

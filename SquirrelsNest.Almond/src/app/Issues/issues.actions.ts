@@ -7,8 +7,6 @@ export const CLEAR_ISSUES = '[ISSU] Clear Issues'
 export const DELETE_ISSUE = '[ISSU] Delete Issue'
 export const APPEND_ISSUES = '[ISSU] Append Issues'
 export const UPDATE_ISSUE = '[ISSU] Update Issue'
-export const SET_ISSUES_LOADING = '[ISSU] SetLoading'
-export const CLEAR_ISSUES_LOADING = '[ISSU] Clear Loading'
 
 export class AddIssue implements Action {
   readonly type = ADD_ISSUE
@@ -40,12 +38,4 @@ export class UpdateIssue implements Action {
 
   constructor( public issue: ClIssue ) {
   }
-}
-
-export class SetIssuesLoading implements Action {
-  readonly type = SET_ISSUES_LOADING
-}
-
-export class ClearIssuesLoading implements Action {
-  readonly type = CLEAR_ISSUES_LOADING
 }

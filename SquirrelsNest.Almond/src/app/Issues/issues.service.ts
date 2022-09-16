@@ -2,20 +2,21 @@ import {Injectable} from '@angular/core'
 import {GraphQLErrors} from '@apollo/client/errors'
 import {Store} from '@ngrx/store'
 import {Apollo, QueryRef} from 'apollo-angular'
-import {map, Subscription, take, tap} from 'rxjs'
+import {catchError, map, of, Subscription, take, tap} from 'rxjs'
+import {GraphQlBaseService} from '../Common/graphql.base.service'
 import {
-  AddIssueInput,
+  AddIssueInput, AddIssuePayload,
   ClComponent,
   ClIssue,
   ClIssueCollectionSegment,
   ClIssueType,
   ClUser,
   ClWorkflowState,
-  DeleteIssueInput,
+  DeleteIssueInput, DeleteIssuePayload,
   IssueUpdatePath,
   Mutation,
   Query,
-  UpdateIssueInput,
+  UpdateIssueInput, UpdateIssuePayload,
   UpdateOperationInput
 } from '../Data/graphQlTypes'
 import {AddIssueMutation, DeleteIssueMutation, UpdateIssueMutation} from '../Data/issueMutations'
@@ -23,13 +24,12 @@ import {IssueQueryInput, IssuesQuery} from '../Data/queryStatements'
 import {ProjectFacade} from '../Projects/project.facade'
 import {AppState} from '../Store/app.reducer'
 import {getIssueQueryState} from '../Store/app.selectors'
+import {ReportError, ServiceCallEnded, ServiceCallStarted} from '../UI/ui.actions'
 import {
   AddIssue,
   AppendIssues,
   ClearIssues,
-  ClearIssuesLoading,
   DeleteIssue,
-  SetIssuesLoading,
   UpdateIssue
 } from './issues.actions'
 import {IssueQueryInfo} from './issues.state'
@@ -37,19 +37,20 @@ import {IssueQueryInfo} from './issues.state'
 @Injectable( {
   providedIn: 'root'
 } )
-export class IssueService {
+export class IssueService extends GraphQlBaseService {
   private readonly mPageLimit = 10
   private mIssueQuery: QueryRef<Query, IssueQueryInput> | null
   private mIssuesSubscription: Subscription | null
 
-  constructor( private apollo: Apollo, private store: Store<AppState>, private projectFacade: ProjectFacade ) {
+  constructor( store: Store<AppState>, private apollo: Apollo, private projectFacade: ProjectFacade ) {
+    super( store )
     this.mIssuesSubscription = null
     this.mIssueQuery = null
   }
 
   LoadIssues( forProject: string ): void {
     this.unsubscribe()
-    this.store.dispatch( new SetIssuesLoading() )
+    this.store.dispatch( new ServiceCallStarted( 'Loading Initial Issues' ) )
     this.store.dispatch( new ClearIssues() )
 
     this.mIssueQuery = this.apollo.use( 'issuesWatchClient' ).watchQuery<Query, IssueQueryInput>(
@@ -71,9 +72,9 @@ export class IssueService {
     this.mIssuesSubscription = this.mIssueQuery
       .valueChanges
       .pipe(
-        map( result => IssueService.handleQueryErrors( result.data, result.errors ) ),
+        map( result => this.handleQueryErrors( result.data, result.errors ) ),
         map( result => this.handleIssueData( result ) ),
-        tap( _ => this.store.dispatch( new ClearIssuesLoading() ) )
+        tap( _ => this.store.dispatch( new ServiceCallEnded() ) ),
       )
       .subscribe( { complete: () => console.log( 'LoadIssues completed.' ) } )
   }
@@ -83,7 +84,7 @@ export class IssueService {
 
     if( (this.mIssueQuery != null) &&
       (queryState.hasNextPage) ) {
-      this.store.dispatch( new SetIssuesLoading() )
+      this.store.dispatch( new ServiceCallStarted( 'Loading Additional Issues' ) )
 
       this.mIssueQuery.fetchMore( {
         variables: {
@@ -91,6 +92,45 @@ export class IssueService {
         }
       } ).then()
     }
+  }
+
+  private handleQueryErrors( data: Query | null, errors: GraphQLErrors | undefined ): ClIssueCollectionSegment {
+    if( Array.isArray( errors ) ) {
+      if( errors.length > 0 ) {
+        this.store.dispatch( new ReportError( errors[0].message ) )
+      }
+      else {
+        this.store.dispatch( new ReportError( 'Unknown error occurred' ) )
+      }
+
+      return { items: [], pageInfo: { hasNextPage: false, hasPreviousPage: false }, totalCount: 0 }
+    }
+
+    if( (data?.issueList?.items != null) &&
+      (data.issueList.pageInfo != null) ) {
+      return data.issueList
+    }
+    else {
+      return { items: [], pageInfo: { hasNextPage: false, hasPreviousPage: false }, totalCount: 0 }
+    }
+  }
+
+  private handleIssueData( issueData: ClIssueCollectionSegment ): void {
+    this.store.dispatch(
+      new AppendIssues( issueData.items!, {
+        hasNextPage: issueData.pageInfo.hasNextPage,
+        hasPreviousPage: issueData.pageInfo.hasPreviousPage,
+        totalIssues: issueData.totalCount,
+        loadedIssues: 0 // set by the reducer.
+      } ) )
+  }
+
+  private getIssueQueryState(): IssueQueryInfo {
+    let queryState: IssueQueryInfo
+
+    this.store.select( getIssueQueryState ).pipe( take( 1 ) ).subscribe( state => queryState = state )
+
+    return queryState!
   }
 
   UpdateIssueIssueType( issue: ClIssue, issueType: ClIssueType ) {
@@ -146,11 +186,11 @@ export class IssueService {
     const issueInput: UpdateIssueInput = {
       operations: [
         { path: 'TITLE' as IssueUpdatePath.Title, value: issue.title },
-        { path: 'DESCRIPTION' as IssueUpdatePath.Description, value: issue.description },
-        { path: 'ISSUE_TYPE_ID' as IssueUpdatePath.IssueTypeId, value: issue.issueType?.id },
-        { path: 'WORKFLOW_STATE_ID' as IssueUpdatePath.WorkflowStateId, value: issue.workflowState?.id },
-        { path: 'COMPONENT_ID' as IssueUpdatePath.ComponentId, value: issue.component?.id },
-        { path: 'ASSIGNED_TO_ID' as IssueUpdatePath.AssignedToId, value: issue.assignedTo?.id }
+        { path: 'DESCRIPTION' as IssueUpdatePath.Description, value: issue.description ?? '' },
+        { path: 'ISSUE_TYPE_ID' as IssueUpdatePath.IssueTypeId, value: issue.issueType?.id ?? '' },
+        { path: 'WORKFLOW_STATE_ID' as IssueUpdatePath.WorkflowStateId, value: issue.workflowState?.id ?? '' },
+        { path: 'COMPONENT_ID' as IssueUpdatePath.ComponentId, value: issue.component?.id ?? '' },
+        { path: 'ASSIGNED_TO_ID' as IssueUpdatePath.AssignedToId, value: issue.assignedTo?.id ?? '' }
       ],
       issueId: issue.id
     }
@@ -159,69 +199,26 @@ export class IssueService {
   }
 
   private updateIssue( input: UpdateIssueInput ) {
-    this.store.dispatch( new SetIssuesLoading() )
+    this.store.dispatch( new ServiceCallStarted( 'Updating Issue' ) )
 
     this.apollo.use( 'defaultClient' ).mutate<Mutation>( {
       mutation: UpdateIssueMutation,
       variables: { updateInput: input }
     } )
       .pipe(
-        map( result => IssueService.handleUpdateMutationErrors( result.data, result.errors ) ),
+        map( result => this.handleMutationErrors( result.data?.updateIssue, result.errors ) ),
         map( result => {
-          if( result !== null ) {
-            this.store.dispatch( new UpdateIssue( result ) )
+          const payload = result as UpdateIssuePayload
+
+          if( payload.issue != null ) {
+            this.store.dispatch( new UpdateIssue( payload.issue ) )
           }
 
-          return result
+          return payload.issue
         } ),
-        tap( _ => this.store.dispatch( new ClearIssuesLoading() ) ),
+        tap( _ => this.store.dispatch( new ServiceCallEnded() ) ),
       )
       .subscribe()
-  }
-
-  private static handleUpdateMutationErrors( data: Mutation | undefined | null, errors: GraphQLErrors | undefined ): ClIssue | null {
-    if( errors != null ) {
-      console.log( errors.entries() )
-    }
-
-    if( (data?.updateIssue?.errors !== undefined) &&
-      (data.updateIssue.issue !== undefined) ) {
-      return data.updateIssue.issue
-    }
-
-    return null
-  }
-
-  private static handleQueryErrors( data: Query | null, errors: GraphQLErrors | undefined ): ClIssueCollectionSegment {
-    if( errors != null ) {
-      console.log( errors.entries() )
-    }
-
-    if( (data?.issueList?.items != null) &&
-      (data.issueList.pageInfo != null) ) {
-      return data.issueList
-    }
-    else {
-      return { items: [], pageInfo: { hasNextPage: false, hasPreviousPage: false }, totalCount: 0 }
-    }
-  }
-
-  private handleIssueData( issueData: ClIssueCollectionSegment ): void {
-    this.store.dispatch(
-      new AppendIssues( issueData.items!, {
-        hasNextPage: issueData.pageInfo.hasNextPage,
-        hasPreviousPage: issueData.pageInfo.hasPreviousPage,
-        totalIssues: issueData.totalCount,
-        loadedIssues: 0 // set by the reducer.
-      } ) )
-  }
-
-  private getIssueQueryState(): IssueQueryInfo {
-    let queryState: IssueQueryInfo
-
-    this.store.select( getIssueQueryState ).pipe( take( 1 ) ).subscribe( state => queryState = state )
-
-    return queryState!
   }
 
   ngOnDestroy() {
@@ -238,37 +235,26 @@ export class IssueService {
       projectId: issue.project.id
     }
 
-    this.store.dispatch( new SetIssuesLoading() )
+    this.store.dispatch( new ServiceCallStarted( 'Adding Issue' ) )
 
     this.apollo.use( 'defaultClient' ).mutate<Mutation>( {
       mutation: AddIssueMutation,
       variables: { issueInput: input }
     } )
       .pipe(
-        map( result => IssueService.handleAddMutationErrors( result.data, result.errors ) ),
+        map( result => this.handleMutationErrors( result.data?.addIssue, result.errors ) ),
         map( result => {
-          if( result !== null ) {
-            this.store.dispatch( new AddIssue( result ) )
+          const payload = result as AddIssuePayload
+
+          if( payload.issue != null ) {
+            this.store.dispatch( new AddIssue( payload.issue ) )
           }
 
-          return result
+          return payload.issue
         } ),
-        tap( _ => this.store.dispatch( new ClearIssuesLoading() ) ),
+        tap( _ => this.store.dispatch( new ServiceCallEnded() ) ),
       )
       .subscribe()
-  }
-
-  private static handleAddMutationErrors( data: Mutation | undefined | null, errors: GraphQLErrors | undefined ): ClIssue | null {
-    if( errors != null ) {
-      console.log( errors.entries() )
-    }
-
-    if( (data?.addIssue?.errors !== undefined) &&
-      (data.addIssue.issue !== undefined) ) {
-      return data.addIssue.issue
-    }
-
-    return null
   }
 
   DeleteIssue( issue: ClIssue ) {
@@ -276,37 +262,26 @@ export class IssueService {
       issueId: issue.id
     }
 
-    this.store.dispatch( new SetIssuesLoading() )
+    this.store.dispatch( new ServiceCallStarted( 'Deleting Issue' ) )
 
     this.apollo.use( 'defaultClient' ).mutate<Mutation>( {
       mutation: DeleteIssueMutation,
       variables: { deleteInput: data }
     } )
       .pipe(
-        map( result => IssueService.handleDeleteMutationErrors( result.data, result.errors ) ),
+        map( result => this.handleMutationErrors( result.data?.deleteIssue, result.errors ) ),
         map( result => {
-          if( result !== null ) {
-            this.store.dispatch( new DeleteIssue( result ) )
+          const payload = result as DeleteIssuePayload
+
+          if( payload.issueId != null ) {
+            this.store.dispatch( new DeleteIssue( payload.issueId ) )
           }
 
-          return result
+          return payload.issueId
         } ),
-        tap( _ => this.store.dispatch( new ClearIssuesLoading() ) ),
+        tap( _ => this.store.dispatch( new ServiceCallEnded() ) ),
       )
       .subscribe()
-  }
-
-  private static handleDeleteMutationErrors( data: Mutation | undefined | null, errors: GraphQLErrors | undefined ): string | null {
-    if( errors != null ) {
-      console.log( errors.entries() )
-    }
-
-    if( (data?.deleteIssue?.errors !== undefined) &&
-      (data.deleteIssue.issueId !== undefined) ) {
-      return data.deleteIssue.issueId
-    }
-
-    return null
   }
 
   private unsubscribe() {
