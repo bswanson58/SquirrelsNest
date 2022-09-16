@@ -20,8 +20,8 @@ namespace SquirrelsNest.Service.Dto.Mutations {
 
     public class AddProjectPayload {
         // ReSharper disable UnusedAutoPropertyAccessor.Global
-        public  ClProject ?           Project { get; }
-        public  List<MutationError> Errors { get; }
+        public  ClProject ?             Project { get; }
+        public  List<MutationError>     Errors { get; }
         // ReSharper restore UnusedAutoPropertyAccessor.Global
 
         public AddProjectPayload( ClProject project ) {
