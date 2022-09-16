@@ -1,7 +1,8 @@
-import {GraphQLErrors} from '@apollo/client/errors'
+import {ApolloError, GraphQLErrors} from '@apollo/client/errors'
 import {Store} from '@ngrx/store'
+import {Observer} from 'rxjs'
 import {AppState} from '../Store/app.reducer'
-import {ReportError} from '../UI/ui.actions'
+import {ReportError, ServiceCallEnded} from '../UI/ui.actions'
 
 export class GraphQlBaseService {
   constructor( protected store: Store<AppState> ) {
@@ -30,5 +31,22 @@ export class GraphQlBaseService {
     }
 
     return data
+  }
+
+  getServiceObserver() {
+    return {
+      next: () => {
+      },
+      error: err => {
+        const e = err as ApolloError
+
+        this.store.dispatch( new ServiceCallEnded() )
+        this.store.dispatch( new ReportError( e.message ) )
+      },
+      complete: () => {
+        this.store.dispatch( new ServiceCallEnded() )
+      }
+
+    } as Observer<any>
   }
 }

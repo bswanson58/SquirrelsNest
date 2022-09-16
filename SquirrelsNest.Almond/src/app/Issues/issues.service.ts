@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core'
 import {GraphQLErrors} from '@apollo/client/errors'
 import {Store} from '@ngrx/store'
 import {Apollo, QueryRef} from 'apollo-angular'
-import {catchError, map, of, Subscription, take, tap} from 'rxjs'
+import {map, Subscription, take} from 'rxjs'
 import {GraphQlBaseService} from '../Common/graphql.base.service'
 import {
   AddIssueInput, AddIssuePayload,
@@ -24,7 +24,7 @@ import {IssueQueryInput, IssuesQuery} from '../Data/queryStatements'
 import {ProjectFacade} from '../Projects/project.facade'
 import {AppState} from '../Store/app.reducer'
 import {getIssueQueryState} from '../Store/app.selectors'
-import {ReportError, ServiceCallEnded, ServiceCallStarted} from '../UI/ui.actions'
+import {ReportError, ServiceCallStarted} from '../UI/ui.actions'
 import {
   AddIssue,
   AppendIssues,
@@ -74,9 +74,8 @@ export class IssueService extends GraphQlBaseService {
       .pipe(
         map( result => this.handleQueryErrors( result.data, result.errors ) ),
         map( result => this.handleIssueData( result ) ),
-        tap( _ => this.store.dispatch( new ServiceCallEnded() ) ),
       )
-      .subscribe( { complete: () => console.log( 'LoadIssues completed.' ) } )
+      .subscribe( this.getServiceObserver() )
   }
 
   LoadMoreIssues(): void {
@@ -216,9 +215,8 @@ export class IssueService extends GraphQlBaseService {
 
           return payload.issue
         } ),
-        tap( _ => this.store.dispatch( new ServiceCallEnded() ) ),
       )
-      .subscribe()
+      .subscribe( this.getServiceObserver() )
   }
 
   ngOnDestroy() {
@@ -252,9 +250,8 @@ export class IssueService extends GraphQlBaseService {
 
           return payload.issue
         } ),
-        tap( _ => this.store.dispatch( new ServiceCallEnded() ) ),
       )
-      .subscribe()
+      .subscribe( this.getServiceObserver() )
   }
 
   DeleteIssue( issue: ClIssue ) {
@@ -279,9 +276,8 @@ export class IssueService extends GraphQlBaseService {
 
           return payload.issueId
         } ),
-        tap( _ => this.store.dispatch( new ServiceCallEnded() ) ),
       )
-      .subscribe()
+      .subscribe( this.getServiceObserver() )
   }
 
   private unsubscribe() {
