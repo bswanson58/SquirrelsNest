@@ -9,8 +9,6 @@ export const APPEND_PROJECTS = '[PROJ] Append Projects'
 export const UPDATE_PROJECT = '[PROJ] Update Project'
 export const UPDATE_PROJECT_DETAIL = '[PROJ] Update Project Detail'
 export const SELECT_PROJECT = '[PROJ] Select Project'
-export const SET_PROJECTS_LOADING = '[PROJ] SetLoading'
-export const CLEAR_PROJECTS_LOADING = '[PROJ] Clear Loading'
 export const UPDATE_PROJECT_TEMPLATES = '[PROJ] Update Templates'
 
 export class AddProject implements Action {
@@ -64,12 +62,4 @@ export class UpdateTemplates implements Action {
 
   constructor( public templates: ClProjectTemplate[] ) {
   }
-}
-
-export class SetProjectLoading implements Action {
-  readonly type = SET_PROJECTS_LOADING
-}
-
-export class ClearProjectLoading implements Action {
-  readonly type = CLEAR_PROJECTS_LOADING
 }

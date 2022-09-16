@@ -3,11 +3,9 @@ import {initialProjectQueryInfo, initialProjectState, ProjectState} from './proj
 import {
   ADD_PROJECT, AddProject,
   APPEND_PROJECTS, AppendProjects,
-  CLEAR_PROJECTS_LOADING,
   CLEAR_PROJECTS,
   DELETE_PROJECT, DeleteProject,
   SELECT_PROJECT, SelectProject,
-  SET_PROJECTS_LOADING,
   UPDATE_PROJECT_DETAIL, UpdateProjectDetail,
   UPDATE_PROJECT, UpdateProject, UPDATE_PROJECT_TEMPLATES, UpdateTemplates
 } from './projects.actions'
@@ -83,18 +81,6 @@ export function projectsReducer( state: ProjectState = initialProjectState, acti
       return {
         ...state,
         projectTemplates: templatePayload.templates
-      }
-
-    case SET_PROJECTS_LOADING:
-      return {
-        ...state,
-        isLoading: true
-      }
-
-    case CLEAR_PROJECTS_LOADING:
-      return {
-        ...state,
-        isLoading: false
       }
 
     default: {

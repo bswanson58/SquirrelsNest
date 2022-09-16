@@ -20,7 +20,6 @@ export interface ProjectState {
   projectTemplates: ClProjectTemplate[],
   selectedProject: ClProject | null,
   queryInfo: ProjectQueryInfo,
-  isLoading: boolean
 }
 
 export const initialProjectState: ProjectState = {
@@ -28,12 +27,10 @@ export const initialProjectState: ProjectState = {
   projectTemplates: [],
   selectedProject: null,
   queryInfo: initialProjectQueryInfo,
-  isLoading: false
 }
 
 export const getProjectState = createFeatureSelector<ProjectState>( 'projects' )
 
-export const getIsLoading = ( state: ProjectState ) => state.isLoading
 export const getProjects = ( state: ProjectState ) => state.projects
 export const getSelectedProject = ( state: ProjectState ) => state.selectedProject
 export const getProjectQueryState = ( state: ProjectState ) => state.queryInfo

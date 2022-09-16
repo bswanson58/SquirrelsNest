@@ -1,125 +1,93 @@
 import {Injectable} from '@angular/core'
-import {GraphQLErrors} from '@apollo/client/errors'
 import {Store} from '@ngrx/store'
 import {Apollo} from 'apollo-angular'
 import {map, tap} from 'rxjs'
-import {ProjectDetailInput, ClProject, Mutation} from '../Data/graphQlTypes'
+import {GraphQlBaseService} from '../Common/graphql.base.service'
+import {ProjectDetailInput, Mutation, ProjectDetailPayload} from '../Data/graphQlTypes'
 import {
   AddProjectDetailMutation,
   DeleteProjectDetailMutation,
   UpdateProjectDetailMutation
 } from '../Data/projectDetailMutations'
 import {AppState} from '../Store/app.reducer'
-import {ClearProjectLoading, SetProjectLoading, UpdateProjectDetail} from './projects.actions'
+import {ServiceCallEnded, ServiceCallStarted} from '../UI/ui.actions'
+import {UpdateProjectDetail} from './projects.actions'
 
 @Injectable( {
   providedIn: 'root'
 } )
-export class ProjectDetailsService {
+export class ProjectDetailsService extends GraphQlBaseService {
 
-  constructor( private apollo: Apollo, private store: Store<AppState> ) {
+  constructor( private apollo: Apollo, store: Store<AppState> ) {
+    super( store )
   }
 
   AddProjectDetail( detail: ProjectDetailInput ) {
-    this.store.dispatch( new SetProjectLoading() )
+    this.store.dispatch( new ServiceCallStarted( 'Adding Project Detail' ) )
 
     this.apollo.use( 'defaultClient' ).mutate<Mutation>( {
       mutation: AddProjectDetailMutation,
       variables: { detailInput: detail }
     } )
       .pipe(
-        map( result => ProjectDetailsService.handleAddDetailMutationErrors( result.data, result.errors ) ),
+        map( result => this.handleMutationErrors( result.data?.addProjectDetail, result.errors ) ),
         map( result => {
-          if( result !== null ) {
-            this.store.dispatch( new UpdateProjectDetail( result ) )
+          const payload = result as ProjectDetailPayload
+
+          if( payload.project != null ) {
+            this.store.dispatch( new UpdateProjectDetail( payload.project ) )
           }
 
-          return result
+          return payload.project
         } ),
-        tap( _ => this.store.dispatch( new ClearProjectLoading() ) ),
+        tap( _ => this.store.dispatch( new ServiceCallEnded() ) ),
       )
       .subscribe()
   }
 
-  private static handleAddDetailMutationErrors( data: Mutation | undefined | null, errors: GraphQLErrors | undefined ): ClProject | null {
-    if( errors != null ) {
-      console.log( errors.entries() )
-    }
-
-    if( (data?.addProjectDetail?.errors !== undefined) &&
-      (data.addProjectDetail.project !== undefined) ) {
-      return data.addProjectDetail.project
-    }
-
-    return null
-  }
-
   UpdateProjectDetail( detail: ProjectDetailInput ) {
-    this.store.dispatch( new SetProjectLoading() )
+    this.store.dispatch( new ServiceCallStarted('Updating Project Detail') )
 
     this.apollo.use( 'defaultClient' ).mutate<Mutation>( {
       mutation: UpdateProjectDetailMutation,
       variables: { detailInput: detail }
     } )
       .pipe(
-        map( result => ProjectDetailsService.handleUpdateDetailMutationErrors( result.data, result.errors ) ),
+        map( result => this.handleMutationErrors( result.data?.updateProjectDetail, result.errors ) ),
         map( result => {
-          if( result !== null ) {
-            this.store.dispatch( new UpdateProjectDetail( result ) )
+          const payload = result as ProjectDetailPayload
+
+          if( payload.project != null ) {
+            this.store.dispatch( new UpdateProjectDetail( payload.project ) )
           }
 
-          return result
+          return payload.project
         } ),
-        tap( _ => this.store.dispatch( new ClearProjectLoading() ) ),
+        tap( _ => this.store.dispatch( new ServiceCallEnded() ) ),
       )
       .subscribe()
   }
 
-  private static handleUpdateDetailMutationErrors( data: Mutation | undefined | null, errors: GraphQLErrors | undefined ): ClProject | null {
-    if( errors != null ) {
-      console.log( errors.entries() )
-    }
-
-    if( (data?.updateProjectDetail?.errors !== undefined) &&
-      (data.updateProjectDetail.project !== undefined) ) {
-      return data.updateProjectDetail.project
-    }
-
-    return null
-  }
-
   DeleteProjectDetail( detail: ProjectDetailInput ) {
-    this.store.dispatch( new SetProjectLoading() )
+    this.store.dispatch( new ServiceCallStarted('Deleting Project Detail') )
 
     this.apollo.use( 'defaultClient' ).mutate<Mutation>( {
       mutation: DeleteProjectDetailMutation,
       variables: { detailInput: detail }
     } )
       .pipe(
-        map( result => ProjectDetailsService.handleDeleteDetailMutationErrors( result.data, result.errors ) ),
+        map( result => this.handleMutationErrors( result.data?.deleteProjectDetail, result.errors ) ),
         map( result => {
-          if( result !== null ) {
-            this.store.dispatch( new UpdateProjectDetail( result ) )
+          const payload = result as ProjectDetailPayload
+
+          if( payload.project != null ) {
+            this.store.dispatch( new UpdateProjectDetail( payload.project ) )
           }
 
-          return result
+          return payload.project
         } ),
-        tap( _ => this.store.dispatch( new ClearProjectLoading() ) ),
+        tap( _ => this.store.dispatch( new ServiceCallEnded() ) ),
       )
       .subscribe()
   }
-
-  private static handleDeleteDetailMutationErrors( data: Mutation | undefined | null, errors: GraphQLErrors | undefined ): ClProject | null {
-    if( errors != null ) {
-      console.log( errors.entries() )
-    }
-
-    if( (data?.deleteProjectDetail?.errors !== undefined) &&
-      (data.deleteProjectDetail.project !== undefined) ) {
-      return data.deleteProjectDetail.project
-    }
-
-    return null
-  }
-
 }

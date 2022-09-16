@@ -3,12 +3,20 @@ import {GraphQLErrors} from '@apollo/client/errors'
 import {Store} from '@ngrx/store'
 import {Apollo, QueryRef} from 'apollo-angular'
 import {map, Subscription, take, tap} from 'rxjs'
+import {GraphQlBaseService} from '../Common/graphql.base.service'
 import {
   AddProjectInput,
+  AddProjectPayload,
   ClProject,
-  ClProjectCollectionSegment, ClProjectTemplate, CreateTemplateInput, DeleteProjectInput, Mutation,
+  ClProjectCollectionSegment,
+  ClProjectTemplate,
+  CreateTemplateInput, CreateTemplatePayload,
+  DeleteProjectInput,
+  DeleteProjectPayload,
+  Mutation,
   Query,
-  UpdateProjectInput
+  UpdateProjectInput,
+  UpdateProjectPayload
 } from '../Data/graphQlTypes'
 import {
   AddProjectMutation,
@@ -19,12 +27,11 @@ import {
 import {AllProjectsQuery, ProjectQueryInput, ProjectTemplateQuery} from '../Data/queryStatements'
 import {AppState} from '../Store/app.reducer'
 import {getProjectQueryState} from '../Store/app.selectors'
+import {ReportError, ServiceCallEnded, ServiceCallStarted} from '../UI/ui.actions'
 import {ProjectQueryInfo} from './project.state'
 import {
-  ClearProjectLoading,
   ClearProjects,
   AppendProjects,
-  SetProjectLoading,
   AddProject,
   DeleteProject, UpdateProject, UpdateTemplates
 } from './projects.actions'
@@ -32,12 +39,13 @@ import {
 @Injectable( {
   providedIn: 'root'
 } )
-export class ProjectService implements OnDestroy {
+export class ProjectService extends GraphQlBaseService implements OnDestroy {
   private readonly mProjectQuery: QueryRef<Query, ProjectQueryInput>
   private readonly mPageLimit = 10
   private mProjectsSubscription: Subscription | null
 
-  constructor( private apollo: Apollo, private store: Store<AppState> ) {
+  constructor( private apollo: Apollo, store: Store<AppState> ) {
+    super( store )
     this.mProjectsSubscription = null
 
     this.mProjectQuery = this.apollo.use( 'projectsWatchClient' ).watchQuery<Query, ProjectQueryInput>(
@@ -49,7 +57,7 @@ export class ProjectService implements OnDestroy {
 
   LoadProjects(): void {
     this.unsubscribe()
-    this.store.dispatch( new SetProjectLoading() )
+    this.store.dispatch( new ServiceCallStarted( 'Loading Initial Projects' ) )
     this.store.dispatch( new ClearProjects() )
 
     this.mProjectsSubscription = this.mProjectQuery
@@ -57,14 +65,21 @@ export class ProjectService implements OnDestroy {
       .pipe(
         map( result => this.handleErrors( result.data, result.errors ) ),
         map( result => this.handleProjectData( result ) ),
-        tap( _ => this.store.dispatch( new ClearProjectLoading() ) )
+        tap( _ => this.store.dispatch( new ServiceCallEnded() ) )
       )
       .subscribe( { complete: () => console.log( 'LoadProjects completed.' ) } )
   }
 
   handleErrors( data: Query | null, errors: GraphQLErrors | undefined ): ClProjectCollectionSegment {
-    if( errors != null ) {
-      console.log( errors.entries() )
+    if( Array.isArray( errors ) ) {
+      if( errors.length > 0 ) {
+        this.store.dispatch( new ReportError( errors[0].message ) )
+      }
+      else {
+        this.store.dispatch( new ReportError( 'Unknown error occurred' ) )
+      }
+
+      return { items: [], pageInfo: { hasNextPage: false, hasPreviousPage: false }, totalCount: 0 }
     }
 
     if( (data?.projectList?.items != null) &&
@@ -90,7 +105,7 @@ export class ProjectService implements OnDestroy {
     const queryState = this.getProjectQueryState()
 
     if( queryState.hasNextPage ) {
-      this.store.dispatch( new SetProjectLoading() )
+      this.store.dispatch( new ServiceCallStarted( 'Loading Additional Projects' ) )
 
       this.mProjectQuery.fetchMore( {
         variables: {
@@ -109,75 +124,53 @@ export class ProjectService implements OnDestroy {
   }
 
   AddProject( project: AddProjectInput ) {
-    this.store.dispatch( new SetProjectLoading() )
+    this.store.dispatch( new ServiceCallStarted( 'Adding Project' ) )
 
     this.apollo.use( 'defaultClient' ).mutate<Mutation>( {
       mutation: AddProjectMutation,
       variables: { addInput: project }
     } )
       .pipe(
-        map( result => ProjectService.handleAddMutationErrors( result.data, result.errors ) ),
+        map( result => this.handleMutationErrors( result.data?.addProject, result.errors ) ),
         map( result => {
-          if( result !== null ) {
-            this.store.dispatch( new AddProject( result ) )
+          const payload = result as AddProjectPayload
+
+          if( payload?.project != null ) {
+            this.store.dispatch( new AddProject( payload.project ) )
           }
 
-          return result
+          return payload.project
         } ),
-        tap( _ => this.store.dispatch( new ClearProjectLoading() ) ),
+        tap( _ => this.store.dispatch( new ServiceCallEnded() ) ),
       )
       .subscribe()
   }
 
-  private static handleAddMutationErrors( data: Mutation | undefined | null, errors: GraphQLErrors | undefined ): ClProject | null {
-    if( errors != null ) {
-      console.log( errors.entries() )
-    }
-
-    if( (data?.addProject?.errors !== undefined) &&
-      (data.addProject.project !== undefined) ) {
-      return data.addProject.project
-    }
-
-    return null
-  }
-
   UpdateProject( project: UpdateProjectInput ) {
-    this.store.dispatch( new SetProjectLoading() )
+    this.store.dispatch( new ServiceCallStarted( 'Updating Project' ) )
 
     this.apollo.use( 'defaultClient' ).mutate<Mutation>( {
       mutation: UpdateProjectMutation,
       variables: { updateInput: project }
     } )
       .pipe(
-        map( result => ProjectService.handleUpdateMutationErrors( result.data, result.errors ) ),
+        map( result => this.handleMutationErrors( result.data?.updateProject, result.errors ) ),
         map( result => {
-          if( result !== null ) {
-            this.store.dispatch( new UpdateProject( result ) )
+          const payload = result as UpdateProjectPayload
+
+          if( payload?.project != null ) {
+            this.store.dispatch( new UpdateProject( payload.project ) )
           }
 
-          return result
+          return payload.project
         } ),
-        tap( _ => this.store.dispatch( new ClearProjectLoading() ) ),
+        tap( _ => this.store.dispatch( new ServiceCallEnded() ) ),
       )
       .subscribe()
   }
 
-  private static handleUpdateMutationErrors( data: Mutation | undefined | null, errors: GraphQLErrors | undefined ): ClProject | null {
-    if( errors != null ) {
-      console.log( errors.entries() )
-    }
-
-    if( (data?.updateProject?.errors !== undefined) &&
-      (data.updateProject.project !== undefined) ) {
-      return data.updateProject.project
-    }
-
-    return null
-  }
-
   DeleteProject( project: ClProject ) {
-    this.store.dispatch( new SetProjectLoading() )
+    this.store.dispatch( new ServiceCallStarted( 'Deleting Project' ) )
     const deleteInput: DeleteProjectInput = {
       projectId: project.id
     }
@@ -187,33 +180,23 @@ export class ProjectService implements OnDestroy {
       variables: { deleteInput: deleteInput }
     } )
       .pipe(
-        map( result => ProjectService.handleDeleteMutationErrors( result.data, result.errors ) ),
+        map( result => this.handleMutationErrors( result.data?.deleteProject, result.errors ) ),
         map( result => {
-          if( result !== null ) {
-            this.store.dispatch( new DeleteProject( result ) )
+          const payload = result as DeleteProjectPayload
+
+          if( payload?.projectId != null ) {
+            this.store.dispatch( new DeleteProject( payload.projectId ) )
           }
 
-          return result
+          return payload.projectId
         } ),
-        tap( _ => this.store.dispatch( new ClearProjectLoading() ) ),
+        tap( _ => this.store.dispatch( new ServiceCallEnded() ) ),
       )
       .subscribe()
   }
 
-  private static handleDeleteMutationErrors( data: Mutation | undefined | null, errors: GraphQLErrors | undefined ): string | null {
-    if( errors != null ) {
-      console.log( errors.entries() )
-    }
-
-    if( data?.deleteProject?.errors !== undefined ) {
-      return data.deleteProject.projectId
-    }
-
-    return null
-  }
-
   LoadProjectTemplates() {
-    this.store.dispatch( new SetProjectLoading() )
+    this.store.dispatch( new ServiceCallStarted( 'Loading Project Templates' ) )
 
     this.apollo.use( 'defaultClient' ).query<Query>( { query: ProjectTemplateQuery } )
       .pipe(
@@ -223,7 +206,7 @@ export class ProjectService implements OnDestroy {
             this.store.dispatch( new UpdateTemplates( result ) )
           }
         } ),
-        tap( _ => this.store.dispatch( new ClearProjectLoading() ) ),
+        tap( _ => this.store.dispatch( new ServiceCallEnded() ) ),
       )
       .subscribe()
   }
@@ -237,29 +220,24 @@ export class ProjectService implements OnDestroy {
   }
 
   CreateProjectTemplate( templateInput: CreateTemplateInput ) {
-    this.store.dispatch( new SetProjectLoading() )
+    this.store.dispatch( new ServiceCallStarted( 'Creating Project Template' ) )
 
     this.apollo.use( 'defaultClient' ).mutate<Mutation>( {
       mutation: CreateProjectTemplate,
       variables: { templateInput: templateInput }
     } )
       .pipe(
-        map( result => ProjectService.handleTemplateMutationErrors( result.data, result.errors ) ),
-        tap( _ => this.store.dispatch( new ClearProjectLoading() ) ),
+        map( result => this.handleMutationErrors( result.data?.createProjectTemplate, result.errors ) ),
+        tap( result => {
+          const payload = result as CreateTemplatePayload
+
+          if( !payload.succeeded ) {
+            this.store.dispatch( new ReportError( 'Creating the project template failed' ) )
+          }
+        } ),
+        tap( _ => this.store.dispatch( new ServiceCallEnded() ) ),
       )
       .subscribe()
-  }
-
-  private static handleTemplateMutationErrors( data: Mutation | undefined | null, errors: GraphQLErrors | undefined ): boolean {
-    if( errors != null ) {
-      console.log( errors.entries() )
-    }
-
-    if( data?.createProjectTemplate?.errors !== undefined ) {
-      return data.createProjectTemplate.succeeded
-    }
-
-    return false
   }
 
   ngOnDestroy() {
