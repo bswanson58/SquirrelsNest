@@ -1,5 +1,6 @@
 import {Action} from '@ngrx/store'
 import {
+  CLEAR_ERROR,
   DISPLAY_COMPLETED_ISSUES,
   DISPLAY_ONLY_MY_ISSUES,
   DisplayCompletedIssues,
@@ -70,6 +71,15 @@ export function uiReducer( state: UiState = initialUiState, action: Action ): Ui
         errors: {
           ...state.errors,
           lastError: errorReport.errorMessage
+        }
+      }
+
+    case CLEAR_ERROR:
+      return {
+        ...state,
+        errors:{
+          ...state.errors,
+          lastError: ''
         }
       }
 

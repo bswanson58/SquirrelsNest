@@ -4,6 +4,7 @@ export const TOGGLE_ISSUE_LIST_STYLE = '[INTF] Toggle Issue List Style'
 export const DISPLAY_ONLY_MY_ISSUES = '[INTF] Display Only My Issues'
 export const DISPLAY_COMPLETED_ISSUES = '[INTF] Display Completed Issues'
 export const REPORT_ERROR = '[INTF] Report Error'
+export const CLEAR_ERROR = '[INTF] Clear Error'
 export const SERVICE_STARTED = '[INTF] Service Call Started'
 export const SERVICE_ENDED = '[INTF] Service Call Ended'
 
@@ -41,4 +42,8 @@ export class ReportError implements Action {
 
   constructor( public errorMessage: string ) {
   }
+}
+
+export class ClearError implements Action {
+  readonly type = CLEAR_ERROR
 }

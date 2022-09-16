@@ -6,6 +6,7 @@ import {AppState} from '../Store/app.reducer'
 import {getLastError, getServiceIsActive} from '../Store/app.selectors'
 import {ErrorPanelComponent} from './error-panel/error-panel.component'
 import {ServiceActivityPanelComponent} from './service-activity-panel/service-activity-panel.component'
+import {ClearError} from './ui.actions'
 import {UiFacade} from './ui.facade'
 
 @Injectable( {
@@ -26,9 +27,11 @@ export class MessageReporter implements OnDestroy {
             if( message.length > 0 ) {
               this.messageProvider.openFromComponent( ErrorPanelComponent, {
                 data: message,
-                duration: 3000,
+                duration: 5000,
                 panelClass: 'snackbar-error'
               } )
+
+              this.store.dispatch( new ClearError() )
             }
           }
         )
@@ -40,12 +43,12 @@ export class MessageReporter implements OnDestroy {
             this.serviceActivitySnackBar =
               this.messageProvider.openFromComponent( ServiceActivityPanelComponent, {
                 data: this.uiFacade.GetServiceActivity(),
-                panelClass: 'snackbar-service'
+                panelClass: 'snackbar-service',
               } )
           }
           else {
             this.serviceActivitySnackBar?.dismiss()
-            this.serviceActivitySnackBar = null;
+            this.serviceActivitySnackBar = null
           }
         } )
   }
