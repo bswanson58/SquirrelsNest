@@ -336,6 +336,14 @@ export type ClUserCollectionSegment = {
   totalCount: Scalars['Int'];
 };
 
+export type ClUserData = {
+  __typename?: 'ClUserData';
+  data: Scalars['String'];
+  dataType: UserDataType;
+  id: Scalars['String'];
+  userId: Scalars['String'];
+};
+
 export type ClUserFilterInput = {
   and?: InputMaybe<Array<ClUserFilterInput>>;
   claims?: InputMaybe<ListFilterInputTypeOfClClaimFilterInput>;
@@ -563,6 +571,7 @@ export type Mutation = {
   editUserPassword: EditUserPasswordPayload;
   editUserRoles: EditUserRolesPayload;
   login: LoginPayload;
+  saveUserData: UserDataPayload;
   updateIssue: UpdateIssuePayload;
   updateProject: UpdateProjectPayload;
   updateProjectDetail: ProjectDetailPayload;
@@ -629,6 +638,11 @@ export type MutationLoginArgs = {
 };
 
 
+export type MutationSaveUserDataArgs = {
+  dataInput: UserDataInput;
+};
+
+
 export type MutationUpdateIssueArgs = {
   updateInput: UpdateIssueInput;
 };
@@ -667,6 +681,7 @@ export type Query = {
   issueList?: Maybe<ClIssueCollectionSegment>;
   projectList?: Maybe<ClProjectCollectionSegment>;
   projectTemplateList: Array<ClProjectTemplate>;
+  userData: UserDataPayload;
   userList?: Maybe<ClUserCollectionSegment>;
 };
 
@@ -685,6 +700,11 @@ export type QueryProjectListArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   take?: InputMaybe<Scalars['Int']>;
   where?: InputMaybe<ClProjectFilterInput>;
+};
+
+
+export type QueryUserDataArgs = {
+  dataType: UserDataType;
 };
 
 
@@ -757,3 +777,21 @@ export type UpdateProjectPayload = {
   errors: Array<MutationError>;
   project?: Maybe<ClProject>;
 };
+
+export type UserDataInput = {
+  data: Scalars['String'];
+  dataType: UserDataType;
+};
+
+export type UserDataPayload = {
+  __typename?: 'UserDataPayload';
+  errors: Array<MutationError>;
+  userData?: Maybe<ClUserData>;
+};
+
+export enum UserDataType {
+  AlmondClient = 'ALMOND_CLIENT',
+  IssueListFormat = 'ISSUE_LIST_FORMAT',
+  LastProject = 'LAST_PROJECT',
+  Unknown = 'UNKNOWN'
+}

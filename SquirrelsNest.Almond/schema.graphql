@@ -118,6 +118,13 @@ type ClUserCollectionSegment {
   totalCount: Int!
 }
 
+type ClUserData {
+  userId: String!
+  dataType: UserDataType!
+  data: String!
+  id: String!
+}
+
 type ClWorkflowState {
   projectId: String!
   name: String!
@@ -185,6 +192,7 @@ type Mutation {
   deleteUser(deleteInput: DeleteUserInput!): DeleteUserPayload!
   editUserRoles(rolesInput: EditUserRolesInput!): EditUserRolesPayload!
   editUserPassword(passwordInput: EditUserPasswordInput!): EditUserPasswordPayload!
+  saveUserData(dataInput: UserDataInput!): UserDataPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
 }
 
 type MutationError {
@@ -202,6 +210,7 @@ type Query {
   projectTemplateList: [ClProjectTemplate!]! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   issueList(skip: Int take: Int projectId: ID! where: ClIssueFilterInput order: [ClIssueSortInput!]): ClIssueCollectionSegment @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   userList(skip: Int take: Int where: ClUserFilterInput order: [ClUserSortInput!]): ClUserCollectionSegment @authorize(policy: "IsAdmin", apply: BEFORE_RESOLVER)
+  userData(dataType: UserDataType!): UserDataPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
 }
 
 type UpdateIssuePayload {
@@ -211,6 +220,11 @@ type UpdateIssuePayload {
 
 type UpdateProjectPayload {
   project: ClProject
+  errors: [MutationError!]!
+}
+
+type UserDataPayload {
+  userData: ClUserData
   errors: [MutationError!]!
 }
 
@@ -586,6 +600,11 @@ input UpdateProjectInput {
   issuePrefix: String!
 }
 
+input UserDataInput {
+  dataType: UserDataType!
+  data: String!
+}
+
 enum ApplyPolicy {
   BEFORE_RESOLVER
   AFTER_RESOLVER
@@ -612,6 +631,13 @@ enum StateCategory {
   INITIAL
   TERMINAL
   COMPLETED
+}
+
+enum UserDataType {
+  UNKNOWN
+  LAST_PROJECT
+  ISSUE_LIST_FORMAT
+  ALMOND_CLIENT
 }
 
 directive @authorize("The name of the authorization policy that determines access to the annotated resource." policy: String "Roles that are allowed to access the annotated resource." roles: [String!] "Defines when when the resolver shall be executed.By default the resolver is executed after the policy has determined that the current user is allowed to access the field." apply: ApplyPolicy! = BEFORE_RESOLVER) repeatable on SCHEMA | OBJECT | FIELD_DEFINITION

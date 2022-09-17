@@ -29,12 +29,13 @@ namespace SquirrelsNest.Core.Database {
             });
         }
 
-        public async Task<Either<Error, Unit>> Save<T>( SnUser user, UserDataType ofType, T data ) {
+        public async Task<Either<Error, T>> Save<T>( SnUser user, UserDataType ofType, T data ) {
             return await Prelude.Try( JsonSerializer.Serialize( data )).ToEither( Error.New )
                 .BindAsync( async jsonData => {
                     var userData = new SnUserData( user.EntityId, ofType, jsonData );
+                    var result = await mUserDataProvider.SaveData( userData );
 
-                    return await mUserDataProvider.SaveData( userData );
+                    return result.Map( _ => data );
                 });
         }
     }

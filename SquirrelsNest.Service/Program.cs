@@ -25,6 +25,7 @@ using SquirrelsNest.Service.Filters;
 using SquirrelsNest.Service.Issues;
 using SquirrelsNest.Service.Projects;
 using SquirrelsNest.Service.Support;
+using SquirrelsNest.Service.UserData;
 using SquirrelsNest.Service.Users;
 
 const string    corsPolicy = "corsPolicy";
@@ -120,11 +121,13 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
         .AddTypeExtension<ProjectQuery>()
         .AddTypeExtension<IssueQuery>()
         .AddTypeExtension<UserQuery>()
+        .AddTypeExtension<UserDataQuery>()
         .AddMutationType()
         .AddTypeExtension<ProjectMutations>()
         .AddTypeExtension<ProjectDetailMutations>()
         .AddTypeExtension<IssueMutations>()
         .AddTypeExtension<UserMutations>()
+        .AddTypeExtension<UserDataMutations>()
         .AddFiltering()
         .AddSorting();
 

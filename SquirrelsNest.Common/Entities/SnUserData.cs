@@ -4,7 +4,8 @@ namespace SquirrelsNest.Common.Entities {
     public enum UserDataType {
         Unknown = 0,
         LastProject = 1,
-        IssueListFormat = 2
+        IssueListFormat = 2,
+        AlmondClient = 3
     }
 
     public class SnUserData : EntityBase {
