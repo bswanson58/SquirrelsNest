@@ -28,7 +28,7 @@ export class MessageReporter implements OnDestroy {
               this.messageProvider.openFromComponent( ErrorPanelComponent, {
                 data: message,
                 duration: 5000,
-                panelClass: 'snackbar-error'
+                panelClass: ['snackbar-error']
               } )
 
               this.store.dispatch( new ClearError() )
@@ -43,7 +43,7 @@ export class MessageReporter implements OnDestroy {
             this.serviceActivitySnackBar =
               this.messageProvider.openFromComponent( ServiceActivityPanelComponent, {
                 data: this.uiFacade.GetServiceActivity(),
-                panelClass: 'snackbar-service',
+                panelClass: ['snackbar-service',]
               } )
           }
           else {
