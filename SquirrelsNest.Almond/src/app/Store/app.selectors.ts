@@ -5,6 +5,7 @@ import * as fromProject from '../Projects/project.state'
 import * as fromIssue from '../Issues/issues.state'
 import * as fromUser from '../Users/user.state'
 import * as fromUI from '../UI/ui.state'
+import * as fromUserData from '../UserData/user.data.state'
 
 // Authentication
 export const getAuthLoading = createSelector( fromAuth.getAuthState, fromAuth.getIsLoading )
@@ -32,6 +33,9 @@ export const getUserQueryState = createSelector( fromUser.getUserState, fromUser
 export const getServerHasMoreUsers = createSelector( fromUser.getUserState, fromUser.getServerHasMoreUsers )
 export const getTotalUsers = createSelector( fromUser.getUserState, fromUser.getTotalUsers )
 export const getLoadedUsers = createSelector( fromUser.getUserState, fromUser.getLoadedUsers )
+
+// User Data
+export const getLastUsedProject = createSelector( fromUserData.getUserDataState, fromUserData.getLastProject )
 
 // UI
 export const getIssueDisplayStyle = createSelector( fromUI.getUiState, fromUI.getIssueDisplayStyle )
