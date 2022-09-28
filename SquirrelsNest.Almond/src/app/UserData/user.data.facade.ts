@@ -1,9 +1,12 @@
 import {Injectable} from '@angular/core'
 import {Store} from '@ngrx/store'
+import {take} from 'rxjs'
 import {AppState} from '../Store/app.reducer'
+import {getUserData} from '../Store/app.selectors'
 import {UserData} from './user.data'
-import {UpdateUserData} from './user.data.actions'
+import {ClearUserData, UpdateUserData} from './user.data.actions'
 import {UserDataService} from './user.data.service'
+import {initialUserDataState} from './user.data.state'
 
 @Injectable( {
   providedIn: 'root'
@@ -25,5 +28,18 @@ export class UserDataFacade {
           }
         }
       } )
+  }
+
+  GetCurrentUserData(): UserData {
+    let retValue: UserData | null
+
+    this.store.select( getUserData ).pipe( take( 1 ) ).subscribe( state => retValue = state )
+
+    // @ts-ignore
+    return retValue ?? initialUserDataState
+  }
+
+  ClearUserData(): void {
+    this.store.dispatch( new ClearUserData() )
   }
 }

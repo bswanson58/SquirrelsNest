@@ -27,7 +27,7 @@ import {
 import {CategoryValues, ProjectConstants} from './project.const'
 import {ProjectDetailsService} from './project.details.service'
 import {ProjectTransferService} from './project.transfer.service'
-import {SelectProject} from './projects.actions'
+import {ClearProjects, SelectProject} from './projects.actions'
 import {ProjectService} from './projects.service'
 
 @Injectable( {
@@ -174,6 +174,22 @@ export class ProjectFacade {
       this.store.dispatch( new ClearIssues() )
       this.store.dispatch( new SelectProject( project ) )
     }
+  }
+
+  FindProject( projectId: string ): ClProject | null {
+    let project: ClProject | null = null
+
+    this.GetProjectList$()
+      .pipe(
+        take( 1 ),
+        map( projectList => projectList.find( p => p.id === projectId ) )
+      ).subscribe( p => project = p ?? null )
+
+    return project
+  }
+
+  ClearState(): void {
+    this.store.dispatch( new ClearProjects() )
   }
 
   DownloadProject( project: ClProject ): Observable<Blob> {

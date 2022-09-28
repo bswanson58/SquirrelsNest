@@ -20,8 +20,6 @@ export class ProjectListComponent implements OnInit {
   ngOnInit(): void {
     this.projectList$ = this.projectFacade.GetProjectList$()
     this.serverHasMoreProjects$ = this.projectFacade.GetServerHasMoreProjects$()
-
-    this.projectFacade.LoadProjects()
   }
 
   onRetrieveMoreProjects() {

@@ -1,5 +1,5 @@
 import {Action} from '@ngrx/store'
-import {UPDATE_USER_DATA, UpdateUserData} from './user.data.actions'
+import {CLEAR_USER_DATA, UPDATE_USER_DATA, UpdateUserData} from './user.data.actions'
 import {initialUserDataState, UserDataState} from './user.data.state'
 
 export function userDataReducer( state: UserDataState = initialUserDataState, action: Action ): UserDataState {
@@ -11,6 +11,9 @@ export function userDataReducer( state: UserDataState = initialUserDataState, ac
         ...state,
         lastProject : updateUserData.userData.currentProject
       }
+
+    case CLEAR_USER_DATA:
+      return initialUserDataState
 
     default:
       return state

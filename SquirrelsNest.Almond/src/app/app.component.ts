@@ -6,6 +6,7 @@ import {Subscription, tap} from 'rxjs'
 import {ProjectFacade} from './Projects/project.facade'
 import {AppState} from './Store/app.reducer'
 import {MessageReporter} from './UI/message.reporter'
+import {UserDataManager} from './UserData/user.data.manager'
 
 @Component( {
   selector: 'app-root',
@@ -22,6 +23,7 @@ export class AppComponent implements OnInit, OnDestroy {
                private title: Title,
                private router: Router,
                private projectFacade: ProjectFacade,
+               private userDataManager: UserDataManager,
                private errorReporter: MessageReporter ) {
     this.currentProject = ''
     this.currentRoute = ''

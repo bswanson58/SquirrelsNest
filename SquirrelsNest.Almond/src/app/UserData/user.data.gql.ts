@@ -1,8 +1,8 @@
 import {gql} from 'apollo-angular'
 
 export const UserDataQuery = gql`
-  query userDataQuery($dataType: UserDataType) {
-    userData(dataType: $dataType) {
+  query userDataQuery($dataInput: UserDataInput!) {
+    userData(dataInput: $dataInput) {
       userData {
         dataType
         data

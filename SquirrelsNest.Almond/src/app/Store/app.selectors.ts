@@ -36,6 +36,7 @@ export const getLoadedUsers = createSelector( fromUser.getUserState, fromUser.ge
 
 // User Data
 export const getLastUsedProject = createSelector( fromUserData.getUserDataState, fromUserData.getLastProject )
+export const getUserData = createSelector( fromUserData.getUserDataState, fromUserData.getUserData )
 
 // UI
 export const getIssueDisplayStyle = createSelector( fromUI.getUiState, fromUI.getIssueDisplayStyle )

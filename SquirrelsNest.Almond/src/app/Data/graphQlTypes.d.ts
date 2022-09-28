@@ -704,7 +704,7 @@ export type QueryProjectListArgs = {
 
 
 export type QueryUserDataArgs = {
-  dataType: UserDataType;
+  dataInput: UserDataInput;
 };
 
 

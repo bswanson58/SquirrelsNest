@@ -35,6 +35,9 @@ import {ProjectService} from './Projects/projects.service'
 import {appReducers} from './Store/app.reducer'
 import {MessageReporter} from './UI/message.reporter'
 import {VariableDirective} from './UI/ng-var.directive'
+import {UserDataFacade} from './UserData/user.data.facade'
+import {UserDataManager} from './UserData/user.data.manager'
+import {UserDataService} from './UserData/user.data.service'
 import {UsersFacade} from './Users/user.facade'
 import {UserMutationsService} from './Users/user.mutations.service'
 import {UserService} from './Users/user.service'
@@ -146,6 +149,9 @@ import {ServiceActivityPanelComponent} from './UI/service-activity-panel/service
     ProjectTransferService,
     Title,
     UsersFacade,
+    UserDataFacade,
+    UserDataManager,
+    UserDataService,
     UserService,
     UserMutationsService,
   ],

@@ -210,7 +210,7 @@ type Query {
   projectTemplateList: [ClProjectTemplate!]! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   issueList(skip: Int take: Int projectId: ID! where: ClIssueFilterInput order: [ClIssueSortInput!]): ClIssueCollectionSegment @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   userList(skip: Int take: Int where: ClUserFilterInput order: [ClUserSortInput!]): ClUserCollectionSegment @authorize(policy: "IsAdmin", apply: BEFORE_RESOLVER)
-  userData(dataType: UserDataType!): UserDataPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
+  userData(dataInput: UserDataInput!): UserDataPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
 }
 
 type UpdateIssuePayload {

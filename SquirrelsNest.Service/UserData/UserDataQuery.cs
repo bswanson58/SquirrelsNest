@@ -5,7 +5,6 @@ using SquirrelsNest.Service.Dto;
 using SquirrelsNest.Service.Support;
 using System.Threading.Tasks;
 using HotChocolate.AspNetCore.Authorization;
-using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Service.Dto.Mutations;
 
 namespace SquirrelsNest.Service.UserData {
@@ -22,9 +21,9 @@ namespace SquirrelsNest.Service.UserData {
 
         // ReSharper disable once UnusedMember.Global
         [Authorize( Policy = PolicyNames.UserPolicy )]
-        public async Task<UserDataPayload> GetUserData( UserDataType dataType ) {
+        public async Task<UserDataPayload> GetUserData( UserDataInput dataInput ) {
             var user = await GetUser();
-            var data = await user.BindAsync( u => mUserDataProvider.LoadData( u, dataType ));
+            var data = await user.BindAsync( u => mUserDataProvider.LoadData( u, dataInput.DataType ));
 
             return data.Match( d => new UserDataPayload( d.ToCl()), e => new UserDataPayload( e ));
         }
