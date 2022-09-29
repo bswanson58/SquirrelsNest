@@ -33,7 +33,7 @@ export class IssueDetailComponent implements OnInit {
                private issuesFacade: IssuesFacade,
                private projectFacade: ProjectFacade,
                private uiFacade: UiFacade ) {
-    this.issueListStyle$ = this.uiFacade.GetIssueListDisplayStyle()
+    this.issueListStyle$ = this.uiFacade.GetIssueListDisplayStyle$()
     this.project = this.projectFacade.GetCurrentProject()
   }
 

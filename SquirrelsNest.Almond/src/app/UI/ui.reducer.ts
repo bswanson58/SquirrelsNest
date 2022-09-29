@@ -1,15 +1,12 @@
 import {Action} from '@ngrx/store'
 import {
   CLEAR_ERROR,
-  DISPLAY_COMPLETED_ISSUES,
-  DISPLAY_ONLY_MY_ISSUES,
-  DisplayCompletedIssues,
-  DisplayOnlyMyIssues,
-  REPORT_ERROR,
-  ReportError,
+  DISPLAY_COMPLETED_ISSUES, DisplayCompletedIssues,
+  DISPLAY_ONLY_MY_ISSUES, DisplayOnlyMyIssues,
+  REPORT_ERROR, ReportError,
   SERVICE_ENDED,
-  SERVICE_STARTED,
-  ServiceCallStarted,
+  SERVICE_STARTED, ServiceCallStarted,
+  SET_ISSUE_LIST_STYLE, SetIssueListStyle,
   TOGGLE_ISSUE_LIST_STYLE
 } from './ui.actions'
 import {eIssueDisplayStyle, initialUiState, UiState} from './ui.state'
@@ -38,6 +35,17 @@ export function uiReducer( state: UiState = initialUiState, action: Action ): Ui
         issueList: {
           ...state.issueList,
           displayStyle: newState
+        }
+      }
+
+    case SET_ISSUE_LIST_STYLE:
+      let issueStyle = action as SetIssueListStyle
+
+      return {
+        ...state,
+        issueList: {
+          ...state.issueList,
+          displayStyle: issueStyle.state
         }
       }
 
@@ -77,7 +85,7 @@ export function uiReducer( state: UiState = initialUiState, action: Action ): Ui
     case CLEAR_ERROR:
       return {
         ...state,
-        errors:{
+        errors: {
           ...state.errors,
           lastError: ''
         }
