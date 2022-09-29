@@ -50,6 +50,7 @@ export class ProjectService extends GraphQlBaseService implements OnDestroy {
 
     this.mProjectQuery = this.apollo.use( 'projectsWatchClient' ).watchQuery<Query, ProjectQueryInput>(
       {
+        fetchPolicy: 'no-cache',
         query: AllProjectsQuery,
         variables: { skip: 0, take: this.mPageLimit, order: { name: 'ASC' } } as ProjectQueryInput
       } )
@@ -70,7 +71,7 @@ export class ProjectService extends GraphQlBaseService implements OnDestroy {
       .subscribe( { complete: () => console.log( 'LoadProjects completed.' ) } )
   }
 
-  handleErrors( data: Query | null, errors: GraphQLErrors | undefined ): ClProjectCollectionSegment {
+  private handleErrors( data: Query | null, errors: GraphQLErrors | undefined ): ClProjectCollectionSegment {
     if( Array.isArray( errors ) ) {
       if( errors.length > 0 ) {
         this.store.dispatch( new ReportError( errors[0].message ) )
@@ -91,7 +92,7 @@ export class ProjectService extends GraphQlBaseService implements OnDestroy {
     }
   }
 
-  handleProjectData( projectData: ClProjectCollectionSegment ): void {
+  private handleProjectData( projectData: ClProjectCollectionSegment ): void {
     this.store.dispatch(
       new AppendProjects( projectData.items!, {
         hasNextPage: projectData.pageInfo.hasNextPage,
@@ -115,7 +116,7 @@ export class ProjectService extends GraphQlBaseService implements OnDestroy {
     }
   }
 
-  getProjectQueryState(): ProjectQueryInfo {
+  private getProjectQueryState(): ProjectQueryInfo {
     let queryState: ProjectQueryInfo
 
     this.store.select( getProjectQueryState ).pipe( take( 1 ) ).subscribe( state => queryState = state )
@@ -249,5 +250,7 @@ export class ProjectService extends GraphQlBaseService implements OnDestroy {
       this.mProjectsSubscription.unsubscribe()
       this.mProjectsSubscription = null
     }
+
+    this.mProjectQuery.resetLastResults()
   }
 }
