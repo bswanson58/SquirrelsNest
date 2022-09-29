@@ -19,8 +19,9 @@ export class AuthService {
 
     this.store.dispatch( new AuthRequested() )
 
-    let subscription = this.apollo.use('defaultClient').mutate<Mutation, any>( {
+    let subscription = this.apollo.use( 'defaultClient' ).mutate<Mutation, any>( {
       mutation: LoginMutation,
+      fetchPolicy: 'no-cache',
       variables: { loginInput: loginInput }
     } )
       .subscribe( result => {
