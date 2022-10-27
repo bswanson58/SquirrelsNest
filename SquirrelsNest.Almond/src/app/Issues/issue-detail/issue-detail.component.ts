@@ -22,6 +22,10 @@ import {IssuesFacade} from '../issues.facade'
   styleUrls: ['./issue-detail.component.css']
 } )
 export class IssueDetailComponent implements OnInit {
+  readonly issueStyleFullDetail = eIssueDisplayStyle.FULL_DETAILS
+  readonly issueStyleTitleDescription = eIssueDisplayStyle.TITLE_DESCRIPTION
+  readonly issueStyleTitleOnly = eIssueDisplayStyle.TITLE_ONLY
+
   isHovering: boolean = false
   isCompleted: boolean = true
   @Input() issue!: ClIssue
