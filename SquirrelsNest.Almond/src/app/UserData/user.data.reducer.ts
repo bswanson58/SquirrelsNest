@@ -8,12 +8,19 @@ export function userDataReducer( state: UserDataState = initialUserDataState, ac
       const updateUserData = action as UpdateUserData
 
       return {
-        ...state,
-        lastProject : updateUserData.userData.currentProject
+        lastProject: updateUserData.userData.currentProject,
+        displayStyle: updateUserData.userData.displayStyle,
+        displayOnlyMyIssues: updateUserData.userData.displayOnlyMyIssues,
+        displayCompletedIssues: updateUserData.userData.displayCompletedIssues,
       }
 
     case CLEAR_USER_DATA:
-      return initialUserDataState
+      return {
+        lastProject: initialUserDataState.lastProject,
+        displayStyle: initialUserDataState.displayStyle,
+        displayOnlyMyIssues: initialUserDataState.displayOnlyMyIssues,
+        displayCompletedIssues: initialUserDataState.displayCompletedIssues,
+      }
 
     default:
       return state

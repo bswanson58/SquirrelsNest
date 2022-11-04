@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core'
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog'
 import {Store} from '@ngrx/store'
-import {Observable, take} from 'rxjs'
+import {firstValueFrom, Observable, take} from 'rxjs'
 import {AppState} from '../Store/app.reducer'
 import {
   getDisplayCompletedIssues,
@@ -25,12 +25,8 @@ export class UiFacade {
     return this.store.select( getDisplayCompletedIssues )
   }
 
-  GetDisplayCompletedIssues() {
-    let retValue = false
-
-    this.store.select( getDisplayCompletedIssues ).pipe( take( 1 ) ).subscribe( state => retValue = state )
-
-    return retValue
+  GetDisplayCompletedIssues(): Promise<boolean> {
+    return firstValueFrom( this.store.select( getDisplayCompletedIssues ) )
   }
 
   SetDisplayCompletedIssues( state: boolean ) {
@@ -41,12 +37,8 @@ export class UiFacade {
     return this.store.select( getDisplayOnlyMyIssues )
   }
 
-  GetDisplayOnlyMyIssues() {
-    let retValue = false
-
-    this.store.select( getDisplayOnlyMyIssues ).pipe( take( 1 ) ).subscribe( state => retValue = state )
-
-    return retValue
+  GetDisplayOnlyMyIssues(): Promise<boolean> {
+    return firstValueFrom( this.store.select( getDisplayOnlyMyIssues ) )
   }
 
   SetDisplayOnlyMyIssues( state: boolean ) {
@@ -65,12 +57,8 @@ export class UiFacade {
     return this.store.select( getIssueDisplayStyle )
   }
 
-  GetIssueListDisplayStyle() {
-    let retValue = eIssueDisplayStyle.FULL_DETAILS
-
-    this.store.select( getIssueDisplayStyle ).pipe( take( 1 ) ).subscribe( state => retValue = state )
-
-    return retValue
+  GetIssueListDisplayStyle(): Promise<eIssueDisplayStyle> {
+    return firstValueFrom( this.store.select( getIssueDisplayStyle ) )
   }
 
   DisplayMessage( title: string, message: string ) {

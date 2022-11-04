@@ -25,20 +25,13 @@ export class UserDataService extends GraphQlBaseService {
     }
 
     return this.apollo.use( 'defaultClient' ).query<Query>( {
-      query: UserDataQuery,
       fetchPolicy: 'no-cache',
+      query: UserDataQuery,
       variables: { dataInput: dataInput }
     } )
       .pipe(
         map( result => UserDataService.handleQueryErrors( result.data, result.errors ) ),
-        map( result => {
-          const payload = result as UserDataPayload
-
-          if( payload.userData != null ) {
-          }
-
-          return payload
-        } )
+        map( result => result as UserDataPayload )
       )
   }
 
@@ -57,6 +50,7 @@ export class UserDataService extends GraphQlBaseService {
     }
 
     this.apollo.use( 'defaultClient' ).mutate<Mutation>( {
+      fetchPolicy: 'no-cache',
       mutation: UserDataMutation,
       variables: { dataInput: dataInput }
     } )
