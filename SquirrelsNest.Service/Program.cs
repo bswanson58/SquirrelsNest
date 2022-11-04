@@ -115,6 +115,7 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
     services
         .AddGraphQLServer()
         .RegisterDbContext<ServiceDbContext>()
+        .RegisterDbContext<SquirrelsNestDbContext>()
         .AddAuthorization()
         .AddQueryType()
         .AddTypeExtension<Authentication>()
