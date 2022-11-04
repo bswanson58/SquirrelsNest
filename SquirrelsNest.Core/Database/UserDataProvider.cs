@@ -7,19 +7,21 @@ using SquirrelsNest.Common.Interfaces.Database;
 namespace SquirrelsNest.Core.Database {
     internal class UserDataProvider : IUserDataProvider {
         private readonly IDbUserDataProvider    mDataProvider;
-        private readonly IDbUserProvider        mUserProvider;
 
-        public UserDataProvider( IDbUserDataProvider dataProvider, IDbUserProvider userProvider ) {
+        public UserDataProvider( IDbUserDataProvider dataProvider ) {
             mDataProvider = dataProvider;
-            mUserProvider = userProvider;
         }
 
-        public async Task<Either<Error, SnUserData>> SaveData( SnUserData data ) {
-            var user = await mUserProvider.GetUser( data.UserId ).ConfigureAwait( false );
-            var existingData = await user.BindAsync( async u => await mDataProvider.GetData( u, data.DataType )).ConfigureAwait( false );
-            var deletedData = await existingData.BindAsync( async d => {
-                if(!d.EntityId.Equals( SnUserData.Default.EntityId )) {
-                    return await mDataProvider.DeleteData( d ).ConfigureAwait( false );
+        public async Task<Either<Error, SnUserData>> SaveData( SnUser user, SnUserData data ) {
+            var existingData = await mDataProvider.GetData( user ).ConfigureAwait( false );
+            var deletedData = await existingData.BindAsync( async list => {
+                foreach ( var d in list ) {
+                    if( d.DataType.Equals( data.DataType )) {
+                        var result = await mDataProvider.DeleteData( d ).ConfigureAwait( false );
+                        if( result.IsLeft ) {
+                            return result;
+                        }
+                    }
                 }
 
                 return Unit.Default;

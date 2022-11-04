@@ -33,7 +33,7 @@ namespace SquirrelsNest.Core.Database {
             return await Prelude.Try( JsonSerializer.Serialize( data )).ToEither( Error.New )
                 .BindAsync( async jsonData => {
                     var userData = new SnUserData( user.EntityId, ofType, jsonData );
-                    var result = await mUserDataProvider.SaveData( userData );
+                    var result = await mUserDataProvider.SaveData( user, userData );
 
                     return result.Map( _ => data );
                 });
