@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core'
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog'
 import {Store} from '@ngrx/store'
-import {firstValueFrom, Observable, take} from 'rxjs'
+import {firstValueFrom, Observable} from 'rxjs'
 import {AppState} from '../Store/app.reducer'
 import {
   getDisplayCompletedIssues,
@@ -76,11 +76,7 @@ export class UiFacade {
       .subscribe()
   }
 
-  GetServiceActivity(): string {
-    let retValue = ''
-
-    this.store.select( getServiceActivity ).pipe( take( 1 ) ).subscribe( value => retValue = value )
-
-    return retValue
+  GetServiceActivity(): Promise<string> {
+    return firstValueFrom( this.store.select( getServiceActivity ))
   }
 }

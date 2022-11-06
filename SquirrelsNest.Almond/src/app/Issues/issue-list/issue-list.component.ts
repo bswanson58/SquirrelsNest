@@ -22,7 +22,7 @@ export class IssueListComponent implements OnInit, OnDestroy {
     this.serverHasMoreIssues$ = this.issuesFacade.GetServerHasMoreIssues$()
 
     this.userId$ =
-      this.authFacade.GetAuthenticationClaims()
+      this.authFacade.GetAuthenticationClaims$()
         .pipe(
           map( claims => {
             const idClaim = claims.find( c => c.name === 'entityId' )
@@ -40,20 +40,14 @@ export class IssueListComponent implements OnInit, OnDestroy {
           map( ( [list, userId, onlyMine, displayCompleted] ) => {
             return { list, userId, onlyMine, displayCompleted }
           } ),
-//        tap( ( { list, userId, onlyMine, displayCompleted } ) => console.log( 'User ID: ' + userId ) ),
-//        tap( ( { list, userId, onlyMine, displayCompleted } ) => console.log( 'OnlyMine: ' + onlyMine ) ),
-//        tap( ( { list, userId, onlyMine, displayCompleted } ) => console.log( 'List Length: ' + list.length ) ),
           map( ( { list, userId, onlyMine, displayCompleted } ) => {
             list = onlyMine ? list.filter( i => i.assignedTo.id === userId ) : list
 
             return { list, displayCompleted }
           } ),
-//        tap( ( { list, displayCompleted } ) => console.log( 'Show Completed: ' + displayCompleted ) ),
-//        tap( ( { list, displayCompleted } ) => console.log( 'List Length: ' + list.length ) ),
           map( ( { list, displayCompleted } ) =>
             displayCompleted ? list : list.filter( i => !i.isFinalized )
           ),
-//        tap( list => console.log( 'List Length: ' + list.length ) ),
         )
   }
 

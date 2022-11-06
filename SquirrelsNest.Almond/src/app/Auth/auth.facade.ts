@@ -31,7 +31,7 @@ export class AuthFacade {
     this.userDataFacade.ClearUserData()
   }
 
-  GetAuthenticationClaims(): Observable<claim[]> {
+  GetAuthenticationClaims$(): Observable<claim[]> {
     return this.store.select( getAuthenticationClaims )
   }
 }
