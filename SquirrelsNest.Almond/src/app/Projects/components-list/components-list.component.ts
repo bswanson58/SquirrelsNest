@@ -26,8 +26,8 @@ export class ComponentsListComponent {
         } ) )
   }
 
-  onAddComponent() {
-    const currentProject = this.projectFacade.GetCurrentProject()
+  async onAddComponent(): Promise<void> {
+    const currentProject = await this.projectFacade.GetCurrentProject()
 
     if( currentProject !== null ) {
       const input: ComponentEditData = {

@@ -24,8 +24,8 @@ export class IssueTypeItemComponent {
   constructor( private projectFacade: ProjectFacade, private dialog: MatDialog ) {
   }
 
-  onEdit() {
-    const currentProject = this.projectFacade.GetCurrentProject()
+  async onEdit(): Promise<void> {
+    const currentProject = await this.projectFacade.GetCurrentProject()
 
     if( currentProject !== null ) {
       const input: IssueTypeEditData = {
@@ -58,8 +58,8 @@ export class IssueTypeItemComponent {
     }
   }
 
-  onDelete() {
-    const project = this.projectFacade.GetCurrentProject()
+  async onDelete(): Promise<void> {
+    const project = await this.projectFacade.GetCurrentProject()
 
     if( project !== null ) {
       const dialogData: ConfirmDialogData = {

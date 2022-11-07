@@ -33,8 +33,8 @@ export class IssueHeaderComponent implements OnInit, OnDestroy {
     this.uiFacade.ToggleIssueListStyle()
   }
 
-  onCreateNewIssue() {
-    const currentProject = this.projectFacade.GetCurrentProject()
+  async onCreateNewIssue(): Promise<void> {
+    const currentProject = await this.projectFacade.GetCurrentProject()
 
     if( currentProject !== null ) {
       const dialogData: IssueEditData = {

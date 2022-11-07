@@ -24,8 +24,8 @@ export class IssueTypesListComponent {
         } ) )
   }
 
-  onAddIssueType() {
-    const currentProject = this.projectFacade.GetCurrentProject()
+  async onAddIssueType(): Promise<void> {
+    const currentProject = await this.projectFacade.GetCurrentProject()
 
     if( currentProject !== null ) {
       const input: IssueTypeEditData = {

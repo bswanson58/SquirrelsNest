@@ -74,8 +74,8 @@ export class IssuesFacade {
     return this.store.select( getLoadedIssues )
   }
 
-  LoadIssues() {
-    const project = this.projectFacade.GetCurrentProject()
+  async LoadIssues(): Promise<void> {
+    const project = await this.projectFacade.GetCurrentProject()
 
     if( project !== null ) {
       this.issueService.LoadIssues( project.id )

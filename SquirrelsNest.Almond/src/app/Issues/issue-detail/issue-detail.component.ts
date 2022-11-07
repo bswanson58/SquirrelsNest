@@ -26,10 +26,10 @@ export class IssueDetailComponent implements OnInit {
   readonly issueStyleTitleDescription = eIssueDisplayStyle.TITLE_DESCRIPTION
   readonly issueStyleTitleOnly = eIssueDisplayStyle.TITLE_ONLY
 
+  @Input() issue!: ClIssue
   isHovering: boolean = false
   isCompleted: boolean = true
-  @Input() issue!: ClIssue
-  readonly project: ClProject | null
+  project: ClProject | null
 
   issueListStyle$: Observable<eIssueDisplayStyle>
 
@@ -38,12 +38,13 @@ export class IssueDetailComponent implements OnInit {
                private projectFacade: ProjectFacade,
                private uiFacade: UiFacade ) {
     this.issueListStyle$ = this.uiFacade.GetIssueListDisplayStyle$()
-    this.project = this.projectFacade.GetCurrentProject()
+    this.project = null
   }
 
-  ngOnInit() {
+  async ngOnInit(): Promise<void> {
     const currentState = this.issue.workflowState?.category ?? ''
 
+    this.project = await this.projectFacade.GetCurrentProject()
     this.isCompleted = currentState === 'TERMINAL' || currentState === 'COMPLETED'
   }
 
@@ -52,12 +53,10 @@ export class IssueDetailComponent implements OnInit {
   }
 
   onEditIssue() {
-    const currentProject = this.projectFacade.GetCurrentProject()
-
-    if( currentProject !== null ) {
+    if( this.project !== null ) {
       const dialogData: IssueEditData = {
         issue: this.issue,
-        project: currentProject
+        project: this.project
       }
       const dialogConfig = new MatDialogConfig()
       dialogConfig.data = dialogData

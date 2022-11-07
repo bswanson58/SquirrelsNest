@@ -25,8 +25,8 @@ export class WorkflowItemComponent {
   constructor( private projectFacade: ProjectFacade, private dialog: MatDialog ) {
   }
 
-  onEdit() {
-    const currentProject = this.projectFacade.GetCurrentProject()
+  async onEdit(): Promise<void> {
+    const currentProject = await this.projectFacade.GetCurrentProject()
 
     if( currentProject !== null ) {
       const input: WorkflowStateEditData = {
@@ -61,8 +61,8 @@ export class WorkflowItemComponent {
     }
   }
 
-  onDelete() {
-    const project = this.projectFacade.GetCurrentProject()
+  async onDelete(): Promise<void> {
+    const project = await this.projectFacade.GetCurrentProject()
 
     if( project !== null ) {
       const dialogData: ConfirmDialogData = {

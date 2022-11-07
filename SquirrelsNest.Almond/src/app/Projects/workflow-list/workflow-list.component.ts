@@ -24,8 +24,8 @@ export class WorkflowListComponent {
         } ) )
   }
 
-  onAddWorkflowState() {
-    const currentProject = this.projectFacade.GetCurrentProject()
+  async onAddWorkflowState(): Promise<void> {
+    const currentProject = await this.projectFacade.GetCurrentProject()
 
     if( currentProject !== null ) {
       const input: WorkflowStateEditData = {

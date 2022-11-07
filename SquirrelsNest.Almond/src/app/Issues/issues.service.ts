@@ -169,8 +169,9 @@ export class IssueService extends GraphQlBaseService {
     this.updateIssue( input )
   }
 
-  CompleteIssue( issue: ClIssue ) {
-    const completedState = this.projectFacade.GetCurrentProject()?.workflowStates.find( s => s.category === 'COMPLETED' )
+  async CompleteIssue( issue: ClIssue ): Promise<void> {
+    const currentProject = await this.projectFacade.GetCurrentProject()
+    const completedState = currentProject?.workflowStates.find( s => s.category === 'COMPLETED' )
 
     if( completedState !== undefined ) {
       const operation: UpdateOperationInput = {

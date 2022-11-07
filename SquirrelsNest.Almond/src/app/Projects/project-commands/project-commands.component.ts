@@ -29,8 +29,8 @@ export class ProjectCommandsComponent {
     this.projectFacade.CreateProject()
   }
 
-  onCreateTemplate() {
-    const currentProject = this.projectFacade.GetCurrentProject()
+  async onCreateTemplate(): Promise<void> {
+    const currentProject = await this.projectFacade.GetCurrentProject()
 
     if( currentProject !== null ) {
       this.dialog
@@ -50,8 +50,8 @@ export class ProjectCommandsComponent {
     }
   }
 
-  onDeleteProject() {
-    const currentProject = this.projectFacade.GetCurrentProject()
+  async onDeleteProject(): Promise<void> {
+    const currentProject = await this.projectFacade.GetCurrentProject()
 
     if( currentProject !== null ) {
       this.projectFacade.DeleteProject( currentProject )
@@ -75,8 +75,8 @@ export class ProjectCommandsComponent {
       } )
   }
 
-  onExportProject() {
-    const project = this.projectFacade.GetCurrentProject()
+  async onExportProject(): Promise<void> {
+    const project = await this.projectFacade.GetCurrentProject()
 
     if( project !== null ) {
       this.projectFacade.DownloadProject( project )

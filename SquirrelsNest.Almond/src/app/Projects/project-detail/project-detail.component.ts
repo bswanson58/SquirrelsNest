@@ -21,8 +21,8 @@ export class ProjectDetailComponent {
     this.project = projectFacade.GetCurrentProject$()
   }
 
-  onEditProject() {
-    const currentProject = this.projectFacade.GetCurrentProject()
+  async onEditProject(): Promise<void> {
+    const currentProject = await this.projectFacade.GetCurrentProject()
 
     if( currentProject !== null ) {
       const dialogData: ProjectEditData = {

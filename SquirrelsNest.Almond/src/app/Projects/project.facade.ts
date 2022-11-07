@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core'
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog'
 import {Store} from '@ngrx/store'
-import {map, Observable, take, tap} from 'rxjs'
+import {firstValueFrom, map, Observable, take, tap} from 'rxjs'
 import {
   AddProjectInput,
   ClComponent,
@@ -115,12 +115,8 @@ export class ProjectFacade {
     return this.store.select( getSelectedProject )
   }
 
-  GetCurrentProject(): ClProject | null {
-    let currentProject: ClProject | null = null
-
-    this.store.select( getSelectedProject ).pipe( take( 1 ) ).subscribe( project => currentProject = project )
-
-    return currentProject
+  GetCurrentProject(): Promise<ClProject | null> {
+    return firstValueFrom( this.store.select( getSelectedProject ) )
   }
 
   GetCurrentProjectComponents$(): Observable<ClComponent[]> {
@@ -167,13 +163,15 @@ export class ProjectFacade {
     this.projectService.LoadMoreProjects()
   }
 
-  SelectProject( project: ClProject ): void {
-    const currentProject = this.GetCurrentProject()
+  async SelectProject( project: ClProject ): Promise<ClProject> {
+    const currentProject = await this.GetCurrentProject()
 
     if( currentProject?.id !== project?.id ) {
       this.store.dispatch( new ClearIssues() )
       this.store.dispatch( new SelectProject( project ) )
     }
+
+    return project
   }
 
   FindProject( projectId: string ): ClProject | null {
