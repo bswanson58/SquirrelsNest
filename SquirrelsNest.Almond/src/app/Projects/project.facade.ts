@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core'
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog'
 import {Store} from '@ngrx/store'
-import {firstValueFrom, map, Observable, take, tap} from 'rxjs'
+import {firstValueFrom, map, Observable, tap} from 'rxjs'
 import {
   AddProjectInput,
   ClComponent,
@@ -174,16 +174,13 @@ export class ProjectFacade {
     return project
   }
 
-  FindProject( projectId: string ): ClProject | null {
-    let project: ClProject | null = null
-
-    this.GetProjectList$()
-      .pipe(
-        take( 1 ),
-        map( projectList => projectList.find( p => p.id === projectId ) )
-      ).subscribe( p => project = p ?? null )
-
-    return project
+  FindProject( projectId: string ): Promise<ClProject | undefined> {
+    return firstValueFrom(
+      this.GetProjectList$()
+        .pipe(
+          map( projectList => projectList.find( p => p.id === projectId ) )
+        )
+    )
   }
 
   ClearState(): void {

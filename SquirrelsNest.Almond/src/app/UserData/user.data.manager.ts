@@ -48,7 +48,7 @@ export class UserDataManager implements OnDestroy {
       .pipe(
         filter( ( [projects, _] ) => projects.length > 0 ),
         tap( ( [_, userData] ) => {
-          this.applyUserData( userData )
+          this.applyUserData( userData ).then()
         } ),
         take( 1 ),
       )
@@ -110,13 +110,13 @@ export class UserDataManager implements OnDestroy {
     }
   }
 
-  private applyUserData( userData: UserData ): void {
+  private async applyUserData( userData: UserData ): Promise<void> {
     if( userData.currentProject.length > 0 ) {
       this.unsubscribeFromMonitoredData()
 
-      const project = this.projectFacade.FindProject( userData.currentProject )
+      const project = await this.projectFacade.FindProject( userData.currentProject )
 
-      if( project != null ) {
+      if( project != undefined ) {
         this.store.dispatch( new SelectProject( project ) )
       }
 
