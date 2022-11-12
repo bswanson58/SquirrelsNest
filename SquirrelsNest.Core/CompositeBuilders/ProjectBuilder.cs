@@ -51,6 +51,12 @@ namespace SquirrelsNest.Core.CompositeBuilders {
             var releases = await mReleaseProvider.GetReleases( forProject ).ConfigureAwait( false );
             var users = await mUserProvider.GetUsers().ConfigureAwait( false );
             
+            issueTypes = issueTypes.Map( list => list.Append( SnIssueType.Default ));
+            components = components.Map( list => list.Append( SnComponent.Default ));
+            states = states.Map( list => list.Append( SnWorkflowState.Default ));
+            releases = releases.Map( list => list.Append( SnRelease.Default ));
+            users = users.Map( list => list.Append( SnUser.Default ));
+
             return 
                 from it in issueTypes
                 from c in components
