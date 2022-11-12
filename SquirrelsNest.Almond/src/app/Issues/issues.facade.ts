@@ -33,7 +33,7 @@ export class IssuesFacade {
   }
 
   CompleteIssue( issue: ClIssue ) {
-    this.issueService.CompleteIssue( issue )
+    this.issueService.CompleteIssue( issue ).then()
   }
 
   DeleteIssue( issue: ClIssue ) {
