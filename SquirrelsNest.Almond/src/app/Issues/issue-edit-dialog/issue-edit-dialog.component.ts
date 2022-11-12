@@ -1,13 +1,15 @@
-import {Component, Inject} from '@angular/core'
+import {Component, Inject, OnInit} from '@angular/core'
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog'
-import {Observable} from 'rxjs'
+import {firstValueFrom, Observable} from 'rxjs'
 import {
   ClComponent,
   ClIssue,
   ClIssueType,
-  ClProject, ClProjectBase,
+  ClProject,
+  ClProjectBase,
   ClUser,
   ClWorkflowState,
+  StateCategory,
 } from '../../Data/graphQlTypes'
 import {ProjectFacade} from '../../Projects/project.facade'
 
@@ -26,7 +28,7 @@ export interface IssueEditResult {
   templateUrl: './issue-edit-dialog.component.html',
   styleUrls: ['./issue-edit-dialog.component.css']
 } )
-export class IssueEditDialogComponent {
+export class IssueEditDialogComponent implements OnInit {
   components$: Observable<ClComponent[]>
   issueTypes$: Observable<ClIssueType[]>
   workflowStates$: Observable<ClWorkflowState[]>
@@ -50,12 +52,20 @@ export class IssueEditDialogComponent {
     this.workflowStates$ = this.projectFacade.GetCurrentProjectWorkflowStates$()
     this.users$ = this.projectFacade.GetCurrentProjectUsers$()
 
-    this.selectedComponentId = dialogData.project.components.find( c => c.id === dialogData.issue?.component?.id )?.id
-    this.selectedIssueTypeId = dialogData.project.issueTypes.find( i => i.id === dialogData.issue?.issueType?.id )?.id
-    this.selectedWorkflowId = dialogData.project.workflowStates.find( s => s.id === dialogData.issue?.workflowState?.id )?.id
-    this.selectedUserId = dialogData.project.users.find( u => u.id === dialogData.issue?.assignedTo?.id )?.id
+    this.selectedComponentId = dialogData.project.components.find( c => c.id === dialogData.issue?.component?.id )?.id ?? ''
+    this.selectedIssueTypeId = dialogData.project.issueTypes.find( i => i.id === dialogData.issue?.issueType?.id )?.id ?? ''
+    this.selectedWorkflowId = dialogData.project.workflowStates.find( s => s.id === dialogData.issue?.workflowState?.id )?.id ?? ''
+    this.selectedUserId = dialogData.project.users.find( u => u.id === dialogData.issue?.assignedTo?.id )?.id ?? ''
 
     this.dialogRef.updateSize( '650px' )
+  }
+
+  async ngOnInit() {
+    if( this.selectedWorkflowId === '' ) {
+      const states = await firstValueFrom( this.projectFacade.GetCurrentProjectWorkflowStates$() ).then()
+
+      this.selectedWorkflowId = states.find( s => s.category === 'INITIAL' as StateCategory.Initial )?.id ?? ''
+    }
   }
 
   onClose() {
