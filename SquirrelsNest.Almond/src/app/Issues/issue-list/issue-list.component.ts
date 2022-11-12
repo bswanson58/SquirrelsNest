@@ -56,7 +56,7 @@ export class IssueListComponent implements OnInit, OnDestroy {
       this.projectFacade.GetCurrentProject$()
         .subscribe( project => {
           if( project != null ) {
-            this.issuesFacade.LoadIssues()
+            this.issuesFacade.LoadIssues().then()
           }
           else {
             this.issuesFacade.ClearIssues()

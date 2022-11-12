@@ -14,12 +14,13 @@ import {
   ClWorkflowState,
   DeleteIssueInput, DeleteIssuePayload,
   IssueUpdatePath,
+  ModifyIssueInput, ModifyIssuePayload,
   Mutation,
   Query,
   UpdateIssueInput, UpdateIssuePayload,
   UpdateOperationInput
 } from '../Data/graphQlTypes'
-import {AddIssueMutation, DeleteIssueMutation, UpdateIssueMutation} from '../Data/issueMutations'
+import {AddIssueMutation, DeleteIssueMutation, ModifyIssueMutation, UpdateIssueMutation} from '../Data/issueMutations'
 import {IssueQueryInput, IssuesQuery} from '../Data/queryStatements'
 import {ProjectFacade} from '../Projects/project.facade'
 import {AppState} from '../Store/app.reducer'
@@ -184,19 +185,34 @@ export class IssueService extends GraphQlBaseService {
   }
 
   UpdateIssue( issue: ClIssue ) {
-    const issueInput: UpdateIssueInput = {
-      operations: [
-        { path: 'TITLE' as IssueUpdatePath.Title, value: issue.title },
-        { path: 'DESCRIPTION' as IssueUpdatePath.Description, value: issue.description ?? '' },
-        { path: 'ISSUE_TYPE_ID' as IssueUpdatePath.IssueTypeId, value: issue.issueType?.id ?? '' },
-        { path: 'WORKFLOW_STATE_ID' as IssueUpdatePath.WorkflowStateId, value: issue.workflowState?.id ?? '' },
-        { path: 'COMPONENT_ID' as IssueUpdatePath.ComponentId, value: issue.component?.id ?? '' },
-        { path: 'ASSIGNED_TO_ID' as IssueUpdatePath.AssignedToId, value: issue.assignedTo?.id ?? '' }
-      ],
-      issueId: issue.id
+    const modifyInput: ModifyIssueInput = {
+      issueId: issue.id,
+      title: issue.title,
+      description: issue.description,
+      issueTypeId: issue.issueType?.id ?? '',
+      workflowStateId: issue.workflowState?.id ?? '',
+      componentId: issue.component?.id ?? '',
+      releaseId: issue.release?.id ?? '',
+      assignedToId: issue.assignedTo?.id ?? ''
     }
 
-    this.updateIssue( issueInput )
+    this.apollo.use( 'defaultClient' ).mutate<Mutation>( {
+      mutation: ModifyIssueMutation,
+      variables: { modifyInput: modifyInput }
+    } )
+      .pipe(
+        map( result => this.handleMutationErrors( result.data?.modifyIssue, result.errors ) ),
+        map( result => {
+          const payload = result as ModifyIssuePayload
+
+          if( payload.issue != null ) {
+            this.store.dispatch( new UpdateIssue( payload.issue ) )
+          }
+
+          return payload.issue
+        } ),
+      )
+      .subscribe( this.getServiceObserver() )
   }
 
   private updateIssue( input: UpdateIssueInput ) {

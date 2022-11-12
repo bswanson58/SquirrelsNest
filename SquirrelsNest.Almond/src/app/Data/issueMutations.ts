@@ -66,6 +66,39 @@ export const UpdateIssueMutation = gql`
     }
   }`
 
+export const ModifyIssueMutation = gql `
+  mutation modifyIssue($modifyInput: ModifyIssueInput!) {
+   modifyIssue(modifyInput: $modifyInput) {
+     issue {
+       id
+       issueNumber
+       title
+       description
+       component {
+         id
+         name
+       }
+       assignedTo {
+         id
+         name
+       }
+       workflowState {
+         id
+         name
+         category
+       }
+       issueType {
+         id
+         name
+       }
+     }
+     errors {
+       message
+       suggestion
+     }
+   }
+  }`
+
 export const DeleteIssueMutation = gql`
   mutation deleteIssue($deleteInput: DeleteIssueInput!) {
     deleteIssue(deleteInput: $deleteInput) {

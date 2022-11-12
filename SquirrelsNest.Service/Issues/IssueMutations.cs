@@ -186,6 +186,50 @@ namespace SquirrelsNest.Service.Issues {
             return compositeIssue.Match( i => new UpdateIssuePayload( i ), e => new UpdateIssuePayload( e ));
         }
 
+        private Either<Error, SnIssue> ModifyIssue( SnIssue issue, CompositeProject project, ModifyIssueInput modifiedInput ) {
+            var retValue = issue.With( title: modifiedInput.Title, description: modifiedInput.Description );
+
+            var user = project.Users.FirstOrDefault( u => u.EntityId.Value.Equals( modifiedInput.AssignedToId ), SnUser.Default );
+            retValue = retValue.With( assignedTo: user.EntityId );
+
+            var component = project.Components.FirstOrDefault( c => c.EntityId.Value.Equals( modifiedInput.ComponentId ), SnComponent.Default );
+            retValue = retValue.With( component );
+
+            var issueType = project.IssueTypes.FirstOrDefault( i => i.EntityId.Value.Equals( modifiedInput.IssueTypeId ), SnIssueType.Default );
+            retValue = retValue.With( issueType );
+
+            var state = project.WorkflowStates.FirstOrDefault( s => s.EntityId.Value.Equals( modifiedInput.WorkflowStateId ), SnWorkflowState.Default );
+            retValue = retValue.With( state );
+
+            var release = project.Releases.FirstOrDefault( r => r.EntityId.Value.Equals( modifiedInput.ReleaseId ), SnRelease.Default );
+            retValue = retValue.With( release );
+
+            return retValue;
+        }
+
+        [Authorize( Policy = PolicyNames.UserPolicy )]
+        public async Task<ModifyIssuePayload> ModifyIssue( ModifyIssueInput modifyInput ) {
+            var issueId = EntityId.For( modifyInput.IssueId );
+            if( issueId.IsNone ) {
+                return new ModifyIssuePayload( "Invalid issue id to be modified" );
+            }
+
+            var currentIssue = await issueId.MapAsync( id => mIssueProvider.GetIssue( id ));
+            var currentProject = await currentIssue.BindAsync( i => mProjectProvider.GetProject( i.ProjectId ));
+            var compositeProject = await currentProject.BindAsync( p => mProjectBuilder.BuildCompositeProject( p ));
+            var updatedIssue = compositeProject.Bind( p => currentIssue.Bind( i => ModifyIssue( i, p, modifyInput )));
+            var updateResult = await updatedIssue.MapAsync( i => mIssueProvider.UpdateIssue( i ));
+
+            if( updateResult.IsLeft ) {
+                return new ModifyIssuePayload( updateResult.LeftToList().FirstOrDefault());
+            }
+
+            var compositeIssue = await updatedIssue.BindAsync( i => mIssueBuilder.BuildCompositeIssue( i ));
+
+            return compositeIssue.Match( i => new ModifyIssuePayload( i ), e => new ModifyIssuePayload( e ));
+
+        }
+
         [Authorize( Policy = PolicyNames.UserPolicy )]
         public async Task<DeleteIssuePayload> DeleteIssue( DeleteIssueInput deleteInput ) {
             var issueId = EntityId.For( deleteInput.IssueId );

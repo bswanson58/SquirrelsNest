@@ -557,6 +557,23 @@ export type LoginPayload = {
   token: Scalars['String'];
 };
 
+export type ModifyIssueInput = {
+  assignedToId: Scalars['String'];
+  componentId: Scalars['String'];
+  description: Scalars['String'];
+  issueId: Scalars['String'];
+  issueTypeId: Scalars['String'];
+  releaseId: Scalars['String'];
+  title: Scalars['String'];
+  workflowStateId: Scalars['String'];
+};
+
+export type ModifyIssuePayload = {
+  __typename?: 'ModifyIssuePayload';
+  errors: Array<MutationError>;
+  issue?: Maybe<ClIssue>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addIssue: AddIssuePayload;
@@ -571,6 +588,7 @@ export type Mutation = {
   editUserPassword: EditUserPasswordPayload;
   editUserRoles: EditUserRolesPayload;
   login: LoginPayload;
+  modifyIssue: ModifyIssuePayload;
   saveUserData: UserDataPayload;
   updateIssue: UpdateIssuePayload;
   updateProject: UpdateProjectPayload;
@@ -635,6 +653,11 @@ export type MutationEditUserRolesArgs = {
 
 export type MutationLoginArgs = {
   loginInput: LoginInput;
+};
+
+
+export type MutationModifyIssueArgs = {
+  modifyInput: ModifyIssueInput;
 };
 
 

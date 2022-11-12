@@ -176,6 +176,11 @@ type LoginPayload {
   expiration: DateTime!
 }
 
+type ModifyIssuePayload {
+  issue: ClIssue
+  errors: [MutationError!]!
+}
+
 type Mutation {
   login(loginInput: LoginInput!): LoginPayload!
   addProject(projectInput: AddProjectInput!): AddProjectPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
@@ -187,6 +192,7 @@ type Mutation {
   updateProjectDetail(detailInput: ProjectDetailInput!): ProjectDetailPayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   addIssue(issueInput: AddIssueInput!): AddIssuePayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   updateIssue(updateInput: UpdateIssueInput!): UpdateIssuePayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
+  modifyIssue(modifyInput: ModifyIssueInput!): ModifyIssuePayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   deleteIssue(deleteInput: DeleteIssueInput!): DeleteIssuePayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
   addUser(userInput: AddUserInput!): AddUserPayload!
   deleteUser(deleteInput: DeleteUserInput!): DeleteUserPayload!
@@ -552,6 +558,17 @@ input ListFilterInputTypeOfClWorkflowStateFilterInput {
 input LoginInput {
   email: String!
   password: String!
+}
+
+input ModifyIssueInput {
+  issueId: String!
+  title: String!
+  description: String!
+  componentId: String!
+  issueTypeId: String!
+  workflowStateId: String!
+  releaseId: String!
+  assignedToId: String!
 }
 
 input ProjectDetailInput {
