@@ -51,7 +51,7 @@ export function createApollo( httpLink: HttpLink ): NamedOptions {
           Query: {
             fields: {
               issueList: {
-                keyArgs: ['$projectId']
+                keyArgs: false
               }
             }
           },

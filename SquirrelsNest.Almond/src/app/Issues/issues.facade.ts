@@ -83,7 +83,7 @@ export class IssuesFacade {
   }
 
   LoadMoreIssues() {
-    this.issueService.LoadMoreIssues()
+    this.issueService.LoadMoreIssues().then()
   }
 
   UpdateIssueComponent( issue: ClIssue, component: ClComponent ): void {

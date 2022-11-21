@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core'
 import {GraphQLErrors} from '@apollo/client/errors'
 import {Store} from '@ngrx/store'
 import {Apollo, QueryRef} from 'apollo-angular'
-import {map, Subscription, take, tap} from 'rxjs'
+import {firstValueFrom, map, Subscription, tap} from 'rxjs'
 import {GraphQlBaseService} from '../Common/graphql.base.service'
 import {
   AddIssueInput, AddIssuePayload,
@@ -33,7 +33,6 @@ import {
   DeleteIssue,
   UpdateIssue
 } from './issues.actions'
-import {IssueQueryInfo} from './issues.state'
 
 @Injectable( {
   providedIn: 'root'
@@ -56,6 +55,7 @@ export class IssueService extends GraphQlBaseService {
 
     this.mIssueQuery = this.apollo.use( 'issuesWatchClient' ).watchQuery<Query, IssueQueryInput>(
       {
+        fetchPolicy: 'network-only',
         query: IssuesQuery,
         variables: {
           skip: 0,
@@ -80,8 +80,8 @@ export class IssueService extends GraphQlBaseService {
       .subscribe( this.getServiceObserver() )
   }
 
-  LoadMoreIssues(): void {
-    const queryState = this.getIssueQueryState()
+  async LoadMoreIssues(): Promise<void> {
+    const queryState = await firstValueFrom( this.store.select( getIssueQueryState ) )
 
     if( (this.mIssueQuery != null) &&
       (queryState.hasNextPage) ) {
@@ -124,14 +124,6 @@ export class IssueService extends GraphQlBaseService {
         totalIssues: issueData.totalCount,
         loadedIssues: 0 // set by the reducer.
       } ) )
-  }
-
-  private getIssueQueryState(): IssueQueryInfo {
-    let queryState: IssueQueryInfo
-
-    this.store.select( getIssueQueryState ).pipe( take( 1 ) ).subscribe( state => queryState = state )
-
-    return queryState!
   }
 
   UpdateIssueIssueType( issue: ClIssue, issueType: ClIssueType ) {
