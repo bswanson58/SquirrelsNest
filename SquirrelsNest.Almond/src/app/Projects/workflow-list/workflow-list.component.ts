@@ -19,9 +19,9 @@ export class WorkflowListComponent {
   constructor( private projectFacade: ProjectFacade, private dialog: MatDialog ) {
     this.workflowStates$ = projectFacade.GetCurrentProject$()
       .pipe(
-        map( project => {
-          return project ? project.workflowStates : []
-        } ) )
+        map( project => project ? project.workflowStates : [] ),
+        map( states => states.filter( s => s.id != 'default' ) )
+      )
   }
 
   async onAddWorkflowState(): Promise<void> {

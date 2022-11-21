@@ -21,9 +21,9 @@ export class ComponentsListComponent {
   constructor( private projectFacade: ProjectFacade, private dialog: MatDialog ) {
     this.components$ = projectFacade.GetCurrentProject$()
       .pipe(
-        map( project => {
-          return project ? project.components : []
-        } ) )
+        map( project => project ? project.components : [] ),
+        map( components => components.filter( c => c.id != 'default' ) )
+      )
   }
 
   async onAddComponent(): Promise<void> {

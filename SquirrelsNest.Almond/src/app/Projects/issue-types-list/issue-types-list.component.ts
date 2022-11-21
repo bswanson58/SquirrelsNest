@@ -19,9 +19,9 @@ export class IssueTypesListComponent {
   constructor( private projectFacade: ProjectFacade, private dialog: MatDialog ) {
     this.issueTypes$ = projectFacade.GetCurrentProject$()
       .pipe(
-        map( project => {
-          return project ? project.issueTypes : []
-        } ) )
+        map( project => project ? project.issueTypes : [] ),
+        map( issueTypes => issueTypes.filter( t => t.id != 'default' ) )
+      )
   }
 
   async onAddIssueType(): Promise<void> {

@@ -14,9 +14,9 @@ export class ProjectUsersListComponent {
   constructor( private projectFacade: ProjectFacade ) {
     this.projectUsers$ = projectFacade.GetCurrentProject$()
       .pipe(
-        map( project => {
-          return project ? project.users : []
-        } ) )
+        map( project => project ? project.users : [] ),
+        map( users => users.filter( u => u.id != 'default' ) ),
+      )
   }
 
 }
