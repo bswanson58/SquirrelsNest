@@ -38,11 +38,11 @@ export class MessageReporter implements OnDestroy {
 
     this.serviceActivitySubscription =
       this.store.select( getServiceIsActive )
-        .subscribe( state => {
+        .subscribe( async state => {
           if( state ) {
             this.serviceActivitySnackBar =
               this.messageProvider.openFromComponent( ServiceActivityPanelComponent, {
-                data: this.uiFacade.GetServiceActivity(),
+                data: await this.uiFacade.GetServiceActivity(),
                 panelClass: ['snackbar-service',]
               } )
           }
