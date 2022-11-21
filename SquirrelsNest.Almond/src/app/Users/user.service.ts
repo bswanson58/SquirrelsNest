@@ -31,7 +31,7 @@ export class UserService {
     this.mUserQuery = this.apollo.use( 'usersWatchClient' ).watchQuery<Query, UserQueryInput>(
       {
         query: UserQuery,
-        fetchPolicy: 'no-cache',
+        fetchPolicy: 'network-only',
         variables: {
           skip: 0,
           take: this.mPageLimit,

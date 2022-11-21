@@ -50,7 +50,7 @@ export class ProjectService extends GraphQlBaseService implements OnDestroy {
 
     this.mProjectQuery = this.apollo.use( 'projectsWatchClient' ).watchQuery<Query, ProjectQueryInput>(
       {
-        fetchPolicy: 'no-cache',
+        fetchPolicy: 'network-only',
         query: AllProjectsQuery,
         variables: { skip: 0, take: this.mPageLimit, order: { name: 'ASC' } } as ProjectQueryInput
       } )
