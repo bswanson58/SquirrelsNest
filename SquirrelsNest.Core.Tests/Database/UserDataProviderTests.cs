@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using SquirrelsNest.Common.Entities;
 using SquirrelsNest.Common.Interfaces;
+using SquirrelsNest.Common.Values;
 using SquirrelsNest.Core.Database;
 using SquirrelsNest.DatabaseTests.Support;
 using Xunit;
@@ -10,7 +11,7 @@ namespace SquirrelsNest.Core.Tests.Database {
     public class UserDataProviderTests : BaseProviderTests {
 
         private IUserDataProvider CreateSut() {
-            return new UserDataProvider( mUserDataProvider, mUserProvider );
+            return new UserDataProvider( mUserDataProvider );
         }
 
         [Fact]
@@ -18,7 +19,7 @@ namespace SquirrelsNest.Core.Tests.Database {
             var users = await CreateSomeUsers( 2 );
             var sut = CreateSut();
 
-            var results = await sut.SaveData( new SnUserData( users[1].EntityId, UserDataType.LastProject, "some project data" ));
+            var results = await sut.SaveData( users[1], new SnUserData( EntityId.Default, UserDataType.LastProject, "some project data" ));
 
             results.IfLeft( error => error.Should().BeNull( "saving user data" ));
         }
@@ -40,7 +41,7 @@ namespace SquirrelsNest.Core.Tests.Database {
             var sut = CreateSut();
             var userData = new SnUserData( users[0].EntityId, UserDataType.IssueListFormat, "list format" );
 
-            await sut.SaveData( userData );
+            await sut.SaveData( users[0], userData );
             var result = await sut.LoadData( users[0], UserDataType.IssueListFormat );
 
             result.IfLeft( error => error.Should().BeNull( "loading user data" ));
@@ -53,9 +54,9 @@ namespace SquirrelsNest.Core.Tests.Database {
             var users = await CreateSomeUsers( 3 );
             var sut = CreateSut();
 
-            await sut.SaveData( new SnUserData( users[0].EntityId, UserDataType.LastProject, "last project 0" ));
-            await sut.SaveData( new SnUserData( users[1].EntityId, UserDataType.LastProject, "last project 1" ));
-            await sut.SaveData( new SnUserData( users[0].EntityId, UserDataType.IssueListFormat, "list format" ));
+            await sut.SaveData( users[0], new SnUserData( users[0].EntityId, UserDataType.LastProject, "last project 0" ));
+            await sut.SaveData( users[1], new SnUserData( users[1].EntityId, UserDataType.LastProject, "last project 1" ));
+            await sut.SaveData( users[0], new SnUserData( users[0].EntityId, UserDataType.IssueListFormat, "list format" ));
             var results = await sut.GetData( users[0]);
 
             results.IfLeft( error => error.Should().BeNull( "getting all user data" ));

@@ -25,7 +25,7 @@ namespace SquirrelsNest.Core.Tests.Database {
     public class UserDataTests : BaseProviderTests {
 
         private IUserData CreateSut() {
-            return new UserData( new UserDataProvider( mUserDataProvider, mUserProvider ));
+            return new UserData( new UserDataProvider( mUserDataProvider ));
         }
 
         [Fact]
