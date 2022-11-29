@@ -19,12 +19,12 @@ export class AppComponent implements OnInit, OnDestroy {
   currentRoute: string
   currentProject: string
 
-  constructor( private store: Store<AppState>,
+  constructor( store: Store<AppState>,
                private title: Title,
                private router: Router,
                private projectFacade: ProjectFacade,
-               private userDataManager: UserDataManager,
-               private errorReporter: MessageReporter ) {
+               _userDataManager: UserDataManager,
+               _errorReporter: MessageReporter ) {
     this.currentProject = ''
     this.currentRoute = ''
   }

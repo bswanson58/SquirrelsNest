@@ -14,18 +14,18 @@ export interface UserEditResult {
   password: string,
 }
 
-@Component({
+@Component( {
   selector: 'sn-user-edit-dialog',
   templateUrl: './user-edit-dialog.component.html',
   styleUrls: ['./user-edit-dialog.component.css']
-})
+} )
 export class UserEditDialogComponent {
   name: string
   email: string
   password: string
 
   constructor( private dialogRef: MatDialogRef<UserEditDialogComponent>,
-               @Inject( MAT_DIALOG_DATA ) private dialogData: UserEditData ) {
+               @Inject( MAT_DIALOG_DATA ) dialogData: UserEditData ) {
     this.name = dialogData.name
     this.email = dialogData.email
     this.password = dialogData.password

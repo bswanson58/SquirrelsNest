@@ -22,7 +22,7 @@ export class ComponentEditDialogComponent {
   description: string
 
   constructor( private dialogRef: MatDialogRef<ComponentEditDialogComponent>,
-               @Inject( MAT_DIALOG_DATA ) private dialogData: ComponentEditData ) {
+               @Inject( MAT_DIALOG_DATA ) dialogData: ComponentEditData ) {
     this.name = dialogData.name
     this.description = dialogData.description
 

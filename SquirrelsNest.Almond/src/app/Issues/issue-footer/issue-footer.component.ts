@@ -18,7 +18,7 @@ export class IssueFooterComponent {
   displayCompletedIssues$: Observable<boolean>
   displayOnlyMyIssues$: Observable<boolean>
 
-  constructor( private projectFacade: ProjectFacade, private issuesFacade: IssuesFacade, private uiFacade: UiFacade ) {
+  constructor( projectFacade: ProjectFacade, private issuesFacade: IssuesFacade, private uiFacade: UiFacade ) {
     this.displayCompletedIssues$ = uiFacade.GetDisplayCompletedIssues$()
     this.displayOnlyMyIssues$ = uiFacade.GetDisplayOnlyMyIssues$()
     this.haveMoreIssues$ = issuesFacade.GetServerHasMoreIssues$()

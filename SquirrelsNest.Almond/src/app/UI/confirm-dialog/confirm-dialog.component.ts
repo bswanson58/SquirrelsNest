@@ -10,17 +10,17 @@ export interface ConfirmDialogResult {
   accepted: boolean
 }
 
-@Component({
+@Component( {
   selector: 'sn-confirm-dialog',
   templateUrl: './confirm-dialog.component.html',
   styleUrls: ['./confirm-dialog.component.css']
-})
+} )
 export class ConfirmDialogComponent {
   prompt: string
   promptDetail: string
 
   constructor( private dialogRef: MatDialogRef<ConfirmDialogComponent>,
-               @Inject( MAT_DIALOG_DATA ) private dialogData: ConfirmDialogData ) {
+               @Inject( MAT_DIALOG_DATA ) dialogData: ConfirmDialogData ) {
     this.prompt = dialogData.prompt
     this.promptDetail = dialogData.promptDetail
   }

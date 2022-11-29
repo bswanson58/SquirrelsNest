@@ -24,7 +24,7 @@ export class UserEditRolesDialogComponent {
   isAdmin: boolean
 
   constructor( private dialogRef: MatDialogRef<UserEditRolesDialogComponent>,
-               @Inject( MAT_DIALOG_DATA ) private dialogData: UserEditRolesData ) {
+               @Inject( MAT_DIALOG_DATA ) dialogData: UserEditRolesData ) {
     this.user = dialogData.user
     this.isDisabled = dialogData.user.claims.length === 0
     this.isUser = dialogData.user.claims.find( r => r.type === 'role' && r.value === 'user' ) !== undefined

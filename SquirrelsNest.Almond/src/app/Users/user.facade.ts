@@ -1,5 +1,4 @@
 import {Injectable} from '@angular/core'
-import {MatDialog} from '@angular/material/dialog'
 import {Store} from '@ngrx/store'
 import {Observable} from 'rxjs'
 import {AddUserInput, ClUser} from '../Data/graphQlTypes'
@@ -20,8 +19,7 @@ import {UserService} from './user.service'
 export class UsersFacade {
   constructor( private store: Store<AppState>,
                private userService: UserService,
-               private userMutationService: UserMutationsService,
-               private dialog: MatDialog ) {
+               private userMutationService: UserMutationsService ) {
   }
 
   AddUser( user: AddUserInput ) {

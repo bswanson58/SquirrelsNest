@@ -16,7 +16,7 @@ export class MessageDialogComponent {
   message: string
 
   constructor( private dialogRef: MatDialogRef<MessageDialogComponent>,
-               @Inject( MAT_DIALOG_DATA ) private dialogData: MessageInput ) {
+               @Inject( MAT_DIALOG_DATA ) dialogData: MessageInput ) {
     this.title = dialogData.title
     this.message = dialogData.message
   }

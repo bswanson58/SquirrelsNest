@@ -30,7 +30,7 @@ export class WorkflowEditDialogComponent {
   categoryValues$: Observable<CategoryValues[]>
 
   constructor( private dialogRef: MatDialogRef<WorkflowEditDialogComponent>,
-               @Inject( MAT_DIALOG_DATA ) private dialogData: WorkflowStateEditData,
+               @Inject( MAT_DIALOG_DATA ) dialogData: WorkflowStateEditData,
                projectFacade: ProjectFacade ) {
     this.categoryValues$ = projectFacade.GetWorkflowStateCategoryValues$()
     this.name = dialogData.name

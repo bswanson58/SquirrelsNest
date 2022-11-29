@@ -30,7 +30,7 @@ export class IssueDetailSelectorComponent {
   selectedItemId: string
 
   constructor( private dialogRef: MatDialogRef<IssueDetailSelectorComponent>,
-               @Inject( MAT_DIALOG_DATA ) private selectorData: DetailSelectorData ) {
+               @Inject( MAT_DIALOG_DATA ) selectorData: DetailSelectorData ) {
     this.issueTitle = selectorData.issueTitle
     this.dialogTitle = selectorData.dialogTitle
     this.selectorValues = selectorData.items

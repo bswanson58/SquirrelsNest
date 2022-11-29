@@ -11,7 +11,7 @@ import {ProjectFacade} from '../project.facade'
 export class ProjectUsersListComponent {
   projectUsers$: Observable<ClUser[]>
 
-  constructor( private projectFacade: ProjectFacade ) {
+  constructor( projectFacade: ProjectFacade ) {
     this.projectUsers$ = projectFacade.GetCurrentProject$()
       .pipe(
         map( project => project ? project.users : [] ),

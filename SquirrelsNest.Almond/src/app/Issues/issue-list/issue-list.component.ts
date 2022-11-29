@@ -18,7 +18,7 @@ export class IssueListComponent implements OnInit, OnDestroy {
   serverHasMoreIssues$: Observable<boolean>
   private mProjectSubscription: Subscription | undefined
 
-  constructor( private projectFacade: ProjectFacade, private authFacade: AuthFacade, private issuesFacade: IssuesFacade, private uiFacade: UiFacade ) {
+  constructor( private projectFacade: ProjectFacade, private authFacade: AuthFacade, private issuesFacade: IssuesFacade, uiFacade: UiFacade ) {
     this.serverHasMoreIssues$ = this.issuesFacade.GetServerHasMoreIssues$()
 
     this.userId$ =
