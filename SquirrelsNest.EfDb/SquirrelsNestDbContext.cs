@@ -22,7 +22,7 @@ namespace SquirrelsNest.EfDb {
         public SquirrelsNestDbContext( ConfigurationBuilder builder ) :
             base( builder.Options()) { }
 
-        internal SquirrelsNestDbContext( DbContextOptions options ) :
+        public SquirrelsNestDbContext( DbContextOptions<SquirrelsNestDbContext> options ) :
             base( options ) { }
 
         protected override void ConfigureConventions( ModelConfigurationBuilder configurationBuilder ) {

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace SquirrelsNest.Service.Database {
     public class ServiceDbContext : IdentityDbContext {
 
-        public ServiceDbContext( DbContextOptions options ) : 
+        public ServiceDbContext( DbContextOptions<ServiceDbContext> options ) : 
             base( options ) {
         }
     }
