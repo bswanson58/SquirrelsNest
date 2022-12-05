@@ -5,7 +5,7 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-    <Platforms>AnyCPU;x64</Platforms>
+    <Platforms>AnyCPU;x64;x86</Platforms>
     <Copyright>Copyright © 2010-2022 Secret Squirrel Software</Copyright>
     <Company>Secret Squirrel Software</Company>
 	<Version>0.1.0.1</Version>
