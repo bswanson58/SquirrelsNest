@@ -9,7 +9,7 @@ namespace SquirrelsNest.EfDb {
         protected override void Load( ContainerBuilder builder ) {
             builder.RegisterType<ConfigurationBuilder>().SingleInstance();
             builder.RegisterType<ContextFactory>().As<IContextFactory>().SingleInstance();
-            builder.RegisterType<SquirrelsNestDbContext>().InstancePerDependency();
+//            builder.RegisterType<SquirrelsNestDbContext>().InstancePerDependency();
             builder.RegisterType<SnDatabaseInitializer>().As<IDatabaseInitializer>();
 
             builder.RegisterType<AssociationProvider>().As<IDbAssociationProvider>().SingleInstance();

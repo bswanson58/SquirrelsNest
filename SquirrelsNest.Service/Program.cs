@@ -75,6 +75,8 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
 
     services.AddDbContext<ServiceDbContext>( options =>
         options.UseSqlServer( configuration.GetConnectionString( "DatabaseConnection" )));
+    services.AddDbContext<SquirrelsNestDbContext>( options =>
+        options.UseSqlServer( configuration.GetConnectionString( "DatabaseConnection" )));
     
     services.AddIdentity<IdentityUser, IdentityRole>( options => {
             options.Password.RequireDigit = false;
