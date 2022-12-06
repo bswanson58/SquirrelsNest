@@ -18,7 +18,7 @@ namespace SquirrelsNest.Core {
         protected override void Load( ContainerBuilder builder ) {
             builder.RegisterType<ApplicationConstants>().As<IApplicationConstants>();
             builder.RegisterType<ApplicationEnvironment>().As<IEnvironment>();
-            builder.RegisterType<PlatformLog>().As<ILog>().As<IApplicationLog>().SingleInstance();
+            builder.RegisterType<PlatformLog>().As<ILog>().As<IApplicationLog>().SingleInstance().IfNotRegistered( typeof( ILog ));
 
             // Preferences support classes
             builder.RegisterType<PreferencesHandler>().As<IPreferencesHandler>().SingleInstance();

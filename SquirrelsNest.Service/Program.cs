@@ -13,12 +13,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using SquirrelsNest.Common.Interfaces;
 using SquirrelsNest.Common.Interfaces.Database;
 using SquirrelsNest.Core;
-using SquirrelsNest.Core.Preferences;
 using SquirrelsNest.EfDb;
-using SquirrelsNest.EfDb.Context;
 using SquirrelsNest.Service;
 using SquirrelsNest.Service.Database;
 using SquirrelsNest.Service.Filters;
@@ -39,6 +38,7 @@ appBuilder.Host.UseServiceProviderFactory( new AutofacServiceProviderFactory() )
 appBuilder.Host.ConfigureContainer<ContainerBuilder>( ConfigureDependencies );
 
 ConfigureServices( appBuilder.Services, appBuilder.Configuration );
+appBuilder.Host.UseSerilog();
 
 var app = appBuilder.Build();
 
@@ -50,15 +50,22 @@ await SeedDatabase( app );
 app.Run();
 
 void ConfigureDependencies( ContainerBuilder builder ) {
+    // the ServiceModule is registered first to override the logger.
     builder
+        .RegisterModule<ServiceModule>()
         .RegisterModule<CoreModule>()
-        .RegisterModule<EfDbModule>()
-        .RegisterModule<ServiceModule>();
+        .RegisterModule<EfDbModule>();
 
-    builder.RegisterType<Preferences<EfDatabaseConfiguration>>().As<IPreferences<EfDatabaseConfiguration>>();
+//    builder.RegisterType<Preferences<EfDatabaseConfiguration>>().As<IPreferences<EfDatabaseConfiguration>>();
 }
 
 void ConfigureServices( IServiceCollection services, ConfigurationManager configuration ) {
+    Log.Logger = new LoggerConfiguration()
+        .ReadFrom.Configuration( configuration )
+        .Enrich.FromLogContext()
+        .Enrich.WithMachineName()
+        .CreateLogger();
+
     services.AddHttpContextAccessor();
 
     services.AddControllers(options => {
