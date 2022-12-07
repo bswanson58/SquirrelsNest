@@ -4,8 +4,7 @@ import {ApolloModule, APOLLO_NAMED_OPTIONS, NamedOptions} from 'apollo-angular'
 import {ApolloLink, InMemoryCache} from '@apollo/client/core'
 import {HttpLink} from 'apollo-angular/http'
 import {getAuthenticationToken} from './Auth/jwtSupport'
-
-const uri = 'https://localhost:8200/api/' // <-- add the URL of the GraphQL server here
+import {environment} from '../environments/environment'
 
 export function createApollo( httpLink: HttpLink ): NamedOptions {
   const basic = setContext( ( operation, context ) => ({
@@ -31,7 +30,7 @@ export function createApollo( httpLink: HttpLink ): NamedOptions {
 
   return {
     projectsWatchClient: {
-      link: ApolloLink.from( [basic, auth, httpLink.create( { uri } )] ),
+      link: ApolloLink.from( [basic, auth, httpLink.create( { uri: environment.apiUrl } )] ),
       cache: new InMemoryCache( {
         typePolicies: {
           Query: {
@@ -45,7 +44,7 @@ export function createApollo( httpLink: HttpLink ): NamedOptions {
       } )
     },
     issuesWatchClient: {
-      link: ApolloLink.from( [basic, auth, httpLink.create( { uri } )] ),
+      link: ApolloLink.from( [basic, auth, httpLink.create( { uri: environment.apiUrl } )] ),
       cache: new InMemoryCache( {
         typePolicies: {
           Query: {
@@ -59,7 +58,7 @@ export function createApollo( httpLink: HttpLink ): NamedOptions {
       } )
     },
     usersWatchClient: {
-      link: ApolloLink.from( [basic, auth, httpLink.create( { uri } )] ),
+      link: ApolloLink.from( [basic, auth, httpLink.create( { uri: environment.apiUrl } )] ),
       cache: new InMemoryCache( {
         typePolicies: {
           Query: {
@@ -73,7 +72,7 @@ export function createApollo( httpLink: HttpLink ): NamedOptions {
       } )
     },
     defaultClient: {
-      link: ApolloLink.from( [basic, auth, httpLink.create( { uri } )] ),
+      link: ApolloLink.from( [basic, auth, httpLink.create( { uri: environment.apiUrl } )] ),
       cache: new InMemoryCache()
     },
   }
