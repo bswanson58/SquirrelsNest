@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SquirrelsNest.Common.Interfaces;
+using SquirrelsNest.Service.Database;
 using SquirrelsNest.Service.Dto.Mutations;
 
 namespace SquirrelsNest.Service.Users {
@@ -17,10 +18,13 @@ namespace SquirrelsNest.Service.Users {
     public class Authentication {
         private readonly IUserProvider                  mUserProvider;
         private readonly IConfiguration                 mConfiguration;
+        private readonly IdentityDatabaseInitializer    mDatabaseInitializer;
 
-        public Authentication( IUserProvider userProvider, IConfiguration configuration ) {
+        public Authentication( IUserProvider userProvider, IConfiguration configuration, 
+                               IdentityDatabaseInitializer databaseInitializer ) {
             mUserProvider = userProvider;
             mConfiguration = configuration;
+            mDatabaseInitializer = databaseInitializer;
         }
 
         private LoginPayload BuildToken( IEnumerable<Claim> claims ) {
@@ -55,6 +59,11 @@ namespace SquirrelsNest.Service.Users {
         public async Task<LoginPayload> Login([FromServices] UserManager<IdentityUser> userManager,
                                               [FromServices] SignInManager<IdentityUser> signInManager, 
                                               LoginInput loginInput ) {
+//            var initResult = await mDatabaseInitializer.InitializeDatabase( userManager );
+//            if( initResult.IsLeft ) {
+//                return new LoginPayload( initResult.LeftToList().FirstOrDefault());
+//            }
+
             var result = await signInManager.PasswordSignInAsync( loginInput.Email, loginInput.Password,
                                                                   isPersistent: false, lockoutOnFailure: false);
 
@@ -69,6 +78,9 @@ namespace SquirrelsNest.Service.Users {
 
                     return BuildToken( claims );
                 }
+            }
+            else {
+                return new LoginPayload( result.ToString());
             }
 
             return new LoginPayload();

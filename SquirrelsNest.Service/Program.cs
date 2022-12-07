@@ -169,19 +169,11 @@ void ConfigureEndpoints( IEndpointRouteBuilder routeBuilder ) {
 
 static async Task SeedDatabase( IHost host ) {
     var scopeFactory = host.Services.GetService<IServiceScopeFactory>();
-    var log = host.Services.GetService<ILog>();
+    var log = host.Services.GetService<IApplicationLog>();
 
     if(( scopeFactory != null ) &&
        ( log != null )) {
         using var scope = scopeFactory.CreateScope();
-
-        var databaseSeeder = scope.ServiceProvider.GetService<IdentityDatabaseInitializer>();
-
-        if( databaseSeeder != null ) {
-            var initError = await databaseSeeder.InitializeDatabase();
-
-            initError.IfLeft( error => log.LogMessage( error.Message ));
-        }
 
         var snDatabaseInitializer = scope.ServiceProvider.GetService<IDatabaseInitializer>();
 
@@ -189,6 +181,8 @@ static async Task SeedDatabase( IHost host ) {
             var initError = await snDatabaseInitializer.InitializeDatabase();
 
             initError.IfLeft( error => log.LogMessage( error.Message ));
+
+            log.LogMessage( "SquirrelsNest database initialized" );
         }
     }
 }

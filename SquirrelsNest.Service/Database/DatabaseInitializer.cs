@@ -13,25 +13,23 @@ using SquirrelsNest.Service.Support;
 namespace SquirrelsNest.Service.Database {
     public class IdentityDatabaseInitializer {
         private readonly IUserProvider                  mUserProvider;
-        private readonly UserManager<IdentityUser>      mUserManager;
         private readonly IConfiguration                 mConfiguration;
         private readonly ServiceDbContext               mIdentityContext;
 
-        public IdentityDatabaseInitializer( UserManager<IdentityUser> userManager, IConfiguration configuration,
+        public IdentityDatabaseInitializer( IConfiguration configuration,
                                             ServiceDbContext identityContext, IUserProvider userProvider ) {
-            mUserManager = userManager;
             mConfiguration = configuration;
             mUserProvider = userProvider;
             mIdentityContext = identityContext;
         }
 
-        public async Task<Either<Error, SnUser>> InitializeDatabase() {
+        public async Task<Either<Error, SnUser>> InitializeDatabase( UserManager<IdentityUser> userManager ) {
             await mIdentityContext.Database.MigrateAsync();
 
             var haveAdmin = false;
 
             foreach( var user in mIdentityContext.Users ) {
-                var claims = await mUserManager.GetClaimsAsync( user );
+                var claims = await userManager.GetClaimsAsync( user );
 
                 haveAdmin = claims.Any( claim => claim.Type.Equals( ClaimValues.ClaimRole ) && claim.Value.Equals( ClaimValues.ClaimRoleAdmin ));
 
@@ -41,22 +39,22 @@ namespace SquirrelsNest.Service.Database {
             }
 
             if(!haveAdmin ) {
-                return await CreateAdminUser();
+                return await CreateAdminUser( userManager );
             }
 
             return SnUser.Default;
         }
 
-        private async Task<Either<Error, SnUser>> CreateAdminUser() {
+        private async Task<Either<Error, SnUser>> CreateAdminUser( UserManager<IdentityUser> userManager ) {
             var user = new IdentityUser { UserName = mConfiguration["DefaultAdmin:Email"], Email = mConfiguration["DefaultAdmin:Email"] };
-            var result = await mUserManager.CreateAsync( user, mConfiguration["DefaultAdmin:Password"] );
+            var result = await userManager.CreateAsync( user, mConfiguration["DefaultAdmin:Password"] );
 
             if( result.Succeeded ) {
-                result = await mUserManager.AddClaimAsync( user, new Claim( ClaimValues.ClaimRole, ClaimValues.ClaimRoleAdmin ));
+                result = await userManager.AddClaimAsync( user, new Claim( ClaimValues.ClaimRole, ClaimValues.ClaimRoleAdmin ));
 
                 // all users have the user role.
                 if( result.Succeeded ) {
-                    result = await mUserManager.AddClaimAsync( user, new Claim( ClaimValues.ClaimRole, ClaimValues.ClaimRoleUser ));
+                    result = await userManager.AddClaimAsync( user, new Claim( ClaimValues.ClaimRole, ClaimValues.ClaimRoleUser ));
                 }
 
                 if( result.Succeeded ) {
