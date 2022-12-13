@@ -8,16 +8,25 @@ using SquirrelsNest.Pecan.Client;
 using SquirrelsNest.Pecan.Client.Projects;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
-builder.RootComponents.Add<App>( "#app" );
-builder.RootComponents.Add<HeadOutlet>( "head::after" );
 
-builder.Services.AddHttpClient( "SquirrelsNest.Pecan.ServerAPI", 
-    client => client.BaseAddress = new Uri( builder.HostEnvironment.BaseAddress ));
-// Supply HttpClient instances that include access tokens when making requests to the server project
-builder.Services.AddScoped( sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient( "SquirrelsNest.Pecan.ServerAPI" ));
-
-builder.Services.AddScoped( typeof( ProjectFacade ));
-
-builder.Services.AddFluxor( options => options.ScanAssemblies( typeof( App ).Assembly ));
+ConfigureRootComponents( builder.RootComponents );
+ConfigureServices( builder.Services );
 
 await builder.Build().RunAsync();
+
+
+void ConfigureRootComponents( RootComponentMappingCollection root ) {
+    root.Add<App>( "#app" );
+    root.Add<HeadOutlet>( "head::after" );
+}
+
+void ConfigureServices( IServiceCollection services ) {
+    services.AddHttpClient( "SquirrelsNest.Pecan.ServerAPI", 
+        client => client.BaseAddress = new Uri( builder.HostEnvironment.BaseAddress ));
+// Supply HttpClient instances that include access tokens when making requests to the server project
+    services.AddScoped( sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient( "SquirrelsNest.Pecan.ServerAPI" ));
+
+    services.AddScoped( typeof( ProjectFacade ));
+
+    services.AddFluxor( options => options.ScanAssemblies( typeof( App ).Assembly ));
+}
