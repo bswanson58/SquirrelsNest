@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SquirrelsNest.Pecan.Server.Platform {
+namespace SquirrelsNest.Pecan.Shared.Platform {
     public interface ITimeProvider {
         DateOnly        CurrentDate { get; }
         DateTime        CurrentDateTime { get; }

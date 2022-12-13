@@ -1,24 +1,28 @@
 ﻿using System;
-using SquirrelsNest.Pecan.Server.Platform;
+using System.Diagnostics;
+using System.Text.Json.Serialization;
+using SquirrelsNest.Pecan.Shared.Platform;
 
-namespace SquirrelsNest.Pecan.Server.Models.Entities {
+namespace SquirrelsNest.Pecan.Shared.Entities {
+    [DebuggerDisplay("{" + nameof( DebugName ) + "}")]
     public class SnProject : EntityBase {
-        public string Name { get; }
-        public string Description { get; }
-        public DateTime Inception { get; }
-        public string RepositoryUrl { get; }
-        public string IssuePrefix { get; }
-        public uint NextIssueNumber { get; }
+        public string       Name { get; }
+        public string       Description { get; }
+        public DateTime     Inception { get; }
+        public string       RepositoryUrl { get; }
+        public string       IssuePrefix { get; }
+        public uint         NextIssueNumber { get; }
 
-        public string DebugName => $"Project: '{Name}' ({IssuePrefix})";
+        public string       DebugName => $"Project: ({IssuePrefix}) '{Name}'";
 
-        public SnProject( string entityId, string dbId, string name, string description, DateTime inception, string repository, string issuePrefix,
-                          uint nextIssueNumber ) :
+        [JsonConstructor]
+        public SnProject( string entityId, string dbId, string name, string description, DateTime inception, 
+                          string repositoryUrl, string issuePrefix, uint nextIssueNumber ) :
             base( entityId, dbId ) {
             Name = name;
             Description = description;
             Inception = inception;
-            RepositoryUrl = repository;
+            RepositoryUrl = repositoryUrl;
             IssuePrefix = issuePrefix;
             NextIssueNumber = nextIssueNumber;
         }
