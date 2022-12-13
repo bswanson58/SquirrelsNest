@@ -20,16 +20,17 @@ namespace SquirrelsNest.Pecan.Client.Projects.Effects {
 
         public override async Task HandleAsync( GetProjectsAction action, IDispatcher dispatcher ) {
             try {
-                mLogger.LogInformation( "GetProjectsEffect" );
-                
                 var response = await mHttpClient.GetFromJsonAsync<GetProjectsResponse>( Routes.GetProjects );
 
-                mLogger.LogInformation( "GetProjectsEffect success" );
-
-                dispatcher.Dispatch( new GetProjectsSuccessAction( response.Projects ));
+                if( response != null ) {
+                    dispatcher.Dispatch( new GetProjectsSuccessAction( response.Projects ));
+                }
+                else {
+                    dispatcher.Dispatch( new GetProjectsFailureAction( "Received null response" ));
+                }
             }
-            catch ( Exception exception ) {
-                mLogger.LogError( $"GetProjectsEffect: {exception.Message}" );
+            catch ( HttpRequestException exception ) {
+                mLogger.LogError( exception, String.Empty );
 
                 dispatcher.Dispatch( new GetProjectsFailureAction( exception.Message ));
             }
