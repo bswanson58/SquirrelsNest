@@ -4,6 +4,7 @@ using Fluxor;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using MudBlazor.Services;
 using SquirrelsNest.Pecan.Client;
 using SquirrelsNest.Pecan.Client.Projects;
 
@@ -29,4 +30,6 @@ void ConfigureServices( IServiceCollection services ) {
     services.AddScoped( typeof( ProjectFacade ));
 
     services.AddFluxor( options => options.ScanAssemblies( typeof( App ).Assembly ));
+
+    services.AddMudServices();
 }
