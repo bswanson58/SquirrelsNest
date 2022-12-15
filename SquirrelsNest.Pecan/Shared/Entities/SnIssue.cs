@@ -18,20 +18,21 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
         public  EntityId    AssignedToId { get; }
 
         // the serializable constructor
-        public SnIssue( string entityId, string title, string description, string projectId, uint issueNumber, DateOnly entryDate, 
-                        EntityId enteredById, EntityId issueTypeId, EntityId componentId, EntityId releaseId, EntityId workflowStateId, EntityId assignedToId )
+        public SnIssue( string entityId, string title, string description, string projectId, uint issueNumber, 
+                        DateOnly entryDate, string enteredById, string issueTypeId, string componentId, 
+                        string releaseId, string workflowStateId, string assignedToId )
             : base( entityId ) {
             ProjectId = EntityId.CreateIdOrThrow( projectId );
             IssueTypeId = EntityId.CreateIdOrThrow( issueTypeId );
             ComponentId = EntityId.CreateIdOrThrow( componentId );
-            EnteredById = enteredById;
+            EnteredById = EntityId.CreateIdOrThrow( enteredById );
             Title = title;
             Description = description;
             IssueNumber = issueNumber;
             EntryDate = entryDate;
-            ReleaseId = releaseId;
-            WorkflowStateId = workflowStateId;
-            AssignedToId = assignedToId;
+            ReleaseId = EntityId.CreateIdOrThrow( releaseId );
+            WorkflowStateId = EntityId.CreateIdOrThrow( workflowStateId );
+            AssignedToId = EntityId.CreateIdOrThrow( assignedToId );
         }
 
         public SnIssue( string title, uint issueNumber, EntityId projectId ) :
