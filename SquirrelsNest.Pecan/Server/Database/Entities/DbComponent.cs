@@ -2,7 +2,7 @@
 using SquirrelsNest.Pecan.Shared.Entities;
 
 namespace SquirrelsNest.Pecan.Server.Database.Entities {
-    public class DbComponent : DbEntityBase {
+    public class DbComponent : DbEntityBase<DbComponent> {
         public  string      ProjectId { get; set; }
         public  string      Name { get; set; }
         public  string      Description { get; set; }
@@ -30,5 +30,11 @@ namespace SquirrelsNest.Pecan.Server.Database.Entities {
         public static DbComponent From( SnComponent component ) => new DbComponent( component );
 
         public SnComponent ToEntity() => new SnComponent( EntityId, ProjectId, Name, Description );
+
+        public override void Update( DbComponent from ) {
+            ProjectId = from.ProjectId;
+            Name = from.Name;
+            Description = from.Description;
+        }
     }
 }

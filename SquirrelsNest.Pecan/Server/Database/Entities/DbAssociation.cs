@@ -2,7 +2,7 @@
 using SquirrelsNest.Pecan.Shared.Entities;
 
 namespace SquirrelsNest.Pecan.Server.Database.Entities {
-    public class DbAssociation : DbEntityBase {
+    public class DbAssociation : DbEntityBase<DbAssociation> {
         public  string  OwnerId { get; set; }
         public  string  AssociationId { get; set; }
 
@@ -17,8 +17,13 @@ namespace SquirrelsNest.Pecan.Server.Database.Entities {
             AssociationId = association.AssociationId;
         }
         
-        public static DbAssociation From( SnAssociation association ) => new DbAssociation( association );
+        public static DbAssociation From( SnAssociation association ) => new( association );
 
-        public SnAssociation ToEntity() => new SnAssociation( EntityId, OwnerId, AssociationId );
+        public SnAssociation ToEntity() => new( EntityId, OwnerId, AssociationId );
+
+        public override void Update( DbAssociation from ) {
+            OwnerId = from.OwnerId;
+            AssociationId = from.AssociationId;
+        }
     }
 }

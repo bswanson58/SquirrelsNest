@@ -3,7 +3,7 @@ using System;
 using SquirrelsNest.Pecan.Shared.Platform;
 
 namespace SquirrelsNest.Pecan.Server.Database.Entities {
-    public class DbIssue : DbEntityBase {
+    public class DbIssue : DbEntityBase<DbIssue> {
         public  string      Title { get; set; }
         public  string      Description { get; set; }
         public  string      ProjectId { get; set; }
@@ -49,5 +49,19 @@ namespace SquirrelsNest.Pecan.Server.Database.Entities {
 
         public SnIssue ToEntity() => new SnIssue( EntityId, Title, Description, ProjectId, IssueNumber, EntryDate, 
                                                   EnteredById, IssueTypeId, ComponentId, ReleaseId, WorkflowStateId, AssignedToId );
+
+        public override void Update( DbIssue from ) {
+            Title = from.Title;
+            Description = from.Description;
+            ProjectId = from.ProjectId;
+            IssueNumber = from.IssueNumber;
+            EntryDate = from.EntryDate;
+            EnteredById = from.EnteredById;
+            IssueTypeId = from.IssueTypeId;
+            ComponentId = from.ComponentId;
+            ReleaseId = from.ReleaseId;
+            WorkflowStateId = from.WorkflowStateId;
+            AssignedToId = from.AssignedToId;
+        }
     }
 }

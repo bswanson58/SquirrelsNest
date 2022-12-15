@@ -2,7 +2,7 @@
 using SquirrelsNest.Pecan.Shared.Entities;
 
 namespace SquirrelsNest.Pecan.Server.Database.Entities {
-    public class DbUser : DbEntityBase {
+    public class DbUser : DbEntityBase<DbUser> {
         public  string  Name { get; set; }
         public  string  LoginName { get; set; }
         public  string  Email { get; set; }
@@ -23,5 +23,11 @@ namespace SquirrelsNest.Pecan.Server.Database.Entities {
         public static DbUser From( SnUser user ) => new DbUser( user );
 
         public SnUser ToEntity() => new SnUser( EntityId, LoginName, Name, Email );
+
+        public override void Update( DbUser from ) {
+            Name = from.Name;
+            LoginName = from.LoginName;
+            Email = from.Email;
+        }
     }
 }

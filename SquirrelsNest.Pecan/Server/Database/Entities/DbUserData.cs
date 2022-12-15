@@ -2,7 +2,7 @@
 using SquirrelsNest.Pecan.Shared.Entities;
 
 namespace SquirrelsNest.Pecan.Server.Database.Entities {
-    public class DbUserData : DbEntityBase {
+    public class DbUserData : DbEntityBase<DbUserData> {
         public  string          UserId { get; set; }
         public  UserDataType    DataType { get; set; }
         public  string          Data { get; set; }
@@ -23,5 +23,11 @@ namespace SquirrelsNest.Pecan.Server.Database.Entities {
         public static DbUserData From( SnUserData data ) => new DbUserData( data );
 
         public SnUserData ToEntity() => new SnUserData( EntityId, UserId, DataType, Data );
+
+        public override void Update( DbUserData from ) {
+            UserId = from.UserId;
+            DataType = from.DataType;
+            Data = from.Data;
+        }
     }
 }

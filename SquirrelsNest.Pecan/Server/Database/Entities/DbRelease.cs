@@ -3,7 +3,7 @@ using SquirrelsNest.Pecan.Shared.Entities;
 using SquirrelsNest.Pecan.Shared.Platform;
 
 namespace SquirrelsNest.Pecan.Server.Database.Entities {
-    public class DbRelease : DbEntityBase {
+    public class DbRelease : DbEntityBase<DbRelease> {
         public  string      ProjectId { get; set; }
         public  string      Name { get; set; }
         public  string      Description { get; set; }
@@ -30,5 +30,13 @@ namespace SquirrelsNest.Pecan.Server.Database.Entities {
         public static DbRelease From( SnRelease release ) => new DbRelease( release );
 
         public SnRelease ToEntity() => new SnRelease( EntityId, ProjectId, Name, Description, RepositoryLabel, ReleaseDate );
+
+        public override void Update( DbRelease from ) {
+            ProjectId = from.ProjectId;
+            Name = from.Name;
+            Description = from.Description;
+            RepositoryLabel = from.RepositoryLabel;
+            ReleaseDate = from.ReleaseDate;
+        }
     }
 }

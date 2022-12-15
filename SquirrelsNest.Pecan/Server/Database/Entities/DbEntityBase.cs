@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace SquirrelsNest.Pecan.Server.Database.Entities {
-    public class DbEntityBase {
+    public abstract class DbEntityBase<TEntity> {
         [Key]
         public string   EntityId { get; set; }
 
@@ -13,5 +13,7 @@ namespace SquirrelsNest.Pecan.Server.Database.Entities {
         protected DbEntityBase( string entityId ) {
             EntityId = entityId;
         }
+
+        public abstract void Update( TEntity from );
     }
 }

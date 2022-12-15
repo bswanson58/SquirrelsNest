@@ -3,7 +3,7 @@ using SquirrelsNest.Pecan.Shared.Entities;
 using SquirrelsNest.Pecan.Shared.Platform;
 
 namespace SquirrelsNest.Pecan.Server.Database.Entities {
-    public class DbProject : DbEntityBase {
+    public class DbProject : DbEntityBase<DbProject> {
         public string       Name { get; set; }
         public string       Description { get; set; }
         public DateOnly     Inception { get; set; }
@@ -33,5 +33,14 @@ namespace SquirrelsNest.Pecan.Server.Database.Entities {
         public static DbProject From( SnProject project ) => new DbProject( project );
 
         public SnProject ToEntity() => new SnProject( EntityId, Name, Description, Inception, RepositoryUrl, IssuePrefix, NextIssueNumber );
+
+        public override void Update( DbProject from ) {
+            Name = from.Name;
+            Description = from.Description;
+            Inception = from.Inception;
+            RepositoryUrl = from.RepositoryUrl;
+            IssuePrefix = from.IssuePrefix;
+            NextIssueNumber = from.NextIssueNumber;
+        }
     }
 }
