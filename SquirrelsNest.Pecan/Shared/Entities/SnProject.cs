@@ -8,7 +8,7 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
     public class SnProject : EntityBase {
         public string       Name { get; }
         public string       Description { get; }
-        public DateTime     Inception { get; }
+        public DateOnly     Inception { get; }
         public string       RepositoryUrl { get; }
         public string       IssuePrefix { get; }
         public uint         NextIssueNumber { get; }
@@ -16,9 +16,9 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
         public string       DebugName => $"Project: ({IssuePrefix}) '{Name}'";
 
         [JsonConstructor]
-        public SnProject( string entityId, string dbId, string name, string description, DateTime inception, 
+        public SnProject( string entityId, string name, string description, DateOnly inception, 
                           string repositoryUrl, string issuePrefix, uint nextIssueNumber ) :
-            base( entityId, dbId ) {
+            base( entityId ) {
             Name = name;
             Description = description;
             Inception = inception;
@@ -37,12 +37,12 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
             RepositoryUrl = string.Empty;
             IssuePrefix = issuePrefix;
             NextIssueNumber = 100;
-            Inception = DateTimeProvider.Instance.CurrentDateTime;
+            Inception = DateTimeProvider.Instance.CurrentDate;
         }
 
         public SnProject With( string? name = null, string? description = null, string? repository = null, string? issuePrefix = null ) {
             return new SnProject(
-                EntityId, DbId,
+                EntityId,
                 name ?? Name,
                 description ?? Description,
                 Inception,
@@ -52,7 +52,7 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
         }
 
         public SnProject WithNextIssueNumber() {
-            return new SnProject( EntityId, DbId, Name, Description, Inception, RepositoryUrl, IssuePrefix, NextIssueNumber + 1 );
+            return new SnProject( EntityId, Name, Description, Inception, RepositoryUrl, IssuePrefix, NextIssueNumber + 1 );
         }
 
         private static SnProject? mDefault;
