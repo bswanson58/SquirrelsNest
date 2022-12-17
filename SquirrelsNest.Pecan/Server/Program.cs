@@ -22,7 +22,7 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
     services.AddRazorPages();
 
     services.AddDbContext<PecanDbContext>( options => {
-        options.UseSqlServer( configuration.GetConnectionString( "" ));
+        options.UseSqlServer( configuration.GetConnectionString( "DatabaseConnection" ));
 
         #if DEBUG
             options.EnableDetailedErrors();

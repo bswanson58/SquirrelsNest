@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SquirrelsNest.Pecan.Server.Database.Entities;
+using SquirrelsNest.Pecan.Server.Database.Support;
+using System;
 
 // The framework will set the DbSet properties appropriately:
 #pragma warning disable CS8618 
@@ -21,6 +23,18 @@ namespace SquirrelsNest.Pecan.Server.Database {
 
         public PecanDbContext( DbContextOptions<PecanDbContext> options ) :
             base( options ) { }
+
+        protected override void ConfigureConventions( ModelConfigurationBuilder configurationBuilder ) {
+            base.ConfigureConventions( configurationBuilder );
+
+            configurationBuilder.Properties<DateOnly>()
+                .HaveConversion<DateOnlyConverter>()
+                .HaveColumnType( "date" );
+
+            configurationBuilder.Properties<DateOnly?>()
+                .HaveConversion<NullableDateOnlyConverter>()
+                .HaveColumnType( "date" );
+        }
 
         protected override void OnModelCreating( ModelBuilder modelBuilder ) {
             base.OnModelCreating( modelBuilder );

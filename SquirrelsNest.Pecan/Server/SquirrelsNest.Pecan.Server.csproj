@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Database\Migrations\" />
     <Folder Include="Features\Issues\" />
     <Folder Include="Features\Auth\" />
     <Folder Include="Features\UserData\" />
