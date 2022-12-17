@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor.Services;
 using SquirrelsNest.Pecan.Client;
-using SquirrelsNest.Pecan.Client.Projects;
+using SquirrelsNest.Pecan.Client.Projects.Store;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 

@@ -2,6 +2,7 @@
 using System.Linq;
 using Fluxor;
 using SquirrelsNest.Pecan.Client.Projects.Actions;
+using SquirrelsNest.Pecan.Client.Projects.Store;
 using SquirrelsNest.Pecan.Shared.Entities;
 
 namespace SquirrelsNest.Pecan.Client.Projects.Reducers {
