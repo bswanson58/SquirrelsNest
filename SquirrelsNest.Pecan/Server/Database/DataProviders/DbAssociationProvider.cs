@@ -12,11 +12,11 @@ namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
         Task                        Delete( SnAssociation association );
     }
 
-    public class DbAssociationProvider : ProviderBase<DbAssociation>, IAssociationProvider {
+    public class SnAssociationProvider : ProviderBase<DbAssociation>, IAssociationProvider {
         private static SnAssociation ConvertTo( DbAssociation association ) => association.ToEntity();
         private static DbAssociation ConvertFrom( SnAssociation association ) => DbAssociation.From( association );
 
-        public DbAssociationProvider( PecanDbContext context )
+        public SnAssociationProvider( PecanDbContext context )
             : base( context ) { }
 
         public IQueryable<SnAssociation> GetAll() => 

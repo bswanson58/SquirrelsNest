@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SquirrelsNest.Pecan.Server.Database;
+using SquirrelsNest.Pecan.Server.Database.DataProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,8 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
             options.EnableSensitiveDataLogging();
         #endif
     });
+
+    services.AddEntityProviders();
 }
 
 void ConfigurePipeline( WebApplication app ) {
