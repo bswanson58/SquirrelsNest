@@ -1,0 +1,42 @@
+﻿
+@using SquirrelsNest.Pecan.Shared.Dto
+
+<MudDialog>
+    <DialogContent>
+        <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild">
+            <MudTextField
+                T="string"
+                Label="Project Name"
+                HelperText="Name for the project"
+                HelperTextOnFocus="true"
+                @bind-Value="@Project.Name"/>
+            <MudTextField
+                T="string"
+                Label="Description"
+                HelperText="Description for the project"
+                HelperTextOnFocus="true"
+                @bind-Value="@Project.Description"/>
+            <MudTextField
+                T="string"
+                Label="Issue Prefix"
+                HelperText="Characters used to prefix project issue numbers"
+                HelperTextOnFocus="true"
+                @bind-Value="@Project.IssuePrefix"/>
+        </MudFocusTrap>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="OnCancel">Cancel</MudButton>
+        <MudButton OnClick="OnSubmit" Color="Color.Primary">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] 
+    public MudDialogInstance ?  MudDialog { get; set; }
+    [Parameter]
+    public CreateProjectInput   Project { get; set; } = new();
+
+    private void OnSubmit() => MudDialog?.Close( DialogResult.Ok( Project ));
+    private void OnCancel() => MudDialog?.Cancel();
+    }
+}
