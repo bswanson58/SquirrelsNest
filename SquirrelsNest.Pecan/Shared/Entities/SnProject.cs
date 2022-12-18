@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 using SquirrelsNest.Pecan.Shared.Platform;
 
 namespace SquirrelsNest.Pecan.Shared.Entities {
-    [DebuggerDisplay("{" + nameof( DebugName ) + "}")]
+    [DebuggerDisplay("{" + nameof( Name ) + "}")]
     public class SnProject : EntityBase {
         public string       Name { get; }
         public string       Description { get; }
@@ -12,8 +12,6 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
         public string       RepositoryUrl { get; }
         public string       IssuePrefix { get; }
         public uint         NextIssueNumber { get; }
-
-        public string       DebugName => $"Project: ({IssuePrefix}) '{Name}'";
 
         [JsonConstructor]
         public SnProject( string entityId, string name, string description, DateOnly inception, 
@@ -27,8 +25,7 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
             NextIssueNumber = nextIssueNumber;
         }
 
-        public SnProject( string name, string issuePrefix ) :
-            base( string.Empty ) {
+        public SnProject( string name, string issuePrefix ) {
             if( string.IsNullOrWhiteSpace( name ) ) throw new ApplicationException( "Project names cannot be empty" );
             if( string.IsNullOrWhiteSpace( issuePrefix ) ) throw new ApplicationException( "Issue Prefixes cannot be empty" );
 

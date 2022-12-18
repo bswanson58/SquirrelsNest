@@ -21,14 +21,14 @@ namespace SquirrelsNest.Pecan.Server.Features.Projects {
         }
 
         [HttpGet]
-        public override async Task<ActionResult<GetProjectsResponse>> HandleAsync( CancellationToken token = default ) {
+        public override async Task<ActionResult<GetProjectsResponse>> HandleAsync( CancellationToken token = new()) {
             try {
                 var projectList = await mProjectProvider.GetAll().ToListAsync( cancellationToken: token );
 
-                return new ActionResult<GetProjectsResponse>( new GetProjectsResponse( projectList ));
+                return Ok( new GetProjectsResponse( projectList ));
             }
             catch( Exception ex ) {
-                return new ActionResult<GetProjectsResponse>( new GetProjectsResponse( ex ));
+                return Ok( new GetProjectsResponse( ex ));
             }
         }
     }

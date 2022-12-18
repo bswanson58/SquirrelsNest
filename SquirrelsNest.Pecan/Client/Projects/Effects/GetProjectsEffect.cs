@@ -22,18 +22,19 @@ namespace SquirrelsNest.Pecan.Client.Projects.Effects {
             try {
                 var response = await mHttpClient.GetFromJsonAsync<GetProjectsResponse>( Routes.GetProjects );
 
-                if( response != null ) {
-                    dispatcher.Dispatch( new GetProjectsSuccessAction( response.Projects ));
+                if( response?.Succeeded == true ) {
+                    dispatcher.Dispatch( new GetProjectsSuccessAction( response.Projects ) );
                 }
                 else {
-                    dispatcher.Dispatch( new GetProjectsFailureAction( "Received null response" ));
+                    dispatcher.Dispatch( new GetProjectsFailureAction( "Received null response" ) );
                 }
             }
-            catch ( HttpRequestException exception ) {
+            catch( HttpRequestException exception ) {
                 mLogger.LogError( exception, String.Empty );
 
-                dispatcher.Dispatch( new GetProjectsFailureAction( exception.Message ));
+                dispatcher.Dispatch( new GetProjectsFailureAction( exception.Message ) );
             }
         }
     }
 }
+

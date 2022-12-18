@@ -2,24 +2,22 @@
 using Microsoft.Extensions.Logging;
 using SquirrelsNest.Pecan.Client.Projects.Actions;
 
-namespace SquirrelsNest.Pecan.Client.Projects.Store
-{
-    public class ProjectFacade
-    {
+namespace SquirrelsNest.Pecan.Client.Projects.Store {
+    public class ProjectFacade {
         private readonly ILogger<ProjectFacade> mLogger;
         private readonly IDispatcher mDispatcher;
 
-        public ProjectFacade(IDispatcher dispatcher, ILogger<ProjectFacade> logger)
-        {
+        public ProjectFacade( IDispatcher dispatcher, ILogger<ProjectFacade> logger ) {
             mDispatcher = dispatcher;
             mLogger = logger;
         }
 
-        public void LoadProjects()
-        {
-            mLogger.LogInformation("Dispatching GetProjectsAction");
+        public void LoadProjects() {
+            mDispatcher.Dispatch( new GetProjectsAction());
+        }
 
-            mDispatcher.Dispatch(new GetProjectsAction());
+        public void AddProject() {
+            mDispatcher.Dispatch( new AddProjectAction());
         }
     }
 }

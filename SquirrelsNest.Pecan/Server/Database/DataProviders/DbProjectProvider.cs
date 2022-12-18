@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
     public interface IProjectProvider {
-        IQueryable<SnProject>     GetAll();
-        ValueTask<SnProject ?>    GetById( string id );
-        Task<SnProject>           Create( SnProject project );
-        ValueTask<SnProject ?>    Update( SnProject project );
+        IQueryable<SnProject>   GetAll();
+        ValueTask<SnProject ?>  GetById( string id );
+        Task<SnProject>         Create( SnProject project );
+        ValueTask<SnProject ?>  Update( SnProject project );
         Task                    Delete( SnProject project );
     }
 
