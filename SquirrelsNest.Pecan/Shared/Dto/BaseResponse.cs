@@ -14,5 +14,10 @@ namespace SquirrelsNest.Pecan.Shared.Dto {
             Succeeded = false;
             Message = ex.Message;
         }
+
+        protected BaseResponse( bool succeeded, string message ) {
+            Succeeded = succeeded;
+            Message = message;
+        }
     }
 }
