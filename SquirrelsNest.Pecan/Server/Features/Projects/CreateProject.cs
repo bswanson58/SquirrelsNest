@@ -29,10 +29,10 @@ namespace SquirrelsNest.Pecan.Server.Features.Projects {
                 var project = new SnProject( request.Name, request.IssuePrefix ).With( description: request.Description );
                 var result =  await mProjectProvider.Create( project );
 
-                return new ActionResult<CreateProjectResponse>( new CreateProjectResponse( result ));
+                return Ok( new CreateProjectResponse( result ));
             }
             catch( Exception ex ) {
-                return new ActionResult<CreateProjectResponse>( new CreateProjectResponse( ex ));
+                return Ok( new CreateProjectResponse( ex ));
             }
         }
     }

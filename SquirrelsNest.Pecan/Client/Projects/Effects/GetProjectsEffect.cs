@@ -9,6 +9,7 @@ using SquirrelsNest.Pecan.Shared.Constants;
 using SquirrelsNest.Pecan.Shared.Dto;
 
 namespace SquirrelsNest.Pecan.Client.Projects.Effects {
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class GetProjectsEffect : Effect<GetProjectsAction> {
         private readonly    ILogger<GetProjectsEffect>  mLogger;
         private readonly    HttpClient                  mHttpClient;

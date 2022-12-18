@@ -9,6 +9,7 @@ using SquirrelsNest.Pecan.Shared.Constants;
 using SquirrelsNest.Pecan.Shared.Dto;
 
 namespace SquirrelsNest.Pecan.Client.Projects.Effects {
+    // ReSharper disable once UnusedType.Global
     public class AddProjectSubmitEffect : Effect<AddProjectSubmitAction> {
         private readonly    ILogger<GetProjectsEffect>  mLogger;
         private readonly    HttpClient                  mHttpClient;
@@ -23,9 +24,8 @@ namespace SquirrelsNest.Pecan.Client.Projects.Effects {
                 var postResponse = await mHttpClient.PostAsJsonAsync( Routes.CreateProject, action.ProjectInput );
                 var response = await postResponse.Content.ReadFromJsonAsync<CreateProjectResponse>();
 
-                if(( response != null ) &&
-                   ( response.Succeeded ) &&
-                   ( response.Project != null )) {
+                if(( response?.Project != null ) &&
+                   ( response.Succeeded )) {
                     dispatcher.Dispatch( new AddProjectSuccess( response.Project ));
                 }
                 else {

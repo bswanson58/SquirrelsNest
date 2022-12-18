@@ -5,6 +5,7 @@ using SquirrelsNest.Pecan.Client.Projects.Actions;
 using SquirrelsNest.Pecan.Shared.Dto;
 
 namespace SquirrelsNest.Pecan.Client.Projects.Effects {
+    // ReSharper disable once UnusedType.Global
     public class AddProjectEffect : Effect<AddProjectAction> {
         private readonly IDialogService mDialogService;
 
