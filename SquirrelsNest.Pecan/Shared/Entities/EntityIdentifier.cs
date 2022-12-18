@@ -3,12 +3,12 @@ using System.Diagnostics;
 
 namespace SquirrelsNest.Pecan.Shared.Entities {
     [DebuggerDisplay("Id:{" + nameof( Value ) + "}")]
-    public class EntityId : IEquatable<EntityId> {
+    public class EntityIdentifier : IEquatable<EntityIdentifier> {
         public  string Value { get; }
 
-        public  static implicit operator string( EntityId issueId ) => issueId.Value;
+        public  static implicit operator string( EntityIdentifier issueId ) => issueId.Value;
 
-        private EntityId( string entityId ) {
+        private EntityIdentifier( string entityId ) {
             if(!IsValid( entityId ) ) {
                 throw new ArgumentNullException( entityId );
             }
@@ -20,26 +20,26 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
             return !String.IsNullOrWhiteSpace( value );
         }
 
-        public static EntityId Default => new ( "default" );
+        public static EntityIdentifier Default => new ( "default" );
 
-        public static EntityId CreateIdOrThrow( string entityId ) {
-            var retValue = new EntityId( entityId );
+        public static EntityIdentifier CreateIdOrThrow( string entityId ) {
+            var retValue = new EntityIdentifier( entityId );
 
-            if(!EntityId.IsValid( entityId )) {
+            if(!EntityIdentifier.IsValid( entityId )) {
                 throw new ApplicationException( "entity ID could not be created" );
             }
 
             return retValue;
         }
 
-        public static EntityId CreateNew() {
-            return new EntityId( Guid.NewGuid().ToString());
+        public static EntityIdentifier CreateNew() {
+            return new EntityIdentifier( Guid.NewGuid().ToString());
         }
 
         // Equality:
-        public override bool Equals( object? obj ) => Equals( obj as EntityId );
+        public override bool Equals( object? obj ) => Equals( obj as EntityIdentifier );
 
-        public bool Equals( EntityId? right ) {
+        public bool Equals( EntityIdentifier? right ) {
             if( right is null ) {
                 return false;
             }
@@ -62,7 +62,7 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
 
         public override int GetHashCode() => Value.GetHashCode();
 
-        public static bool operator == ( EntityId ? lhs, EntityId ? rhs ) {
+        public static bool operator == ( EntityIdentifier ? lhs, EntityIdentifier ? rhs ) {
             if( lhs is null ) {
                 if( rhs is null ) {
                     return true;
@@ -75,6 +75,6 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
             return lhs.Equals( rhs );
         }
 
-        public static bool operator !=( EntityId lhs, EntityId rhs ) => !( lhs == rhs );
+        public static bool operator !=( EntityIdentifier lhs, EntityIdentifier rhs ) => !( lhs == rhs );
     }
 }

@@ -4,13 +4,13 @@ using System.Diagnostics;
 namespace SquirrelsNest.Pecan.Shared.Entities {
     [DebuggerDisplay("Type: {" + nameof( Name ) + "}")]
     public class SnIssueType :EntityBase {
-        public  EntityId        ProjectId { get; }
-        public  string          Name { get; }
-        public  string          Description { get; }
+        public  EntityIdentifier    ProjectId { get; }
+        public  string              Name { get; }
+        public  string              Description { get; }
 
         public SnIssueType( string entityId, string projectId, string name, string description ) :
             base( entityId ) {
-            ProjectId = EntityId.CreateIdOrThrow( projectId );
+            ProjectId = EntityIdentifier.CreateIdOrThrow( projectId );
             Name = name;
             Description = description;
         }
@@ -19,7 +19,7 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
             base( String.Empty ) {
             if( String.IsNullOrWhiteSpace( name )) throw new ApplicationException( "IssueType names cannot be empty" );
 
-            ProjectId = EntityId.Default;
+            ProjectId = EntityIdentifier.Default;
             Name = name;
             Description = String.Empty;
         }
@@ -40,6 +40,6 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
         private static SnIssueType ? mDefault;
 
         public static SnIssueType Default => 
-            mDefault ??= new SnIssueType( EntityId.Default, EntityId.Default, "Unspecified", String.Empty );
+            mDefault ??= new SnIssueType( EntityIdentifier.Default, EntityIdentifier.Default, "Unspecified", String.Empty );
     }
 }

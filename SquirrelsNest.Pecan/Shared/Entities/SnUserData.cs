@@ -9,18 +9,18 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
     }
 
     public class SnUserData : EntityBase {
-        public  EntityId        UserId { get; }
-        public  UserDataType    DataType { get; }
-        public  string          Data { get; }
+        public  EntityIdentifier    UserId { get; }
+        public  UserDataType        DataType { get; }
+        public  string              Data { get; }
 
         public SnUserData( string entityId, string userId, UserDataType dataType, string data ) :
             base( entityId ){
-            UserId = EntityId.CreateIdOrThrow( userId );
+            UserId = EntityIdentifier.CreateIdOrThrow( userId );
             DataType = dataType;
             Data = data;
         }
 
-        public SnUserData( EntityId userId, UserDataType dataType, string data ) :
+        public SnUserData( EntityIdentifier userId, UserDataType dataType, string data ) :
             base( String.Empty ) {
             UserId = userId;
             DataType = dataType;
@@ -30,6 +30,6 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
         private static SnUserData ? mDefaultData;
 
         public static SnUserData Default =>
-            mDefaultData ??= new SnUserData( EntityId.Default, EntityId.Default, UserDataType.Unknown, String.Empty );
+            mDefaultData ??= new SnUserData( EntityIdentifier.Default, EntityIdentifier.Default, UserDataType.Unknown, String.Empty );
     }
 }

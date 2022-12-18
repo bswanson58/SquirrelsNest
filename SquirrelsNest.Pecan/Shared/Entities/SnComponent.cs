@@ -4,13 +4,13 @@ using System.Diagnostics;
 namespace SquirrelsNest.Pecan.Shared.Entities {
     [DebuggerDisplay("Component: {" + nameof( Name ) + "}")]
     public class SnComponent : EntityBase {
-        public  EntityId    ProjectId { get; }
+        public  EntityIdentifier    ProjectId { get; }
         public  string      Name { get; }
         public  string      Description { get; }
 
         public SnComponent( string entityId, string projectId, string name, string description ) :
             base( entityId ) {
-            ProjectId = EntityId.CreateIdOrThrow( projectId );
+            ProjectId = EntityIdentifier.CreateIdOrThrow( projectId );
             Name = name;
             Description = description;
         }
@@ -19,7 +19,7 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
             base( String.Empty ) {
             if( String.IsNullOrWhiteSpace( name )) throw new ApplicationException( "Component names cannot be empty" );
 
-            ProjectId = EntityId.Default;
+            ProjectId = EntityIdentifier.Default;
             Name = name;
             Description = String.Empty;
         }
@@ -40,6 +40,6 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
         private static SnComponent ? mDefaultComponent;
 
         public static SnComponent Default =>
-            mDefaultComponent ??= new SnComponent( EntityId.Default, EntityId.Default, "Unspecified", String.Empty );
+            mDefaultComponent ??= new SnComponent( EntityIdentifier.Default, EntityIdentifier.Default, "Unspecified", String.Empty );
     }
 }

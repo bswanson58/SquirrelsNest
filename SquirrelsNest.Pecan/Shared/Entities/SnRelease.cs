@@ -14,7 +14,7 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
         // the serializable constructor
         public SnRelease( string entityId, string projectId, string name, string description, string repositoryLabel, DateOnly releaseDate )
             : base( entityId ) {
-            ProjectId = EntityId.CreateIdOrThrow( projectId );
+            ProjectId = EntityIdentifier.CreateIdOrThrow( projectId );
             Name = name;
             Description = description;
             RepositoryLabel = repositoryLabel;
@@ -29,7 +29,7 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
 
             Description = String.Empty;
             RepositoryLabel = String.Empty;
-            ProjectId = EntityId.Default;
+            ProjectId = EntityIdentifier.Default;
             ReleaseDate = DateTimeProvider.Instance.CurrentDate;
         }
 
@@ -53,7 +53,7 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
         private static SnRelease ? mDefaultRelease;
 
         public static SnRelease Default =>
-            mDefaultRelease ??= new SnRelease( EntityId.Default, EntityId.Default, "Unspecified", 
+            mDefaultRelease ??= new SnRelease( EntityIdentifier.Default, EntityIdentifier.Default, "Unspecified", 
                                                String.Empty, String.Empty, DateTimeProvider.Instance.CurrentDate );
 
     }

@@ -5,55 +5,55 @@ using SquirrelsNest.Pecan.Shared.Platform;
 namespace SquirrelsNest.Pecan.Shared.Entities {
     [DebuggerDisplay("Issue: {" + nameof( Title ) + "}")]
     public class SnIssue : EntityBase {
-        public  string      Title { get; }
-        public  string      Description { get; }
-        public  EntityId    ProjectId { get; }
-        public  uint        IssueNumber {  get; }
-        public  DateOnly    EntryDate { get; }
-        public  EntityId    EnteredById { get; }
-        public  EntityId    IssueTypeId {  get; }
-        public  EntityId    ComponentId { get; } 
-        public  EntityId    ReleaseId { get; }
-        public  EntityId    WorkflowStateId { get; }
-        public  EntityId    AssignedToId { get; }
+        public  string              Title { get; }
+        public  string              Description { get; }
+        public  EntityIdentifier    ProjectId { get; }
+        public  uint                IssueNumber {  get; }
+        public  DateOnly            EntryDate { get; }
+        public  EntityIdentifier    EnteredById { get; }
+        public  EntityIdentifier    IssueTypeId {  get; }
+        public  EntityIdentifier    ComponentId { get; } 
+        public  EntityIdentifier    ReleaseId { get; }
+        public  EntityIdentifier    WorkflowStateId { get; }
+        public  EntityIdentifier    AssignedToId { get; }
 
         // the serializable constructor
         public SnIssue( string entityId, string title, string description, string projectId, uint issueNumber, 
                         DateOnly entryDate, string enteredById, string issueTypeId, string componentId, 
                         string releaseId, string workflowStateId, string assignedToId )
             : base( entityId ) {
-            ProjectId = EntityId.CreateIdOrThrow( projectId );
-            IssueTypeId = EntityId.CreateIdOrThrow( issueTypeId );
-            ComponentId = EntityId.CreateIdOrThrow( componentId );
-            EnteredById = EntityId.CreateIdOrThrow( enteredById );
+            ProjectId = EntityIdentifier.CreateIdOrThrow( projectId );
+            IssueTypeId = EntityIdentifier.CreateIdOrThrow( issueTypeId );
+            ComponentId = EntityIdentifier.CreateIdOrThrow( componentId );
+            EnteredById = EntityIdentifier.CreateIdOrThrow( enteredById );
             Title = title;
             Description = description;
             IssueNumber = issueNumber;
             EntryDate = entryDate;
-            ReleaseId = EntityId.CreateIdOrThrow( releaseId );
-            WorkflowStateId = EntityId.CreateIdOrThrow( workflowStateId );
-            AssignedToId = EntityId.CreateIdOrThrow( assignedToId );
+            ReleaseId = EntityIdentifier.CreateIdOrThrow( releaseId );
+            WorkflowStateId = EntityIdentifier.CreateIdOrThrow( workflowStateId );
+            AssignedToId = EntityIdentifier.CreateIdOrThrow( assignedToId );
         }
 
-        public SnIssue( string title, uint issueNumber, EntityId projectId ) :
+        public SnIssue( string title, uint issueNumber, EntityIdentifier projectId ) :
             base( String.Empty ) {
             if( String.IsNullOrWhiteSpace( title )) throw new ApplicationException( "Issue titles cannot be empty" );
 
             Title = title;
             IssueNumber = issueNumber;
-            ProjectId = EntityId.CreateIdOrThrow( projectId );
+            ProjectId = EntityIdentifier.CreateIdOrThrow( projectId );
 
             Description = String.Empty;
             EntryDate = DateTimeProvider.Instance.CurrentDate;
-            EnteredById = EntityId.Default;
-            IssueTypeId = EntityId.Default;
-            ComponentId = EntityId.Default;
-            ReleaseId = EntityId.Default;
-            WorkflowStateId = EntityId.Default;
-            AssignedToId = EntityId.Default;
+            EnteredById = EntityIdentifier.Default;
+            IssueTypeId = EntityIdentifier.Default;
+            ComponentId = EntityIdentifier.Default;
+            ReleaseId = EntityIdentifier.Default;
+            WorkflowStateId = EntityIdentifier.Default;
+            AssignedToId = EntityIdentifier.Default;
         }
 
-        public SnIssue With( string ? title = null, string ? description = null, EntityId ? enteredBy = null, EntityId ? assignedTo = null ) {
+        public SnIssue With( string ? title = null, string ? description = null, EntityIdentifier ? enteredBy = null, EntityIdentifier ? assignedTo = null ) {
             return new SnIssue( 
                 EntityId,
                 title ?? Title,

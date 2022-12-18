@@ -1,14 +1,14 @@
 ﻿namespace SquirrelsNest.Pecan.Shared.Entities {
     public class EntityBase {
-        public EntityId EntityId { get; internal set; }
+        public  string  EntityId { get; }
 
-        private EntityBase() {
-            EntityId = EntityId.CreateNew();
+        protected EntityBase() {
+            EntityId = EntityIdentifier.CreateNew();
         }
 
         protected EntityBase( string entityId ) :
             this() {
-            EntityId = EntityId.CreateIdOrThrow( entityId );
+            EntityId = EntityIdentifier.CreateIdOrThrow( entityId );
         }
     }
 }

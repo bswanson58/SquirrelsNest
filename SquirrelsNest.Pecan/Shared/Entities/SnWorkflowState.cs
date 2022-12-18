@@ -11,14 +11,14 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
 
     [DebuggerDisplay("State: {" + nameof( Name ) + "}")]
     public class SnWorkflowState : EntityBase {
-        public  EntityId        ProjectId { get; }
-        public  string          Name { get; }
-        public  string          Description { get; }
-        public  StateCategory   Category { get; }
+        public  EntityIdentifier    ProjectId { get; }
+        public  string              Name { get; }
+        public  string              Description { get; }
+        public  StateCategory       Category { get; }
 
         public SnWorkflowState( string entityId, string projectId, string name, string description, StateCategory category ) :
             base( entityId ) {
-            ProjectId = EntityId.CreateIdOrThrow( projectId );
+            ProjectId = EntityIdentifier.CreateIdOrThrow( projectId );
             Name = name;
             Description = description;
             Category = category;
@@ -28,7 +28,7 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
             base( String.Empty ) {
             if( String.IsNullOrWhiteSpace( name )) throw new ApplicationException( "WorkflowState names cannot be empty" );
 
-            ProjectId = EntityId.Default;
+            ProjectId = EntityIdentifier.Default;
             Name = name;
             Description = String.Empty;
             Category = StateCategory.Initial;
@@ -51,6 +51,6 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
         private static SnWorkflowState ? mDefaultState;
 
         public static SnWorkflowState Default =>
-            mDefaultState ??= new SnWorkflowState( EntityId.Default, EntityId.Default, "Unspecified", String.Empty, StateCategory.Intermediate );
+            mDefaultState ??= new SnWorkflowState( EntityIdentifier.Default, EntityIdentifier.Default, "Unspecified", String.Empty, StateCategory.Intermediate );
     }
 }

@@ -32,6 +32,6 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
         private static SnUser ? mDefaultUser;
 
         public static SnUser Default =>
-            mDefaultUser ??= new SnUser( EntityId.Default, "Unspecified", "Unspecified", "Unspecified" );
+            mDefaultUser ??= new SnUser( EntityIdentifier.Default, "Unspecified", "Unspecified", "Unspecified" );
     }
 }

@@ -2,16 +2,16 @@
 
 namespace SquirrelsNest.Pecan.Shared.Entities {
     public class SnAssociation : EntityBase {
-        public  EntityId    OwnerId { get; }
-        public  EntityId    AssociationId { get; }
+        public  EntityIdentifier    OwnerId { get; }
+        public  EntityIdentifier    AssociationId { get; }
 
         public SnAssociation( string entityId, string ownerId, string associationId ) :
             base( entityId ){
-            OwnerId = EntityId.CreateIdOrThrow( ownerId );
-            AssociationId = EntityId.CreateIdOrThrow( associationId );
+            OwnerId = EntityIdentifier.CreateIdOrThrow( ownerId );
+            AssociationId = EntityIdentifier.CreateIdOrThrow( associationId );
         }
 
-        public SnAssociation( EntityId ownerId, EntityId associationId ) :
+        public SnAssociation( EntityIdentifier ownerId, EntityIdentifier associationId ) :
             base( String.Empty ) {
             OwnerId = ownerId;
             AssociationId = associationId;
@@ -20,6 +20,6 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
         private static SnAssociation ? mDefaultUser;
 
         public static SnAssociation Default =>
-            mDefaultUser ??= new SnAssociation( EntityId.Default, EntityId.Default, EntityId.Default );
+            mDefaultUser ??= new SnAssociation( EntityIdentifier.Default, EntityIdentifier.Default, EntityIdentifier.Default );
     }
 }

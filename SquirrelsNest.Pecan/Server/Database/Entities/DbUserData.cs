@@ -8,7 +8,7 @@ namespace SquirrelsNest.Pecan.Server.Database.Entities {
         public  string          Data { get; set; }
 
         public DbUserData() {
-            UserId = Shared.Entities.EntityId.Default;
+            UserId = Shared.Entities.EntityIdentifier.Default;
             DataType = UserDataType.Unknown;
             Data = String.Empty;
         }
