@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.ApiEndpoints;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using SquirrelsNest.Pecan.Server.Database.DataProviders;
 using SquirrelsNest.Pecan.Shared.Constants;
@@ -14,10 +15,12 @@ namespace SquirrelsNest.Pecan.Server.Features.Projects {
         .WithRequest<CreateProjectInput>
         .WithActionResult<CreateProjectResponse> {
 
-        private readonly IProjectProvider   mProjectProvider;
+        private readonly IProjectProvider               mProjectProvider;
+        private readonly IValidator<CreateProjectInput> mInputValidator;
 
-        public CreateProject( IProjectProvider projectProvider ) {
+        public CreateProject( IProjectProvider projectProvider, IValidator<CreateProjectInput> inputValidator ) {
             mProjectProvider = projectProvider;
+            mInputValidator = inputValidator;
         }
 
         [HttpPost]
@@ -26,6 +29,12 @@ namespace SquirrelsNest.Pecan.Server.Features.Projects {
             CancellationToken cancellationToken = new()) {
 
             try {
+                var validInput = await mInputValidator.ValidateAsync( request, cancellationToken );
+
+                if(!validInput.IsValid ) {
+                    return Ok( new CreateProjectResponse( validInput ));
+                }
+
                 var project = new SnProject( request.Name, request.IssuePrefix ).With( description: request.Description );
                 var result =  await mProjectProvider.Create( project );
 

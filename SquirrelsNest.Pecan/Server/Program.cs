@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -5,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SquirrelsNest.Pecan.Server.Database;
 using SquirrelsNest.Pecan.Server.Database.DataProviders;
+using SquirrelsNest.Pecan.Shared.Dto;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +33,8 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
     });
 
     services.AddEntityProviders();
+
+    services.AddValidatorsFromAssemblyContaining<CreateProjectInputValidator>();
 }
 
 void ConfigurePipeline( WebApplication app ) {

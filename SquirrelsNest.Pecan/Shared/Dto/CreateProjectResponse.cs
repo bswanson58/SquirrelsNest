@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.Json.Serialization;
+using FluentValidation.Results;
 using SquirrelsNest.Pecan.Shared.Entities;
 
 namespace SquirrelsNest.Pecan.Shared.Dto {
@@ -18,6 +19,11 @@ namespace SquirrelsNest.Pecan.Shared.Dto {
 
         public CreateProjectResponse( Exception ex ) :
             base( ex ) {
+            Project = null;
+        }
+
+        public CreateProjectResponse( ValidationResult validationResult ) :
+            base () {
             Project = null;
         }
     }

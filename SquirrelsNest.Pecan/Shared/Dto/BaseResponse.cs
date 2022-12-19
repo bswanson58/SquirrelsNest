@@ -1,4 +1,5 @@
 ﻿using System;
+using FluentValidation.Results;
 
 namespace SquirrelsNest.Pecan.Shared.Dto {
     public class BaseResponse {
@@ -13,6 +14,11 @@ namespace SquirrelsNest.Pecan.Shared.Dto {
         protected BaseResponse( Exception ex ) {
             Succeeded = false;
             Message = ex.Message;
+        }
+
+        protected BaseResponse( ValidationResult validationResult ) {
+            Succeeded = validationResult.IsValid;
+            Message = validationResult.ToString();
         }
 
         protected BaseResponse( bool succeeded, string message ) {
