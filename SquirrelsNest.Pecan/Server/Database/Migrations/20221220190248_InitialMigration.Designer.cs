@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SquirrelsNest.Pecan.Server.Database;
 
@@ -11,9 +12,11 @@ using SquirrelsNest.Pecan.Server.Database;
 namespace SquirrelsNest.Pecan.Server.Database.Migrations
 {
     [DbContext(typeof(PecanDbContext))]
-    partial class PecanDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221220190248_InitialMigration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

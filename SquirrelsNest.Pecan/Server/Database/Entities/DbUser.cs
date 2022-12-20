@@ -1,7 +1,7 @@
-﻿using System;
-using SquirrelsNest.Pecan.Shared.Entities;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace SquirrelsNest.Pecan.Server.Database.Entities {
+    /*
     public class DbUser : DbEntityBase<DbUser> {
         public  string  Name { get; set; }
         public  string  LoginName { get; set; }
@@ -30,4 +30,5 @@ namespace SquirrelsNest.Pecan.Server.Database.Entities {
             Email = from.Email;
         }
     }
+    */
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
+    /*
     public interface IUserProvider {
         IQueryable<SnUser>  GetAll();
         ValueTask<SnUser ?> GetById( string id );
@@ -34,4 +35,5 @@ namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
         public Task Delete( SnUser user ) =>
             BaseDelete( user.EntityId );
     }
+    */
 }

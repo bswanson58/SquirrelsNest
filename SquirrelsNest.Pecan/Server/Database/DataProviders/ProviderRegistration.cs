@@ -9,7 +9,7 @@ namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
             services.AddScoped<IIssueTypeProvider, SnIssueTypeProvider>();
             services.AddScoped<IProjectProvider, SnProjectProvider>();
             services.AddScoped<IReleaseProvider, SnReleaseProvider>();
-            services.AddScoped<IUserProvider, SnUserProvider>();
+//            services.AddScoped<IUserProvider, SnUserProvider>();
             services.AddScoped<IUserDataProvider, SnUserDataProvider>();
             services.AddScoped<IWorkflowStateProvider, SnWorkflowStateProvider>();
         }

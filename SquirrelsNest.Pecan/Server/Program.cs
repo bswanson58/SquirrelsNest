@@ -1,5 +1,6 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,27 +33,33 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
         #endif
     });
 
+    services.AddIdentity<IdentityUser, IdentityRole>() 
+        .AddEntityFrameworkStores<PecanDbContext>();
+
     services.AddEntityProviders();
 
     services.AddValidatorsFromAssemblyContaining<CreateProjectInputValidator>();
 }
 
-void ConfigurePipeline( WebApplication app ) {
-    if( app.Environment.IsDevelopment() ) {
-        app.UseWebAssemblyDebugging();
+void ConfigurePipeline( WebApplication webApp ) {
+    if( webApp.Environment.IsDevelopment() ) {
+        webApp.UseWebAssemblyDebugging();
     }
     else {
         // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-        app.UseHsts();
+        webApp.UseHsts();
     }
 
-    app.UseHttpsRedirection();
-    app.UseBlazorFrameworkFiles();
-    app.UseStaticFiles();
+    webApp.UseHttpsRedirection();
+    webApp.UseBlazorFrameworkFiles();
+    webApp.UseStaticFiles();
 
-    app.UseRouting();
+    webApp.UseRouting();
 
-    app.MapRazorPages();
-    app.MapControllers();
-    app.MapFallbackToFile( "index.html" );
+    webApp.MapRazorPages();
+    webApp.MapControllers();
+    webApp.MapFallbackToFile( "index.html" );
+
+    webApp.UseAuthentication();
+    webApp.UseAuthorization();
 }

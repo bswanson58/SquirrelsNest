@@ -2,20 +2,22 @@
 using SquirrelsNest.Pecan.Server.Database.Entities;
 using SquirrelsNest.Pecan.Server.Database.Support;
 using System;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 // The framework will set the DbSet properties appropriately:
 #pragma warning disable CS8618 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace SquirrelsNest.Pecan.Server.Database {
-    public class PecanDbContext : DbContext {
+    public class PecanDbContext : IdentityDbContext<IdentityUser> {
         public  DbSet<DbAssociation>    Associations { get; set; }
         public  DbSet<DbComponent>      Components { get; set; }
         public  DbSet<DbIssue>          Issues { get; set; }
         public  DbSet<DbIssueType>      IssueTypes { get; set; }
         public  DbSet<DbProject>        Projects { get; set; }
         public  DbSet<DbRelease>        Releases { get; set; }
-        public  DbSet<DbUser>           Users { get; set; }
+//        public  DbSet<DbUser>           Users { get; set; }
         public  DbSet<DbUserData>       UserData { get; set; }
         public  DbSet<DbWorkflowState>  WorkflowStates { get; set; }
 
@@ -39,6 +41,12 @@ namespace SquirrelsNest.Pecan.Server.Database {
         protected override void OnModelCreating( ModelBuilder modelBuilder ) {
             base.OnModelCreating( modelBuilder );
 
+            InitializeModelProperties( modelBuilder );
+
+//            modelBuilder.ApplyConfiguration( new UserConfiguration());
+        }
+
+        private void InitializeModelProperties( ModelBuilder modelBuilder ) {
             modelBuilder.Entity<DbAssociation>( e => {
                 e.Property( p => p.EntityId ).IsRequired();
                 e.Property( p => p.AssociationId ).IsRequired();
@@ -75,10 +83,10 @@ namespace SquirrelsNest.Pecan.Server.Database {
                 e.Property( p => p.Name ).IsRequired();
             } );
 
-            modelBuilder.Entity<DbUser>( e => {
-                e.Property( p => p.EntityId ).IsRequired();
-                e.Property( p => p.Name ).IsRequired();
-            } );
+//            modelBuilder.Entity<DbUser>( e => {
+//                e.Property( p => p.EntityId ).IsRequired();
+//                e.Property( p => p.Name ).IsRequired();
+//            } );
 
             modelBuilder.Entity<DbUserData>( e => {
                 e.Property( p => p.EntityId ).IsRequired();
