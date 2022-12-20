@@ -1,11 +1,11 @@
 ﻿using System;
 using Fluxor;
 using Microsoft.Extensions.Logging;
-using SquirrelsNest.Pecan.Shared.Dto;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using SquirrelsNest.Pecan.Client.Auth.Actions;
+using SquirrelsNest.Pecan.Shared.Dto.Auth;
 
 namespace SquirrelsNest.Pecan.Client.Auth.Effects {
     // ReSharper disable once UnusedType.Global

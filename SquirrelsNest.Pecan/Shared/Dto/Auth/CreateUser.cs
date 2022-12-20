@@ -5,20 +5,20 @@ using FluentValidation;
 using FluentValidation.Results;
 using SquirrelsNest.Pecan.Shared.Constants;
 
-namespace SquirrelsNest.Pecan.Shared.Dto {
+namespace SquirrelsNest.Pecan.Shared.Dto.Auth {
     public class CreateUserInput {
-        public  string          Name { get; set; }
-        public  string          Email { get; set; }
-        public  string          Password { get; set; }
-        public  string          ConfirmPassword {  get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string ConfirmPassword { get; set; }
 
-        public  const string    Route = $"{Routes.BaseRoute}/createUser";
+        public const string Route = $"{Routes.BaseRoute}/createUser";
 
         public CreateUserInput() {
-            Name = String.Empty;
-            Email = String.Empty;
-            Password = String.Empty;
-            ConfirmPassword = String.Empty;
+            Name = string.Empty;
+            Email = string.Empty;
+            Password = string.Empty;
+            ConfirmPassword = string.Empty;
         }
     }
 
@@ -35,11 +35,11 @@ namespace SquirrelsNest.Pecan.Shared.Dto {
         }
 
         public CreateUserResponse( ValidationResult validationResult ) :
-            base ( validationResult ) {
+            base( validationResult ) {
         }
 
         public CreateUserResponse( IEnumerable<string> errors ) :
-            base( false, String.Join( Environment.NewLine, errors )) {
+            base( false, string.Join( Environment.NewLine, errors ) ) {
         }
     }
 

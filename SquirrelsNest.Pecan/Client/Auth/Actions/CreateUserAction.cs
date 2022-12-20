@@ -1,5 +1,5 @@
 ﻿using SquirrelsNest.Pecan.Client.Store;
-using SquirrelsNest.Pecan.Shared.Dto;
+using SquirrelsNest.Pecan.Shared.Dto.Auth;
 
 namespace SquirrelsNest.Pecan.Client.Auth.Actions {
     public class CreateUserAction {

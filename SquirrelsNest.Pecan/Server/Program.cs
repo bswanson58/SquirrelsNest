@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SquirrelsNest.Pecan.Server.Database;
 using SquirrelsNest.Pecan.Server.Database.DataProviders;
-using SquirrelsNest.Pecan.Shared.Dto;
+using SquirrelsNest.Pecan.Shared.Dto.Projects;
 
 var builder = WebApplication.CreateBuilder(args);
 

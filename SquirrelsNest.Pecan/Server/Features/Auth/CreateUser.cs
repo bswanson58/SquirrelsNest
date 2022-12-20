@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SquirrelsNest.Pecan.Server.Database;
 using SquirrelsNest.Pecan.Shared.Constants;
-using SquirrelsNest.Pecan.Shared.Dto;
+using SquirrelsNest.Pecan.Shared.Dto.Auth;
 
 namespace SquirrelsNest.Pecan.Server.Features.Auth {
     [Route(CreateUserInput.Route)]

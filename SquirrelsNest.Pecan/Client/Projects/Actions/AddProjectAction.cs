@@ -1,5 +1,5 @@
 ﻿using SquirrelsNest.Pecan.Client.Store;
-using SquirrelsNest.Pecan.Shared.Dto;
+using SquirrelsNest.Pecan.Shared.Dto.Projects;
 using SquirrelsNest.Pecan.Shared.Entities;
 
 namespace SquirrelsNest.Pecan.Client.Projects.Actions {

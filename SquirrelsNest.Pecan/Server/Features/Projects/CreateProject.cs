@@ -5,12 +5,11 @@ using Ardalis.ApiEndpoints;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using SquirrelsNest.Pecan.Server.Database.DataProviders;
-using SquirrelsNest.Pecan.Shared.Constants;
-using SquirrelsNest.Pecan.Shared.Dto;
+using SquirrelsNest.Pecan.Shared.Dto.Projects;
 using SquirrelsNest.Pecan.Shared.Entities;
 
 namespace SquirrelsNest.Pecan.Server.Features.Projects {
-    [Route(Routes.CreateProject)]
+    [Route( CreateProjectInput.Route )]
     public class CreateProject : EndpointBaseAsync
         .WithRequest<CreateProjectInput>
         .WithActionResult<CreateProjectResponse> {

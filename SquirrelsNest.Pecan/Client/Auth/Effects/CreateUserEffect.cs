@@ -1,8 +1,8 @@
 ﻿using Fluxor;
 using MudBlazor;
-using SquirrelsNest.Pecan.Shared.Dto;
 using System.Threading.Tasks;
 using SquirrelsNest.Pecan.Client.Auth.Actions;
+using SquirrelsNest.Pecan.Shared.Dto.Auth;
 
 namespace SquirrelsNest.Pecan.Client.Auth.Effects {
     // ReSharper disable once UnusedType.Global

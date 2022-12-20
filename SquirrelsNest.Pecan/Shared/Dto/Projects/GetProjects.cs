@@ -1,9 +1,9 @@
-﻿using System;
+﻿using SquirrelsNest.Pecan.Shared.Entities;
+using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using SquirrelsNest.Pecan.Shared.Entities;
 
-namespace SquirrelsNest.Pecan.Shared.Dto {
+namespace SquirrelsNest.Pecan.Shared.Dto.Projects {
     public class GetProjectsResponse : BaseResponse {
         public List<SnProject>  Projects { get; }
 
