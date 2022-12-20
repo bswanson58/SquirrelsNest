@@ -11,10 +11,10 @@ using SquirrelsNest.Pecan.Shared.Dto;
 namespace SquirrelsNest.Pecan.Client.Projects.Effects {
     // ReSharper disable once UnusedType.Global
     public class AddProjectSubmitEffect : Effect<AddProjectSubmitAction> {
-        private readonly    ILogger<GetProjectsEffect>  mLogger;
-        private readonly    HttpClient                  mHttpClient;
+        private readonly    ILogger<AddProjectSubmitEffect> mLogger;
+        private readonly    HttpClient                      mHttpClient;
 
-        public AddProjectSubmitEffect( HttpClient httpClient, ILogger<GetProjectsEffect> logger ) {
+        public AddProjectSubmitEffect( HttpClient httpClient, ILogger<AddProjectSubmitEffect> logger ) {
             mHttpClient = httpClient;
             mLogger = logger;
         }

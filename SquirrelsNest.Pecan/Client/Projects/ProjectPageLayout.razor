@@ -1,6 +1,8 @@
-﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+﻿@using Microsoft.AspNetCore.Authorization
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 @page "/projects"
+@attribute [Authorize]
 
 <MudGrid Justify="Justify.FlexStart">
     <MudItem xs="3">

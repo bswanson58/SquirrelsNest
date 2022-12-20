@@ -33,9 +33,17 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
         #endif
     });
 
-    services.AddIdentity<IdentityUser, IdentityRole>() 
+    services.AddIdentity<IdentityUser, IdentityRole>( options => {
+            options.Password.RequireDigit = false;
+            options.Password.RequiredLength = 6;
+            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequireUppercase = false;
+            options.Password.RequireLowercase = false;
+            options.User.RequireUniqueEmail = true;
+        })
         .AddEntityFrameworkStores<PecanDbContext>();
 
+    services.AddScoped<IDbContext, PecanDbContext>();
     services.AddEntityProviders();
 
     services.AddValidatorsFromAssemblyContaining<CreateProjectInputValidator>();

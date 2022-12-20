@@ -2,11 +2,14 @@ using System;
 using System.Net.Http;
 using FluentValidation;
 using Fluxor;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor.Services;
 using SquirrelsNest.Pecan.Client;
+using SquirrelsNest.Pecan.Client.Auth;
+using SquirrelsNest.Pecan.Client.Auth.Store;
 using SquirrelsNest.Pecan.Client.Projects.Store;
 using SquirrelsNest.Pecan.Shared.Dto;
 
@@ -29,11 +32,15 @@ void ConfigureServices( IServiceCollection services ) {
 // Supply HttpClient instances that include access tokens when making requests to the server project
     services.AddScoped( sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient( "SquirrelsNest.Pecan.ServerAPI" ));
 
+    services.AddScoped<AuthFacade>();
     services.AddScoped<ProjectFacade>();
 
     services.AddFluxor( options => options.ScanAssemblies( typeof( App ).Assembly ));
 
     services.AddValidatorsFromAssemblyContaining<CreateProjectInputValidator>();
+
+    services.AddAuthorizationCore();
+    services.AddScoped<AuthenticationStateProvider, TestAuthStateProvider>();
 
     services.AddMudServices();
 }

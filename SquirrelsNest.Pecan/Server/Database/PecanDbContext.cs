@@ -10,7 +10,19 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace SquirrelsNest.Pecan.Server.Database {
-    public class PecanDbContext : IdentityDbContext<IdentityUser> {
+    public interface IDbContext {
+        DbSet<DbAssociation>        Associations { get; }
+        DbSet<DbComponent>          Components { get; }
+        DbSet<DbIssue>              Issues { get; }
+        DbSet<DbIssueType>          IssueTypes { get; }
+        DbSet<DbProject>            Projects { get; }
+        DbSet<DbRelease>            Releases { get; }
+        DbSet<DbUserData>           UserData { get; }
+        DbSet<DbWorkflowState>      WorkflowStates { get; }
+        DbSet<IdentityUser>         Users { get; }
+    }
+
+    public class PecanDbContext : IdentityDbContext<IdentityUser>, IDbContext {
         public  DbSet<DbAssociation>    Associations { get; set; }
         public  DbSet<DbComponent>      Components { get; set; }
         public  DbSet<DbIssue>          Issues { get; set; }

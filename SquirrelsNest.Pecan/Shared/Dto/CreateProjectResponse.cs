@@ -23,7 +23,7 @@ namespace SquirrelsNest.Pecan.Shared.Dto {
         }
 
         public CreateProjectResponse( ValidationResult validationResult ) :
-            base () {
+            base ( validationResult ) {
             Project = null;
         }
     }
