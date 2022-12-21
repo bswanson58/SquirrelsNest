@@ -12,5 +12,9 @@ namespace SquirrelsNest.Pecan.Client.Auth.Store {
         public void RegisterUser() {
             mDispatcher.Dispatch( new CreateUserAction());
         }
+
+        public void LoginUser() {
+            mDispatcher.Dispatch( new LoginUserAction());
+        }
     }
 }

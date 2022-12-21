@@ -6,6 +6,7 @@
 
 <MudContainer>
     <MudButton ButtonType="ButtonType.Button" Variant="Variant.Text" @onclick="@OnRegister">Register</MudButton>
+    <MudButton ButtonType="ButtonType.Button" Variant="Variant.Text" @onclick="@OnLogin">Login</MudButton>
 </MudContainer>
 
 @inject AuthFacade  AuthFacade;
@@ -13,5 +14,9 @@
 @code {
     private void OnRegister() {
         AuthFacade.RegisterUser();
+    }
+
+    private void OnLogin() {
+        AuthFacade.LoginUser();
     }
 }

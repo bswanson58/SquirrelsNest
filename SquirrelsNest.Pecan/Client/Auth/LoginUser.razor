@@ -1,0 +1,41 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@using SquirrelsNest.Pecan.Shared.Dto.Auth
+@using Blazored.FluentValidation
+
+<EditForm Model="@UserInput" OnValidSubmit="@OnSubmit">
+    <FluentValidationValidator />
+    <MudDialog>
+        <DialogContent>
+            <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild">
+                <MudTextField T="string"
+                              Immediate="true"
+                              Label="User Name"
+                              HelperText="Login name (email address)"
+                              HelperTextOnFocus="true"
+                              @bind-Value="@UserInput.LoginName" />
+                <ValidationMessage For="@(() => UserInput.LoginName )" />
+                <MudTextField T="string"
+                              InputType="InputType.Password"
+                              Label="Password"
+                              HelperText="Password for the user (must be at least 6 characters)"
+                              HelperTextOnFocus="true"
+                              @bind-Value="@UserInput.Password" />
+                <ValidationMessage For="@(() => UserInput.Password )" />
+            </MudFocusTrap>
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="OnCancel">Cancel</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Ok</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+@code {
+    [CascadingParameter]
+    public MudDialogInstance?   MudDialog { get; set; }
+    [Parameter]
+    public LoginUserInput       UserInput { get; set; } = new();
+
+    private void OnSubmit() => MudDialog?.Close( DialogResult.Ok( UserInput ));
+    private void OnCancel() => MudDialog?.Cancel();
+}
