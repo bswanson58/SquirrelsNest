@@ -2,7 +2,7 @@
 using Fluxor;
 using MudBlazor;
 using SquirrelsNest.Pecan.Client.Projects.Actions;
-using SquirrelsNest.Pecan.Shared.Dto;
+using SquirrelsNest.Pecan.Shared.Dto.Projects;
 
 namespace SquirrelsNest.Pecan.Client.Projects.Effects {
     // ReSharper disable once UnusedType.Global

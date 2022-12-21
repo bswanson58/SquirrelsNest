@@ -6,7 +6,7 @@ using Fluxor;
 using Microsoft.Extensions.Logging;
 using SquirrelsNest.Pecan.Client.Projects.Actions;
 using SquirrelsNest.Pecan.Shared.Constants;
-using SquirrelsNest.Pecan.Shared.Dto;
+using SquirrelsNest.Pecan.Shared.Dto.Projects;
 
 namespace SquirrelsNest.Pecan.Client.Projects.Effects {
     // ReSharper disable once ClassNeverInstantiated.Global

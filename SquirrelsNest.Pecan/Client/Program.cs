@@ -11,7 +11,7 @@ using SquirrelsNest.Pecan.Client;
 using SquirrelsNest.Pecan.Client.Auth;
 using SquirrelsNest.Pecan.Client.Auth.Store;
 using SquirrelsNest.Pecan.Client.Projects.Store;
-using SquirrelsNest.Pecan.Shared.Dto;
+using SquirrelsNest.Pecan.Shared.Dto.Projects;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
