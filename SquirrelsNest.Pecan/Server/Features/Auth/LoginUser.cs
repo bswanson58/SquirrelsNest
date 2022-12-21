@@ -20,13 +20,10 @@ namespace SquirrelsNest.Pecan.Server.Features.Auth {
         .WithActionResult<LoginUserResponse> {
 
         private readonly    UserManager<IdentityUser>   mUserManager;
-        private readonly    SignInManager<IdentityUser> mSignInManager;
         private readonly    IConfiguration              mConfiguration;
 
-        public LoginUser( UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, 
-                          IConfiguration configuration ) {
+        public LoginUser( UserManager<IdentityUser> userManager, IConfiguration configuration ) {
             mUserManager = userManager;
-            mSignInManager = signInManager;
             mConfiguration = configuration;
         }
 
@@ -34,53 +31,46 @@ namespace SquirrelsNest.Pecan.Server.Features.Auth {
         public override async Task<ActionResult<LoginUserResponse>> HandleAsync( 
                     [FromBody] LoginUserInput request, 
                     CancellationToken cancellationToken = new()) {
-            var result = await mSignInManager.PasswordSignInAsync( request.LoginName, request.Password,
-                                                                   isPersistent: false, lockoutOnFailure: false );
+            var user = await mUserManager.FindByNameAsync( request.LoginName );
 
-            if( result.Succeeded ) {
-                var user = await mUserManager.FindByNameAsync( request.LoginName );
-
-                if( user != null ) {
-                    var claims = BuildUserClaims( user );
-                    var dbClaims = await mUserManager.GetClaimsAsync( user );
-
-                    claims.AddRange( dbClaims );
-
-                    return Ok( BuildToken( claims ));
-                }
-
-                return Ok( new LoginUserResponse( "User cannot be located" ));
+            if(( user == null ) ||
+               (!await mUserManager.CheckPasswordAsync( user, request.Password ))) {
+                return Unauthorized( new LoginUserResponse( "Invalid Authentication" ));
             }
 
-            if( result.IsLockedOut ) {
-                return Ok( new LoginUserResponse( "User is locked out." ));
-            }
-
-            if( result.IsNotAllowed ) {
-                return Ok( new LoginUserResponse( "User is not allowed to login" ));
-            }
-
-            return Ok( new LoginUserResponse( result.ToString()));
+            return Ok( BuildToken( await BuildUserClaims( user )));
         }
 
         private LoginUserResponse BuildToken( IEnumerable<Claim> claims ) {
-            var key = new SymmetricSecurityKey( Encoding.UTF8.GetBytes( mConfiguration["JwtKey"] ?? String.Empty ));
-            var credentials = new SigningCredentials( key, SecurityAlgorithms.HmacSha256 );
-
-            var expiration = DateTimeProvider.Instance.CurrentDateTime.AddYears( 1 );
-
-            var token = new JwtSecurityToken( issuer: null, audience: null, claims: claims, expires: expiration, 
-                                              signingCredentials: credentials );
+            var jwtSettings = mConfiguration.GetSection( "JWTSettings" );
+            var credentials = GetSigningCredentials( jwtSettings );
+            var expiration = DateTimeProvider.Instance.CurrentDateTime.AddMinutes(
+                    Convert.ToDouble( jwtSettings["expiryInMinutes"]));
+            var token = new JwtSecurityToken( issuer: jwtSettings["validIssuer"], audience: null, claims: claims, 
+                                              expires: expiration, signingCredentials: credentials );
 
             return new LoginUserResponse( new JwtSecurityTokenHandler().WriteToken( token ), expiration );
         }
 
-        private List<Claim> BuildUserClaims( IdentityUser user ) {
-            return new List<Claim> {
+        private SigningCredentials GetSigningCredentials( IConfigurationSection jwtSettings ) { 
+            var key = Encoding.UTF8.GetBytes( jwtSettings["securityKey"] ?? String.Empty ); 
+            var secret = new SymmetricSecurityKey( key ); 
+            
+            return new SigningCredentials( secret, SecurityAlgorithms.HmacSha256 ); 
+        }
+
+        private async Task<List<Claim>> BuildUserClaims( IdentityUser user ) {
+            var claims = new List<Claim> {
                 new( ClaimTypes.Name, user.UserName ?? String.Empty ),
                 new( "entityId", user.Id ),
                 new( ClaimTypes.Email, user.Email ?? String.Empty )
             };
+
+            var dbClaims = await mUserManager.GetClaimsAsync( user );
+
+            claims.AddRange( dbClaims );
+
+            return claims;
         }
     }
 }
