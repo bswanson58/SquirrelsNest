@@ -1,5 +1,6 @@
 using System;
 using System.Net.Http;
+using Blazored.LocalStorage;
 using FluentValidation;
 using Fluxor;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -8,8 +9,8 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor.Services;
 using SquirrelsNest.Pecan.Client;
-using SquirrelsNest.Pecan.Client.Auth;
 using SquirrelsNest.Pecan.Client.Auth.Store;
+using SquirrelsNest.Pecan.Client.Auth.Support;
 using SquirrelsNest.Pecan.Client.Projects.Store;
 using SquirrelsNest.Pecan.Shared.Dto.Projects;
 
@@ -28,9 +29,10 @@ void ConfigureRootComponents( RootComponentMappingCollection root ) {
 
 void ConfigureServices( IServiceCollection services ) {
     services.AddHttpClient( "SquirrelsNest.Pecan.ServerAPI", 
-        client => client.BaseAddress = new Uri( builder.HostEnvironment.BaseAddress ));
-// Supply HttpClient instances that include access tokens when making requests to the server project
+                            client => client.BaseAddress = new Uri( builder.HostEnvironment.BaseAddress ))
+        .AddHttpMessageHandler<JwtTokenHandler>();
     services.AddScoped( sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient( "SquirrelsNest.Pecan.ServerAPI" ));
+    services.AddScoped<JwtTokenHandler>();
 
     services.AddScoped<AuthFacade>();
     services.AddScoped<ProjectFacade>();
@@ -39,8 +41,10 @@ void ConfigureServices( IServiceCollection services ) {
 
     services.AddValidatorsFromAssemblyContaining<CreateProjectInputValidator>();
 
+    services.AddBlazoredLocalStorage();
+
+    services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
     services.AddAuthorizationCore();
-    services.AddScoped<AuthenticationStateProvider, TestAuthStateProvider>();
 
     services.AddMudServices();
 }

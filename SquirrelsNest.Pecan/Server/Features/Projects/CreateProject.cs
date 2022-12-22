@@ -3,12 +3,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.ApiEndpoints;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SquirrelsNest.Pecan.Server.Database.DataProviders;
 using SquirrelsNest.Pecan.Shared.Dto.Projects;
 using SquirrelsNest.Pecan.Shared.Entities;
 
 namespace SquirrelsNest.Pecan.Server.Features.Projects {
+    [Authorize]
     [Route( CreateProjectInput.Route )]
     public class CreateProject : EndpointBaseAsync
         .WithRequest<CreateProjectInput>

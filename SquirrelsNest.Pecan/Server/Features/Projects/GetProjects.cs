@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.ApiEndpoints;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SquirrelsNest.Pecan.Server.Database.DataProviders;
@@ -9,6 +10,7 @@ using SquirrelsNest.Pecan.Shared.Constants;
 using SquirrelsNest.Pecan.Shared.Dto.Projects;
 
 namespace SquirrelsNest.Pecan.Server.Features.Projects {
+    [Authorize]
     [Route(Routes.GetProjects)]
     public class GetProjects : EndpointBaseAsync
         .WithoutRequest

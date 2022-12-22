@@ -10,8 +10,8 @@ using System.Threading.Tasks;
 namespace SquirrelsNest.Pecan.Client.Auth.Effects {
     // ReSharper disable once UnusedType.Global
     public class LoginUserSubmitEffect : Effect<LoginUserSubmitAction> {
-        private readonly    ILogger<LoginUserSubmitEffect>  mLogger;
-        private readonly    HttpClient                      mHttpClient;
+        private readonly ILogger<LoginUserSubmitEffect> mLogger;
+        private readonly HttpClient                     mHttpClient;
 
         public LoginUserSubmitEffect( HttpClient httpClient, ILogger<LoginUserSubmitEffect> logger ) {
             mHttpClient = httpClient;

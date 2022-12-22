@@ -3,10 +3,14 @@ using SquirrelsNest.Pecan.Client.Auth.Actions;
 
 namespace SquirrelsNest.Pecan.Client.Auth.Store {
     public class AuthFacade {
-        private readonly IDispatcher mDispatcher;
+        private readonly IDispatcher        mDispatcher;
 
         public AuthFacade( IDispatcher dispatcher ) {
             mDispatcher = dispatcher;
+        }
+
+        public void SetInitialAuthToken( string token ) {
+            mDispatcher.Dispatch( new SetAuthToken( token ));
         }
 
         public void RegisterUser() {
@@ -15,6 +19,10 @@ namespace SquirrelsNest.Pecan.Client.Auth.Store {
 
         public void LoginUser() {
             mDispatcher.Dispatch( new LoginUserAction());
+        }
+
+        public void LogoutUser() {
+            mDispatcher.Dispatch( new LogoutUserAction());
         }
     }
 }

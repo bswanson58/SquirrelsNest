@@ -30,7 +30,7 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
     services.AddRazorPages();
 
     services.AddDbContext<PecanDbContext>( options => {
-        options.UseSqlServer( configuration.GetConnectionString( "DatabaseConnection" ) );
+        options.UseSqlServer( configuration.GetConnectionString( "DatabaseConnection" ));
 #if DEBUG
         options.EnableDetailedErrors();
         options.EnableSensitiveDataLogging();
@@ -44,7 +44,21 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
 }
 
 void ConfigureSecurity( IServiceCollection services, ConfigurationManager configuration ) {
+    // AddIdentity must be called before AddAuthentication
+    services.AddIdentity<IdentityUser, IdentityRole>( options => {
+            options.Password.RequireDigit = false;
+            options.Password.RequiredLength = 6;
+            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequireUppercase = false;
+            options.Password.RequireLowercase = false;
+            options.User.RequireUniqueEmail = true;
+        } )
+        .AddEntityFrameworkStores<PecanDbContext>()
+        .AddDefaultTokenProviders();
+
     var jwtSettings = configuration.GetSection( "JWTSettings" );
+
+//    JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
     services.AddAuthentication( options => {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -60,19 +74,10 @@ void ConfigureSecurity( IServiceCollection services, ConfigurationManager config
                 ValidIssuer = jwtSettings["validIssuer"],
                 ValidAudience = jwtSettings["validAudience"],
                 IssuerSigningKey = 
-                    new SymmetricSecurityKey( Encoding.UTF8.GetBytes( jwtSettings["securityKey"] ?? String.Empty ))
+                    new SymmetricSecurityKey( Encoding.UTF8.GetBytes( jwtSettings["securityKey"] ?? String.Empty )),
+                ClockSkew = TimeSpan.Zero
             };
         } );
-
-    services.AddIdentity<IdentityUser, IdentityRole>( options => {
-        options.Password.RequireDigit = false;
-        options.Password.RequiredLength = 6;
-        options.Password.RequireNonAlphanumeric = false;
-        options.Password.RequireUppercase = false;
-        options.Password.RequireLowercase = false;
-        options.User.RequireUniqueEmail = true;
-    } )
-        .AddEntityFrameworkStores<PecanDbContext>();
 }
 
 void ConfigurePipeline( WebApplication webApp ) {

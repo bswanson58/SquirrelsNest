@@ -11,8 +11,8 @@ using SquirrelsNest.Pecan.Shared.Dto.Projects;
 namespace SquirrelsNest.Pecan.Client.Projects.Effects {
     // ReSharper disable once ClassNeverInstantiated.Global
     public class GetProjectsEffect : Effect<GetProjectsAction> {
-        private readonly    ILogger<GetProjectsEffect>  mLogger;
-        private readonly    HttpClient                  mHttpClient;
+        private readonly ILogger<GetProjectsEffect>     mLogger;
+        private readonly HttpClient                     mHttpClient;
 
         public GetProjectsEffect( HttpClient httpClient, ILogger<GetProjectsEffect> logger ) {
             mHttpClient = httpClient;
@@ -24,16 +24,16 @@ namespace SquirrelsNest.Pecan.Client.Projects.Effects {
                 var response = await mHttpClient.GetFromJsonAsync<GetProjectsResponse>( Routes.GetProjects );
 
                 if( response?.Succeeded == true ) {
-                    dispatcher.Dispatch( new GetProjectsSuccessAction( response.Projects ) );
+                    dispatcher.Dispatch( new GetProjectsSuccessAction( response.Projects ));
                 }
                 else {
-                    dispatcher.Dispatch( new GetProjectsFailureAction( "Received null response" ) );
+                    dispatcher.Dispatch( new GetProjectsFailureAction( "Received null response" ));
                 }
             }
             catch( HttpRequestException exception ) {
                 mLogger.LogError( exception, String.Empty );
 
-                dispatcher.Dispatch( new GetProjectsFailureAction( exception.Message ) );
+                dispatcher.Dispatch( new GetProjectsFailureAction( exception.Message ));
             }
         }
     }
