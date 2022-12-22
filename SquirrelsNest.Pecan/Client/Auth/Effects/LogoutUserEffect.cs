@@ -22,6 +22,7 @@ namespace SquirrelsNest.Pecan.Client.Auth.Effects {
 
         public override async Task HandleAsync( LogoutUserAction action, IDispatcher dispatcher ) {
             await mLocalStorage.RemoveItemAsync( "authToken" );
+            await mLocalStorage.RemoveItemAsync( "refreshToken" );
 
             if( mAuthStateProvider is AuthStateProvider authProvider ) {
                 authProvider.NotifyUserLogout();

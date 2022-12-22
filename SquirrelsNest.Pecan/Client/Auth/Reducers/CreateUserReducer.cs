@@ -11,14 +11,14 @@ namespace SquirrelsNest.Pecan.Client.Auth.Reducers {
 
         [ReducerMethod( typeof( CreateUserSubmitAction ))]
         public static AuthState CreateUserSubmitReducer( AuthState state ) =>
-            new ( true, String.Empty, state.UserToken, state.TokenExpiration );
+            new ( true, String.Empty, state.UserToken, state.RefreshToken, state.TokenExpiration );
 
         [ReducerMethod( typeof( CreateUserSuccessAction ))]
         public static AuthState CreateUserSuccessReducer( AuthState state ) =>
-            new ( false, String.Empty, state.UserToken, state.TokenExpiration );
+            new ( false, String.Empty, state.UserToken, state.RefreshToken, state.TokenExpiration );
 
         [ReducerMethod]
         public static AuthState CreateUserFailureReducer( AuthState state, CreateUserFailureAction action ) =>
-            new ( false, action.Message, state.UserToken, state.TokenExpiration );
+            new ( false, action.Message, state.UserToken, state.RefreshToken, state.TokenExpiration );
     }
 }

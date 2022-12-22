@@ -16,6 +16,9 @@ namespace SquirrelsNest.Pecan.Client.Auth.Support {
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync() {
             var token = await mLocalStorage.GetItemAsync<string>( "authToken" );
+            var refreshToken = await mLocalStorage.GetItemAsync<string>( "refreshToken" );
+
+            // mAuthFacade.SetInitialToken( token, refreshToken );
 
             if( string.IsNullOrWhiteSpace( token )) {
                 return mAnonymous;

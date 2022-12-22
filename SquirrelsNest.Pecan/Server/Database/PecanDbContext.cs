@@ -2,7 +2,6 @@
 using SquirrelsNest.Pecan.Server.Database.Entities;
 using SquirrelsNest.Pecan.Server.Database.Support;
 using System;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 // The framework will set the DbSet properties appropriately:
@@ -19,17 +18,16 @@ namespace SquirrelsNest.Pecan.Server.Database {
         DbSet<DbRelease>            Releases { get; }
         DbSet<DbUserData>           UserData { get; }
         DbSet<DbWorkflowState>      WorkflowStates { get; }
-        DbSet<IdentityUser>         Users { get; }
+        DbSet<DbUser>               Users { get; }
     }
 
-    public class PecanDbContext : IdentityDbContext<IdentityUser>, IDbContext {
+    public class PecanDbContext : IdentityDbContext<DbUser>, IDbContext {
         public  DbSet<DbAssociation>    Associations { get; set; }
         public  DbSet<DbComponent>      Components { get; set; }
         public  DbSet<DbIssue>          Issues { get; set; }
         public  DbSet<DbIssueType>      IssueTypes { get; set; }
         public  DbSet<DbProject>        Projects { get; set; }
         public  DbSet<DbRelease>        Releases { get; set; }
-//        public  DbSet<DbUser>           Users { get; set; }
         public  DbSet<DbUserData>       UserData { get; set; }
         public  DbSet<DbWorkflowState>  WorkflowStates { get; set; }
 

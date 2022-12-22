@@ -32,6 +32,8 @@ namespace SquirrelsNest.Pecan.Server.Database.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RefreshTokenExpiration = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -288,8 +290,8 @@ namespace SquirrelsNest.Pecan.Server.Database.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "874b14c1-963a-4335-975d-28ab85252890", null, "user", "USER" },
-                    { "95a24ac4-b73e-44de-8153-32eeb4390fb1", null, "administrator", "ADMINISTRATOR" }
+                    { "7879ed33-a247-473a-b6ac-ea67c72b330f", null, "administrator", "ADMINISTRATOR" },
+                    { "8c09ee2f-7333-42f6-9315-ee6f7ad4576e", null, "user", "USER" }
                 });
 
             migrationBuilder.CreateIndex(

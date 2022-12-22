@@ -18,6 +18,7 @@ namespace SquirrelsNest.Pecan.Client.Auth.Effects {
 
         public override async Task HandleAsync( LoginUserSuccessAction action, IDispatcher dispatcher ) {
             await mLocalStorage.SetItemAsync( "authToken", action.UserResponse.Token );
+            await mLocalStorage.SetItemAsync( "refreshToken", action.UserResponse.RefreshToken );
 
             if( mAuthStateProvider is AuthStateProvider authProvider ) {
                 authProvider.NotifyUserAuthentication( action.UserResponse.Token );

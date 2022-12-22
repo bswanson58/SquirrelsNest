@@ -9,8 +9,8 @@ namespace SquirrelsNest.Pecan.Client.Auth.Store {
             mDispatcher = dispatcher;
         }
 
-        public void SetInitialAuthToken( string token ) {
-            mDispatcher.Dispatch( new SetAuthToken( token ));
+        public void SetInitialAuthToken( string token, string refreshToken ) {
+            mDispatcher.Dispatch( new SetAuthToken( token, refreshToken ));
         }
 
         public void RegisterUser() {

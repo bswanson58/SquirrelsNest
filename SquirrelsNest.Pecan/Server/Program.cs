@@ -11,6 +11,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using SquirrelsNest.Pecan.Server.Database;
 using SquirrelsNest.Pecan.Server.Database.DataProviders;
+using SquirrelsNest.Pecan.Server.Database.Entities;
+using SquirrelsNest.Pecan.Server.Features.Auth;
 using SquirrelsNest.Pecan.Shared.Dto.Projects;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,6 +40,7 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
     } );
 
     services.AddScoped<IDbContext, PecanDbContext>();
+    services.AddScoped<ITokenBuilder, TokenBuilder>();
     services.AddEntityProviders();
 
     services.AddValidatorsFromAssemblyContaining<CreateProjectInputValidator>();
@@ -45,7 +48,7 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
 
 void ConfigureSecurity( IServiceCollection services, ConfigurationManager configuration ) {
     // AddIdentity must be called before AddAuthentication
-    services.AddIdentity<IdentityUser, IdentityRole>( options => {
+    services.AddIdentity<DbUser, IdentityRole>( options => {
             options.Password.RequireDigit = false;
             options.Password.RequiredLength = 6;
             options.Password.RequireNonAlphanumeric = false;

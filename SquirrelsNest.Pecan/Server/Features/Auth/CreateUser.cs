@@ -8,6 +8,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SquirrelsNest.Pecan.Server.Database;
+using SquirrelsNest.Pecan.Server.Database.Entities;
 using SquirrelsNest.Pecan.Shared.Constants;
 using SquirrelsNest.Pecan.Shared.Dto.Auth;
 
@@ -18,10 +19,10 @@ namespace SquirrelsNest.Pecan.Server.Features.Auth {
         .WithActionResult<CreateUserResponse> {
 
         private readonly    IDbContext                  mContext;
-        private readonly    UserManager<IdentityUser>   mUserManager;
+        private readonly    UserManager<DbUser>         mUserManager;
         private readonly    IValidator<CreateUserInput> mValidator;
 
-        public CreateUser( UserManager<IdentityUser> userManager, IDbContext context, IValidator<CreateUserInput> validator ) {
+        public CreateUser( UserManager<DbUser> userManager, IDbContext context, IValidator<CreateUserInput> validator ) {
             mUserManager = userManager;
             mValidator = validator;
             mContext = context;
@@ -38,7 +39,7 @@ namespace SquirrelsNest.Pecan.Server.Features.Auth {
                     return Ok( new CreateUserResponse( validation ));
                 }
 
-                var user = new IdentityUser { UserName = request.Email, Email = request.Email };
+                var user = new DbUser { UserName = request.Email, Email = request.Email };
                 var firstUser = !mContext.Users.Any();
                 var result = await mUserManager.CreateAsync( user, request.Password );
 
