@@ -55,7 +55,7 @@ namespace SquirrelsNest.Pecan.Server.Database {
 
             InitializeModelProperties( modelBuilder );
 
-//            modelBuilder.ApplyConfiguration( new UserConfiguration());
+            modelBuilder.ApplyConfiguration( new RoleConfiguration());
         }
 
         private void InitializeModelProperties( ModelBuilder modelBuilder ) {

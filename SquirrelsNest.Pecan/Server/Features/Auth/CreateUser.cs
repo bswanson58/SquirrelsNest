@@ -43,14 +43,18 @@ namespace SquirrelsNest.Pecan.Server.Features.Auth {
                 var result = await mUserManager.CreateAsync( user, request.Password );
 
                 if( result.Succeeded ) {
+                    result = await mUserManager.AddClaimAsync( user, new Claim( ClaimTypes.GivenName, request.Name ));
+                }
+
+                if( result.Succeeded ) {
                     // make the first user to be created an admin
-                    if(!firstUser ) {
-                        result = await mUserManager.AddClaimAsync( user, new Claim( ClaimTypes.Role, ClaimValues.ClaimRoleAdmin ));
+                    if( firstUser ) {
+                        result = await mUserManager.AddToRoleAsync( user, ClaimValues.ClaimRoleAdmin );
                     }
 
                     // all users have the user role.
                     if( result.Succeeded ) {
-                        result = await mUserManager.AddClaimAsync( user, new Claim( ClaimTypes.Role, ClaimValues.ClaimRoleUser ));
+                        result = await mUserManager.AddToRoleAsync( user, ClaimValues.ClaimRoleUser );
                     }
 
                     if( result.Succeeded ) {

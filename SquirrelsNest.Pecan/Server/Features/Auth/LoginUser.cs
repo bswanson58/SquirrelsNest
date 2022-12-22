@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using SquirrelsNest.Pecan.Shared.Constants;
 using SquirrelsNest.Pecan.Shared.Dto.Auth;
 using SquirrelsNest.Pecan.Shared.Platform;
 
@@ -69,6 +71,10 @@ namespace SquirrelsNest.Pecan.Server.Features.Auth {
             var dbClaims = await mUserManager.GetClaimsAsync( user );
 
             claims.AddRange( dbClaims );
+
+            var dbRoles = await mUserManager.GetRolesAsync( user );
+
+            claims.AddRange( dbRoles.Select( r => new Claim( ClaimValues.ClaimRole, r )));
 
             return claims;
         }
