@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Threading.Tasks;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -28,10 +26,8 @@ namespace SquirrelsNest.Pecan.Client.Auth.Support {
         }
 
         public void NotifyUserAuthentication( string authToken ) {
-            var claims = JwtParser.ParseClaimsFromJwt( authToken );
-            var email = claims.FirstOrDefault( c => c.Type.Equals( ClaimTypes.Email ))?.Value ?? String.Empty;
             var authenticatedUser = new ClaimsPrincipal(
-                new ClaimsIdentity(new[] { new Claim( ClaimTypes.Name, email ) }, "jwtAuthType" ));
+                new ClaimsIdentity( JwtParser.ParseRolesFromJwt( authToken ), "jwtAuthType" ));
             var authState = Task.FromResult( new AuthenticationState( authenticatedUser ));
 
             NotifyAuthenticationStateChanged( authState );

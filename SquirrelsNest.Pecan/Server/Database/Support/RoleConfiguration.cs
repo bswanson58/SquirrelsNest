@@ -15,7 +15,7 @@ namespace SquirrelsNest.Pecan.Server.Database.Support {
                     Name = ClaimValues.ClaimRoleAdmin,
                     NormalizedName = ClaimValues.ClaimRoleAdmin.ToUpper()
                 }
-            );;
+            );
         }
     }
 }

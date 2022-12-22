@@ -19,6 +19,27 @@ namespace SquirrelsNest.Pecan.Client.Auth.Support {
             return claims;
         }
 
+        public static IEnumerable<Claim> ParseRolesFromJwt( string jwt ) {
+            var retValue = new List<Claim>();
+            var roleValues = ParseClaimsFromJwt( jwt )
+                .Where( c => c.Type.Equals( ClaimTypes.Role ))
+                .Select( c => c.Value )
+                .ToList();
+
+            foreach( var roleValue in roleValues ) {
+                var roles = roleValue.TrimStart( '[' ).TrimEnd( ']' ).Split( ',' );
+
+                retValue.AddRange( roles.Select( r => new Claim( ClaimTypes.Role, r.Trim( '"' ))));
+            }
+
+            return retValue;
+        }
+
+        public static string GetClaimValue( string jwt, string claimType ) =>
+            ParseClaimsFromJwt( jwt )
+                .FirstOrDefault( c => c.Type.Equals( claimType ), new Claim( String.Empty, String.Empty ))
+                .Value;
+
         private static byte[] ParseBase64WithoutPadding( string base64 ) {
             switch( base64.Length % 4 ) {
                 case 2: base64 += "=="; break;

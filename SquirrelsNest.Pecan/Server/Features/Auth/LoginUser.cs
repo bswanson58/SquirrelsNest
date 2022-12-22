@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using SquirrelsNest.Pecan.Shared.Constants;
 using SquirrelsNest.Pecan.Shared.Dto.Auth;
 using SquirrelsNest.Pecan.Shared.Platform;
 
@@ -74,7 +73,7 @@ namespace SquirrelsNest.Pecan.Server.Features.Auth {
 
             var dbRoles = await mUserManager.GetRolesAsync( user );
 
-            claims.AddRange( dbRoles.Select( r => new Claim( ClaimValues.ClaimRole, r )));
+            claims.AddRange( dbRoles.Select( r => new Claim( ClaimTypes.Role, r )));
 
             return claims;
         }

@@ -12,7 +12,7 @@ using SquirrelsNest.Pecan.Server.Database;
 namespace SquirrelsNest.Pecan.Server.Database.Migrations
 {
     [DbContext(typeof(PecanDbContext))]
-    [Migration("20221222171001_InitialMigration")]
+    [Migration("20221222190040_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -54,15 +54,15 @@ namespace SquirrelsNest.Pecan.Server.Database.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "7a9ef797-be51-4595-ab57-7ea2bbceeedc",
+                            Id = "874b14c1-963a-4335-975d-28ab85252890",
                             Name = "user",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "9ac8f39b-4ec2-462e-8cdf-4ddbf9e9a53d",
-                            Name = "admin",
-                            NormalizedName = "ADMIN"
+                            Id = "95a24ac4-b73e-44de-8153-32eeb4390fb1",
+                            Name = "administrator",
+                            NormalizedName = "ADMINISTRATOR"
                         });
                 });
 

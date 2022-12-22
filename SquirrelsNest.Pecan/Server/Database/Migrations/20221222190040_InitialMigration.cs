@@ -288,8 +288,8 @@ namespace SquirrelsNest.Pecan.Server.Database.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "7a9ef797-be51-4595-ab57-7ea2bbceeedc", null, "user", "USER" },
-                    { "9ac8f39b-4ec2-462e-8cdf-4ddbf9e9a53d", null, "admin", "ADMIN" }
+                    { "874b14c1-963a-4335-975d-28ab85252890", null, "user", "USER" },
+                    { "95a24ac4-b73e-44de-8153-32eeb4390fb1", null, "administrator", "ADMINISTRATOR" }
                 });
 
             migrationBuilder.CreateIndex(

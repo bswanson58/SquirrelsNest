@@ -1,6 +1,8 @@
-﻿<MudNavMenu>
+﻿@using SquirrelsNest.Pecan.Shared.Constants
+
+<MudNavMenu>
     <MudNavLink Href="/" Match="NavLinkMatch.All">Home</MudNavLink>
-    <AuthorizeView>
+    <AuthorizeView Roles=@ClaimValues.ClaimRoleUser>
         <Authorized>
             <MudNavLink Href="/projects" Match="NavLinkMatch.Prefix">Projects</MudNavLink>
         </Authorized>

@@ -1,8 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Authorization
+@using SquirrelsNest.Pecan.Shared.Constants
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 @page "/projects"
-@attribute [Authorize]
+@attribute [Authorize( Roles = ClaimValues.cUser )]
 
 <MudGrid Justify="Justify.FlexStart">
     <MudItem xs="3">
