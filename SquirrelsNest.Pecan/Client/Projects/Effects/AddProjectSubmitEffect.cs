@@ -4,23 +4,25 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Fluxor;
 using Microsoft.Extensions.Logging;
+using SquirrelsNest.Pecan.Client.Constants;
 using SquirrelsNest.Pecan.Client.Projects.Actions;
 using SquirrelsNest.Pecan.Shared.Dto.Projects;
 
 namespace SquirrelsNest.Pecan.Client.Projects.Effects {
     // ReSharper disable once UnusedType.Global
     public class AddProjectSubmitEffect : Effect<AddProjectSubmitAction> {
-        private readonly    ILogger<AddProjectSubmitEffect> mLogger;
-        private readonly    HttpClient                      mHttpClient;
+        private readonly IHttpClientFactory                 mClientFactory;
+        private readonly ILogger<AddProjectSubmitEffect>    mLogger;
 
-        public AddProjectSubmitEffect( HttpClient httpClient, ILogger<AddProjectSubmitEffect> logger ) {
-            mHttpClient = httpClient;
+        public AddProjectSubmitEffect( IHttpClientFactory clientFactory,  ILogger<AddProjectSubmitEffect> logger ) {
+            mClientFactory = clientFactory;
             mLogger = logger;
         }
 
         public override async Task HandleAsync( AddProjectSubmitAction action, IDispatcher dispatcher ) {
             try {
-                var postResponse = await mHttpClient.PostAsJsonAsync( CreateProjectInput.Route, action.ProjectInput );
+                using var httpClient = mClientFactory.CreateClient( HttpClientNames.Authenticated );
+                var postResponse = await httpClient.PostAsJsonAsync( CreateProjectInput.Route, action.ProjectInput );
                 var response = await postResponse.Content.ReadFromJsonAsync<CreateProjectResponse>();
 
                 if(( response?.Project != null ) &&

@@ -7,10 +7,12 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using MudBlazor.Services;
 using SquirrelsNest.Pecan.Client;
 using SquirrelsNest.Pecan.Client.Auth.Store;
 using SquirrelsNest.Pecan.Client.Auth.Support;
+using SquirrelsNest.Pecan.Client.Constants;
 using SquirrelsNest.Pecan.Client.Projects.Store;
 using SquirrelsNest.Pecan.Shared.Dto.Projects;
 
@@ -28,11 +30,15 @@ void ConfigureRootComponents( RootComponentMappingCollection root ) {
 }
 
 void ConfigureServices( IServiceCollection services ) {
-    services.AddHttpClient( "SquirrelsNest.Pecan.ServerAPI", 
+    services.AddHttpClient( HttpClientNames.Authenticated, 
                             client => client.BaseAddress = new Uri( builder.HostEnvironment.BaseAddress ))
         .AddHttpMessageHandler<JwtTokenHandler>();
-    services.AddScoped( sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient( "SquirrelsNest.Pecan.ServerAPI" ));
+    services.AddScoped( sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient( HttpClientNames.Authenticated ));
     services.AddScoped<JwtTokenHandler>();
+
+    services.AddHttpClient( HttpClientNames.Anonymous,
+            client => client.BaseAddress = new Uri( builder.HostEnvironment.BaseAddress ));
+    services.AddScoped( sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient( HttpClientNames.Anonymous ));
 
     services.AddScoped<AuthFacade>();
     services.AddScoped<ProjectFacade>();

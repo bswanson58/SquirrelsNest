@@ -6,21 +6,23 @@ using SquirrelsNest.Pecan.Shared.Dto.Auth;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using SquirrelsNest.Pecan.Client.Constants;
 
 namespace SquirrelsNest.Pecan.Client.Auth.Effects {
     // ReSharper disable once UnusedType.Global
     public class LoginUserSubmitEffect : Effect<LoginUserSubmitAction> {
         private readonly ILogger<LoginUserSubmitEffect> mLogger;
-        private readonly HttpClient                     mHttpClient;
+        private readonly IHttpClientFactory             mClientFactory;
 
-        public LoginUserSubmitEffect( HttpClient httpClient, ILogger<LoginUserSubmitEffect> logger ) {
-            mHttpClient = httpClient;
+        public LoginUserSubmitEffect( IHttpClientFactory clientFactory, ILogger<LoginUserSubmitEffect> logger ) {
+            mClientFactory = clientFactory;
             mLogger = logger;
         }
 
         public override async Task HandleAsync( LoginUserSubmitAction action, IDispatcher dispatcher ) {
             try {
-                var postResponse = await mHttpClient.PostAsJsonAsync( LoginUserInput.Route, action.UserInput );
+                using var httpClient = mClientFactory.CreateClient( HttpClientNames.Anonymous );
+                var postResponse = await httpClient.PostAsJsonAsync( LoginUserInput.Route, action.UserInput );
                 var response = await postResponse.Content.ReadFromJsonAsync<LoginUserResponse>();
 
                 if( response != null ) {
