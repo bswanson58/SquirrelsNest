@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using Blazored.LocalStorage;
+using SquirrelsNest.Pecan.Client.Constants;
 
 namespace SquirrelsNest.Pecan.Client.Auth.Support {
     public class JwtTokenHandler : DelegatingHandler {
@@ -14,7 +15,7 @@ namespace SquirrelsNest.Pecan.Client.Auth.Support {
         }
 
         protected override async Task<HttpResponseMessage> SendAsync( HttpRequestMessage request, CancellationToken cancellationToken ) {
-            var token = await mLocalStorage.GetItemAsync<string>( "authToken", cancellationToken );
+            var token = await mLocalStorage.GetItemAsync<string>( LocalStorageNames.AuthToken, cancellationToken );
 
             if( !String.IsNullOrWhiteSpace( token ) ) {
                 request.Headers.Authorization = new AuthenticationHeaderValue( "bearer", token );

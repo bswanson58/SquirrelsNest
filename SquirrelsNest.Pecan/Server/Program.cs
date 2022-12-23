@@ -13,6 +13,7 @@ using SquirrelsNest.Pecan.Server.Database;
 using SquirrelsNest.Pecan.Server.Database.DataProviders;
 using SquirrelsNest.Pecan.Server.Database.Entities;
 using SquirrelsNest.Pecan.Server.Features.Auth;
+using SquirrelsNest.Pecan.Shared.Constants;
 using SquirrelsNest.Pecan.Shared.Dto.Projects;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -59,7 +60,7 @@ void ConfigureSecurity( IServiceCollection services, ConfigurationManager config
         .AddEntityFrameworkStores<PecanDbContext>()
         .AddDefaultTokenProviders();
 
-    var jwtSettings = configuration.GetSection( "JWTSettings" );
+    var jwtSettings = configuration.GetSection( JWTConstants.JwtConfigSettings );
 
 //    JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
@@ -74,10 +75,10 @@ void ConfigureSecurity( IServiceCollection services, ConfigurationManager config
                 ValidateAudience = false,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                ValidIssuer = jwtSettings["validIssuer"],
-                ValidAudience = jwtSettings["validAudience"],
+                ValidIssuer = jwtSettings[JWTConstants.JwtConfigIssuer],
+                ValidAudience = jwtSettings[JWTConstants.JwtConfigAudience],
                 IssuerSigningKey = 
-                    new SymmetricSecurityKey( Encoding.UTF8.GetBytes( jwtSettings["securityKey"] ?? String.Empty )),
+                    new SymmetricSecurityKey( Encoding.UTF8.GetBytes( jwtSettings[JWTConstants.JwtConfigSecurityKey] ?? String.Empty )),
                 ClockSkew = TimeSpan.Zero
             };
         } );

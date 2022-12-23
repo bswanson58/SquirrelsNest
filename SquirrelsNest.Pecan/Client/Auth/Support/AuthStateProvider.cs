@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
+using SquirrelsNest.Pecan.Client.Constants;
+using SquirrelsNest.Pecan.Shared.Constants;
 
 namespace SquirrelsNest.Pecan.Client.Auth.Support {
     public class AuthStateProvider : AuthenticationStateProvider {
@@ -15,8 +17,8 @@ namespace SquirrelsNest.Pecan.Client.Auth.Support {
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync() {
-            var token = await mLocalStorage.GetItemAsync<string>( "authToken" );
-            var refreshToken = await mLocalStorage.GetItemAsync<string>( "refreshToken" );
+            var token = await mLocalStorage.GetItemAsync<string>( LocalStorageNames.AuthToken );
+            var refreshToken = await mLocalStorage.GetItemAsync<string>( LocalStorageNames.RefreshToken );
 
             // mAuthFacade.SetInitialToken( token, refreshToken );
 
@@ -25,12 +27,12 @@ namespace SquirrelsNest.Pecan.Client.Auth.Support {
             }
 
             return new AuthenticationState( 
-                new ClaimsPrincipal( new ClaimsIdentity( JwtParser.ParseClaimsFromJwt( token ), "jwtAuthType" )));
+                new ClaimsPrincipal( new ClaimsIdentity( JwtParser.ParseClaimsFromJwt( token ), JWTConstants.JwtAuthType )));
         }
 
         public void NotifyUserAuthentication( string authToken ) {
             var authenticatedUser = new ClaimsPrincipal(
-                new ClaimsIdentity( JwtParser.ParseRolesFromJwt( authToken ), "jwtAuthType" ));
+                new ClaimsIdentity( JwtParser.ParseRolesFromJwt( authToken ), JWTConstants.JwtAuthType ));
             var authState = Task.FromResult( new AuthenticationState( authenticatedUser ));
 
             NotifyAuthenticationStateChanged( authState );
