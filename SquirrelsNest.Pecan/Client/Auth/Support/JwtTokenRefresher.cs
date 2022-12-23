@@ -29,18 +29,22 @@ namespace SquirrelsNest.Pecan.Client.Auth.Support {
             mLog = log;
         }
 
-        public async Task<bool> TokenRefreshRequired( int withinMinutes ) {
+        private async Task<DateTimeOffset> TokenExpirationTime() {
             var authState = await mAuthenticationProvider.GetAuthenticationStateAsync();
             var exp = authState.User.FindFirst( c => c.Type.Equals( "exp" ))?.Value;
 
             if(!String.IsNullOrWhiteSpace( exp )) {
-                var expTime = DateTimeOffset.FromUnixTimeSeconds( Convert.ToInt64( exp ));
-                var diff = expTime - DateTimeProvider.Instance.CurrentUtcTime;
-
-                return diff.TotalMinutes <= withinMinutes;
+                return DateTimeOffset.FromUnixTimeSeconds( Convert.ToInt64( exp ));
             }
 
-            return true;
+            return DateTimeOffset.MinValue;
+        }
+
+        public async Task<bool> TokenRefreshRequired( int withinMinutes ) {
+            var expTime = await TokenExpirationTime();
+            var diff = expTime - DateTimeProvider.Instance.CurrentUtcTime;
+
+            return diff.TotalMinutes <= withinMinutes;
         }
 
         public async Task<string> RefreshToken() {

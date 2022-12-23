@@ -17,7 +17,7 @@ namespace SquirrelsNest.Pecan.Client.Auth.Support {
         }
 
         protected override async Task<HttpResponseMessage> SendAsync( HttpRequestMessage request, CancellationToken cancellationToken ) {
-            if( await mTokenRefresher.TokenRefreshRequired( 2 )) {
+            if( await mTokenRefresher.TokenRefreshRequired( 10 )) {
                 await mTokenRefresher.RefreshToken();
             }
 
