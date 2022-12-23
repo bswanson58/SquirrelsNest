@@ -4,6 +4,7 @@ namespace SquirrelsNest.Pecan.Shared.Platform {
     public interface ITimeProvider {
         DateOnly        CurrentDate { get; }
         DateTime        CurrentDateTime { get; }
+        DateTime        CurrentUtcTime { get; }
     }
 
     public static class DateTimeProvider {
@@ -25,6 +26,7 @@ namespace SquirrelsNest.Pecan.Shared.Platform {
     internal class RuntimeTimeProvider : ITimeProvider {
         public DateOnly CurrentDate => DateOnly.FromDateTime( DateTime.Now );
         public DateTime CurrentDateTime => DateTime.Now;
+        public DateTime CurrentUtcTime => DateTime.UtcNow;
     }
 
     public class TestTimeProvider : ITimeProvider {
@@ -36,5 +38,6 @@ namespace SquirrelsNest.Pecan.Shared.Platform {
 
         public DateOnly CurrentDate => DateOnly.FromDateTime( mTime );
         public DateTime CurrentDateTime => mTime;
+        public DateTime CurrentUtcTime => mTime.ToUniversalTime();
     }
 }

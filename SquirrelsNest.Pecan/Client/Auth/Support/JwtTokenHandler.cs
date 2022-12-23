@@ -8,29 +8,34 @@ using SquirrelsNest.Pecan.Client.Constants;
 
 namespace SquirrelsNest.Pecan.Client.Auth.Support {
     public class JwtTokenHandler : DelegatingHandler {
+        private readonly ITokenRefresher        mTokenRefresher;
         private readonly ILocalStorageService   mLocalStorage;
 
-        public JwtTokenHandler( ILocalStorageService storageService ) {
+        public JwtTokenHandler( ITokenRefresher tokenRefresher, ILocalStorageService storageService ) {
+            mTokenRefresher = tokenRefresher;
             mLocalStorage = storageService;
         }
 
         protected override async Task<HttpResponseMessage> SendAsync( HttpRequestMessage request, CancellationToken cancellationToken ) {
+            if( await mTokenRefresher.TokenRefreshRequired( 2 )) {
+                await mTokenRefresher.RefreshToken();
+            }
+
             var token = await mLocalStorage.GetItemAsync<string>( LocalStorageNames.AuthToken, cancellationToken );
 
-            if( !String.IsNullOrWhiteSpace( token ) ) {
+            if(!String.IsNullOrWhiteSpace( token )) {
                 request.Headers.Authorization = new AuthenticationHeaderValue( "bearer", token );
             }
 
-            var response = await base.SendAsync( request, cancellationToken );
+            return await base.SendAsync( request, cancellationToken );
             /*
-                        if(( response.StatusCode == HttpStatusCode.Unauthorized ) ||
-                           ( response.StatusCode == HttpStatusCode.Forbidden )) {
-                            token = await RefreshTokenAsync();
-                            request.Headers.Authorization = new AuthenticationHeaderValue( token.Scheme, token.AccessToken );
-                            response = await base.SendAsync( request, cancellationToken );
-                        }
+            if(( response.StatusCode == HttpStatusCode.Unauthorized ) ||
+               ( response.StatusCode == HttpStatusCode.Forbidden )) {
+                token = await RefreshTokenAsync();
+                request.Headers.Authorization = new AuthenticationHeaderValue( token.Scheme, token.AccessToken );
+                response = await base.SendAsync( request, cancellationToken );
+            }
             */
-            return response;
         }
     }
 }

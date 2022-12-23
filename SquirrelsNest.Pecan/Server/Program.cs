@@ -1,5 +1,3 @@
-using System;
-using System.Text;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -8,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using SquirrelsNest.Pecan.Server.Database;
 using SquirrelsNest.Pecan.Server.Database.DataProviders;
 using SquirrelsNest.Pecan.Server.Database.Entities;
@@ -60,9 +57,9 @@ void ConfigureSecurity( IServiceCollection services, ConfigurationManager config
         .AddEntityFrameworkStores<PecanDbContext>()
         .AddDefaultTokenProviders();
 
-    var jwtSettings = configuration.GetSection( JWTConstants.JwtConfigSettings );
-
 //    JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+    var jwtSettings = configuration.GetSection( JWTConstants.JwtConfigSettings );
 
     services.AddAuthentication( options => {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -70,17 +67,7 @@ void ConfigureSecurity( IServiceCollection services, ConfigurationManager config
         options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
     } )
         .AddJwtBearer( options => {
-            options.TokenValidationParameters = new TokenValidationParameters {
-                ValidateIssuer = true,
-                ValidateAudience = false,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = jwtSettings[JWTConstants.JwtConfigIssuer],
-                ValidAudience = jwtSettings[JWTConstants.JwtConfigAudience],
-                IssuerSigningKey = 
-                    new SymmetricSecurityKey( Encoding.UTF8.GetBytes( jwtSettings[JWTConstants.JwtConfigSecurityKey] ?? String.Empty )),
-                ClockSkew = TimeSpan.Zero
-            };
+            options.TokenValidationParameters = TokenBuilder.CreateTokenValidationParameters( jwtSettings );
         } );
 }
 

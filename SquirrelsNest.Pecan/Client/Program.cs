@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using MudBlazor.Services;
 using SquirrelsNest.Pecan.Client;
 using SquirrelsNest.Pecan.Client.Auth.Store;
@@ -37,8 +36,11 @@ void ConfigureServices( IServiceCollection services ) {
     services.AddScoped<JwtTokenHandler>();
 
     services.AddHttpClient( HttpClientNames.Anonymous,
-            client => client.BaseAddress = new Uri( builder.HostEnvironment.BaseAddress ));
+                            client => client.BaseAddress = new Uri( builder.HostEnvironment.BaseAddress ));
+
     services.AddScoped( sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient( HttpClientNames.Anonymous ));
+
+    services.AddScoped<ITokenRefresher, JwtTokenRefresher>();
 
     services.AddScoped<AuthFacade>();
     services.AddScoped<ProjectFacade>();

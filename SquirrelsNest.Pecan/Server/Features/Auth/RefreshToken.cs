@@ -24,7 +24,8 @@ namespace SquirrelsNest.Pecan.Server.Features.Auth {
 
         [HttpPost]
         public override async Task<ActionResult<RefreshTokenResponse>> HandleAsync( 
-            [FromBody] RefreshTokenRequest request, CancellationToken cancellationToken = new () ) {
+                [FromBody] RefreshTokenRequest request,
+                CancellationToken cancellationToken = new () ) {
 
             var principal = mTokenBuilder.GetPrincipalFromExpiredToken( request.Token );
             var user = default( DbUser );

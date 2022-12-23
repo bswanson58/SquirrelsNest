@@ -17,8 +17,8 @@ namespace SquirrelsNest.Pecan.Client.Auth.Support {
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync() {
-            var token = await mLocalStorage.GetItemAsync<string>( LocalStorageNames.AuthToken );
-            var refreshToken = await mLocalStorage.GetItemAsync<string>( LocalStorageNames.RefreshToken );
+            var token = await mLocalStorage.GetItemAsStringAsync( LocalStorageNames.AuthToken );
+            // var refreshToken = await mLocalStorage.GetItemAsStringAsync( LocalStorageNames.RefreshToken );
 
             // mAuthFacade.SetInitialToken( token, refreshToken );
 
