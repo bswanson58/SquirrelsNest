@@ -10,6 +10,7 @@ using SquirrelsNest.Pecan.Server.Database;
 using SquirrelsNest.Pecan.Server.Database.DataProviders;
 using SquirrelsNest.Pecan.Server.Database.Entities;
 using SquirrelsNest.Pecan.Server.Features.Auth;
+using SquirrelsNest.Pecan.Server.Models;
 using SquirrelsNest.Pecan.Shared.Constants;
 using SquirrelsNest.Pecan.Shared.Dto.Projects;
 
@@ -46,14 +47,8 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
 
 void ConfigureSecurity( IServiceCollection services, ConfigurationManager configuration ) {
     // AddIdentity must be called before AddAuthentication
-    services.AddIdentity<DbUser, IdentityRole>( options => {
-            options.Password.RequireDigit = false;
-            options.Password.RequiredLength = 6;
-            options.Password.RequireNonAlphanumeric = false;
-            options.Password.RequireUppercase = false;
-            options.Password.RequireLowercase = false;
-            options.User.RequireUniqueEmail = true;
-        } )
+    services.AddIdentity<DbUser, IdentityRole>( 
+        options => PasswordRequirements.LoadPasswordRequirements( configuration, options ))
         .AddEntityFrameworkStores<PecanDbContext>()
         .AddDefaultTokenProviders();
 
