@@ -4,12 +4,22 @@
 
 <PageTitle>SquirrelsNest</PageTitle>
 
-<MudContainer>
-    <MudButton ButtonType="ButtonType.Button" Variant="Variant.Text" @onclick="@OnRegister">Register</MudButton>
-    <MudButton ButtonType="ButtonType.Button" Variant="Variant.Text" @onclick="@OnLogin">Login</MudButton>
+<MudContainer class="d-flex mt-8">
+    <MudContainer Class="d-flex flex-column align-end">
+        <MudText Typo="Typo.h4">SquirrelsNest</MudText>
+        <MudImage Src="images/squirrel-icon.png" />
+        <MudText Typo="Typo.body1">A place to track all your things</MudText>
+    </MudContainer>
+    
+    <MudDivider Vertical="true" FlexItem="true" />
+
+    <MudContainer Class="d-flex flex-column justify-center align-start">
+        <MudButton ButtonType="ButtonType.Button" Variant="Variant.Text" OnClick="@OnLogin">Login</MudButton>
+        <MudButton ButtonType="ButtonType.Button" Variant="Variant.Text" OnClick="@OnRegister">Register</MudButton>
+    </MudContainer>
 </MudContainer>
 
-@inject AuthFacade  AuthFacade;
+@inject AuthFacade AuthFacade;
 
 @code {
     private void OnRegister() {

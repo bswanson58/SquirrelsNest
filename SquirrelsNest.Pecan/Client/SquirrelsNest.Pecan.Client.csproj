@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <Folder Include="Shared\" />
+    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
 </Project>
