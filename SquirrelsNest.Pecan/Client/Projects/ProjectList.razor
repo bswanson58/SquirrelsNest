@@ -6,21 +6,21 @@
 @inject IState<ProjectState>    ProjectState
 @inject ProjectFacade           ProjectFacade
 
-<h3>Project List</h3>
+<MudContainer Class="ma-1">
+    <MudText Class="mb-2" Typo="Typo.h6">Projects:</MudText>
 
-@if( ProjectState.Value.ApiCallInProgress ) {
-    <div>Loading Project List</div>
-}
-else if( ProjectState.Value.ApiCallMessage.Length > 0 ) {
-    <div>Error Message: @ProjectState.Value.ApiCallMessage</div>
-}
-else {
-    <div>@ProjectState.Value.Projects.Count projects loaded</div>
-
-    @foreach( var project in ProjectState.Value.Projects ) {
-        <div>@project.Name</div>
+    @if( ProjectState.Value.ApiCallInProgress ) {
+        <MudText Class="ma-6" Typo="Typo.body1">Loading Project List</MudText>
     }
-}
+    else if( ProjectState.Value.ApiCallMessage.Length > 0 ) {
+        <MudText Class="ma-6" Typo="Typo.body1" Color="Color.Error">Error: @ProjectState.Value.ApiCallMessage</MudText>
+    }
+    else {
+        @foreach( var project in ProjectState.Value.Projects ) {
+            <MudText Class="ms-2" Typo="Typo.body1">@project.Name</MudText>
+        }
+    }
+</MudContainer>
 
 @code {
 

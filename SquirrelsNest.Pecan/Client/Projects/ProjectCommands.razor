@@ -2,10 +2,12 @@
 
 @inject ProjectFacade ProjectFacade
 
-<MudStack Row="true" Spacing="2" Class="d-flex justify-end">
-    <MudButton Variant="Variant.Text" OnClick="OnAddProject">Add Project</MudButton>
-    <MudButton Variant="Variant.Text" OnClick="OnImportProject">Import Project</MudButton>
-</MudStack>
+<MudContainer Class="mt-1">
+    <MudStack Row="true" Spacing="2" Class="d-flex justify-end">
+        <MudButton Variant="Variant.Text" OnClick="OnAddProject">Add Project</MudButton>
+        <MudButton Variant="Variant.Text" OnClick="OnImportProject">Import Project</MudButton>
+    </MudStack>
+</MudContainer>
 
 @code {
 
