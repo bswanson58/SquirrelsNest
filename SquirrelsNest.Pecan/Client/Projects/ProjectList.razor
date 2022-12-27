@@ -1,5 +1,6 @@
 ﻿@using SquirrelsNest.Pecan.Client.Projects.Store
 @using Fluxor
+@using SquirrelsNest.Pecan.Shared.Entities
 
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
@@ -16,9 +17,18 @@
         <MudText Class="ma-6" Typo="Typo.body1" Color="Color.Error">Error: @ProjectState.Value.ApiCallMessage</MudText>
     }
     else {
-        @foreach( var project in ProjectState.Value.Projects ) {
-            <MudText Class="ms-2" Typo="Typo.body1">@project.Name</MudText>
-        }
+        <MudStack>
+            @foreach( var project in ProjectState.Value.Projects ) {
+                if( IsCurrentProject( project )) {
+                    <MudLink Class="ms-2" Typo="Typo.body1" Color="Color.Secondary" 
+                             OnClick="@(() => SetCurrentProject( project ))">@project.Name</MudLink>
+                }
+                else {
+                    <MudLink Class="ms-2" Typo="Typo.body1" Color="Color.Primary" 
+                             OnClick="@(() => SetCurrentProject( project ))">@project.Name</MudLink>
+                }
+            }
+        </MudStack>
     }
 </MudContainer>
 
@@ -30,4 +40,11 @@
         ProjectFacade.LoadProjects();
     }
 
+    private void SetCurrentProject( SnProject project ) {
+        ProjectFacade.SetCurrentProject( project );
+    }
+
+    private bool IsCurrentProject(SnProject project) => 
+        ProjectState.Value.CurrentProject != null && 
+        ProjectState.Value.CurrentProject.EntityId.Equals( project.EntityId );
 }
