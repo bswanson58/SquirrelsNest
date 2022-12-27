@@ -1,9 +1,23 @@
-﻿
+﻿@using Fluxor
+@using SquirrelsNest.Pecan.Client.Projects.Store
+
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
 <MudPaper Outlined="true" Class="mt-2 pa-2">
-    <MudText Typo="Typo.h6">Project Detail</MudText>
-    <MudText Typo="Typo.body1">Name:</MudText>
-    <MudText Typo="Typo.body1">Description:</MudText>
+    <MudText Typo="Typo.h6">Project Details:</MudText>
+    <MudStack Row="true" Spacing="2" Class="my-2">
+        <MudStack Spacing="0" Style="Width: 7em">
+            <MudText Typo="Typo.body1" Class="d-flex justify-end subdue">Name:</MudText>
+            <MudText Typo="Typo.body1" Class="d-flex justify-end subdue">Description:</MudText>
+        </MudStack>
+        <MudStack Spacing="0">
+            <MudText Typo="Typo.body1">@ProjectState.Value.CurrentProject?.Name</MudText>
+            <MudText Typo="Typo.body1">@ProjectState.Value.CurrentProject?.Description</MudText>
+        </MudStack>
+    </MudStack>
 </MudPaper>
+
+@inject IState<ProjectState>    ProjectState;
 
 @code {
 
