@@ -15,17 +15,17 @@ namespace SquirrelsNest.Pecan.Client.Projects.Reducers {
 
         [ReducerMethod( typeof( AddProjectSubmitAction ))]
         public static ProjectState ReduceAddProjectSubmitAction( ProjectState state ) =>
-            new ( true, String.Empty, state.Projects );
+            new ( true, String.Empty, state.Projects, state.CurrentProject );
 
         [ReducerMethod]
         public static ProjectState ReduceAddProjectSuccessAction( ProjectState state, AddProjectSuccess action ) {
             var projectList = new List<SnProject>( state.Projects ) { action.Project };
 
-            return new ProjectState( false, String.Empty, projectList );
+            return new ProjectState( false, String.Empty, projectList, state.CurrentProject );
         }
 
         [ReducerMethod]
         public static ProjectState ReduceAddProjectFailureAction( ProjectState state, AddProjectFailure action ) =>
-            new ( false, action.Message, state.Projects );
+            new ( false, action.Message, state.Projects, state.CurrentProject );
     }
 }

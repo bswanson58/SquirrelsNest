@@ -12,14 +12,14 @@ namespace SquirrelsNest.Pecan.Client.Projects.Reducers {
     public static class ProjectListReducer {
         [ReducerMethod( typeof( GetProjectsAction ))]
         public static ProjectState ReduceGetProjectsAction( ProjectState state ) =>
-            new ( true, String.Empty, state.Projects );
+            new ( true, String.Empty, state.Projects, state.CurrentProject );
 
         [ReducerMethod]
         public static ProjectState ReduceGetProjectsSuccess( ProjectState state, GetProjectsSuccessAction action ) =>
-            new ( false, String.Empty, action.Projects );
+            new ( false, String.Empty, action.Projects, state.CurrentProject );
 
         [ReducerMethod]
         public static ProjectState ReducerGetProjectsFailure( ProjectState state, GetProjectsFailureAction action ) =>
-            new ( false, action.Message, Enumerable.Empty<SnProject>());
+            new ( false, action.Message, Enumerable.Empty<SnProject>(), null );
     }
 }
