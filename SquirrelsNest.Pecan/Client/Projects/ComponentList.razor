@@ -1,23 +1,60 @@
 ﻿@using SquirrelsNest.Pecan.Shared.Entities
 
+<style>
+    .mouse-highlight {
+        background: lightgrey
+    }
+</style>
+
 <MudStack Spacing="1" Style="overflow: auto; width: 100%">
-    @if( Components?.Any() == true ) {
-        @foreach( var component in Components ) {
-            <MudStack Row="true" Spacing="0">
-                <MudStack Spacing="0" Class="d-flex flex-none">
-                    <MudText Typo="Typo.body1">@component.Name</MudText>
-                    <MudText Class="ms-1 subdue" Typo="Typo.body2">@component.Description</MudText>
+    @if( mDisplayComponents.Any()) {
+        @foreach( var component in mDisplayComponents ) {
+            <div @onmouseenter="@component.OnMouseEnter" @onmouseleave="@component.OnMouseLeave"
+                 class="@component.MouseOverHighlight">
+                <MudStack Row="true" Spacing="0" Class="mx-1">
+                    <MudStack Spacing="0" Class="d-flex flex-none">
+                        <MudText Typo="Typo.body1">@component.Name</MudText>
+                        <MudText Class="ms-1 subdue" Typo="Typo.body2">@component.Description</MudText>
+                    </MudStack>
+                    <MudContainer Class="d-flex flex-grow-1"/>
+                    <MudStack Row="true" Spacing="1" Class="d-flex flex-none align-center">
+                        <MudIcon Class="@component.MouseOverVisibility" Icon="@Icons.Outlined.Edit" Title="Edit"/>
+                        <MudIcon Class="@component.MouseOverVisibility" Icon="@Icons.Filled.DeleteOutline" Title="Delete"/>
+                    </MudStack>
                 </MudStack>
-                <MudContainer Class="d-flex flex-grow-1"/>
-                <MudStack Row="true" Spacing="1" Class="d-flex flex-none align-center">
-                    <MudIcon Icon="@Icons.Outlined.Edit" Title="Edit"/>
-                    <MudIcon Icon="@Icons.Filled.DeleteOutline" Title="Delete"/>
-                </MudStack>
-            </MudStack>
+            </div>
         }
     }
 </MudStack>
+
 @code {
     [Parameter]
-    public  IEnumerable<IComponentBase>     Components { get; set; }
+    public IEnumerable<IComponentBase> ?    Components { get; set; }
+
+    private List<DisplayComponent>          mDisplayComponents = new ();
+
+    protected override void OnParametersSet() {
+        mDisplayComponents.Clear();
+
+        if( Components != null ) {
+            mDisplayComponents.AddRange( Components.Select( c => new DisplayComponent( c )));
+        }
+    }
+
+    internal class DisplayComponent {
+        public  IComponentBase  Component { get; }
+        public  string          Name => Component.Name;
+        public  string          Description => Component.Description;
+        private bool            mIsMouseOver;
+
+        public DisplayComponent( IComponentBase component ) {
+            Component = component;
+        }
+
+        public void OnMouseEnter() => mIsMouseOver = true;
+        public void OnMouseLeave() => mIsMouseOver = false;
+
+        public string MouseOverVisibility => mIsMouseOver ? "" : "invisible";
+        public string MouseOverHighlight => mIsMouseOver ? "mouse-highlight" : "";
+    }
 }
