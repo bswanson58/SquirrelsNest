@@ -2,12 +2,14 @@
 using System.Threading.Tasks;
 using Ardalis.ApiEndpoints;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SquirrelsNest.Pecan.Server.Database.Entities;
 using SquirrelsNest.Pecan.Shared.Dto.Auth;
 
 namespace SquirrelsNest.Pecan.Server.Features.Auth {
+    [AllowAnonymous]
     [Route( LoginUserInput.Route )]
     public class LoginUser : EndpointBaseAsync
         .WithRequest<LoginUserInput>
