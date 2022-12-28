@@ -6,6 +6,7 @@ using SquirrelsNest.Pecan.Shared.Entities;
 namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
     public interface IComponentProvider {
         IQueryable<SnComponent>     GetAll();
+        IQueryable<SnComponent>     GetAll( SnProject forProject );
         ValueTask<SnComponent ?>    GetById( string id );
         Task<SnComponent>           Create( SnComponent component );
         ValueTask<SnComponent ?>    Update( SnComponent component );
@@ -21,6 +22,9 @@ namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
 
         public IQueryable<SnComponent> GetAll() =>
             BaseGetAll().Select( e => ConvertTo( e ));
+
+        public IQueryable<SnComponent> GetAll( SnProject forProject ) =>
+            BaseGetAll().Where( c => c.ProjectId.Equals( forProject.EntityId )).Select( e => ConvertTo( e ));
 
         public async ValueTask<SnComponent ?> GetById( string id ) =>
             ( await BaseGetById( id ))?.ToEntity();

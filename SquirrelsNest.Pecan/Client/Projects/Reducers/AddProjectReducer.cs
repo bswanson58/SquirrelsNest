@@ -19,7 +19,7 @@ namespace SquirrelsNest.Pecan.Client.Projects.Reducers {
 
         [ReducerMethod]
         public static ProjectState ReduceAddProjectSuccessAction( ProjectState state, AddProjectSuccess action ) {
-            var projectList = new List<SnProject>( state.Projects ) { action.Project };
+            var projectList = new List<SnCompositeProject>( state.Projects ) { action.Project };
 
             return new ProjectState( false, String.Empty, projectList, state.CurrentProject );
         }

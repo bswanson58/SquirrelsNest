@@ -1,16 +1,13 @@
 ﻿using Fluxor;
-using Microsoft.Extensions.Logging;
 using SquirrelsNest.Pecan.Client.Projects.Actions;
 using SquirrelsNest.Pecan.Shared.Entities;
 
 namespace SquirrelsNest.Pecan.Client.Projects.Store {
     public class ProjectFacade {
-        private readonly ILogger<ProjectFacade> mLogger;
         private readonly IDispatcher mDispatcher;
 
-        public ProjectFacade( IDispatcher dispatcher, ILogger<ProjectFacade> logger ) {
+        public ProjectFacade( IDispatcher dispatcher ) {
             mDispatcher = dispatcher;
-            mLogger = logger;
         }
 
         public void LoadProjects() {
@@ -21,7 +18,7 @@ namespace SquirrelsNest.Pecan.Client.Projects.Store {
             mDispatcher.Dispatch( new AddProjectAction());
         }
 
-        public void SetCurrentProject( SnProject project ) {
+        public void SetCurrentProject( SnCompositeProject project ) {
             mDispatcher.Dispatch( new SetCurrentProjectAction( project ));
         }
     }

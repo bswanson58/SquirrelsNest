@@ -7,9 +7,9 @@ namespace SquirrelsNest.Pecan.Client.Projects.Actions {
     }
 
     public class GetProjectsSuccessAction {
-        public  IEnumerable<SnProject>  Projects { get; }
+        public  IEnumerable<SnCompositeProject> Projects { get; }
 
-        public GetProjectsSuccessAction( IEnumerable<SnProject> projectList ) {
+        public GetProjectsSuccessAction( IEnumerable<SnCompositeProject> projectList ) {
             Projects = projectList;
         }
     }

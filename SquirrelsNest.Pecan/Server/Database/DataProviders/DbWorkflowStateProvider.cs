@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
     public interface IWorkflowStateProvider {
         IQueryable<SnWorkflowState>     GetAll();
+        IQueryable<SnWorkflowState>     GetAll( SnProject forProject );
         ValueTask<SnWorkflowState ?>    GetById( string id );
         Task<SnWorkflowState>           Create( SnWorkflowState workflowState );
         ValueTask<SnWorkflowState ?>    Update( SnWorkflowState workflowState );
@@ -21,6 +22,9 @@ namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
 
         public IQueryable<SnWorkflowState> GetAll() =>
             BaseGetAll().Select( e => ConvertTo( e ));
+
+        public IQueryable<SnWorkflowState> GetAll( SnProject forProject ) =>
+            BaseGetAll().Where( e => e.ProjectId.Equals( forProject.EntityId )).Select( e => ConvertTo( e ));
 
         public async ValueTask<SnWorkflowState ?> GetById( string id ) =>
             ( await BaseGetById( id ))?.ToEntity();

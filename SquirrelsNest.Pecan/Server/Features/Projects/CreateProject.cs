@@ -39,7 +39,7 @@ namespace SquirrelsNest.Pecan.Server.Features.Projects {
                 var project = new SnProject( request.Name, request.IssuePrefix ).With( description: request.Description );
                 var result =  await mProjectProvider.Create( project );
 
-                return Ok( new CreateProjectResponse( result ));
+                return Ok( new CreateProjectResponse( new SnCompositeProject( result )));
             }
             catch( Exception ex ) {
                 return Ok( new CreateProjectResponse( ex ));

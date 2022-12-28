@@ -4,14 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using SquirrelsNest.Pecan.Server.Database.Entities;
 
 namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
-    public interface IProviderBase<TEntity> {
-        IQueryable<TEntity>     GetAll();
-        ValueTask<TEntity ?>    GetById( string id );
-        Task<TEntity>           Create( TEntity entity );
-        ValueTask<TEntity ?>    Update( TEntity entity );
-        Task                    Delete( string id );
-    }
-
     public class ProviderBase<TEntity> where TEntity : DbEntityBase<TEntity> {
         private readonly PecanDbContext mDbContext;
 

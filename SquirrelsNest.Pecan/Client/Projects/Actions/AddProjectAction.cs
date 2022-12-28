@@ -15,9 +15,9 @@ namespace SquirrelsNest.Pecan.Client.Projects.Actions {
     }
 
     public class AddProjectSuccess {
-        public  SnProject   Project { get; }
+        public  SnCompositeProject  Project { get; }
 
-        public AddProjectSuccess( SnProject project ) => Project = project;
+        public AddProjectSuccess( SnCompositeProject project ) => Project = project;
     }
 
     public class AddProjectFailure : FailureAction {

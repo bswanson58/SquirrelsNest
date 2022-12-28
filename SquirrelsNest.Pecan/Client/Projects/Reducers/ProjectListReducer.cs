@@ -20,6 +20,6 @@ namespace SquirrelsNest.Pecan.Client.Projects.Reducers {
 
         [ReducerMethod]
         public static ProjectState ReducerGetProjectsFailure( ProjectState state, GetProjectsFailureAction action ) =>
-            new ( false, action.Message, Enumerable.Empty<SnProject>(), null );
+            new ( false, action.Message, Enumerable.Empty<SnCompositeProject>(), null );
     }
 }

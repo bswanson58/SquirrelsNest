@@ -21,15 +21,15 @@ namespace SquirrelsNest.Pecan.Shared.Dto.Projects {
     }
 
     public class CreateProjectResponse : BaseResponse {
-        public  SnProject ?     Project { get; }
+        public  SnCompositeProject ?    Project { get; }
 
         [JsonConstructor]
-        public CreateProjectResponse( bool succeeded, string message, SnProject project ) :
+        public CreateProjectResponse( bool succeeded, string message, SnCompositeProject project ) :
             base( succeeded, message ) {
             Project = project;
         }
 
-        public CreateProjectResponse( SnProject project ) {
+        public CreateProjectResponse( SnCompositeProject project ) {
             Project = project;
         }
 

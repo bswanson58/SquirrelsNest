@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
     public interface IReleaseProvider {
         IQueryable<SnRelease>   GetAll();
+        IQueryable<SnRelease>   GetAll( SnProject forProject );
         ValueTask<SnRelease ?>  GetById( string id );
         Task<SnRelease>         Create( SnRelease release );
         ValueTask<SnRelease ?>  Update( SnRelease release );
@@ -21,6 +22,9 @@ namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
 
         public IQueryable<SnRelease> GetAll() =>
             BaseGetAll().Select( e => ConvertTo( e ));
+
+        public IQueryable<SnRelease> GetAll( SnProject forProject ) =>
+            BaseGetAll().Where( e => e.ProjectId.Equals( forProject.EntityId )).Select( e => ConvertTo( e ));
 
         public async ValueTask<SnRelease ?> GetById( string id ) =>
             ( await BaseGetById( id ))?.ToEntity();

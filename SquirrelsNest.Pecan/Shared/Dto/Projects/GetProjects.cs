@@ -5,25 +5,25 @@ using System.Text.Json.Serialization;
 
 namespace SquirrelsNest.Pecan.Shared.Dto.Projects {
     public class GetProjectsResponse : BaseResponse {
-        public List<SnProject>  Projects { get; }
+        public List<SnCompositeProject> Projects { get; }
 
         [JsonConstructor]
-        public GetProjectsResponse( bool succeeded, string message, List<SnProject> projects ) :
+        public GetProjectsResponse( bool succeeded, string message, List<SnCompositeProject> projects ) :
             base( succeeded, message ) {
             Projects = projects;
         }
 
         public GetProjectsResponse() {
-            Projects = new List<SnProject>();
+            Projects = new List<SnCompositeProject>();
         }
 
-        public GetProjectsResponse( List<SnProject> projects ) {
-            Projects = new List<SnProject>( projects );
+        public GetProjectsResponse( List<SnCompositeProject> projects ) {
+            Projects = new List<SnCompositeProject>( projects );
         }
 
         public GetProjectsResponse( Exception ex ) :
             base( ex ) {
-            Projects = new List<SnProject>();
+            Projects = new List<SnCompositeProject>();
         }
     }
 }

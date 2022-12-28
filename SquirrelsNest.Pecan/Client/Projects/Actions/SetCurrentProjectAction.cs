@@ -2,9 +2,9 @@
 
 namespace SquirrelsNest.Pecan.Client.Projects.Actions {
     public class SetCurrentProjectAction {
-        public  SnProject   Project { get; }
+        public  SnCompositeProject  Project { get; }
 
-        public SetCurrentProjectAction( SnProject project ) {
+        public SetCurrentProjectAction( SnCompositeProject project ) {
             Project = project;
         }
     }
