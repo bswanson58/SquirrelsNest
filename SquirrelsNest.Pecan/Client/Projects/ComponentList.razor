@@ -17,9 +17,11 @@
                         <MudText Class="ms-1 subdue" Typo="Typo.body2">@component.Description</MudText>
                     </MudStack>
                     <MudContainer Class="d-flex flex-grow-1"/>
-                    <MudStack Row="true" Spacing="1" Class="d-flex flex-none align-center">
-                        <MudIcon Class="@component.MouseOverVisibility" Icon="@Icons.Outlined.Edit" Title="Edit"/>
-                        <MudIcon Class="@component.MouseOverVisibility" Icon="@Icons.Filled.DeleteOutline" Title="Delete"/>
+                    <MudStack Row="true" Spacing="0" Class="d-flex flex-none align-center">
+                        <MudIconButton Class="@component.MouseOverVisibility" Icon="@Icons.Outlined.Edit"
+                                       OnClick="@(() => OnEditRequest( component.Component ))" Title="Edit" />
+                        <MudIconButton Class="@component.MouseOverVisibility" Icon="@Icons.Filled.DeleteOutline"
+                                       OnClick="@(() => OnDeleteRequest( component.Component ))" Title="Delete"/>
                     </MudStack>
                 </MudStack>
             </div>
@@ -30,6 +32,10 @@
 @code {
     [Parameter]
     public IEnumerable<IComponentBase> ?    Components { get; set; }
+    [Parameter]
+    public EventCallback<IComponentBase>    OnEdit { get; set; }
+    [Parameter]
+    public EventCallback<IComponentBase>    OnDelete { get; set; }
 
     private List<DisplayComponent>          mDisplayComponents = new ();
 
@@ -39,6 +45,14 @@
         if( Components != null ) {
             mDisplayComponents.AddRange( Components.Select( c => new DisplayComponent( c )));
         }
+    }
+
+    private void OnEditRequest( IComponentBase component ) {
+        OnEdit.InvokeAsync( component );
+    }
+
+    private void OnDeleteRequest( IComponentBase component ) {
+        OnDelete.InvokeAsync( component );
     }
 
     internal class DisplayComponent {

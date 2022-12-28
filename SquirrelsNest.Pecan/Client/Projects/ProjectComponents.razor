@@ -14,7 +14,7 @@
                 <MudStack Spacing="0">
                     <MudText Typo="Typo.body1" Class="subdue">Issue Types:</MudText>
                     <MudContainer Class="ms-1 ps-1 pe-0 d-flex" Style="height: 15em;">
-                        <ComponentList Components="mComponents"/>
+                        <ComponentList Components="mIssueTypes" OnEdit="OnEditIssueType" OnDelete="OnDeleteIssueType"/>
                     </MudContainer>
                     <MudButton Class="d-flex justify-end" ButtonType="ButtonType.Button" Variant="Variant.Text">Add Type</MudButton>
                 </MudStack>
@@ -25,7 +25,7 @@
                 <MudStack Spacing="0">
                     <MudText Typo="Typo.body1" Class="subdue">Components:</MudText>
                     <MudContainer Class="ms-1 ps-1 pe-0 d-flex" Style="height: 15em;">
-                        <ComponentList Components="mComponents"/>
+                        <ComponentList Components="mComponents" OnEdit="OnEditComponent" OnDelete="OnDeleteComponent"/>
                     </MudContainer>
                     <MudButton Class="d-flex justify-end" ButtonType="ButtonType.Button" Variant="Variant.Text">Add Component</MudButton>
                 </MudStack>
@@ -36,7 +36,7 @@
                 <MudStack Spacing="0">
                     <MudText Typo="Typo.body1" Class="subdue">Workflow States:</MudText>
                     <MudContainer Class="ms-1 ps-1 pe-0 d-flex" Style="height: 15em;">
-                        <ComponentList Components="mComponents" />
+                        <ComponentList Components="mStates" OnEdit="OnEditState" OnDelete="OnDeleteState"/>
                     </MudContainer>
                     <MudButton Class="d-flex justify-end" ButtonType="ButtonType.Button" Variant="Variant.Text">Add State</MudButton>
                 </MudStack>
@@ -47,7 +47,7 @@
                 <MudStack Spacing="0">
                     <MudText Typo="Typo.body1" Class="subdue">Releases:</MudText>
                     <MudContainer Class="ms-1 ps-1 pe-0 d-flex" Style="height: 15em;">
-                        <ComponentList Components="mComponents" />
+                        <ComponentList Components="mReleases" OnEdit="OnEditRelease" OnDelete="OnDeleteRelease"/>
                     </MudContainer>
                     <MudButton Class="d-flex justify-end" ButtonType="ButtonType.Button" Variant="Variant.Text">Add Release</MudButton>
                 </MudStack>
@@ -57,7 +57,10 @@
 </MudContainer>
 
 @code {
-    List<SnComponent> ? mComponents;
+    List<SnComponent> ?     mComponents;
+    List<SnIssueType>?      mIssueTypes;
+    List<SnWorkflowState> ? mStates;
+    List<SnRelease> ?       mReleases;
 
     protected override void OnInitialized() {
         base.OnInitialized();
@@ -70,5 +73,18 @@
             new ( "5", "2", "Models", "Model components" ),
             new ( "6", "2", "Security", "Security related issues" )
         };
+
+        mIssueTypes = new List<SnIssueType>();
+        mStates = new List<SnWorkflowState>();
+        mReleases = new List<SnRelease>();
     }
+
+    private void OnEditComponent( IComponentBase component ) {}
+    private void OnDeleteComponent( IComponentBase component ) {}
+    private void OnEditIssueType( IComponentBase issueType ) { }
+    private void OnDeleteIssueType( IComponentBase issueType ) { }
+    private void OnEditState( IComponentBase state ) { }
+    private void OnDeleteState( IComponentBase state ) { }
+    private void OnEditRelease( IComponentBase release ) { }
+    private void OnDeleteRelease( IComponentBase release ) { }
 }
