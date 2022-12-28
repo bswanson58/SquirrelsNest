@@ -3,10 +3,10 @@ using System.Diagnostics;
 
 namespace SquirrelsNest.Pecan.Shared.Entities {
     [DebuggerDisplay("Component: {" + nameof( Name ) + "}")]
-    public class SnComponent : EntityBase {
+    public class SnComponent : EntityBase, IComponentBase {
         public  EntityIdentifier    ProjectId { get; }
-        public  string      Name { get; }
-        public  string      Description { get; }
+        public  string              Name { get; }
+        public  string              Description { get; }
 
         public SnComponent( string entityId, string projectId, string name, string description ) :
             base( entityId ) {

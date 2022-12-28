@@ -1,0 +1,23 @@
+﻿@using SquirrelsNest.Pecan.Shared.Entities
+
+<MudStack Spacing="1" Style="overflow: auto; width: 100%">
+    @if( Components?.Any() == true ) {
+        @foreach( var component in Components ) {
+            <MudStack Row="true" Spacing="0">
+                <MudStack Spacing="0" Class="d-flex flex-none">
+                    <MudText Typo="Typo.body1">@component.Name</MudText>
+                    <MudText Class="ms-1 subdue" Typo="Typo.body2">@component.Description</MudText>
+                </MudStack>
+                <MudContainer Class="d-flex flex-grow-1"/>
+                <MudStack Row="true" Spacing="1" Class="d-flex flex-none align-center">
+                    <MudIcon Icon="@Icons.Outlined.Edit" Title="Edit"/>
+                    <MudIcon Icon="@Icons.Filled.DeleteOutline" Title="Delete"/>
+                </MudStack>
+            </MudStack>
+        }
+    }
+</MudStack>
+@code {
+    [Parameter]
+    public  IEnumerable<IComponentBase>     Components { get; set; }
+}

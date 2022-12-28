@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace SquirrelsNest.Pecan.Shared.Entities {
     [DebuggerDisplay("Type: {" + nameof( Name ) + "}")]
-    public class SnIssueType :EntityBase {
+    public class SnIssueType :EntityBase, IComponentBase {
         public  EntityIdentifier    ProjectId { get; }
         public  string              Name { get; }
         public  string              Description { get; }

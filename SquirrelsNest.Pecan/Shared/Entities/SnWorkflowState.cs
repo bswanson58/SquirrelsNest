@@ -10,7 +10,7 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
     }
 
     [DebuggerDisplay("State: {" + nameof( Name ) + "}")]
-    public class SnWorkflowState : EntityBase {
+    public class SnWorkflowState : EntityBase, IComponentBase {
         public  EntityIdentifier    ProjectId { get; }
         public  string              Name { get; }
         public  string              Description { get; }

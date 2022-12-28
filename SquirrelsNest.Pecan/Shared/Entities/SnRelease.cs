@@ -4,7 +4,7 @@ using SquirrelsNest.Pecan.Shared.Platform;
 
 namespace SquirrelsNest.Pecan.Shared.Entities {
     [DebuggerDisplay("Release: {" + nameof( Name ) + "}")]
-    public class SnRelease : EntityBase {
+    public class SnRelease : EntityBase, IComponentBase {
         public  string      ProjectId { get; }
         public  string      Name { get; }
         public  string      Description { get; }

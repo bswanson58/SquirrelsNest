@@ -1,20 +1,74 @@
-﻿
+﻿@using Fluxor
+@using SquirrelsNest.Pecan.Client.Projects.Store
+@using SquirrelsNest.Pecan.Shared.Entities
+
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+@inject IState<ProjectState> ProjectState
+@inject ProjectFacade ProjectFacade
+
 <MudContainer Class="mt-2 me-8 pa-0">
     <MudGrid Spacing="1">
         <MudItem xs="6">
-            <MudPaper Class="pa-2" Height="20em" Elevation="1">Issue Types</MudPaper>
+            <MudPaper Class="pa-2" Height="20em" Elevation="1">
+                <MudStack Spacing="0">
+                    <MudText Typo="Typo.body1" Class="subdue">Issue Types:</MudText>
+                    <MudContainer Class="ms-1 ps-1 pe-0 d-flex" Style="height: 15em;">
+                        <ComponentList Components="mComponents"/>
+                    </MudContainer>
+                    <MudButton Class="d-flex justify-end" ButtonType="ButtonType.Button" Variant="Variant.Text">Add Type</MudButton>
+                </MudStack>
+            </MudPaper>
         </MudItem>
         <MudItem xs="6">
-            <MudPaper Class="pa-2" Height="20em" Elevation="1">Components</MudPaper>
+            <MudPaper Class="pa-2" Height="20em" Elevation="1">
+                <MudStack Spacing="0">
+                    <MudText Typo="Typo.body1" Class="subdue">Components:</MudText>
+                    <MudContainer Class="ms-1 ps-1 pe-0 d-flex" Style="height: 15em;">
+                        <ComponentList Components="mComponents"/>
+                    </MudContainer>
+                    <MudButton Class="d-flex justify-end" ButtonType="ButtonType.Button" Variant="Variant.Text">Add Component</MudButton>
+                </MudStack>
+            </MudPaper>
         </MudItem>
         <MudItem xs="6">
-            <MudPaper Class="pa-1" Height="20em" Elevation="1">Workflow States</MudPaper>
+            <MudPaper Class="pa-2" Height="20em" Elevation="1">
+                <MudStack Spacing="0">
+                    <MudText Typo="Typo.body1" Class="subdue">Workflow States:</MudText>
+                    <MudContainer Class="ms-1 ps-1 pe-0 d-flex" Style="height: 15em;">
+                        <ComponentList Components="mComponents" />
+                    </MudContainer>
+                    <MudButton Class="d-flex justify-end" ButtonType="ButtonType.Button" Variant="Variant.Text">Add State</MudButton>
+                </MudStack>
+            </MudPaper>
         </MudItem>
         <MudItem xs="6">
-            <MudPaper Class="pa-1" Height="20em" Elevation="1">Releases</MudPaper>
+            <MudPaper Class="pa-2" Height="20em" Elevation="1">
+                <MudStack Spacing="0">
+                    <MudText Typo="Typo.body1" Class="subdue">Releases:</MudText>
+                    <MudContainer Class="ms-1 ps-1 pe-0 d-flex" Style="height: 15em;">
+                        <ComponentList Components="mComponents" />
+                    </MudContainer>
+                    <MudButton Class="d-flex justify-end" ButtonType="ButtonType.Button" Variant="Variant.Text">Add Release</MudButton>
+                </MudStack>
+            </MudPaper>
         </MudItem>
     </MudGrid>
 </MudContainer>
-@code {
 
+@code {
+    List<SnComponent> ? mComponents;
+
+    protected override void OnInitialized() {
+        base.OnInitialized();
+
+        mComponents = new List<SnComponent> {
+            new ( "1", "1", "Core", "Model components" ),
+            new ( "2", "1", "Database", "Database entities and storage" ),
+            new ( "3", "1", "User Interface", "User work flows" ),
+            new ( "4", "1", "Server", "Service for the HTML client" ),
+            new ( "5", "2", "Models", "Model components" ),
+            new ( "6", "2", "Security", "Security related issues" )
+        };
+    }
 }
