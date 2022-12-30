@@ -24,7 +24,7 @@ namespace SquirrelsNest.Pecan.Server.Database.Entities {
 
         public SnUserData ToEntity() => new SnUserData( EntityId, UserId, DataType, Data );
 
-        public override void Update( DbUserData from ) {
+        public override void UpdateFrom( DbUserData from ) {
             UserId = from.UserId;
             DataType = from.DataType;
             Data = from.Data;

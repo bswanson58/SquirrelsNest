@@ -21,7 +21,7 @@ namespace SquirrelsNest.Pecan.Server.Database.Entities {
 
         public SnAssociation ToEntity() => new( EntityId, OwnerId, AssociationId );
 
-        public override void Update( DbAssociation from ) {
+        public override void UpdateFrom( DbAssociation from ) {
             OwnerId = from.OwnerId;
             AssociationId = from.AssociationId;
         }

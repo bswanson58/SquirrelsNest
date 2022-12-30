@@ -50,7 +50,7 @@ namespace SquirrelsNest.Pecan.Server.Database.Entities {
         public SnIssue ToEntity() => new SnIssue( EntityId, Title, Description, ProjectId, IssueNumber, EntryDate, 
                                                   EnteredById, IssueTypeId, ComponentId, ReleaseId, WorkflowStateId, AssignedToId );
 
-        public override void Update( DbIssue from ) {
+        public override void UpdateFrom( DbIssue from ) {
             Title = from.Title;
             Description = from.Description;
             ProjectId = from.ProjectId;

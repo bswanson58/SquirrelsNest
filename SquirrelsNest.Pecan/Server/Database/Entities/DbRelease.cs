@@ -31,7 +31,7 @@ namespace SquirrelsNest.Pecan.Server.Database.Entities {
 
         public SnRelease ToEntity() => new SnRelease( EntityId, ProjectId, Name, Description, RepositoryLabel, ReleaseDate );
 
-        public override void Update( DbRelease from ) {
+        public override void UpdateFrom( DbRelease from ) {
             ProjectId = from.ProjectId;
             Name = from.Name;
             Description = from.Description;

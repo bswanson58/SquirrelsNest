@@ -27,7 +27,7 @@ namespace SquirrelsNest.Pecan.Server.Database.Entities {
 
         public SnWorkflowState ToEntity() => new SnWorkflowState( EntityId, ProjectId, Name, Description, Category );
 
-        public override void Update( DbWorkflowState from ) {
+        public override void UpdateFrom( DbWorkflowState from ) {
             ProjectId = from.ProjectId;
             Name = from.Name;
             Description = from.Description;

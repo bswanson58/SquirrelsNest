@@ -26,8 +26,8 @@ namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
             var current = await BaseGetById( entity.EntityId );
 
             if( current != null ) {
-                current.Update( entity );
-                mDbContext.Set<TEntity>().Update( entity );
+                current.UpdateFrom( entity );
+                mDbContext.Set<TEntity>().Update( current );
 
                 await mDbContext.SaveChangesAsync();
             }

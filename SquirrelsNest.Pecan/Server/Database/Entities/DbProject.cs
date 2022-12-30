@@ -34,7 +34,7 @@ namespace SquirrelsNest.Pecan.Server.Database.Entities {
 
         public SnProject ToEntity() => new ( EntityId, Name, Description, Inception, RepositoryUrl, IssuePrefix, NextIssueNumber );
 
-        public override void Update( DbProject from ) {
+        public override void UpdateFrom( DbProject from ) {
             Name = from.Name;
             Description = from.Description;
             Inception = from.Inception;

@@ -14,6 +14,6 @@ namespace SquirrelsNest.Pecan.Server.Database.Entities {
             EntityId = entityId;
         }
 
-        public abstract void Update( TEntity from );
+        public abstract void UpdateFrom( TEntity from );
     }
 }
