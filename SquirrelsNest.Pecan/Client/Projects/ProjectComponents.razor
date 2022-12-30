@@ -100,9 +100,23 @@
         }
     }
 
-    private void OnAddState() {}
-    private void OnEditState( IComponentBase state ) { }
-    private void OnDeleteState( IComponentBase state ) { }
+    private void OnAddState() {
+        if( ProjectState.Value.CurrentProject != null ) {
+            ProjectFacade.AddWorkflowState( ProjectState.Value.CurrentProject );
+        }
+    }
+
+    private void OnEditState( IComponentBase state ) {
+        if( state is SnWorkflowState s ) {
+            ProjectFacade.UpdateWorkflowState( s );
+        }
+    }
+
+    private void OnDeleteState( IComponentBase state ) {
+        if( state is SnWorkflowState s ) {
+            ProjectFacade.DeleteWorkflowState( s );
+        }
+    }
 
     private void OnAddRelease() {}
     private void OnEditRelease( IComponentBase release ) { }

@@ -50,5 +50,19 @@ namespace SquirrelsNest.Pecan.Client.Projects.Store {
         public void DeleteIssueType( SnIssueType issueType ) {
             mDispatcher.Dispatch( new IssueTypeDeleteAction( new IssueTypeChangeInput( issueType, EntityChangeType.Delete )));
         }
+
+        public void AddWorkflowState( SnCompositeProject forProject ) {
+            var state = new SnWorkflowState( forProject.Project );
+
+            mDispatcher.Dispatch( new WorkflowStateChangeAction( new WorkflowStateChangeInput( state, EntityChangeType.Add )));
+        }
+
+        public void UpdateWorkflowState( SnWorkflowState state ) {
+            mDispatcher.Dispatch( new WorkflowStateChangeAction( new WorkflowStateChangeInput( state, EntityChangeType.Update )));
+        }
+
+        public void DeleteWorkflowState( SnWorkflowState state ) {
+            mDispatcher.Dispatch( new WorkflowStateDeleteAction( new WorkflowStateChangeInput( state, EntityChangeType.Delete )));
+        }
     }
 }

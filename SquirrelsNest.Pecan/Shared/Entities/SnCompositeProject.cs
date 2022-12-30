@@ -36,5 +36,8 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
 
         public SnCompositeProject With( IEnumerable<SnIssueType> issueTypes ) =>
             new ( Project, Components, new List<SnIssueType>( issueTypes ), WorkflowStates, Releases );
+
+        public SnCompositeProject With( IEnumerable<SnWorkflowState> states ) =>
+            new( Project, Components, IssueTypes, new List<SnWorkflowState>( states ), Releases );
     }
 }

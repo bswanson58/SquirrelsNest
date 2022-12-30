@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Text.Json.Serialization;
 
 namespace SquirrelsNest.Pecan.Shared.Entities {
     public enum StateCategory {
@@ -11,11 +12,12 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
 
     [DebuggerDisplay("State: {" + nameof( Name ) + "}")]
     public class SnWorkflowState : EntityBase, IComponentBase {
-        public  EntityIdentifier    ProjectId { get; }
-        public  string              Name { get; }
-        public  string              Description { get; }
-        public  StateCategory       Category { get; }
+        public  string          ProjectId { get; }
+        public  string          Name { get; }
+        public  string          Description { get; }
+        public  StateCategory   Category { get; }
 
+        [JsonConstructor]
         public SnWorkflowState( string entityId, string projectId, string name, string description, StateCategory category ) :
             base( entityId ) {
             ProjectId = EntityIdentifier.CreateIdOrThrow( projectId );
@@ -24,12 +26,11 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
             Category = category;
         }
 
-        public SnWorkflowState( string name ) :
-            base( String.Empty ) {
-            if( String.IsNullOrWhiteSpace( name )) throw new ApplicationException( "WorkflowState names cannot be empty" );
+        public SnWorkflowState( SnProject forProject ) {
+            if( forProject == null ) throw new ArgumentNullException( nameof( forProject ),  "Workflow states cannot be set to a null project" );
 
-            ProjectId = EntityIdentifier.Default;
-            Name = name;
+            ProjectId = forProject.EntityId;
+            Name = String.Empty;
             Description = String.Empty;
             Category = StateCategory.Initial;
         }
