@@ -36,5 +36,19 @@ namespace SquirrelsNest.Pecan.Client.Projects.Store {
         public void DeleteComponent( SnComponent component ) {
             mDispatcher.Dispatch( new ComponentDeleteAction( new ComponentChangeInput( component, EntityChangeType.Delete )));
         }
+
+        public void AddIssueType( SnCompositeProject forProject ) {
+            var issueType = new SnIssueType( forProject.Project );
+
+            mDispatcher.Dispatch( new IssueTypeChangeAction( new IssueTypeChangeInput( issueType, EntityChangeType.Add )));
+        }
+
+        public void UpdateIssueType( SnIssueType issueType ) {
+            mDispatcher.Dispatch( new IssueTypeChangeAction( new IssueTypeChangeInput( issueType, EntityChangeType.Update )));
+        }
+
+        public void DeleteIssueType( SnIssueType issueType ) {
+            mDispatcher.Dispatch( new IssueTypeDeleteAction( new IssueTypeChangeInput( issueType, EntityChangeType.Delete )));
+        }
     }
 }

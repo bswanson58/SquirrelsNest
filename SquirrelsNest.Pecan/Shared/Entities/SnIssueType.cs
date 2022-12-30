@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Text.Json.Serialization;
 
 namespace SquirrelsNest.Pecan.Shared.Entities {
     [DebuggerDisplay("Type: {" + nameof( Name ) + "}")]
     public class SnIssueType :EntityBase, IComponentBase {
-        public  EntityIdentifier    ProjectId { get; }
-        public  string              Name { get; }
-        public  string              Description { get; }
+        public  string      ProjectId { get; }
+        public  string      Name { get; }
+        public  string      Description { get; }
 
+        [JsonConstructor]
         public SnIssueType( string entityId, string projectId, string name, string description ) :
             base( entityId ) {
             ProjectId = EntityIdentifier.CreateIdOrThrow( projectId );
@@ -15,12 +17,11 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
             Description = description;
         }
 
-        public SnIssueType( string name ) :
-            base( String.Empty ) {
-            if( String.IsNullOrWhiteSpace( name )) throw new ApplicationException( "IssueType names cannot be empty" );
+        public SnIssueType( SnProject forProject ) {
+            if( forProject == null ) throw new ArgumentNullException( nameof( forProject ),  "IssueTypes cannot be set to a null project" );
 
-            ProjectId = EntityIdentifier.Default;
-            Name = name;
+            ProjectId = forProject.EntityId;
+            Name = String.Empty;
             Description = String.Empty;
         }
 

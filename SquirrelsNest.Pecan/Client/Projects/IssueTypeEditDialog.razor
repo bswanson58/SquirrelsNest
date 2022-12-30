@@ -1,0 +1,76 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components
+@using SquirrelsNest.Pecan.Shared.Entities
+@using System.ComponentModel.DataAnnotations
+
+<EditForm Model="@mModel" OnValidSubmit="@OnSubmit">
+    <DataAnnotationsValidator />
+    <MudDialog>
+        <DialogContent>
+            <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild">
+                <MudTextField T="string"
+                              Immediate="true"
+                              Label="Issue Type Name"
+                              HelperText="Name for the issue type"
+                              HelperTextOnFocus="true"
+                              @bind-Value="@mModel.Name" />
+                <ValidationMessage For="@(() => mModel.Name)" />
+                <MudTextField T="string"
+                              Label="Description"
+                              HelperText="Description for the issue type"
+                              HelperTextOnFocus="true"
+                              @bind-Value="@mModel.Description" />
+                <ValidationMessage For="@(() => mModel.Description)" />
+            </MudFocusTrap>
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="OnCancel">Cancel</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Ok</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+@code {
+    [Parameter]
+    public SnIssueType?         IssueType { get; set; }
+    [CascadingParameter]
+    public MudDialogInstance?   MudDialog { get; set; }
+
+    private ComponentModel      mModel = new ComponentModel();
+
+    protected override void OnParametersSet() {
+        base.OnParametersSet();
+
+        if( IssueType != null ) {
+            mModel = new ComponentModel( IssueType );
+        }
+    }
+
+    private void OnSubmit() {
+        if( IssueType != null ) {
+            MudDialog?.Close( DialogResult.Ok( IssueType.With( name: mModel.Name, description: mModel.Description ) ) );
+        }
+        else {
+            MudDialog?.Cancel();
+        }
+    }
+
+    private void OnCancel() => MudDialog?.Cancel();
+
+    internal class ComponentModel {
+        [Required( ErrorMessage = "Issue Type Name is required" )]
+        public string Name { get; set; }
+        public string Description { get; set; }
+
+        public ComponentModel() {
+            Name = String.Empty;
+            Description = String.Empty;
+        }
+
+        public ComponentModel( SnIssueType issueType ) {
+            Name = issueType.Name;
+            Description = issueType.Description;
+        }
+    }
+}
+

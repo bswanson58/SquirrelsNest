@@ -82,9 +82,23 @@
         }
     }
 
-    private void OnAddIssueType() {}
-    private void OnEditIssueType( IComponentBase issueType ) { }
-    private void OnDeleteIssueType( IComponentBase issueType ) { }
+    private void OnAddIssueType() {
+        if( ProjectState.Value.CurrentProject != null ) {
+            ProjectFacade.AddIssueType( ProjectState.Value.CurrentProject );
+        }
+    }
+
+    private void OnEditIssueType( IComponentBase issueType ) {
+        if( issueType is SnIssueType it ) {
+            ProjectFacade.UpdateIssueType( it );
+        }
+    }
+
+    private void OnDeleteIssueType( IComponentBase issueType ) {
+        if( issueType is SnIssueType it ) {
+            ProjectFacade.DeleteIssueType( it );
+        }
+    }
 
     private void OnAddState() {}
     private void OnEditState( IComponentBase state ) { }
