@@ -4,42 +4,33 @@
 
 <PageTitle>SquirrelsNest</PageTitle>
 
-<!--
-<section style="margin-top: 8em;">
-    <div bp-layout="block gap:md">
-        <div bp-layout="inline center">
-            <MudText Typo="Typo.h4">SquirrelsNest</MudText>
-        </div>
-        <div bp-layout="inline gap:md center" style="height: 193px;">
-            <MudImage Class="mx-n5" Src="images/squirrel-icon.png" Style="height: 193px;"/>
-            <MudDivider Vertical="true"/>
-            <div bp-layout="block center">
-                <div bp-layout="block gap:xs">
-                    <MudButton ButtonType="ButtonType.Button" Variant="Variant.Text" OnClick="@OnLogin">Login</MudButton>
-                    <MudButton ButtonType="ButtonType.Button" Variant="Variant.Text" OnClick="@OnRegister">Register</MudButton>
-                </div>
-            </div>
-        </div>
-        <div bp-layout="inline center">
-            <MudText Typo="Typo.body1">A place to track all your things</MudText>
-        </div>
-    </div>
-</section>
--->
+<style>
+    .row-grid {
+        display: grid;
+        grid-template-rows: auto auto auto;
+        grid-row-gap: 1em;
+    }
 
-<MudContainer class="d-flex mt-8">
-    <MudContainer Class="d-flex flex-column align-end">
-        <MudText Typo="Typo.h4">SquirrelsNest</MudText>
-        <MudImage Src="images/squirrel-icon.png" />
-        <MudText Typo="Typo.body1">A place to track all your things</MudText>
-    </MudContainer>
-    
-    <MudDivider Vertical="true" FlexItem="true" />
+    .center-row {
+        display: grid;
+        grid-template-columns: auto 5px auto;
+        grid-column-gap: 0px;
+    }
+</style>
 
-    <MudContainer Class="d-flex flex-column justify-center align-start">
-        <MudButton ButtonType="ButtonType.Button" Variant="Variant.Text" OnClick="@OnLogin">Login</MudButton>
-        <MudButton ButtonType="ButtonType.Button" Variant="Variant.Text" OnClick="@OnRegister">Register</MudButton>
+<MudContainer class="row-grid mt-15">
+    <MudText Typo="Typo.h4" style="justify-self: center;">SquirrelsNest</MudText>
+
+    <MudContainer class="center-row">
+        <MudImage Style="justify-self: right; height: 193px;" Src="images/squirrel-icon.png" />
+        <MudDivider Vertical="true" FlexItem="true" Class="my-6"/>
+        <MudContainer Class="d-flex flex-column justify-center align-start">
+            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Text" OnClick="@OnLogin">Login</MudButton>
+            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Text" OnClick="@OnRegister">Register</MudButton>
+        </MudContainer>
     </MudContainer>
+
+    <MudText Typo="Typo.body1" style="justify-self: center;">A place to track all your things</MudText>
 </MudContainer>
 
 @inject AuthFacade AuthFacade;
