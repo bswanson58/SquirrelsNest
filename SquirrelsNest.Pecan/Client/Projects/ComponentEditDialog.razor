@@ -1,0 +1,78 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components
+@using SquirrelsNest.Pecan.Shared.Entities
+@using System.ComponentModel.DataAnnotations
+
+<EditForm Model="@mModel" OnValidSubmit="@OnSubmit">
+    <DataAnnotationsValidator />
+    <MudDialog>
+        <DialogContent>
+            <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild">
+                <MudTextField
+                    T="string"
+                    Immediate="true"
+                    Label="Component Name"
+                    HelperText="Name for the component"
+                    HelperTextOnFocus="true"
+                    @bind-Value="@mModel.Name"/>
+                <ValidationMessage For="@(() => mModel.Name)"/>
+                <MudTextField
+                    T="string"
+                    Label="Description"
+                    HelperText="Description for the component"
+                    HelperTextOnFocus="true"
+                    @bind-Value="@mModel.Description"/>
+                <ValidationMessage For="@(() => mModel.Description)"/>
+            </MudFocusTrap>
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="OnCancel">Cancel</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Ok</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+@code {
+    [Parameter]
+    public  SnComponent ?       Component { get; set; }
+    [CascadingParameter] 
+    public MudDialogInstance ?  MudDialog { get; set; }
+
+    private ComponentModel      mModel = new ComponentModel();
+
+    protected override void OnParametersSet() {
+        base.OnParametersSet();
+
+        if( Component != null ) {
+            mModel = new ComponentModel( Component );
+        }
+    }
+
+    private void OnSubmit() {
+        if( Component != null ) {
+            MudDialog?.Close( DialogResult.Ok( Component.With( name: mModel.Name, description: mModel.Description )));
+        }
+        else {
+            MudDialog?.Cancel();
+        }
+    }
+
+    private void OnCancel() => MudDialog?.Cancel();
+
+    internal class ComponentModel {
+        [Required( ErrorMessage = "Component Name is required")]
+        public  string  Name { get; set; }
+        public  string  Description { get; set; }
+
+        public ComponentModel() {
+            Name = String.Empty;
+            Description = String.Empty;
+        }
+
+        public ComponentModel( SnComponent component ) {
+            Name = component.Name;
+            Description = component.Description;
+        }
+    }
+}
+

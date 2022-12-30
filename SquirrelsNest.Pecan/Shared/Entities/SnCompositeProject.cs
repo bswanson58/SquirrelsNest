@@ -3,19 +3,19 @@ using System.Text.Json.Serialization;
 
 namespace SquirrelsNest.Pecan.Shared.Entities {
     public class SnCompositeProject {
-        public  SnProject               Project { get; }
-        public  List<SnComponent>       Components { get; }
-        public  List<SnIssueType>       IssueTypes { get; }
-        public  List<SnWorkflowState>   WorkflowStates { get; }
-        public  List<SnRelease>         Releases { get; }
+        public  SnProject                       Project { get; }
+        public  IReadOnlyList<SnComponent>      Components { get; }
+        public  IReadOnlyList<SnIssueType>      IssueTypes { get; }
+        public  IReadOnlyList<SnWorkflowState>  WorkflowStates { get; }
+        public  IReadOnlyList<SnRelease>        Releases { get; }
 
-        public  string                  EntityId => Project.EntityId;
-        public  string                  Name => Project.Name;
-        public  string                  Description => Project.Description;
+        public  string                          EntityId => Project.EntityId;
+        public  string                          Name => Project.Name;
+        public  string                          Description => Project.Description;
 
         [JsonConstructor]
-        public SnCompositeProject( SnProject project, List<SnComponent> components, List<SnIssueType> issueTypes,
-                                   List<SnWorkflowState> workflowStates, List<SnRelease> releases ) {
+        public SnCompositeProject( SnProject project, IReadOnlyList<SnComponent> components, IReadOnlyList<SnIssueType> issueTypes,
+                                   IReadOnlyList<SnWorkflowState> workflowStates, IReadOnlyList<SnRelease> releases ) {
             Project = project;
             Components = new List<SnComponent>( components );
             IssueTypes = new List<SnIssueType>( issueTypes );
@@ -30,5 +30,8 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
             WorkflowStates = new List<SnWorkflowState>();
             Releases = new List<SnRelease>();
         }
+
+        public SnCompositeProject With( IEnumerable<SnComponent> components ) =>
+            new ( Project, new List<SnComponent>( components), IssueTypes, WorkflowStates, Releases );
     }
 }

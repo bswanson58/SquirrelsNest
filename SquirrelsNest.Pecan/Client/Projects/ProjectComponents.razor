@@ -4,9 +4,6 @@
 
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-@inject IState<ProjectState> ProjectState
-@inject ProjectFacade ProjectFacade
-
 <MudContainer Class="mt-2 me-8 pa-0">
     <MudGrid Spacing="1">
         <MudItem xs="6">
@@ -14,9 +11,10 @@
                 <MudStack Spacing="0">
                     <MudText Typo="Typo.body1" Class="subdue">Issue Types:</MudText>
                     <MudContainer Class="ms-1 ps-1 pe-0 d-flex" Style="height: 15em;">
-                        <ComponentList Components="mIssueTypes" OnEdit="OnEditIssueType" OnDelete="OnDeleteIssueType"/>
+                        <ComponentList Components="IssueTypes" OnEdit="OnEditIssueType" OnDelete="OnDeleteIssueType"/>
                     </MudContainer>
-                    <MudButton Class="d-flex justify-end" ButtonType="ButtonType.Button" Variant="Variant.Text">Add Type</MudButton>
+                    <MudButton Class="d-flex justify-end" ButtonType="ButtonType.Button" OnClick="OnAddIssueType"
+                               Variant="Variant.Text">Add Type</MudButton>
                 </MudStack>
             </MudPaper>
         </MudItem>
@@ -25,9 +23,10 @@
                 <MudStack Spacing="0">
                     <MudText Typo="Typo.body1" Class="subdue">Components:</MudText>
                     <MudContainer Class="ms-1 ps-1 pe-0 d-flex" Style="height: 15em;">
-                        <ComponentList Components="mComponents" OnEdit="OnEditComponent" OnDelete="OnDeleteComponent"/>
+                        <ComponentList Components="Components" OnEdit="OnEditComponent" OnDelete="OnDeleteComponent"/>
                     </MudContainer>
-                    <MudButton Class="d-flex justify-end" ButtonType="ButtonType.Button" Variant="Variant.Text">Add Component</MudButton>
+                    <MudButton Class="d-flex justify-end" ButtonType="ButtonType.Button" OnClick="OnAddComponent"
+                               Variant="Variant.Text">Add Component</MudButton>
                 </MudStack>
             </MudPaper>
         </MudItem>
@@ -36,9 +35,10 @@
                 <MudStack Spacing="0">
                     <MudText Typo="Typo.body1" Class="subdue">Workflow States:</MudText>
                     <MudContainer Class="ms-1 ps-1 pe-0 d-flex" Style="height: 15em;">
-                        <ComponentList Components="mStates" OnEdit="OnEditState" OnDelete="OnDeleteState"/>
+                        <ComponentList Components="States" OnEdit="OnEditState" OnDelete="OnDeleteState"/>
                     </MudContainer>
-                    <MudButton Class="d-flex justify-end" ButtonType="ButtonType.Button" Variant="Variant.Text">Add State</MudButton>
+                    <MudButton Class="d-flex justify-end" ButtonType="ButtonType.Button" OnClick="OnAddState"
+                               Variant="Variant.Text">Add State</MudButton>
                 </MudStack>
             </MudPaper>
         </MudItem>
@@ -47,44 +47,50 @@
                 <MudStack Spacing="0">
                     <MudText Typo="Typo.body1" Class="subdue">Releases:</MudText>
                     <MudContainer Class="ms-1 ps-1 pe-0 d-flex" Style="height: 15em;">
-                        <ComponentList Components="mReleases" OnEdit="OnEditRelease" OnDelete="OnDeleteRelease"/>
+                        <ComponentList Components="Releases" OnEdit="OnEditRelease" OnDelete="OnDeleteRelease"/>
                     </MudContainer>
-                    <MudButton Class="d-flex justify-end" ButtonType="ButtonType.Button" Variant="Variant.Text">Add Release</MudButton>
+                    <MudButton Class="d-flex justify-end" ButtonType="ButtonType.Button" OnClick="OnAddRelease"
+                               Variant="Variant.Text">Add Release</MudButton>
                 </MudStack>
             </MudPaper>
         </MudItem>
     </MudGrid>
 </MudContainer>
 
+@inject IState<ProjectState>    ProjectState
+@inject ProjectFacade           ProjectFacade
+
 @code {
-    List<SnComponent> ?     mComponents;
-    List<SnIssueType>?      mIssueTypes;
-    List<SnWorkflowState> ? mStates;
-    List<SnRelease> ?       mReleases;
+    private IReadOnlyList<SnComponent>?      Components => ProjectState.Value.CurrentProject?.Components;
+    private IReadOnlyList<SnIssueType>?      IssueTypes => ProjectState.Value.CurrentProject?.IssueTypes;
+    private IReadOnlyList<SnWorkflowState>?  States => ProjectState.Value.CurrentProject?.WorkflowStates;
+    private IReadOnlyList<SnRelease>?        Releases => ProjectState.Value.CurrentProject?.Releases;
 
-    protected override void OnInitialized() {
-        base.OnInitialized();
-
-        mComponents = new List<SnComponent> {
-            new ( "1", "1", "Core", "Model components" ),
-            new ( "2", "1", "Database", "Database entities and storage" ),
-            new ( "3", "1", "User Interface", "User work flows" ),
-            new ( "4", "1", "Server", "Service for the HTML client" ),
-            new ( "5", "2", "Models", "Model components" ),
-            new ( "6", "2", "Security", "Security related issues" )
-        };
-
-        mIssueTypes = new List<SnIssueType>();
-        mStates = new List<SnWorkflowState>();
-        mReleases = new List<SnRelease>();
+    private void OnAddComponent() {
+        if( ProjectState.Value.CurrentProject != null ) {
+            ProjectFacade.AddComponent( ProjectState.Value.CurrentProject );
+        }
+    }
+    private void OnEditComponent( IComponentBase component ) {
+        if( component is SnComponent c ) {
+            ProjectFacade.UpdateComponent( c );
+        }
+    }
+    private void OnDeleteComponent( IComponentBase component ) {
+        if( component is SnComponent c ) {
+            ProjectFacade.DeleteComponent( c );
+        }
     }
 
-    private void OnEditComponent( IComponentBase component ) {}
-    private void OnDeleteComponent( IComponentBase component ) {}
+    private void OnAddIssueType() {}
     private void OnEditIssueType( IComponentBase issueType ) { }
     private void OnDeleteIssueType( IComponentBase issueType ) { }
+
+    private void OnAddState() {}
     private void OnEditState( IComponentBase state ) { }
     private void OnDeleteState( IComponentBase state ) { }
+
+    private void OnAddRelease() {}
     private void OnEditRelease( IComponentBase release ) { }
     private void OnDeleteRelease( IComponentBase release ) { }
 }
