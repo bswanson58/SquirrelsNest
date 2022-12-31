@@ -7,7 +7,7 @@ using SquirrelsNest.Pecan.Shared.Dto.Projects;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using SquirrelsNest.Pecan.Client.Shared.Actions;
+using SquirrelsNest.Pecan.Client.Ui.Actions;
 
 namespace SquirrelsNest.Pecan.Client.Projects.Effects {
     // ReSharper disable once UnusedType.Global

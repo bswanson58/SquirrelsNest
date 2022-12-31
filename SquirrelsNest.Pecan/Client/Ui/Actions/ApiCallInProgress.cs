@@ -1,6 +1,6 @@
-﻿namespace SquirrelsNest.Pecan.Client.Shared.Actions {
+﻿namespace SquirrelsNest.Pecan.Client.Ui.Actions {
     public class ApiCallStarted {
-        public  string  AnnouncementMessage { get; }
+        public string   AnnouncementMessage { get; }
 
         public ApiCallStarted( string message ) {
             AnnouncementMessage = message;

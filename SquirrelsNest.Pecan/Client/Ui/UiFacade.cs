@@ -1,7 +1,7 @@
-﻿using MudBlazor;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using MudBlazor;
 
-namespace SquirrelsNest.Pecan.Client.Shared {
+namespace SquirrelsNest.Pecan.Client.Ui {
     public class UiFacade {
         private readonly IDialogService mDialogService;
 

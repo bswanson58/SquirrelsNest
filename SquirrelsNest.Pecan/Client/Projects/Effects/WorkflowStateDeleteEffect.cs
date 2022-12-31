@@ -1,7 +1,7 @@
 ﻿using Fluxor;
 using SquirrelsNest.Pecan.Client.Projects.Actions;
-using SquirrelsNest.Pecan.Client.Shared;
 using System.Threading.Tasks;
+using SquirrelsNest.Pecan.Client.Ui;
 
 namespace SquirrelsNest.Pecan.Client.Projects.Effects {
     // ReSharper disable once UnusedType.Global

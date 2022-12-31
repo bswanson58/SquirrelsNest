@@ -6,7 +6,7 @@ using Fluxor;
 using Microsoft.Extensions.Logging;
 using SquirrelsNest.Pecan.Client.Constants;
 using SquirrelsNest.Pecan.Client.Projects.Actions;
-using SquirrelsNest.Pecan.Client.Shared.Actions;
+using SquirrelsNest.Pecan.Client.Ui.Actions;
 using SquirrelsNest.Pecan.Shared.Dto.Projects;
 
 namespace SquirrelsNest.Pecan.Client.Projects.Effects {
