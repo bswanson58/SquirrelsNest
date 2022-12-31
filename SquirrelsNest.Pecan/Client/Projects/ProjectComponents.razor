@@ -57,8 +57,8 @@
     </MudGrid>
 </MudContainer>
 
-@inject IState<ProjectState>    ProjectState
-@inject ProjectFacade           ProjectFacade
+@inject IState<ProjectState>    ProjectState;
+@inject ProjectFacade           ProjectFacade;
 
 @code {
     private IReadOnlyList<SnComponent>?      Components => ProjectState.Value.CurrentProject?.Components;

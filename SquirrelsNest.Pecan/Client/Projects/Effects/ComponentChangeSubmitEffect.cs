@@ -6,6 +6,7 @@ using Fluxor;
 using Microsoft.Extensions.Logging;
 using SquirrelsNest.Pecan.Client.Constants;
 using SquirrelsNest.Pecan.Client.Projects.Actions;
+using SquirrelsNest.Pecan.Client.Shared.Actions;
 using SquirrelsNest.Pecan.Shared.Dto.Projects;
 
 namespace SquirrelsNest.Pecan.Client.Projects.Effects {
@@ -20,6 +21,8 @@ namespace SquirrelsNest.Pecan.Client.Projects.Effects {
         }
 
         public override async Task HandleAsync( ComponentChangeSubmitAction action, IDispatcher dispatcher ) {
+            dispatcher.Dispatch( new ApiCallStarted( "Requesting Component Change" ));
+
             try {
                 using var httpClient = mClientFactory.CreateClient( HttpClientNames.Authenticated );
                 var postResponse = await httpClient.PostAsJsonAsync( ComponentChangeInput.Route, action.Input );
@@ -38,6 +41,8 @@ namespace SquirrelsNest.Pecan.Client.Projects.Effects {
 
                 dispatcher.Dispatch( new ComponentChangeFailureAction( exception.Message ));
             }
+
+            dispatcher.Dispatch( new ApiCallCompleted());
         }
     }
 }

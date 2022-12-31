@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using SquirrelsNest.Pecan.Client.Constants;
+using SquirrelsNest.Pecan.Client.Shared.Actions;
 
 namespace SquirrelsNest.Pecan.Client.Auth.Effects {
     // ReSharper disable once UnusedType.Global
@@ -20,6 +21,8 @@ namespace SquirrelsNest.Pecan.Client.Auth.Effects {
         }
 
         public override async Task HandleAsync( LoginUserSubmitAction action, IDispatcher dispatcher ) {
+            dispatcher.Dispatch( new ApiCallStarted( "Requesting User Authentication" ));
+
             try {
                 using var httpClient = mClientFactory.CreateClient( HttpClientNames.Anonymous );
                 var postResponse = await httpClient.PostAsJsonAsync( LoginUserInput.Route, action.UserInput );
@@ -42,6 +45,8 @@ namespace SquirrelsNest.Pecan.Client.Auth.Effects {
 
                 dispatcher.Dispatch( new LoginUserFailureAction( exception.Message ));
             }
+
+            dispatcher.Dispatch( new ApiCallCompleted());
         }
     }
 }

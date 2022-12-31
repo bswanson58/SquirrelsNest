@@ -6,6 +6,7 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using SquirrelsNest.Pecan.Client.Auth.Actions;
 using SquirrelsNest.Pecan.Shared.Dto.Auth;
+using SquirrelsNest.Pecan.Client.Shared.Actions;
 
 namespace SquirrelsNest.Pecan.Client.Auth.Effects {
     // ReSharper disable once UnusedType.Global
@@ -19,6 +20,8 @@ namespace SquirrelsNest.Pecan.Client.Auth.Effects {
         }
 
         public override async Task HandleAsync( CreateUserSubmitAction action, IDispatcher dispatcher ) {
+            dispatcher.Dispatch( new ApiCallStarted( "Registering New User" ));
+
             try {
                 var postResponse = await mHttpClient.PostAsJsonAsync( CreateUserInput.Route, action.UserInput );
                 var response = await postResponse.Content.ReadFromJsonAsync<CreateUserResponse>();
@@ -40,6 +43,8 @@ namespace SquirrelsNest.Pecan.Client.Auth.Effects {
 
                 dispatcher.Dispatch( new CreateUserFailureAction( exception.Message ));
             }
+
+            dispatcher.Dispatch( new ApiCallCompleted());
         }
     }
 }

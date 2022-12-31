@@ -1,25 +1,50 @@
-﻿@using SquirrelsNest.Pecan.Client.Shared
+﻿@using SquirrelsNest.Pecan.Client.Auth
+@using Fluxor
+@using SquirrelsNest.Pecan.Client.Shared
+@using SquirrelsNest.Pecan.Client.Shared.Actions
 
 <Fluxor.Blazor.Web.StoreInitializer/>
 
-<CascadingAuthenticationState>
-    <Router AppAssembly="@typeof( App ).Assembly">
-        <Found Context="routeData">
-            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof( MainLayout )">
-                <Authorizing>
-                    <text>Authorizing the user...</text>
-                </Authorizing>
-                <NotAuthorized>
-                    <text>You are not authorized to access this page.</text>
-                </NotAuthorized>
-            </AuthorizeRouteView>
-            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-        </Found>
-        <NotFound>
-            <PageTitle>Not found</PageTitle>
-            <LayoutView Layout="@typeof( MainLayout )">
-                <p role="alert">Sorry, there's nothing at this address.</p>
-            </LayoutView>
-        </NotFound>
-    </Router>
-</CascadingAuthenticationState>
+<AuthenticationProvider/>
+
+@inject IActionSubscriber   ActionSubscriber;
+@inject ISnackbar           Notifier;
+
+@implements IDisposable
+
+@code {
+    private Snackbar ?      mNotifications;
+
+    protected override void OnInitialized() {
+        base.OnInitialized();
+
+        Notifier.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+
+        ActionSubscriber.SubscribeToAction<ApiCallStarted>( this, action => {
+            mNotifications = Notifier.Add<ApiCallAnnouncement>( 
+                new Dictionary<string, object>() {
+                    { nameof( ApiCallAnnouncement.AnnouncementMessage ), action.AnnouncementMessage }
+                },
+                Severity.Info, 
+                config => {
+                    config.ActionColor = Color.Info;
+                    config.HideIcon = true;
+                    config.ShowCloseIcon = false;
+                    config.RequireInteraction = false;
+                    config.VisibleStateDuration = (int)TimeSpan.FromSeconds( 60 ).TotalMilliseconds;
+                });
+        } );
+
+        ActionSubscriber.SubscribeToAction<ApiCallCompleted>( this, _ => {
+            if( mNotifications != null ) {
+                Notifier.Remove( mNotifications );
+
+                mNotifications = null;
+            }
+        } );
+    }
+
+    public void Dispose() {
+        ActionSubscriber.UnsubscribeFromAllActions( this );
+    }
+}

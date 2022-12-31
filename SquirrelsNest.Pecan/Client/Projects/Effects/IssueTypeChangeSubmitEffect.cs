@@ -7,6 +7,7 @@ using SquirrelsNest.Pecan.Shared.Dto.Projects;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using SquirrelsNest.Pecan.Client.Shared.Actions;
 
 namespace SquirrelsNest.Pecan.Client.Projects.Effects {
     // ReSharper disable once UnusedType.Global
@@ -20,6 +21,8 @@ namespace SquirrelsNest.Pecan.Client.Projects.Effects {
         }
 
         public override async Task HandleAsync( IssueTypeChangeSubmitAction action, IDispatcher dispatcher ) {
+            dispatcher.Dispatch( new ApiCallStarted( "Requesting Issue Type Change" ));
+
             try {
                 using var httpClient = mClientFactory.CreateClient( HttpClientNames.Authenticated );
                 var postResponse = await httpClient.PostAsJsonAsync( IssueTypeChangeInput.Route, action.Input );
@@ -38,6 +41,8 @@ namespace SquirrelsNest.Pecan.Client.Projects.Effects {
 
                 dispatcher.Dispatch( new IssueTypeChangeFailureAction( exception.Message ));
             }
+
+            dispatcher.Dispatch( new ApiCallCompleted());
         }
     }
 }

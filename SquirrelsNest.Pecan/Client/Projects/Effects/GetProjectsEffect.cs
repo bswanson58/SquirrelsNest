@@ -6,6 +6,7 @@ using Fluxor;
 using Microsoft.Extensions.Logging;
 using SquirrelsNest.Pecan.Client.Constants;
 using SquirrelsNest.Pecan.Client.Projects.Actions;
+using SquirrelsNest.Pecan.Client.Shared.Actions;
 using SquirrelsNest.Pecan.Shared.Constants;
 using SquirrelsNest.Pecan.Shared.Dto.Projects;
 
@@ -21,6 +22,8 @@ namespace SquirrelsNest.Pecan.Client.Projects.Effects {
         }
 
         public override async Task HandleAsync( GetProjectsAction action, IDispatcher dispatcher ) {
+            dispatcher.Dispatch( new ApiCallStarted( "Loading Project List" ));
+
             try {
                 using var httpClient = mClientFactory.CreateClient( HttpClientNames.Authenticated );
                 var response = await httpClient.GetFromJsonAsync<GetProjectsResponse>( Routes.GetProjects );
@@ -37,6 +40,8 @@ namespace SquirrelsNest.Pecan.Client.Projects.Effects {
 
                 dispatcher.Dispatch( new GetProjectsFailureAction( exception.Message ));
             }
+
+            dispatcher.Dispatch( new ApiCallCompleted());
         }
     }
 }
