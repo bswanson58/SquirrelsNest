@@ -1,8 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Authorization
+@using SquirrelsNest.Pecan.Client.Shared
 @using SquirrelsNest.Pecan.Shared.Constants
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-@page "/projects"
+@attribute [Route( NavLinks.Projects )]
 @attribute [Authorize( Roles = ClaimValues.cUser )]
 
 <MudGrid Justify="Justify.FlexStart">
@@ -15,7 +16,3 @@
         <ProjectComponents />
     </MudItem>
 </MudGrid>
-
-@code {
-
-}

@@ -4,7 +4,8 @@
     <MudNavLink Href="/" Match="NavLinkMatch.All">Home</MudNavLink>
     <AuthorizeView Roles=@ClaimValues.ClaimRoleUser>
         <Authorized>
-            <MudNavLink Href="/projects" Match="NavLinkMatch.Prefix">Projects</MudNavLink>
+            <MudNavLink Href="@NavLinks.Projects" Match="NavLinkMatch.Prefix">Projects</MudNavLink>
+            <MudNavLink Href="@NavLinks.Issues" Match="NavLinkMatch.Prefix">Issues</MudNavLink>
         </Authorized>
     </AuthorizeView>
     <MudNavLink Href="/about" Match="NavLinkMatch.Prefix">About</MudNavLink>
