@@ -10,6 +10,7 @@ using SquirrelsNest.Pecan.Server.Database;
 using SquirrelsNest.Pecan.Server.Database.DataProviders;
 using SquirrelsNest.Pecan.Server.Database.Entities;
 using SquirrelsNest.Pecan.Server.Features.Auth;
+using SquirrelsNest.Pecan.Server.Features.Issues;
 using SquirrelsNest.Pecan.Server.Models;
 using SquirrelsNest.Pecan.Shared.Constants;
 using SquirrelsNest.Pecan.Shared.Dto.Projects;
@@ -39,6 +40,7 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
     } );
 
     services.AddScoped<IDbContext, PecanDbContext>();
+    services.AddScoped<ICompositeIssueBuilder, CompositeIssueBuilder>();
     services.AddScoped<ITokenBuilder, TokenBuilder>();
     services.AddEntityProviders();
 

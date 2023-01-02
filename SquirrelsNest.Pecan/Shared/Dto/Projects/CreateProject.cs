@@ -44,6 +44,7 @@ namespace SquirrelsNest.Pecan.Shared.Dto.Projects {
         }
     }
 
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class CreateProjectInputValidator : AbstractValidator<CreateProjectInput> {
         public CreateProjectInputValidator() {
             RuleFor( p => p.Name )

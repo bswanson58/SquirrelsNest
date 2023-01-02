@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.ApiEndpoints;
@@ -17,36 +18,30 @@ namespace SquirrelsNest.Pecan.Server.Features.Issues {
         .WithActionResult<GetIssuesResponse> {
 
         private readonly IIssueProvider         mIssueProvider;
-        private readonly IComponentProvider     mComponentProvider;
-        private readonly IIssueTypeProvider     mIssueTypeProvider;
-        private readonly IReleaseProvider       mReleaseProvider;
-        private readonly IWorkflowStateProvider mWorkflowStateProvider;
+        private readonly ICompositeIssueBuilder mIssueBuilder;
 
-        public GetIssuesEndpoint( IIssueProvider issueProvider, IComponentProvider componentProvider, IIssueTypeProvider issueTypeProvider, IReleaseProvider releaseProvider, IWorkflowStateProvider workflowStateProvider ) {
+        public GetIssuesEndpoint( IIssueProvider issueProvider, ICompositeIssueBuilder issueBuilder ) {
+            mIssueBuilder = issueBuilder;
             mIssueProvider = issueProvider;
-            mComponentProvider = componentProvider;
-            mIssueTypeProvider = issueTypeProvider;
-            mReleaseProvider = releaseProvider;
-            mWorkflowStateProvider = workflowStateProvider;
         }
 
         public override async Task<ActionResult<GetIssuesResponse>> HandleAsync( 
             [FromBody] GetIssuesRequest request, 
             CancellationToken cancellationToken = new () ) {
 
-            var issueList = new List<SnCompositeIssue>();
-            var issues = await mIssueProvider.GetAll().ToListAsync( cancellationToken );
+            try {
+                var issueList = new List<SnCompositeIssue>();
+                var issues = await mIssueProvider.GetAll().ToListAsync( cancellationToken );
 
-            foreach( var issue in issues ) {
-                var component = await mComponentProvider.GetById( issue.ComponentId ) ?? SnComponent.Default;
-                var issueType = await mIssueTypeProvider.GetById( issue.IssueTypeId ) ?? SnIssueType.Default;
-                var state = await mWorkflowStateProvider.GetById( issue.WorkflowStateId ) ?? SnWorkflowState.Default;
-                var release = await mReleaseProvider.GetById( issue.ReleaseId ) ?? SnRelease.Default;
+                foreach( var issue in issues ) {
+                    issueList.Add( await mIssueBuilder.BuildComposite( issue ));
+                }
 
-                issueList.Add( new SnCompositeIssue( issue, SnUser.Default, issueType, component, state, release, SnUser.Default ));
+                return new ActionResult<GetIssuesResponse>( new GetIssuesResponse( issueList ));
             }
-
-            return new ActionResult<GetIssuesResponse>( new GetIssuesResponse( issueList ));
+            catch( Exception ex ) {
+                return new ActionResult<GetIssuesResponse>( new GetIssuesResponse( ex ));
+            }
         }
     }
 }
