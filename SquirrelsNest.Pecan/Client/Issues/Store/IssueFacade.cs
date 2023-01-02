@@ -10,6 +10,10 @@ namespace SquirrelsNest.Pecan.Client.Issues.Store {
             mDispatcher = dispatcher;
         }
 
+        public void LoadIssues( SnCompositeProject forProject ) {
+            mDispatcher.Dispatch( new LoadIssueListAction( forProject ));
+        }
+
         public void AddIssue( SnCompositeProject forProject ) {
             mDispatcher.Dispatch( new AddIssueAction( forProject ));
         }

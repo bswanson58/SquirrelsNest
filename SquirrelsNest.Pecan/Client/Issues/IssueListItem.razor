@@ -1,0 +1,10 @@
+﻿@using SquirrelsNest.Pecan.Shared.Entities
+
+<MudContainer>
+    <MudText Typo="Typo.body1">@Issue.Title</MudText>
+</MudContainer>
+
+@code {
+    [Parameter]
+    public SnCompositeIssue     Issue { get; set; }
+}

@@ -1,0 +1,31 @@
+﻿@using Fluxor
+@using SquirrelsNest.Pecan.Client.Issues.Store
+@using SquirrelsNest.Pecan.Client.Projects.Store
+@using SquirrelsNest.Pecan.Shared.Entities
+
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+@inject IState<ProjectState>    ProjectState;
+@inject IState<IssueState>      IssueState
+@inject IssueFacade             IssueFacade
+
+<MudContainer Class="ma-1">
+    <MudText Class="mb-2" Typo="Typo.h6">Issues:</MudText>
+
+    @if( IssueState.Value.ApiCallInProgress ) {
+        <MudText Class="ma-6" Typo="Typo.body1">Loading Project List</MudText>
+    }
+    else if( IssueState.Value.ApiCallMessage.Length > 0 ) {
+        <MudText Class="ma-6" Typo="Typo.body1" Color="Color.Error">Error: @IssueState.Value.ApiCallMessage</MudText>
+    }
+    else {
+        <MudStack>
+            @foreach( var issue in IssueState.Value.Issues ) {
+                <IssueListItem Issue="@issue"/>
+            }
+        </MudStack>
+    }
+</MudContainer>
+
+@code {
+}

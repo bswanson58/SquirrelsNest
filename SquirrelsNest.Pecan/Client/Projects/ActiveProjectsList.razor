@@ -1,0 +1,54 @@
+﻿@using SquirrelsNest.Pecan.Client.Projects.Store
+@using Fluxor
+@using SquirrelsNest.Pecan.Client.Issues.Store
+@using SquirrelsNest.Pecan.Shared.Entities
+
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+@inject IState<ProjectState>    ProjectState;
+@inject ProjectFacade           ProjectFacade;
+@inject IssueFacade             IssueFacade;
+
+<MudContainer Class="ma-1">
+    <MudText Class="mb-2" Typo="Typo.h6">Projects:</MudText>
+
+    @if( ProjectState.Value.ApiCallInProgress ) {
+        <MudText Class="ma-6" Typo="Typo.body1">Loading Project List</MudText>
+    }
+    else if( ProjectState.Value.ApiCallMessage.Length > 0 ) {
+        <MudText Class="ma-6" Typo="Typo.body1" Color="Color.Error">Error: @ProjectState.Value.ApiCallMessage</MudText>
+    }
+    else {
+        <MudStack>
+            @foreach( var project in ProjectState.Value.Projects ) {
+                if( IsCurrentProject( project )) {
+                    <MudLink Class="ms-2" Typo="Typo.body1" Color="Color.Secondary" 
+                             OnClick="@(() => SetCurrentProject( project ))">@project.Name</MudLink>
+                }
+                else {
+                    <MudLink Class="ms-2" Typo="Typo.body1" Color="Color.Primary" 
+                             OnClick="@(() => SetCurrentProject( project ))">@project.Name</MudLink>
+                }
+            }
+        </MudStack>
+    }
+</MudContainer>
+
+@code {
+
+    protected override void OnInitialized() {
+        base.OnInitialized();
+
+        ProjectFacade.LoadProjects();
+    }
+
+    private void SetCurrentProject( SnCompositeProject project ) {
+        ProjectFacade.SetCurrentProject( project );
+
+        IssueFacade.LoadIssues( project );
+    }
+
+    private bool IsCurrentProject( SnCompositeProject project) => 
+        ProjectState.Value.CurrentProject != null && 
+        ProjectState.Value.CurrentProject.EntityId.Equals( project.EntityId );
+}
