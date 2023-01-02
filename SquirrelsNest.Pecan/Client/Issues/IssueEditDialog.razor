@@ -1,0 +1,44 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@using Blazored.FluentValidation
+@using Microsoft.AspNetCore.Components
+@using SquirrelsNest.Pecan.Shared.Dto.Issues
+@using SquirrelsNest.Pecan.Shared.Entities
+
+<EditForm Model="@Issue" OnValidSubmit="@OnSubmit">
+    <FluentValidationValidator/>
+    <MudDialog>
+        <DialogContent>
+            <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild">
+                <MudTextField
+                    T="string" 
+                    Immediate="true"
+                    Label="Issue Title"
+                    HelperText="Title for the issue"
+                    HelperTextOnFocus="true"
+                    @bind-Value="@Issue.Title"/>
+                <ValidationMessage For="@(() => Issue.Title)"/>
+                <MudTextField
+                    T="string"
+                    Label="Description"
+                    HelperText="Description for the issue"
+                    HelperTextOnFocus="true"
+                    @bind-Value="@Issue.Description"/>
+                <ValidationMessage For="@(() => Issue.Description)"/>
+            </MudFocusTrap>
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="OnCancel">Cancel</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Ok</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+@code {
+    [CascadingParameter] 
+    public MudDialogInstance ?  MudDialog { get; set; }
+    [Parameter]
+    public CreateIssueRequest   Issue { get; set; } = new( SnProject.Default );
+
+    private void OnSubmit() => MudDialog?.Close( DialogResult.Ok( Issue ));
+    private void OnCancel() => MudDialog?.Cancel();
+}

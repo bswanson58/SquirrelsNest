@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Text.Json.Serialization;
 using SquirrelsNest.Pecan.Shared.Platform;
 
 namespace SquirrelsNest.Pecan.Shared.Entities {
@@ -11,7 +12,7 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
         public  string      RepositoryLabel { get; }
         public  DateOnly    ReleaseDate { get; }
 
-        // the serializable constructor
+        [JsonConstructor]
         public SnRelease( string entityId, string projectId, string name, string description, string repositoryLabel, DateOnly releaseDate )
             : base( entityId ) {
             ProjectId = EntityIdentifier.CreateIdOrThrow( projectId );

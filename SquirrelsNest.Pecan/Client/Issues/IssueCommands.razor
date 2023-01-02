@@ -1,0 +1,22 @@
+﻿@using Fluxor
+@using SquirrelsNest.Pecan.Client.Issues.Store
+@using SquirrelsNest.Pecan.Client.Projects.Store
+
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<MudContainer Class="mt-1">
+    <MudStack Row="true" Spacing="2" Class="d-flex justify-end">
+        <MudButton Variant="Variant.Text" OnClick="OnAddIssue">New Issue</MudButton>
+    </MudStack>
+</MudContainer>
+
+@inject IssueFacade             IssueFacade
+@inject IState<ProjectState>    ProjectState;
+
+@code {
+    private void OnAddIssue() {
+        if( ProjectState.Value.CurrentProject != null ) {
+            IssueFacade.AddIssue( ProjectState.Value.CurrentProject );
+        }
+    }
+}

@@ -35,8 +35,7 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
             AssignedToId = EntityIdentifier.CreateIdOrThrow( assignedToId );
         }
 
-        public SnIssue( string title, uint issueNumber, string projectId ) :
-            base( String.Empty ) {
+        public SnIssue( string title, uint issueNumber, string projectId ) {
             if( String.IsNullOrWhiteSpace( title )) throw new ApplicationException( "Issue titles cannot be empty" );
 
             Title = title;

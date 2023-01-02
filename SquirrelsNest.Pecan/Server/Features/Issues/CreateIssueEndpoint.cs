@@ -29,6 +29,7 @@ namespace SquirrelsNest.Pecan.Server.Features.Issues {
             mValidator = validator;
         }
 
+        [HttpPost]
         public override async Task<ActionResult<CreateIssueResponse>> HandleAsync( 
             [FromBody]CreateIssueRequest request,
             CancellationToken cancellationToken = new () ) {

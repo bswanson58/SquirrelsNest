@@ -7,16 +7,23 @@ using SquirrelsNest.Pecan.Shared.Entities;
 
 namespace SquirrelsNest.Pecan.Shared.Dto.Issues {
     public class CreateIssueRequest {
-        public  string      Title { get; }
-        public  string      Description {  get; }
+        public  string      Title { get; set; }
+        public  string      Description {  get; set; }
         public  string      ProjectId { get; }
 
         public const string Route = $"{Routes.BaseRoute}/createIssue";
 
+        [JsonConstructor]
         public CreateIssueRequest( string title, string description, string projectId ) {
             Title = title;
             Description = description;
             ProjectId = projectId;
+        }
+
+        public CreateIssueRequest( SnProject forProject ) {
+            Title = String.Empty;
+            Description = String.Empty;
+            ProjectId = forProject.EntityId;
         }
     }
 
