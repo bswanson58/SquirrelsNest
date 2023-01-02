@@ -16,26 +16,27 @@ namespace SquirrelsNest.Pecan.Client.Auth.Support {
             mAnonymous = new AuthenticationState( new ClaimsPrincipal( new ClaimsIdentity()));
         }
 
+        private AuthenticationState CreateAuthenticationState( string fromToken ) {
+            return new AuthenticationState( 
+                new ClaimsPrincipal( 
+                    new ClaimsIdentity( JwtParser.ParseRolesFromJwt( fromToken ), JWTConstants.JwtAuthType )));
+        }
+
         public override async Task<AuthenticationState> GetAuthenticationStateAsync() {
             var token = await mLocalStorage.GetItemAsStringAsync( LocalStorageNames.AuthToken );
-            // var refreshToken = await mLocalStorage.GetItemAsStringAsync( LocalStorageNames.RefreshToken );
-
-            // mAuthFacade.SetInitialToken( token, refreshToken );
 
             if( string.IsNullOrWhiteSpace( token )) {
                 return mAnonymous;
             }
 
-            return new AuthenticationState( 
-                new ClaimsPrincipal( new ClaimsIdentity( JwtParser.ParseClaimsFromJwt( token ), JWTConstants.JwtAuthType )));
+            return CreateAuthenticationState( token );
         }
 
-        public void NotifyUserAuthentication( string authToken ) {
-            var authenticatedUser = new ClaimsPrincipal(
-                new ClaimsIdentity( JwtParser.ParseRolesFromJwt( authToken ), JWTConstants.JwtAuthType ));
-            var authState = Task.FromResult( new AuthenticationState( authenticatedUser ));
+        public async Task SetUserAuthentication( string authToken, string refreshToken ) {
+            await mLocalStorage.SetItemAsStringAsync( LocalStorageNames.AuthToken, authToken );
+            await mLocalStorage.SetItemAsStringAsync( LocalStorageNames.RefreshToken, refreshToken );
 
-            NotifyAuthenticationStateChanged( authState );
+            NotifyAuthenticationStateChanged( GetAuthenticationStateAsync());
         }
 
         public void NotifyUserLogout() {
