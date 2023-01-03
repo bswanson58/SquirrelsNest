@@ -17,5 +17,9 @@ namespace SquirrelsNest.Pecan.Client.Issues.Store {
         public void AddIssue( SnCompositeProject forProject ) {
             mDispatcher.Dispatch( new AddIssueAction( forProject ));
         }
+
+        public void EditIssue( SnCompositeIssue issue ) { }
+
+        public void DeleteIssue( SnCompositeIssue issue ) { }
     }
 }

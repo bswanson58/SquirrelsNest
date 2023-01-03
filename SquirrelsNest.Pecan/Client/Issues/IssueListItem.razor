@@ -1,10 +1,70 @@
 ﻿@using SquirrelsNest.Pecan.Shared.Entities
 
-<MudContainer>
-    <MudText Typo="Typo.body1">@Issue.Title</MudText>
-</MudContainer>
+<style>
+    .containing-grid {
+        display: grid;
+        grid-template-columns: min-content 1fr min-content;
+        grid-row-gap: 0;
+    }
+
+    .component-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-column-gap: 0;
+    }
+
+    .mouse-highlight {
+        background: lightgrey
+    }
+</style>
+
+<div class="@MouseOverHighlight" @onmouseenter="@OnMouseEnter" @onmouseleave="@OnMouseLeave">
+    <MudContainer Class="containing-grid pa-0 mb-1">
+        <MudContainer Class="d-flex flex-none align-center justify-center pa-2">
+            <MudIcon Icon="@Icons.Material.Filled.Check"/>
+        </MudContainer>
+        <MudStack Spacing="0">
+            <MudText Typo="Typo.body1">@Issue.Title</MudText>
+            <MudText Typo="Typo.body2" Class="ml-2 subdue">@Issue.Description</MudText>
+            <MudContainer Class="component-grid">
+                <MudText Class="d-flex justify-center subdue" Typo="Typo.body2">@(Issue.IssueType?.Name ?? "Unspecified")</MudText>
+                <MudText Class="d-flex justify-center subdue" Typo="Typo.body2">@(Issue.WorkflowState?.Name ?? "Unspecified")</MudText>
+                <MudText Class="d-flex justify-center subdue" Typo="Typo.body2">@(Issue.Component?.Name ?? "Unspecified")</MudText>
+                <MudText Class="d-flex justify-center subdue" Typo="Typo.body2">@(Issue.AssignedTo?.DisplayName ?? "Unspecified")</MudText>
+            </MudContainer>
+        </MudStack>
+        <div class="@MouseOverVisibility">
+            <MudContainer Class="d-flex flex-none align-center justify-center pa-2">
+                <MudStack Row="true" Spacing="0">
+                    <MudIconButton OnClick="@(() => OnEditRequest( Issue ))" Icon="@Icons.Outlined.Edit" Title="Edit"/>
+                    <MudIconButton OnClick="@(() => OnDeleteRequest( Issue ))" Icon="@Icons.Filled.DeleteOutline" Title="Delete" />
+                </MudStack>
+            </MudContainer>
+        </div>
+    </MudContainer>
+</div>
 
 @code {
     [Parameter]
-    public SnCompositeIssue     Issue { get; set; }
+    public  SnCompositeIssue    Issue { get; set; }
+    [Parameter]
+    public EventCallback<SnCompositeIssue> OnEdit { get; set; }
+    [Parameter]
+    public EventCallback<SnCompositeIssue> OnDelete { get; set; }
+
+    private bool                mIsMouseOver = false;
+
+    public void OnMouseEnter() => mIsMouseOver = true;
+    public void OnMouseLeave() => mIsMouseOver = false;
+
+    public string MouseOverVisibility => mIsMouseOver ? "" : "invisible";
+    public string MouseOverHighlight => mIsMouseOver ? "mouse-highlight" : "";
+
+    private void OnEditRequest( SnCompositeIssue issue ) {
+        OnEdit.InvokeAsync( issue );
+    }
+
+    private void OnDeleteRequest( SnCompositeIssue issue ) {
+        OnDelete.InvokeAsync( issue );
+    }
 }

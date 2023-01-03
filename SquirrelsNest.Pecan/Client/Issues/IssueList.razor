@@ -19,13 +19,20 @@
         <MudText Class="ma-6" Typo="Typo.body1" Color="Color.Error">Error: @IssueState.Value.ApiCallMessage</MudText>
     }
     else {
-        <MudStack>
+        <MudStack Spacing="0">
             @foreach( var issue in IssueState.Value.Issues ) {
-                <IssueListItem Issue="@issue"/>
+                <IssueListItem Issue="@issue" OnEdit="@OnEdit" OnDelete="@OnDelete"/>
             }
         </MudStack>
     }
 </MudContainer>
 
 @code {
+    private void OnEdit( SnCompositeIssue issue ) {
+        IssueFacade.EditIssue( issue );
+    }
+
+    private void OnDelete( SnCompositeIssue issue ) {
+        IssueFacade.DeleteIssue( issue );
+    }
 }
