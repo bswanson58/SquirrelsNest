@@ -29,14 +29,14 @@ namespace SquirrelsNest.Pecan.Shared.Dto.Issues {
             WorkflowStateId = workflowStateId;
         }
 
-        public UpdateIssueRequest( SnProject forProject, SnIssue forIssue ) {
+        public UpdateIssueRequest( SnProject forProject, SnCompositeIssue forIssue ) {
             IssueId = forIssue.EntityId;
-            Title = String.Empty;
-            Description = String.Empty;
+            Title = forIssue.Title;
+            Description = forIssue.Description;
             ProjectId = forProject.EntityId;
-            ComponentId = SnComponent.Default.EntityId;
-            IssueTypeId = SnIssueType.Default.EntityId;
-            WorkflowStateId = SnWorkflowState.Default.EntityId;
+            ComponentId = forIssue.Component.EntityId;
+            IssueTypeId = forIssue.IssueType.EntityId;
+            WorkflowStateId = forIssue.WorkflowState.EntityId;
         }
     }
 

@@ -11,35 +11,35 @@ using SquirrelsNest.Pecan.Shared.Dto.Issues;
 
 namespace SquirrelsNest.Pecan.Client.Issues.Effects {
     // ReSharper disable once UnusedType.Global
-    public class AddIssueSubmitEffect : Effect<AddIssueSubmitAction> {
-        private readonly IHttpClientFactory             mClientFactory;
-        private readonly ILogger<AddIssueSubmitEffect>  mLogger;
+    public class UpdateIssueSubmitEffect : Effect<UpdateIssueSubmit> {
+        private readonly IHttpClientFactory                 mClientFactory;
+        private readonly ILogger<UpdateIssueSubmitEffect>   mLogger;
 
-        public AddIssueSubmitEffect( IHttpClientFactory clientFactory, ILogger<AddIssueSubmitEffect> logger ) {
+        public UpdateIssueSubmitEffect( IHttpClientFactory clientFactory, ILogger<UpdateIssueSubmitEffect> logger ) {
             mClientFactory = clientFactory;
             mLogger = logger;
         }
 
-        public override async Task HandleAsync( AddIssueSubmitAction action, IDispatcher dispatcher ) {
-            dispatcher.Dispatch( new ApiCallStarted( "Creating New Issue" ));
+        public override async Task HandleAsync( UpdateIssueSubmit action, IDispatcher dispatcher ) {
+            dispatcher.Dispatch( new ApiCallStarted( "Updating Issue" ));
 
             try {
                 using var httpClient = mClientFactory.CreateClient( HttpClientNames.Authenticated );
-                var postResponse = await httpClient.PostAsJsonAsync( CreateIssueRequest.Route, action.Request );
-                var response = await postResponse.Content.ReadFromJsonAsync<CreateIssueResponse>();
+                var postResponse = await httpClient.PostAsJsonAsync( UpdateIssueRequest.Route, action.Request );
+                var response = await postResponse.Content.ReadFromJsonAsync<UpdateIssueResponse>();
 
                 if(( response?.Issue != null ) &&
                    ( response.Succeeded )) {
-                    dispatcher.Dispatch( new AddIssueSuccess( response.Issue ));
+                    dispatcher.Dispatch( new UpdateIssueSuccess( response.Issue ));
                 }
                 else {
-                    dispatcher.Dispatch( new AddIssueFailure( "Received null response" ));
+                    dispatcher.Dispatch( new UpdateIssueFailure( "Received null response" ));
                 }
             }
             catch ( HttpRequestException exception ) {
                 mLogger.LogError( exception, String.Empty );
 
-                dispatcher.Dispatch( new AddIssueFailure( exception.Message ));
+                dispatcher.Dispatch( new UpdateIssueFailure( exception.Message ));
             }
 
             dispatcher.Dispatch( new ApiCallCompleted());

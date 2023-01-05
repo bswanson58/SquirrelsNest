@@ -1,0 +1,80 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@using Blazored.FluentValidation
+@using Microsoft.AspNetCore.Components
+@using SquirrelsNest.Pecan.Shared.Dto.Issues
+@using SquirrelsNest.Pecan.Shared.Entities
+
+<style>
+    .selector-grid {
+        display: grid;
+        grid-template-rows: auto auto;
+        grid-template-columns: 1fr 1fr;
+        grid-row-gap: 1em;
+        grid-column-gap: 1em;
+    }
+</style>
+
+<EditForm Model="@Issue" OnValidSubmit="@OnSubmit">
+    <FluentValidationValidator />
+    <MudDialog>
+        <DialogContent>
+            <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild">
+                <MudTextField T="string"
+                              Immediate="true"
+                              Label="Issue Title"
+                              HelperText="Title for the issue"
+                              HelperTextOnFocus="true"
+                              @bind-Value="@Issue.Title" />
+                <ValidationMessage For="@(() => Issue.Title)" />
+                <MudTextField T="string"
+                              Label="Description"
+                              HelperText="Description for the issue"
+                              HelperTextOnFocus="true"
+                              @bind-Value="@Issue.Description" />
+                <ValidationMessage For="@(() => Issue.Description)" />
+                <div class="selector-grid">
+                    <IssueTypeSelector Project="@Project" @bind-SelectedIssueType="@mSelectedIssueType" />
+                    <ComponentSelector Project="@Project" @bind-SelectedComponent="@mSelectedComponent" />
+                    <WorkflowStateSelector Project="@Project" @bind-SelectedWorkflowState="@mSelectedState" />
+                </div>
+            </MudFocusTrap>
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="OnCancel">Cancel</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Ok</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+@code {
+    [CascadingParameter]
+    public MudDialogInstance?       MudDialog { get; set; }
+    [Parameter]
+    public SnCompositeProject?      Project { get; set; } = SnCompositeProject.Default;
+    [Parameter]
+    public UpdateIssueRequest       Issue { get; set; } = new UpdateIssueRequest( SnProject.Default, SnCompositeIssue.Default );
+
+    private SnComponent             mSelectedComponent = SnComponent.Default;
+    private SnIssueType             mSelectedIssueType = SnIssueType.Default;
+    private SnWorkflowState         mSelectedState = SnWorkflowState.Default;
+
+    protected override void OnParametersSet() {
+        base.OnParametersSet();
+
+        if( Project != null ) {
+            mSelectedComponent = Project.Components.FirstOrDefault( c => c.EntityId.Equals( Issue.ComponentId )) ?? SnComponent.Default;
+            mSelectedIssueType = Project.IssueTypes.FirstOrDefault( i => i.EntityId.Equals( Issue.IssueTypeId )) ?? SnIssueType.Default;
+            mSelectedState = Project.WorkflowStates.FirstOrDefault( s => s.EntityId.Equals( Issue.WorkflowStateId )) ?? SnWorkflowState.Default;
+        }
+    }
+
+    private void OnSubmit() {
+        Issue.IssueTypeId = mSelectedIssueType.EntityId;
+        Issue.ComponentId = mSelectedComponent.EntityId;
+        Issue.WorkflowStateId = mSelectedState.EntityId;
+
+        MudDialog?.Close( DialogResult.Ok( Issue ) );
+    }
+
+    private void OnCancel() => MudDialog?.Cancel();
+}

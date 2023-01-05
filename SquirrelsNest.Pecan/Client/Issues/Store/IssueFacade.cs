@@ -1,5 +1,6 @@
 ﻿using Fluxor;
 using SquirrelsNest.Pecan.Client.Issues.Actions;
+using SquirrelsNest.Pecan.Shared.Dto.Issues;
 using SquirrelsNest.Pecan.Shared.Entities;
 
 namespace SquirrelsNest.Pecan.Client.Issues.Store {
@@ -20,6 +21,10 @@ namespace SquirrelsNest.Pecan.Client.Issues.Store {
 
         public void EditIssue( SnCompositeProject forProject, SnCompositeIssue issue ) {
             mDispatcher.Dispatch( new EditIssueAction( forProject, issue ));
+        }
+
+        public void UpdateIssue( SnCompositeProject forProject, SnCompositeIssue issue ) {
+            mDispatcher.Dispatch( new UpdateIssueSubmit( new UpdateIssueRequest( forProject.Project, issue )));
         }
 
         public void DeleteIssue( SnCompositeIssue issue ) {

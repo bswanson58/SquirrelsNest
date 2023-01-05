@@ -1,4 +1,5 @@
 ﻿@using SquirrelsNest.Pecan.Shared.Entities
+@using SquirrelsNest.Pecan.Client.Issues.Store
 
 <style>
     .containing-grid {
@@ -27,13 +28,13 @@
             <MudText Typo="Typo.body1">@Issue.Title</MudText>
             <MudText Typo="Typo.body2" Class="ml-2 subdue">@Issue.Description</MudText>
             <MudContainer Class="component-grid">
-                <MudLink Class="d-flex justify-center subdue" Color="Color.Default" Typo="Typo.body2" OnClick="OnIssueTypeClick">
+                <MudLink Class="d-flex justify-center subdue" Color="Color.Default" Typo="Typo.body2" OnClick="OnWorkflowStateClick">
                     @(Issue.WorkflowState?.Name ?? "Unspecified")
                 </MudLink>
-                <MudLink Class="d-flex justify-center subdue" Color="Color.Default" Typo="Typo.body2" OnClick="OnComponentClick">
+                <MudLink Class="d-flex justify-center subdue" Color="Color.Default" Typo="Typo.body2" OnClick="OnIssueTypeClick">
                     @(Issue.IssueType?.Name ?? "Unspecified")
                 </MudLink>
-                <MudLink Class="d-flex justify-center subdue" Color="Color.Default" Typo="Typo.body2" OnClick="OnWorkflowStateClick">
+                <MudLink Class="d-flex justify-center subdue" Color="Color.Default" Typo="Typo.body2" OnClick="OnComponentClick">
                     @(Issue.Component?.Name ?? "Unspecified")
                 </MudLink>
                 <MudText Class="d-flex justify-center subdue" Typo="Typo.body2">@(Issue.AssignedTo?.DisplayName ?? "Unspecified")</MudText>
@@ -50,7 +51,8 @@
     </MudContainer>
 </div>
 
-@inject IDialogService mDialogService;
+@inject IDialogService  DialogService;
+@inject IssueFacade     IssueFacade;
 
     @code {
     [Parameter]
@@ -87,12 +89,12 @@
         };
         var options = new DialogOptions { FullWidth = true, CloseOnEscapeKey = true };
 
-        var dialog = await mDialogService.ShowAsync<ComponentSelectorDialog>( "Select Component", parameters, options );
+        var dialog = await DialogService.ShowAsync<ComponentSelectorDialog>( "Select Component", parameters, options );
         var dialogResult = await dialog.Result;
 
         if((!dialogResult.Cancelled ) &&
            ( dialogResult.Data is SnComponent component )) {
-            selectedComponent = component;
+            IssueFacade.UpdateIssue( Project, Issue.With( component ));
         }
     }
 
@@ -103,12 +105,12 @@
         };
         var options = new DialogOptions { FullWidth = true, CloseOnEscapeKey = true };
 
-        var dialog = await mDialogService.ShowAsync<IssueTypeSelectorDialog>( "Select Issue Type", parameters, options );
+        var dialog = await DialogService.ShowAsync<IssueTypeSelectorDialog>( "Select Issue Type", parameters, options );
         var dialogResult = await dialog.Result;
 
         if((!dialogResult.Cancelled ) &&
            ( dialogResult.Data is SnIssueType type )) {
-            var selectedIssueType = type;
+            IssueFacade.UpdateIssue( Project, Issue.With( type ));
         }
     }
 
@@ -119,12 +121,12 @@
         };
         var options = new DialogOptions { FullWidth = true, CloseOnEscapeKey = true };
 
-        var dialog = await mDialogService.ShowAsync<WorkflowStateSelectorDialog>( "Select Workflow State", parameters, options );
+        var dialog = await DialogService.ShowAsync<WorkflowStateSelectorDialog>( "Select Workflow State", parameters, options );
         var dialogResult = await dialog.Result;
 
         if((!dialogResult.Cancelled ) &&
            ( dialogResult.Data is SnWorkflowState state )) {
-            var selectedState = state;
+            IssueFacade.UpdateIssue( Project, Issue.With( state ));
         }
     }
 }
