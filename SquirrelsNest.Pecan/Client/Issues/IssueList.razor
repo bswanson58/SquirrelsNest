@@ -7,7 +7,6 @@
 
 @inject IState<ProjectState>    ProjectState;
 @inject IState<IssueState>      IssueState
-@inject IssueFacade             IssueFacade
 
 <MudContainer Class="ma-1">
     <MudText Class="mb-2" Typo="Typo.h6">Issues:</MudText>
@@ -21,22 +20,8 @@
     else {
         <MudStack Spacing="0">
             @foreach( var issue in IssueState.Value.Issues ) {
-                <IssueListItem Project="ProjectState.Value.CurrentProject" Issue="@issue" OnEdit="@OnEdit" OnDelete="@OnDelete"/>
+                <IssueListItem Project="ProjectState.Value.CurrentProject" Issue="@issue" />
             }
         </MudStack>
     }
 </MudContainer>
-
-@code {
-    private void OnEdit( SnCompositeIssue issue ) {
-        if( ProjectState.Value.CurrentProject != null ) {
-            IssueFacade.EditIssue( ProjectState.Value.CurrentProject, issue );
-        }
-    }
-
-    private void OnDelete( SnCompositeIssue issue ) {
-        if( ProjectState.Value.CurrentProject != null ) {
-            IssueFacade.DeleteIssue( issue );
-        }
-    }
-}

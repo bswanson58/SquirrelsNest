@@ -43,8 +43,8 @@
         <div class="@MouseOverVisibility">
             <MudContainer Class="d-flex flex-none align-center justify-center pa-2">
                 <MudStack Row="true" Spacing="0">
-                    <MudIconButton OnClick="@(() => OnEditRequest( Issue ))" Icon="@Icons.Outlined.Edit" Title="Edit"/>
-                    <MudIconButton OnClick="@(() => OnDeleteRequest( Issue ))" Icon="@Icons.Filled.DeleteOutline" Title="Delete" />
+                    <MudIconButton OnClick="@OnEditRequest" Icon="@Icons.Outlined.Edit" Title="Edit"/>
+                    <MudIconButton OnClick="@OnDeleteRequest" Icon="@Icons.Filled.DeleteOutline" Title="Delete" />
                 </MudStack>
             </MudContainer>
         </div>
@@ -55,13 +55,9 @@
 
 @code {
     [Parameter]
-    public SnCompositeIssue                 Issue { get; set; } = SnCompositeIssue.Default;
+    public SnCompositeIssue     Issue { get; set; } = SnCompositeIssue.Default;
     [Parameter]
-    public SnCompositeProject               Project { get; set; } = SnCompositeProject.Default;
-    [Parameter]
-    public EventCallback<SnCompositeIssue>  OnEdit { get; set; }
-    [Parameter]
-    public EventCallback<SnCompositeIssue>  OnDelete { get; set; }
+    public SnCompositeProject   Project { get; set; } = SnCompositeProject.Default;
 
     private bool                mIsMouseOver = false;
 
@@ -71,13 +67,8 @@
     public string MouseOverVisibility => mIsMouseOver ? "" : "invisible";
     public string MouseOverHighlight => mIsMouseOver ? "mouse-highlight" : "";
 
-    private void OnEditRequest( SnCompositeIssue issue ) {
-        OnEdit.InvokeAsync( issue );
-    }
-
-    private void OnDeleteRequest( SnCompositeIssue issue ) {
-        OnDelete.InvokeAsync( issue );
-    }
+    private void OnEditRequest() => IssueFacade.EditIssue( Project, Issue );
+    private void OnDeleteRequest() => IssueFacade.DeleteIssue( Project, Issue );
 
     private void OnComponentClick() => IssueFacade.EditComponent( Project, Issue );
     private void OnIssueTypeClick() => IssueFacade.EditIssueType( Project, Issue );
