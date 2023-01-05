@@ -51,10 +51,9 @@
     </MudContainer>
 </div>
 
-@inject IDialogService  DialogService;
 @inject IssueFacade     IssueFacade;
 
-    @code {
+@code {
     [Parameter]
     public SnCompositeIssue                 Issue { get; set; } = SnCompositeIssue.Default;
     [Parameter]
@@ -80,53 +79,7 @@
         OnDelete.InvokeAsync( issue );
     }
 
-    private async Task OnComponentClick() {
-        var selectedComponent = Issue.Component;
-
-        var parameters = new DialogParameters {
-            { nameof( ComponentSelectorDialog.Project ), Project },
-            { nameof( ComponentSelectorDialog.SelectedComponent ), selectedComponent }
-        };
-        var options = new DialogOptions { FullWidth = true, CloseOnEscapeKey = true };
-
-        var dialog = await DialogService.ShowAsync<ComponentSelectorDialog>( "Select Component", parameters, options );
-        var dialogResult = await dialog.Result;
-
-        if((!dialogResult.Cancelled ) &&
-           ( dialogResult.Data is SnComponent component )) {
-            IssueFacade.UpdateIssue( Project, Issue.With( component ));
-        }
-    }
-
-    private async Task OnIssueTypeClick() {
-        var parameters = new DialogParameters {
-            { nameof( IssueTypeSelectorDialog.Project ), Project },
-            { nameof( IssueTypeSelectorDialog.SelectedIssueType ), Issue.IssueType }
-        };
-        var options = new DialogOptions { FullWidth = true, CloseOnEscapeKey = true };
-
-        var dialog = await DialogService.ShowAsync<IssueTypeSelectorDialog>( "Select Issue Type", parameters, options );
-        var dialogResult = await dialog.Result;
-
-        if((!dialogResult.Cancelled ) &&
-           ( dialogResult.Data is SnIssueType type )) {
-            IssueFacade.UpdateIssue( Project, Issue.With( type ));
-        }
-    }
-
-    private async Task OnWorkflowStateClick() {
-        var parameters = new DialogParameters {
-            { nameof( WorkflowStateSelectorDialog.Project ), Project },
-            { nameof( WorkflowStateSelectorDialog.SelectedWorkflowState ), Issue.WorkflowState }
-        };
-        var options = new DialogOptions { FullWidth = true, CloseOnEscapeKey = true };
-
-        var dialog = await DialogService.ShowAsync<WorkflowStateSelectorDialog>( "Select Workflow State", parameters, options );
-        var dialogResult = await dialog.Result;
-
-        if((!dialogResult.Cancelled ) &&
-           ( dialogResult.Data is SnWorkflowState state )) {
-            IssueFacade.UpdateIssue( Project, Issue.With( state ));
-        }
-    }
+    private void OnComponentClick() => IssueFacade.EditComponent( Project, Issue );
+    private void OnIssueTypeClick() => IssueFacade.EditIssueType( Project, Issue );
+    private void OnWorkflowStateClick() => IssueFacade.EditWorkflowState( Project, Issue );
 }

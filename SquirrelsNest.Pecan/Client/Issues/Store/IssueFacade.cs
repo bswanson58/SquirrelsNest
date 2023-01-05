@@ -30,5 +30,16 @@ namespace SquirrelsNest.Pecan.Client.Issues.Store {
         public void DeleteIssue( SnCompositeIssue issue ) {
             mDispatcher.Dispatch( new DeleteIssueAction( issue ));
         }
+
+        public void EditComponent( SnCompositeProject project, SnCompositeIssue issue ) {
+            mDispatcher.Dispatch( new EditComponentAction( project, issue ));
+        }
+
+        public void EditIssueType( SnCompositeProject project, SnCompositeIssue issue ) {
+            mDispatcher.Dispatch( new EditIssueTypeAction( project, issue ));
+        }
+        public void EditWorkflowState( SnCompositeProject project, SnCompositeIssue issue ) {
+            mDispatcher.Dispatch( new EditWorkflowStateAction( project, issue ));
+        }
     }
 }
