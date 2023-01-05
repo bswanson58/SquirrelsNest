@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.Json.Serialization;
+using SquirrelsNest.Pecan.Shared.Platform;
 
 namespace SquirrelsNest.Pecan.Shared.Entities {
     public class SnCompositeIssue {
@@ -46,5 +47,13 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
             WorkflowState = workflowState;
             AssignedTo = assignedTo;
         }
+
+        private static SnCompositeIssue ? mDefaultIssue;
+
+        public static SnCompositeIssue Default =>
+            mDefaultIssue ??= new SnCompositeIssue( String.Empty, String.Empty, SnProject.Default.EntityId, 0, 
+                                                    DateTimeProvider.Instance.CurrentDate, SnUser.Default, SnIssueType.Default, 
+                                                    SnComponent.Default, SnRelease.Default, SnWorkflowState.Default, SnUser.Default );
+
     }
 }
