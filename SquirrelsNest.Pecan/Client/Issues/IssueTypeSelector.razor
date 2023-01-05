@@ -1,0 +1,36 @@
+﻿@using SquirrelsNest.Pecan.Shared.Entities
+
+<MudSelect T="SnIssueType"
+           Label="Issue Type"
+           ToStringFunc="i => i.Name"
+           @bind-Value="@Value">
+    @foreach( var issueType in mIssueTypes ) {
+        <MudSelectItem Value="issueType">@issueType.Name</MudSelectItem>
+    }
+</MudSelect>
+
+@code {
+    [Parameter]
+    public SnCompositeProject?          Project { get; set; }
+    [Parameter]
+    public SnIssueType                  SelectedIssueType { get; set; } = SnIssueType.Default;
+    [Parameter]
+    public EventCallback<SnIssueType>   SelectedIssueTypeChanged { get; set; }
+
+    private List<SnIssueType>           mIssueTypes = new();
+
+    private SnIssueType Value {
+        get => SelectedIssueType;
+        set => SelectedIssueTypeChanged.InvokeAsync( value );
+    }
+
+    protected override void OnParametersSet() {
+        base.OnParametersSet();
+
+        if( Project != null ) {
+            mIssueTypes.Clear();
+            mIssueTypes.AddRange( Project.IssueTypes );
+            mIssueTypes.Add( SnIssueType.Default );
+        }
+    }
+}

@@ -6,14 +6,14 @@ using SquirrelsNest.Pecan.Shared.Dto.Issues;
 
 namespace SquirrelsNest.Pecan.Client.Issues.Effects {
     // ReSharper disable once UnusedType.Global
-    public class AddIssueEffect : Effect<AddIssueAction> {
+    public class EditIssueEffect : Effect<EditIssueAction> {
         private readonly IDialogService mDialogService;
 
-        public AddIssueEffect( IDialogService dialogService ) {
+        public EditIssueEffect( IDialogService dialogService ) {
             mDialogService = dialogService;
         }
 
-        public override async Task HandleAsync( AddIssueAction action, IDispatcher dispatcher ) {
+        public override async Task HandleAsync( EditIssueAction action, IDispatcher dispatcher ) {
             var parameters = new DialogParameters {
                 { nameof( IssueEditDialog.Issue ), new CreateIssueRequest( action.Project.Project ) },
                 { nameof( IssueEditDialog.Project ), action.Project }

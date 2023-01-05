@@ -27,9 +27,15 @@
             <MudText Typo="Typo.body1">@Issue.Title</MudText>
             <MudText Typo="Typo.body2" Class="ml-2 subdue">@Issue.Description</MudText>
             <MudContainer Class="component-grid">
-                <MudText Class="d-flex justify-center subdue" Typo="Typo.body2">@(Issue.IssueType?.Name ?? "Unspecified")</MudText>
-                <MudText Class="d-flex justify-center subdue" Typo="Typo.body2">@(Issue.WorkflowState?.Name ?? "Unspecified")</MudText>
-                <MudText Class="d-flex justify-center subdue" Typo="Typo.body2">@(Issue.Component?.Name ?? "Unspecified")</MudText>
+                <MudLink Class="d-flex justify-center subdue" Color="Color.Default" Typo="Typo.body2" OnClick="OnIssueTypeClick">
+                    @(Issue.WorkflowState?.Name ?? "Unspecified")
+                </MudLink>
+                <MudLink Class="d-flex justify-center subdue" Color="Color.Default" Typo="Typo.body2" OnClick="OnComponentClick">
+                    @(Issue.IssueType?.Name ?? "Unspecified")
+                </MudLink>
+                <MudLink Class="d-flex justify-center subdue" Color="Color.Default" Typo="Typo.body2" OnClick="OnWorkflowStateClick">
+                    @(Issue.Component?.Name ?? "Unspecified")
+                </MudLink>
                 <MudText Class="d-flex justify-center subdue" Typo="Typo.body2">@(Issue.AssignedTo?.DisplayName ?? "Unspecified")</MudText>
             </MudContainer>
         </MudStack>
@@ -44,13 +50,17 @@
     </MudContainer>
 </div>
 
-@code {
+@inject IDialogService mDialogService;
+
+    @code {
     [Parameter]
-    public  SnCompositeIssue    Issue { get; set; }
+    public SnCompositeIssue                 Issue { get; set; } = SnCompositeIssue.Default;
     [Parameter]
-    public EventCallback<SnCompositeIssue> OnEdit { get; set; }
+    public SnCompositeProject               Project { get; set; } = SnCompositeProject.Default;
     [Parameter]
-    public EventCallback<SnCompositeIssue> OnDelete { get; set; }
+    public EventCallback<SnCompositeIssue>  OnEdit { get; set; }
+    [Parameter]
+    public EventCallback<SnCompositeIssue>  OnDelete { get; set; }
 
     private bool                mIsMouseOver = false;
 
@@ -66,5 +76,55 @@
 
     private void OnDeleteRequest( SnCompositeIssue issue ) {
         OnDelete.InvokeAsync( issue );
+    }
+
+    private async Task OnComponentClick() {
+        var selectedComponent = Issue.Component;
+
+        var parameters = new DialogParameters {
+            { nameof( ComponentSelectorDialog.Project ), Project },
+            { nameof( ComponentSelectorDialog.SelectedComponent ), selectedComponent }
+        };
+        var options = new DialogOptions { FullWidth = true, CloseOnEscapeKey = true };
+
+        var dialog = await mDialogService.ShowAsync<ComponentSelectorDialog>( "Select Component", parameters, options );
+        var dialogResult = await dialog.Result;
+
+        if((!dialogResult.Cancelled ) &&
+           ( dialogResult.Data is SnComponent component )) {
+            selectedComponent = component;
+        }
+    }
+
+    private async Task OnIssueTypeClick() {
+        var parameters = new DialogParameters {
+            { nameof( IssueTypeSelectorDialog.Project ), Project },
+            { nameof( IssueTypeSelectorDialog.SelectedIssueType ), Issue.IssueType }
+        };
+        var options = new DialogOptions { FullWidth = true, CloseOnEscapeKey = true };
+
+        var dialog = await mDialogService.ShowAsync<IssueTypeSelectorDialog>( "Select Issue Type", parameters, options );
+        var dialogResult = await dialog.Result;
+
+        if((!dialogResult.Cancelled ) &&
+           ( dialogResult.Data is SnIssueType type )) {
+            var selectedIssueType = type;
+        }
+    }
+
+    private async Task OnWorkflowStateClick() {
+        var parameters = new DialogParameters {
+            { nameof( WorkflowStateSelectorDialog.Project ), Project },
+            { nameof( WorkflowStateSelectorDialog.SelectedWorkflowState ), Issue.WorkflowState }
+        };
+        var options = new DialogOptions { FullWidth = true, CloseOnEscapeKey = true };
+
+        var dialog = await mDialogService.ShowAsync<WorkflowStateSelectorDialog>( "Select Workflow State", parameters, options );
+        var dialogResult = await dialog.Result;
+
+        if((!dialogResult.Cancelled ) &&
+           ( dialogResult.Data is SnWorkflowState state )) {
+            var selectedState = state;
+        }
     }
 }

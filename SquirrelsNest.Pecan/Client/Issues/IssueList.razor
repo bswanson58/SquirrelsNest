@@ -21,7 +21,7 @@
     else {
         <MudStack Spacing="0">
             @foreach( var issue in IssueState.Value.Issues ) {
-                <IssueListItem Issue="@issue" OnEdit="@OnEdit" OnDelete="@OnDelete"/>
+                <IssueListItem Project="ProjectState.Value.CurrentProject" Issue="@issue" OnEdit="@OnEdit" OnDelete="@OnDelete"/>
             }
         </MudStack>
     }
@@ -29,10 +29,14 @@
 
 @code {
     private void OnEdit( SnCompositeIssue issue ) {
-        IssueFacade.EditIssue( issue );
+        if( ProjectState.Value.CurrentProject != null ) {
+            IssueFacade.EditIssue( ProjectState.Value.CurrentProject, issue );
+        }
     }
 
     private void OnDelete( SnCompositeIssue issue ) {
-        IssueFacade.DeleteIssue( issue );
+        if( ProjectState.Value.CurrentProject != null ) {
+            IssueFacade.DeleteIssue( issue );
+        }
     }
 }

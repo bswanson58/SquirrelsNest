@@ -10,20 +10,30 @@ namespace SquirrelsNest.Pecan.Shared.Dto.Issues {
         public  string      Title { get; set; }
         public  string      Description {  get; set; }
         public  string      ProjectId { get; }
+        public  string      ComponentId { get; set; }
+        public  string      IssueTypeId { get; set; }
+        public  string      WorkflowStateId {  get; set; }
 
         public const string Route = $"{Routes.BaseRoute}/createIssue";
 
         [JsonConstructor]
-        public CreateIssueRequest( string title, string description, string projectId ) {
+        public CreateIssueRequest( string title, string description, string projectId, string componentId, string issueTypeId,
+                                   string workflowStateId ) {
             Title = title;
             Description = description;
             ProjectId = projectId;
+            ComponentId = componentId;
+            IssueTypeId = issueTypeId;
+            WorkflowStateId = workflowStateId;
         }
 
         public CreateIssueRequest( SnProject forProject ) {
             Title = String.Empty;
             Description = String.Empty;
             ProjectId = forProject.EntityId;
+            ComponentId = SnComponent.Default.EntityId;
+            IssueTypeId = SnIssueType.Default.EntityId;
+            WorkflowStateId = SnWorkflowState.Default.EntityId;
         }
     }
 
