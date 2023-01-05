@@ -19,19 +19,11 @@ namespace SquirrelsNest.Pecan.Server.Features.Projects {
         .WithActionResult<GetProjectsResponse> {
 
         private readonly IProjectProvider       mProjectProvider;
-        private readonly IComponentProvider     mComponentProvider;
-        private readonly IIssueTypeProvider     mIssueTypeProvider;
-        private readonly IWorkflowStateProvider mWorkflowStateProvider;
-        private readonly IReleaseProvider       mReleaseProvider;
+        private readonly ICompositeProjectBuilder   mProjectBuilder;
 
-        public GetProjects( IProjectProvider projectProvider, IComponentProvider componentProvider,
-                            IIssueTypeProvider issueTypeProvider, IWorkflowStateProvider workflowStateProvider,
-                            IReleaseProvider releaseProvider ) {
+        public GetProjects( IProjectProvider projectProvider, ICompositeProjectBuilder projectBuilder ) {
             mProjectProvider = projectProvider;
-            mComponentProvider = componentProvider;
-            mIssueTypeProvider = issueTypeProvider;
-            mWorkflowStateProvider = workflowStateProvider;
-            mReleaseProvider = releaseProvider;
+            mProjectBuilder = projectBuilder;
         }
 
         [HttpGet]
@@ -41,12 +33,7 @@ namespace SquirrelsNest.Pecan.Server.Features.Projects {
                 var compositeProjects = new List<SnCompositeProject>();
 
                 foreach( var project in projectList ) {
-                    compositeProjects.Add( new SnCompositeProject( project,
-                        await mComponentProvider.GetAll( project ).ToListAsync( token ),
-                        await mIssueTypeProvider.GetAll( project ).ToListAsync( token ),
-                        await mWorkflowStateProvider.GetAll( project ).ToListAsync( token ),
-                        await mReleaseProvider.GetAll( project ).ToListAsync( token )
-                        ));
+                    compositeProjects.Add( await mProjectBuilder.BuildComposite( project, token ));
                 }
 
                 return Ok( new GetProjectsResponse( compositeProjects ));
