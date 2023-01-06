@@ -96,5 +96,12 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
             return new SnIssue( EntityId, Title, Description, ProjectId, IssueNumber, EntryDate, 
                                 EnteredById, IssueTypeId, component.EntityId, ReleaseId, WorkflowStateId, AssignedToId );
         }
+
+        public SnIssue With( SnUser assignedUser ) {
+            if( assignedUser == null ) throw new ArgumentNullException( nameof( assignedUser ), "Assigned user for issue cannot be null" );
+
+            return new SnIssue( EntityId, Title, Description, ProjectId, IssueNumber, EntryDate, 
+                EnteredById, IssueTypeId, ComponentId, ReleaseId, WorkflowStateId, assignedUser.EntityId );
+        }
     }
 }

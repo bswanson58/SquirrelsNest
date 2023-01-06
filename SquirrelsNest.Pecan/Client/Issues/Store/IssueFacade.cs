@@ -38,8 +38,13 @@ namespace SquirrelsNest.Pecan.Client.Issues.Store {
         public void EditIssueType( SnCompositeProject project, SnCompositeIssue issue ) {
             mDispatcher.Dispatch( new EditIssueTypeAction( project, issue ));
         }
+
         public void EditWorkflowState( SnCompositeProject project, SnCompositeIssue issue ) {
             mDispatcher.Dispatch( new EditWorkflowStateAction( project, issue ));
+        }
+
+        public void EditAssignedUser( SnCompositeProject project, SnCompositeIssue issue ) {
+            mDispatcher.Dispatch( new EditAssignedUserAction( project, issue ));
         }
     }
 }

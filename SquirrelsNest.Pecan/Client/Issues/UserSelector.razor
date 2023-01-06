@@ -1,0 +1,36 @@
+﻿@using SquirrelsNest.Pecan.Shared.Entities
+
+<MudSelect T="SnUser"
+           Label="User"
+           ToStringFunc="c => c.DisplayName"
+           @bind-Value="@Value">
+    @foreach( var user in mUsers ) {
+        <MudSelectItem Value="user">@user.DisplayName</MudSelectItem>
+    }
+</MudSelect>
+
+@code {
+    [Parameter]
+    public SnCompositeProject?      Project { get; set; }
+    [Parameter]
+    public SnUser                   SelectedUser { get; set; } = SnUser.Default;
+    [Parameter]
+    public EventCallback<SnUser>    SelectedUserChanged { get; set; }
+
+    private readonly List<SnUser>   mUsers = new();
+
+    private SnUser Value {
+        get => SelectedUser;
+        set => SelectedUserChanged.InvokeAsync( value );
+    }
+
+    protected override void OnParametersSet() {
+        base.OnParametersSet();
+
+        if( Project != null ) {
+            mUsers.Clear();
+            mUsers.AddRange( Project.Users );
+            mUsers.Add( SnUser.Default );
+        }
+    }
+}

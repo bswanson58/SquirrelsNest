@@ -62,7 +62,8 @@ namespace SquirrelsNest.Pecan.Server.Features.Issues {
                 issue = issue.With( title: request.Title, description: request.Description )
                     .With( ComponentValidator.ValidateComponent( compositeProject, request.ComponentId ))
                     .With( ComponentValidator.ValidateIssueType( compositeProject, request.IssueTypeId ))
-                    .With( ComponentValidator.ValidateWorkflowState( compositeProject, request.WorkflowStateId ));
+                    .With( ComponentValidator.ValidateWorkflowState( compositeProject, request.WorkflowStateId ))
+                    .With( ComponentValidator.ValidateAssignedUser( compositeProject, request.AssignedUserId ));
 
                 issue = await mIssueProvider.Update( issue );
 

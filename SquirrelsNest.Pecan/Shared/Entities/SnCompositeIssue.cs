@@ -63,6 +63,10 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
             new ( EntityId, Title, Description, ProjectId, IssueNumber, EntryDate,
                 EnteredBy, IssueType, Component, Release, state, AssignedTo );
 
+        public SnCompositeIssue With( SnUser assignedUser ) =>
+            new ( EntityId, Title, Description, ProjectId, IssueNumber, EntryDate,
+                EnteredBy, IssueType, Component, Release, WorkflowState, assignedUser );
+
         private static SnCompositeIssue ? mDefaultIssue;
 
         public static SnCompositeIssue Default =>

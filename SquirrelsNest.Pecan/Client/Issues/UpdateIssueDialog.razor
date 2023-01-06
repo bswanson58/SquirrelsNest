@@ -36,6 +36,7 @@
                     <IssueTypeSelector Project="@Project" @bind-SelectedIssueType="@mSelectedIssueType" />
                     <ComponentSelector Project="@Project" @bind-SelectedComponent="@mSelectedComponent" />
                     <WorkflowStateSelector Project="@Project" @bind-SelectedWorkflowState="@mSelectedState" />
+                    <UserSelector Project="@Project" @bind-SelectedUser="@mAssignedUser" />
                 </div>
             </MudFocusTrap>
         </DialogContent>
@@ -57,6 +58,7 @@
     private SnComponent             mSelectedComponent = SnComponent.Default;
     private SnIssueType             mSelectedIssueType = SnIssueType.Default;
     private SnWorkflowState         mSelectedState = SnWorkflowState.Default;
+    private SnUser                  mAssignedUser = SnUser.Default;
 
     protected override void OnParametersSet() {
         base.OnParametersSet();
@@ -65,6 +67,7 @@
             mSelectedComponent = Project.Components.FirstOrDefault( c => c.EntityId.Equals( Issue.ComponentId )) ?? SnComponent.Default;
             mSelectedIssueType = Project.IssueTypes.FirstOrDefault( i => i.EntityId.Equals( Issue.IssueTypeId )) ?? SnIssueType.Default;
             mSelectedState = Project.WorkflowStates.FirstOrDefault( s => s.EntityId.Equals( Issue.WorkflowStateId )) ?? SnWorkflowState.Default;
+            mAssignedUser = Project.Users.FirstOrDefault( u => u.EntityId.Equals( Issue.AssignedUserId )) ?? SnUser.Default;
         }
     }
 
@@ -72,6 +75,7 @@
         Issue.IssueTypeId = mSelectedIssueType.EntityId;
         Issue.ComponentId = mSelectedComponent.EntityId;
         Issue.WorkflowStateId = mSelectedState.EntityId;
+        Issue.AssignedUserId = mAssignedUser.EntityId;
 
         MudDialog?.Close( DialogResult.Ok( Issue ) );
     }

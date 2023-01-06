@@ -11,5 +11,8 @@ namespace SquirrelsNest.Pecan.Server.Features.Issues {
 
         public static SnWorkflowState ValidateWorkflowState( SnCompositeProject forProject, string stateId ) =>
             forProject.WorkflowStates.FirstOrDefault( s => s.EntityId.Equals( stateId )) ?? SnWorkflowState.Default;
+
+        public static SnUser ValidateAssignedUser( SnCompositeProject forProject, string userId ) =>
+            forProject.Users.FirstOrDefault( u => u.EntityId.Equals( userId )) ?? SnUser.Default;
     }
 }

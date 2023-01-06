@@ -14,12 +14,13 @@ namespace SquirrelsNest.Pecan.Shared.Dto.Issues {
         public  string      ComponentId { get; set; }
         public  string      IssueTypeId { get; set; }
         public  string      WorkflowStateId {  get; set; }
+        public  string      AssignedUserId { get; set; }
 
         public const string Route = $"{Routes.BaseRoute}/updateIssue";
 
         [JsonConstructor]
         public UpdateIssueRequest( string issueId, string title, string description, string projectId, string componentId,
-                                   string issueTypeId, string workflowStateId ) {
+                                   string issueTypeId, string workflowStateId, string assignedUserId ) {
             IssueId = issueId;
             Title = title;
             Description = description;
@@ -27,6 +28,7 @@ namespace SquirrelsNest.Pecan.Shared.Dto.Issues {
             ComponentId = componentId;
             IssueTypeId = issueTypeId;
             WorkflowStateId = workflowStateId;
+            AssignedUserId = assignedUserId;
         }
 
         public UpdateIssueRequest( SnProject forProject, SnCompositeIssue forIssue ) {
@@ -37,6 +39,7 @@ namespace SquirrelsNest.Pecan.Shared.Dto.Issues {
             ComponentId = forIssue.Component.EntityId;
             IssueTypeId = forIssue.IssueType.EntityId;
             WorkflowStateId = forIssue.WorkflowState.EntityId;
+            AssignedUserId = forIssue.AssignedTo.EntityId;
         }
     }
 
