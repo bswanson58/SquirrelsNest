@@ -19,15 +19,17 @@ namespace SquirrelsNest.Pecan.Server.Features.Issues {
 
         private readonly IIssueProvider                     mIssueProvider;
         private readonly IProjectProvider                   mProjectProvider;
+        private readonly IUserProvider                      mUserProvider;
         private readonly ICompositeIssueBuilder             mIssueBuilder;
         private readonly ICompositeProjectBuilder           mProjectBuilder;
         private readonly IValidator<CreateIssueRequest>     mValidator;
 
-        public CreateIssueEndpoint( IIssueProvider issueProvider, IProjectProvider projectProvider, 
+        public CreateIssueEndpoint( IIssueProvider issueProvider, IProjectProvider projectProvider, IUserProvider userProvider, 
                                     ICompositeIssueBuilder issueBuilder, ICompositeProjectBuilder projectBuilder,
                                     IValidator<CreateIssueRequest> validator ) {
             mIssueProvider = issueProvider;
             mProjectProvider = projectProvider;
+            mUserProvider = userProvider;
             mIssueBuilder = issueBuilder;
             mProjectBuilder = projectBuilder;
             mValidator = validator;
@@ -51,12 +53,20 @@ namespace SquirrelsNest.Pecan.Server.Features.Issues {
                         new CreateIssueResponse( "Project for issue to be created is not valid" ));
                 }
 
-                var compositeProject = await mProjectBuilder.BuildComposite( project, cancellationToken );
+                var user = await mUserProvider.GetFromContext( HttpContext );
 
+                if( user == null ) {
+                    return new ActionResult<CreateIssueResponse>( 
+                        new CreateIssueResponse( "User for created issue cannot be determined" ));
+                }
+
+                var compositeProject = await mProjectBuilder.BuildComposite( project, cancellationToken );
+                
                 var newIssue = new SnIssue( request.Title, request.Description, project.NextIssueNumber, project.EntityId )
                     .With( ComponentValidator.ValidateComponent( compositeProject, request.ComponentId ))
                     .With( ComponentValidator.ValidateIssueType( compositeProject, request.IssueTypeId ))
-                    .With( ComponentValidator.ValidateWorkflowState( compositeProject, request.WorkflowStateId ));
+                    .With( ComponentValidator.ValidateWorkflowState( compositeProject, request.WorkflowStateId ))
+                    .With( enteredBy: user );
 
                 var result = await mProjectProvider.Update( project.WithNextIssueNumber());
 

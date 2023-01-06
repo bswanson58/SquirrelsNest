@@ -52,7 +52,8 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
             AssignedToId = EntityIdentifier.Default;
         }
 
-        public SnIssue With( string ? title = null, string ? description = null, EntityIdentifier ? enteredBy = null, EntityIdentifier ? assignedTo = null ) {
+        public SnIssue With( string ? title = null, string ? description = null, 
+                             SnUser ? enteredBy = null, SnUser ? assignedTo = null ) {
             return new SnIssue( 
                 EntityId,
                 title ?? Title,
@@ -60,12 +61,12 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
                 ProjectId,
                 IssueNumber,
                 EntryDate,
-                enteredBy ?? EnteredById,
+                enteredBy != null ? enteredBy.EntityId : EnteredById,
                 IssueTypeId,
                 ComponentId,
                 ReleaseId,
                 WorkflowStateId,
-                assignedTo ?? AssignedToId );
+                assignedTo != null ? assignedTo.EntityId : AssignedToId );
         }
 
         public SnIssue With( SnRelease release ) {

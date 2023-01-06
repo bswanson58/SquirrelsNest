@@ -44,7 +44,7 @@ namespace SquirrelsNest.Pecan.Server.Features.Auth {
         private async Task<List<Claim>> BuildUserClaims( DbUser user ) {
             var claims = new List<Claim> {
                 new( ClaimTypes.Name, user.UserName ?? String.Empty ),
-                new( "entityId", user.Id ),
+                new( ClaimValues.ClaimEntityId, user.Id ),
                 new( ClaimTypes.Email, user.Email ?? String.Empty )
             };
 

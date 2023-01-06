@@ -12,13 +12,16 @@ namespace SquirrelsNest.Pecan.Server.Features.Issues {
         private readonly IIssueTypeProvider     mIssueTypeProvider;
         private readonly IReleaseProvider       mReleaseProvider;
         private readonly IWorkflowStateProvider mWorkflowStateProvider;
+        private readonly IUserProvider          mUserProvider;
 
         public CompositeIssueBuilder( IComponentProvider componentProvider, IIssueTypeProvider issueTypeProvider,
-                                      IReleaseProvider releaseProvider, IWorkflowStateProvider workflowStateProvider ) {
+                                      IReleaseProvider releaseProvider, IWorkflowStateProvider workflowStateProvider,
+                                      IUserProvider userProvider ) {
             mComponentProvider = componentProvider;
             mIssueTypeProvider = issueTypeProvider;
             mReleaseProvider = releaseProvider;
             mWorkflowStateProvider = workflowStateProvider;
+            mUserProvider = userProvider;
         }
 
         public async Task<SnCompositeIssue> BuildComposite( SnIssue fromIssue ) {
@@ -26,8 +29,10 @@ namespace SquirrelsNest.Pecan.Server.Features.Issues {
             var issueType = await mIssueTypeProvider.GetById( fromIssue.IssueTypeId ) ?? SnIssueType.Default;
             var state = await mWorkflowStateProvider.GetById( fromIssue.WorkflowStateId ) ?? SnWorkflowState.Default;
             var release = await mReleaseProvider.GetById( fromIssue.ReleaseId ) ?? SnRelease.Default;
+            var assignedTo = await mUserProvider.GetById( fromIssue.AssignedToId ) ?? SnUser.Default;
+            var enteredBy = await mUserProvider.GetById( fromIssue.EnteredById ) ?? SnUser.Default;
 
-            return new SnCompositeIssue( fromIssue, SnUser.Default, issueType, component, state, release, SnUser.Default );
+            return new SnCompositeIssue( fromIssue, enteredBy, issueType, component, state, release, assignedTo );
         }
     }
 }
