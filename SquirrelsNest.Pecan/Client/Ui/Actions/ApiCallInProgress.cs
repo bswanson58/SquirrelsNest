@@ -8,4 +8,12 @@
     }
 
     public class ApiCallCompleted { }
+
+    public class ApiCallFailure {
+        public  string  Message { get; }
+
+        public ApiCallFailure( string message ) {
+            Message = message;
+        }
+    }
 }

@@ -4,6 +4,7 @@ using SquirrelsNest.Pecan.Client.Issues.Actions;
 using SquirrelsNest.Pecan.Client.Issues.Store;
 
 namespace SquirrelsNest.Pecan.Client.Issues.Reducers {
+    // ReSharper disable once UnusedType.Global
     public static class LoadIssueListReducer {
         [ReducerMethod( typeof( LoadIssueListAction ))]
         public static IssueState LoadIssueList( IssueState state ) =>

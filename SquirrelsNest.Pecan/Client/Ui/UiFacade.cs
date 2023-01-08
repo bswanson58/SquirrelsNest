@@ -1,12 +1,20 @@
 ﻿using System.Threading.Tasks;
+using Fluxor;
 using MudBlazor;
+using SquirrelsNest.Pecan.Client.Ui.Actions;
 
 namespace SquirrelsNest.Pecan.Client.Ui {
     public class UiFacade {
         private readonly IDialogService mDialogService;
+        private readonly IDispatcher    mDispatcher;
 
-        public UiFacade( IDialogService dialogService ) {
+        public UiFacade( IDialogService dialogService, IDispatcher dispatcher ) {
             mDialogService = dialogService;
+            mDispatcher = dispatcher;
+        }
+
+        public void ApiCallFailure( string message ) {
+            mDispatcher.Dispatch( new ApiCallFailure( message ));
         }
 
         public async Task<DialogResult> ConfirmAction( string title, string request ) {

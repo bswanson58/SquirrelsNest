@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Fluxor;
 using Microsoft.Extensions.Logging;
-using SquirrelsNest.Pecan.Client.Constants;
 using SquirrelsNest.Pecan.Client.Issues.Actions;
+using SquirrelsNest.Pecan.Client.Support;
 using SquirrelsNest.Pecan.Client.Ui.Actions;
 using SquirrelsNest.Pecan.Shared.Dto.Issues;
 
 namespace SquirrelsNest.Pecan.Client.Issues.Effects {
     // ReSharper disable once UnusedType.Global
     public class AddIssueSubmitEffect : Effect<AddIssueSubmitAction> {
-        private readonly IHttpClientFactory             mClientFactory;
+        private readonly IAuthenticatedHttpHandler      mHttpHandler;
         private readonly ILogger<AddIssueSubmitEffect>  mLogger;
 
-        public AddIssueSubmitEffect( IHttpClientFactory clientFactory, ILogger<AddIssueSubmitEffect> logger ) {
-            mClientFactory = clientFactory;
+        public AddIssueSubmitEffect( IAuthenticatedHttpHandler httpHandler, ILogger<AddIssueSubmitEffect> logger ) {
+            mHttpHandler = httpHandler;
             mLogger = logger;
         }
 
@@ -24,16 +23,14 @@ namespace SquirrelsNest.Pecan.Client.Issues.Effects {
             dispatcher.Dispatch( new ApiCallStarted( "Creating New Issue" ));
 
             try {
-                using var httpClient = mClientFactory.CreateClient( HttpClientNames.Authenticated );
-                var postResponse = await httpClient.PostAsJsonAsync( CreateIssueRequest.Route, action.Request );
-                var response = await postResponse.Content.ReadFromJsonAsync<CreateIssueResponse>();
+                var response = await mHttpHandler.Post<CreateIssueResponse>( CreateIssueRequest.Route, action.Request );
 
                 if(( response?.Issue != null ) &&
                    ( response.Succeeded )) {
                     dispatcher.Dispatch( new AddIssueSuccess( response.Issue ));
                 }
                 else {
-                    dispatcher.Dispatch( new AddIssueFailure( "Received null response" ));
+                    dispatcher.Dispatch( new AddIssueFailure( response?.Message ?? "Received null response" ));
                 }
             }
             catch ( HttpRequestException exception ) {

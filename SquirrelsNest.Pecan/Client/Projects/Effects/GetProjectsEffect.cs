@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Fluxor;
 using Microsoft.Extensions.Logging;
-using SquirrelsNest.Pecan.Client.Constants;
 using SquirrelsNest.Pecan.Client.Projects.Actions;
+using SquirrelsNest.Pecan.Client.Support;
 using SquirrelsNest.Pecan.Client.Ui.Actions;
 using SquirrelsNest.Pecan.Shared.Constants;
 using SquirrelsNest.Pecan.Shared.Dto.Projects;
@@ -13,26 +12,25 @@ using SquirrelsNest.Pecan.Shared.Dto.Projects;
 namespace SquirrelsNest.Pecan.Client.Projects.Effects {
     // ReSharper disable once ClassNeverInstantiated.Global
     public class GetProjectsEffect : Effect<GetProjectsAction> {
-        private readonly IHttpClientFactory             mClientFactory;
+        private readonly IAuthenticatedHttpHandler      mHttpHandler;
         private readonly ILogger<GetProjectsEffect>     mLogger;
 
-        public GetProjectsEffect( IHttpClientFactory clientFactory, ILogger<GetProjectsEffect> logger ) {
-            mClientFactory = clientFactory;
+        public GetProjectsEffect( ILogger<GetProjectsEffect> logger, IAuthenticatedHttpHandler httpHandler ) {
             mLogger = logger;
+            mHttpHandler = httpHandler;
         }
 
         public override async Task HandleAsync( GetProjectsAction action, IDispatcher dispatcher ) {
             dispatcher.Dispatch( new ApiCallStarted( "Loading Project List" ));
 
             try {
-                using var httpClient = mClientFactory.CreateClient( HttpClientNames.Authenticated );
-                var response = await httpClient.GetFromJsonAsync<GetProjectsResponse>( Routes.GetProjects );
+                var response = await mHttpHandler.Get<GetProjectsResponse>( Routes.GetProjects );
 
                 if( response?.Succeeded == true ) {
                     dispatcher.Dispatch( new GetProjectsSuccessAction( response.Projects ));
                 }
                 else {
-                    dispatcher.Dispatch( new GetProjectsFailureAction( "Received null response" ));
+                    dispatcher.Dispatch( new GetProjectsFailureAction( response?.Message ?? "Received null response" ));
                 }
             }
             catch( HttpRequestException exception ) {

@@ -14,6 +14,7 @@ using SquirrelsNest.Pecan.Client.Auth.Support;
 using SquirrelsNest.Pecan.Client.Constants;
 using SquirrelsNest.Pecan.Client.Issues.Store;
 using SquirrelsNest.Pecan.Client.Projects.Store;
+using SquirrelsNest.Pecan.Client.Support;
 using SquirrelsNest.Pecan.Client.Ui;
 using SquirrelsNest.Pecan.Shared.Dto.Projects;
 
@@ -43,6 +44,9 @@ void ConfigureServices( IServiceCollection services ) {
     services.AddScoped( sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient( HttpClientNames.Anonymous ));
 
     services.AddScoped<ITokenRefresher, JwtTokenRefresher>();
+
+    services.AddScoped<IResponseStatusHandler, ResponseStatusHandler>();
+    services.AddScoped<IAuthenticatedHttpHandler, AuthenticatedHttpHandler>();
 
     services.AddScoped<AuthFacade>();
     services.AddScoped<IssueFacade>();

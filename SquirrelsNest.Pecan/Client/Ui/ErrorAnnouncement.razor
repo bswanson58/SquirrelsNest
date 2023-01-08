@@ -1,0 +1,9 @@
+﻿<MudStack Row="true">
+    <MudIcon Icon="@Icons.Material.Filled.Error" />
+    <MudText Class="d-flex align-center" Typo="Typo.body1">@ErrorMessage</MudText>
+</MudStack>
+
+@code {
+    [Parameter]
+    public string   ErrorMessage { get; set; } = String.Empty;
+}

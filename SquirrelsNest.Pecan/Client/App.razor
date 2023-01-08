@@ -36,11 +36,32 @@
         } );
 
         ActionSubscriber.SubscribeToAction<ApiCallCompleted>( this, _ => {
+            if( mNotifications?.Severity == Severity.Info ) {
+                Notifier.Remove( mNotifications );
+
+                mNotifications = null;
+            }
+        } );
+
+        ActionSubscriber.SubscribeToAction<ApiCallFailure>( this, action => {
             if( mNotifications != null ) {
                 Notifier.Remove( mNotifications );
 
                 mNotifications = null;
             }
+
+            mNotifications = Notifier.Add<ErrorAnnouncement>(
+                new Dictionary<string, object>() {
+                    { nameof( ErrorAnnouncement.ErrorMessage ), action.Message }
+                    },
+                Severity.Error,
+                config => {
+                    config.ActionColor = Color.Error;
+                    config.HideIcon = true;
+                    config.ShowCloseIcon = true;
+                    config.RequireInteraction = false;
+                    config.VisibleStateDuration = (int)TimeSpan.FromSeconds( 60 ).TotalMilliseconds;
+                } );
         } );
     }
 
