@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
     public interface IIssueProvider {
-        IQueryable<SnIssue>     GetAll();
+        IQueryable<SnIssue>     GetAll( SnProject forProject );
         ValueTask<SnIssue ?>    GetById( string id );
         Task<SnIssue>           Create( SnIssue issue );
         ValueTask<SnIssue ?>    Update( SnIssue issue );
@@ -19,8 +19,8 @@ namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
         public SnIssueProvider( PecanDbContext context )
             : base( context ) { }
 
-        public IQueryable<SnIssue> GetAll() =>
-            BaseGetAll().Select( e => ConvertTo( e ));
+        public IQueryable<SnIssue> GetAll( SnProject forProject ) =>
+            BaseGetAll().Where( p => p.ProjectId.Equals( forProject.EntityId )).Select( e => ConvertTo( e ));
 
         public async ValueTask<SnIssue ?> GetById( string id ) =>
             ( await BaseGetById( id ))?.ToEntity();

@@ -44,14 +44,13 @@ namespace SquirrelsNest.Pecan.Server.Features.Issues {
                 }
 
                 var issueList = new List<SnCompositeIssue>();
-
                 var project = await mProjectProvider.GetById( request.ProjectId );
 
                 if( project == null ) {
                     return new ActionResult<GetIssuesResponse>( 
                         new GetIssuesResponse( "Project for issue list could not be located" ));
                 }
-                var issues = await mIssueProvider.GetAll().ToListAsync( cancellationToken );
+                var issues = await mIssueProvider.GetAll( project ).ToListAsync( cancellationToken );
 
                 foreach( var issue in issues ) {
                     issueList.Add( await mIssueBuilder.BuildComposite( issue ));
