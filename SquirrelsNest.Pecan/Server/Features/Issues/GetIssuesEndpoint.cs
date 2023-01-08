@@ -6,8 +6,8 @@ using Ardalis.ApiEndpoints;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using SquirrelsNest.Pecan.Server.Database.DataProviders;
+using SquirrelsNest.Pecan.Server.Database.Support;
 using SquirrelsNest.Pecan.Shared.Dto.Issues;
 using SquirrelsNest.Pecan.Shared.Entities;
 
@@ -50,13 +50,15 @@ namespace SquirrelsNest.Pecan.Server.Features.Issues {
                     return new ActionResult<GetIssuesResponse>( 
                         new GetIssuesResponse( "Project for issue list could not be located" ));
                 }
-                var issues = await mIssueProvider.GetAll( project ).ToListAsync( cancellationToken );
+
+                var issues = await PagedList<SnIssue>
+                    .CreatePagedList( mIssueProvider.GetAll( project ), request.PageRequest, cancellationToken );
 
                 foreach( var issue in issues ) {
                     issueList.Add( await mIssueBuilder.BuildComposite( issue ));
                 }
 
-                return new ActionResult<GetIssuesResponse>( new GetIssuesResponse( issueList ));
+                return new ActionResult<GetIssuesResponse>( new GetIssuesResponse( issueList, issues.PageInformation ));
             }
             catch( Exception ex ) {
                 return new ActionResult<GetIssuesResponse>( new GetIssuesResponse( ex ));
