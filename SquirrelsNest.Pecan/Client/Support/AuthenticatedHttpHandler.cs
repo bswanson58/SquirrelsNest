@@ -53,7 +53,7 @@ namespace SquirrelsNest.Pecan.Client.Support {
             }
 
             if(!response.IsSuccessStatusCode ) {
-                mStatusHandler.HandleStatusCode( response.StatusCode );
+                mStatusHandler.HandleStatusCode( response );
 
                 return default;
             }

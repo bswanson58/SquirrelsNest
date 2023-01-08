@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using SquirrelsNest.Pecan.Client.Constants;
@@ -7,7 +8,7 @@ using SquirrelsNest.Pecan.Client.Ui;
 
 namespace SquirrelsNest.Pecan.Client.Support {
     public interface IResponseStatusHandler {
-        void    HandleStatusCode( HttpStatusCode statusCode );
+        void    HandleStatusCode( HttpResponseMessage message );
         void    HandleCallFailure( string message );
         void    HandleException( Exception ex );
     }
@@ -24,18 +25,22 @@ namespace SquirrelsNest.Pecan.Client.Support {
             mNavigationManager = navigationManager;
         }
 
-        public void HandleStatusCode( HttpStatusCode statusCode ) {
-            if( statusCode is 
+        public void HandleStatusCode( HttpResponseMessage message ) {
+            if( message.StatusCode is 
                HttpStatusCode.NoContent or 
                HttpStatusCode.Accepted or 
                HttpStatusCode.OK ) {
                 return;
             }
 
-            if( statusCode is HttpStatusCode.Unauthorized ) {
+            if( message.StatusCode is HttpStatusCode.Unauthorized ) {
                 mUiFacade.ApiCallFailure( "Unauthorized request, please login." );
 
                 mNavigationManager.NavigateTo( LocalRouteNames.Login );
+            }
+
+            if(!String.IsNullOrWhiteSpace( message.ReasonPhrase )) {
+                mUiFacade.ApiCallFailure( message.ReasonPhrase );
             }
         }
 
