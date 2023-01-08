@@ -1,71 +1,22 @@
 ﻿@using SquirrelsNest.Pecan.Client.Auth
-@using Fluxor
 @using SquirrelsNest.Pecan.Client.Ui
-@using SquirrelsNest.Pecan.Client.Ui.Actions
 
 <Fluxor.Blazor.Web.StoreInitializer/>
 
 <AuthenticationProvider/>
 
-@inject IActionSubscriber   ActionSubscriber;
-@inject ISnackbar           Notifier;
+@inject AnnouncementHandler     ErrorAnnouncer;
 
 @implements IDisposable
 
 @code {
-    private Snackbar ?      mNotifications;
-
     protected override void OnInitialized() {
         base.OnInitialized();
 
-        Notifier.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
-
-        ActionSubscriber.SubscribeToAction<ApiCallStarted>( this, action => {
-            mNotifications = Notifier.Add<ApiCallAnnouncement>( 
-                new Dictionary<string, object>() {
-                    { nameof( ApiCallAnnouncement.AnnouncementMessage ), action.AnnouncementMessage }
-                },
-                Severity.Info, 
-                config => {
-                    config.ActionColor = Color.Info;
-                    config.HideIcon = true;
-                    config.ShowCloseIcon = false;
-                    config.RequireInteraction = false;
-                    config.VisibleStateDuration = (int)TimeSpan.FromSeconds( 60 ).TotalMilliseconds;
-                });
-        } );
-
-        ActionSubscriber.SubscribeToAction<ApiCallCompleted>( this, _ => {
-            if( mNotifications?.Severity == Severity.Info ) {
-                Notifier.Remove( mNotifications );
-
-                mNotifications = null;
-            }
-        } );
-
-        ActionSubscriber.SubscribeToAction<ApiCallFailure>( this, action => {
-            if( mNotifications != null ) {
-                Notifier.Remove( mNotifications );
-
-                mNotifications = null;
-            }
-
-            mNotifications = Notifier.Add<ErrorAnnouncement>(
-                new Dictionary<string, object>() {
-                    { nameof( ErrorAnnouncement.ErrorMessage ), action.Message }
-                    },
-                Severity.Error,
-                config => {
-                    config.ActionColor = Color.Error;
-                    config.HideIcon = true;
-                    config.ShowCloseIcon = true;
-                    config.RequireInteraction = false;
-                    config.VisibleStateDuration = (int)TimeSpan.FromSeconds( 60 ).TotalMilliseconds;
-                } );
-        } );
+        ErrorAnnouncer.StartAnnouncements();
     }
 
     public void Dispose() {
-        ActionSubscriber.UnsubscribeFromAllActions( this );
+        ErrorAnnouncer?.Dispose();
     }
 }

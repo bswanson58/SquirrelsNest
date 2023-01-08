@@ -52,6 +52,7 @@ void ConfigureServices( IServiceCollection services ) {
     services.AddScoped<IssueFacade>();
     services.AddScoped<ProjectFacade>();
     services.AddScoped<UiFacade>();
+    services.AddScoped<AnnouncementHandler>();
 
     services.AddFluxor( options => options.ScanAssemblies( typeof( App ).Assembly ));
 
