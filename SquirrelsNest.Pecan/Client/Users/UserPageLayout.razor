@@ -1,0 +1,20 @@
+﻿@using SquirrelsNest.Pecan.Client.Shared
+@using SquirrelsNest.Pecan.Shared.Constants
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Route( NavLinks.Users )]
+@attribute [Authorize( Roles = ClaimValues.cUser )]
+
+<MudGrid Spacing="0" Class="mt-2">
+    <MudItem xs="12">
+        <MudStack Row="true" Spacing="0">
+            <MudText Typo="Typo.h5" Class="ml-6">User List</MudText>
+            <MudContainer Class="d-flex justify-end pe-0 me-6">
+                <UserCommands/>
+            </MudContainer>
+        </MudStack>
+    </MudItem>
+    <MudItem xs="12">
+        <UserList />
+    </MudItem>
+</MudGrid>
