@@ -1,0 +1,20 @@
+﻿@using SquirrelsNest.Pecan.Shared.Entities
+
+<style>
+    .user-grid {
+        display: grid;
+        grid-template-columns: 1fr 3fr 3fr 5fr;
+        grid-column-gap: 1em;
+    }
+</style>
+
+<div class="user-grid">
+    <MudContainer />
+    <MudText Typo="Typo.body1">@User.DisplayName</MudText>
+    <MudText Typo="Typo.body1">@User.LoginName</MudText>
+</div>
+
+@code {
+    [Parameter]
+    public  SnUser  User { get; set; } = SnUser.Default;
+}

@@ -40,8 +40,7 @@ namespace SquirrelsNest.Pecan.Server.Features.Projects {
                     return new ActionResult<GetProjectsResponse>( new GetProjectsResponse( validation ));
                 }
 
-                var projectList = 
-                    await PagedList<SnProject>.CreatePagedList( mProjectProvider.GetAll(), request.PageRequest, token );
+                var projectList = PagedList<SnProject>.CreatePagedList( mProjectProvider.GetAll(), request.PageRequest );
                 var compositeProjects = new List<SnCompositeProject>();
 
                 foreach( var project in projectList ) {

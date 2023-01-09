@@ -1,5 +1,22 @@
-﻿<h3>UserList</h3>
+﻿@using SquirrelsNest.Pecan.Client.Users.Store
+@using Fluxor
+
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<MudStack Spacing="1">
+    @foreach( var user in UserState.Value.Users ) {
+        <UserListItem User="@user" />
+    }
+</MudStack>
+
+@inject IState<UserState>   UserState;
+@inject UserFacade          UserFacade;
 
 @code {
 
+    protected override void OnInitialized() {
+        base.OnInitialized();
+
+        UserFacade.LoadUsers();
+    }
 }

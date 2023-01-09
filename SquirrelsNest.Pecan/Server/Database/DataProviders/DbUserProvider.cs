@@ -12,9 +12,9 @@ using SquirrelsNest.Pecan.Shared.Constants;
 
 namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
     public interface IUserProvider {
-        Task<IEnumerable<SnUser>>   GetAll();
-        ValueTask<SnUser ?>         GetById( string id );
-        ValueTask<SnUser ?>         GetFromContext( HttpContext context );
+        Task<IList<SnUser>>     GetAll();
+        ValueTask<SnUser ?>     GetById( string id );
+        ValueTask<SnUser ?>     GetFromContext( HttpContext context );
     }
 
     public class SnUserProvider : IUserProvider {
@@ -26,7 +26,7 @@ namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
             mUserManager = userManager;
         }
 
-        public async Task<IEnumerable<SnUser>> GetAll() {
+        public async Task<IList<SnUser>> GetAll() {
             var retValue = new List<SnUser>();
             var users = await mContext.Users.ToListAsync();
 

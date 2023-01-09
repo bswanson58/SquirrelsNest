@@ -51,8 +51,7 @@ namespace SquirrelsNest.Pecan.Server.Features.Issues {
                         new GetIssuesResponse( "Project for issue list could not be located" ));
                 }
 
-                var issues = await PagedList<SnIssue>
-                    .CreatePagedList( mIssueProvider.GetAll( project ), request.PageRequest, cancellationToken );
+                var issues = PagedList<SnIssue>.CreatePagedList( mIssueProvider.GetAll( project ), request.PageRequest );
 
                 foreach( var issue in issues ) {
                     issueList.Add( await mIssueBuilder.BuildComposite( issue ));

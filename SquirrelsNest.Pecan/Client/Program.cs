@@ -16,6 +16,7 @@ using SquirrelsNest.Pecan.Client.Issues.Store;
 using SquirrelsNest.Pecan.Client.Projects.Store;
 using SquirrelsNest.Pecan.Client.Support;
 using SquirrelsNest.Pecan.Client.Ui;
+using SquirrelsNest.Pecan.Client.Users.Store;
 using SquirrelsNest.Pecan.Shared.Dto.Projects;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -52,6 +53,7 @@ void ConfigureServices( IServiceCollection services ) {
     services.AddScoped<IssueFacade>();
     services.AddScoped<ProjectFacade>();
     services.AddScoped<UiFacade>();
+    services.AddScoped<UserFacade>();
     services.AddScoped<AnnouncementHandler>();
 
     services.AddFluxor( options => options.ScanAssemblies( typeof( App ).Assembly ));
