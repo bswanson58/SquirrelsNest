@@ -1,6 +1,7 @@
 ﻿using SquirrelsNest.Pecan.Server.Database.Entities;
 using SquirrelsNest.Pecan.Shared.Entities;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
@@ -10,6 +11,7 @@ namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
         Task<SnIssue>           Create( SnIssue issue );
         ValueTask<SnIssue ?>    Update( SnIssue issue );
         Task                    Delete( SnIssue issue );
+        Task                    Delete( string issueId );
     }
 
     public class SnIssueProvider : ProviderBase<DbIssue>, IIssueProvider {
@@ -33,5 +35,8 @@ namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
 
         public Task Delete( SnIssue issue ) =>
             BaseDelete( issue.EntityId );
+
+        public Task Delete( string issueId ) =>
+            BaseDelete( issueId );
     }
 }

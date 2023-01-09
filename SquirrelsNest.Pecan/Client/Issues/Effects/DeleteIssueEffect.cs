@@ -2,6 +2,7 @@
 using Fluxor;
 using SquirrelsNest.Pecan.Client.Issues.Actions;
 using SquirrelsNest.Pecan.Client.Ui;
+using SquirrelsNest.Pecan.Shared.Dto.Issues;
 
 namespace SquirrelsNest.Pecan.Client.Issues.Effects {
     // ReSharper disable once UnusedType.Global
@@ -19,7 +20,7 @@ namespace SquirrelsNest.Pecan.Client.Issues.Effects {
                 $"Would you like to delete the Issue titled '{action.Issue.Title}'?" );
 
             if(!confirmation.Cancelled ) {
-//                mDispatcher.Dispatch( new IssueTypeChangeSubmitAction( action.Input ));
+                mDispatcher.Dispatch( new DeleteIssueSubmitAction( new DeleteIssueRequest( action.Issue )));
             } 
         }
     }
