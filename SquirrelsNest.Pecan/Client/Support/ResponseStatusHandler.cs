@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Http;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
-using SquirrelsNest.Pecan.Client.Constants;
+using SquirrelsNest.Pecan.Client.Shared;
 using SquirrelsNest.Pecan.Client.Ui;
 
 namespace SquirrelsNest.Pecan.Client.Support {
@@ -36,7 +36,7 @@ namespace SquirrelsNest.Pecan.Client.Support {
             if( message.StatusCode is HttpStatusCode.Unauthorized ) {
                 mUiFacade.ApiCallFailure( "Unauthorized request, please login." );
 
-                mNavigationManager.NavigateTo( LocalRouteNames.Login );
+                mNavigationManager.NavigateTo( NavLinks.Login );
             }
 
             if(!String.IsNullOrWhiteSpace( message.ReasonPhrase )) {
