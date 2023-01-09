@@ -1,9 +1,11 @@
 ﻿@using SquirrelsNest.Pecan.Shared.Entities
+@using System.Threading
+@using SquirrelsNest.Pecan.Shared.Constants
 
 <style>
     .user-grid {
         display: grid;
-        grid-template-columns: 1fr 3fr 3fr 5fr;
+        grid-template-columns: 1fr 3fr 3fr 3fr 4fr;
         grid-column-gap: 1em;
     }
 </style>
@@ -12,9 +14,24 @@
     <MudContainer />
     <MudText Typo="Typo.body1">@User.DisplayName</MudText>
     <MudText Typo="Typo.body1">@User.LoginName</MudText>
+    <MudText Typo="Typo.body1">@UserRole</MudText>
 </div>
 
 @code {
     [Parameter]
     public  SnUser  User { get; set; } = SnUser.Default;
+
+    private string UserRole {
+        get {
+            if( User.RoleClaims.Contains( ClaimValues.ClaimRoleAdmin )) {
+                return ClaimValues.ClaimRoleAdmin;
+            }
+
+            if( User.RoleClaims.Contains( ClaimValues.ClaimRoleUser )) {
+                return ClaimValues.ClaimRoleUser;
+            }
+
+            return String.Empty;
+        }
+    } 
 }

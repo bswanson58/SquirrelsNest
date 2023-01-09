@@ -64,7 +64,9 @@ namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
             var nameClaim = claims.FirstOrDefault( c => c.Type.Equals( ClaimTypes.GivenName ));
             var name = nameClaim != null ? nameClaim.Value : String.Empty;
 
-            return new SnUser( user.Id, user.UserName ?? String.Empty, name, user.Email ?? String.Empty );
+            var roles = await mUserManager.GetRolesAsync( user );
+
+            return new SnUser( user.Id, user.UserName ?? String.Empty, name, user.Email ?? String.Empty, roles );
         }
     }
 }
