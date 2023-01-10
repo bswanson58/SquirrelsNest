@@ -37,7 +37,8 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
             Inception = DateTimeProvider.Instance.CurrentDate;
         }
 
-        public SnProject With( string? name = null, string? description = null, string? repository = null, string? issuePrefix = null ) {
+        public SnProject With( string? name = null, string? description = null, string? repository = null, 
+                               string? issuePrefix = null, uint nextIssueNumber = 0 ) {
             return new SnProject(
                 EntityId,
                 name ?? Name,
@@ -45,7 +46,7 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
                 Inception,
                 repository ?? RepositoryUrl,
                 issuePrefix ?? IssuePrefix,
-                NextIssueNumber );
+                nextIssueNumber > 0 ? nextIssueNumber : NextIssueNumber );
         }
 
         public SnProject WithNextIssueNumber() {

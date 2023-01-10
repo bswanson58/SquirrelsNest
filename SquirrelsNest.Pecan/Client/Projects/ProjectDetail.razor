@@ -3,22 +3,50 @@
 
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-<MudPaper Outlined="true" Class="mt-2 pa-2">
-    <MudText Typo="Typo.h6">Project Details:</MudText>
-    <MudStack Row="true" Spacing="2" Class="my-2">
-        <MudStack Spacing="0" Style="Width: 7em">
-            <MudText Typo="Typo.body1" Class="d-flex justify-end subdue">Name:</MudText>
-            <MudText Typo="Typo.body1" Class="d-flex justify-end subdue">Description:</MudText>
+<style>
+    .mouse-highlight {
+        background: lightgrey
+    }
+</style>
+
+<MudPaper Elevation="1" Class="mt-2 pa-2">
+    <div @onmouseenter="@OnMouseEnter" @onmouseleave="@OnMouseLeave">
+        <MudStack Row="true" Spacing="1" Class="my-0">
+            <MudText Typo="Typo.h6" Class="d-flex flex-none align-center">Project Details:</MudText>
+            <MudContainer Class="d-flex flex-grow-1"/>
+            <div class="@MouseOverVisibility">
+                <MudIconButton Class="d-flex justify-end" Icon="@Icons.Outlined.Edit" Title="Edit" OnClick="@OnEdit"/>
+            </div>
         </MudStack>
-        <MudStack Spacing="0">
-            <MudText Typo="Typo.body1">@ProjectState.Value.CurrentProject?.Name</MudText>
-            <MudText Typo="Typo.body1">@ProjectState.Value.CurrentProject?.Description</MudText>
+        <MudStack Row="true" Spacing="2" Class="my-2">
+            <MudStack Spacing="0" Style="Width: 7em">
+                <MudText Typo="Typo.body1" Class="d-flex justify-end subdue">Name:</MudText>
+                <MudText Typo="Typo.body1" Class="d-flex justify-end subdue">Description:</MudText>
+                <MudText Typo="Typo.body1" Class="d-flex justify-end subdue">Issue Prefix:</MudText>
+            </MudStack>
+            <MudStack Spacing="0">
+                <MudText Typo="Typo.body1">@ProjectState.Value.CurrentProject?.Name</MudText>
+                <MudText Typo="Typo.body1">@ProjectState.Value.CurrentProject?.Description</MudText>
+                <MudText Typo="Typo.body1">@ProjectState.Value.CurrentProject?.Project.IssuePrefix</MudText>
+            </MudStack>
         </MudStack>
-    </MudStack>
+    </div>
 </MudPaper>
 
 @inject IState<ProjectState>    ProjectState;
+@inject ProjectFacade           ProjectFacade;
 
 @code {
+    private bool mIsMouseOver = false;
 
+    private void OnMouseEnter() => mIsMouseOver = true;
+    private void OnMouseLeave() => mIsMouseOver = false;
+
+    private string MouseOverVisibility => mIsMouseOver && ( ProjectState.Value.CurrentProject != null ) ? "" : "invisible";
+
+    private void OnEdit() {
+        if( ProjectState.Value.CurrentProject != null ) {
+            ProjectFacade.EditProject( ProjectState.Value.CurrentProject );
+        }
+    }
 }

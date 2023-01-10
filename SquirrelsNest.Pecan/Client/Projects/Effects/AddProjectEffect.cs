@@ -16,7 +16,7 @@ namespace SquirrelsNest.Pecan.Client.Projects.Effects {
         public override async Task HandleAsync( AddProjectAction action, IDispatcher dispatcher ) {
             var parameters = new DialogParameters { { nameof( AddProjectDialog.Project ), new CreateProjectInput() } };
             var options = new DialogOptions { FullWidth = true, CloseOnEscapeKey = true };
-            var dialog = await mDialogService.ShowAsync<AddProjectDialog>( "New Project Parameter", parameters, options );
+            var dialog = await mDialogService.ShowAsync<AddProjectDialog>( "New Project Parameters", parameters, options );
             var dialogResult = await dialog.Result;
         
             if((!dialogResult.Cancelled ) &&

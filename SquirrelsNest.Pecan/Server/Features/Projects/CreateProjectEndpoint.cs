@@ -12,14 +12,14 @@ using SquirrelsNest.Pecan.Shared.Entities;
 namespace SquirrelsNest.Pecan.Server.Features.Projects {
     [Authorize]
     [Route( CreateProjectInput.Route )]
-    public class CreateProject : EndpointBaseAsync
+    public class CreateProjectEndpoint : EndpointBaseAsync
         .WithRequest<CreateProjectInput>
         .WithActionResult<CreateProjectResponse> {
 
         private readonly IProjectProvider               mProjectProvider;
         private readonly IValidator<CreateProjectInput> mInputValidator;
 
-        public CreateProject( IProjectProvider projectProvider, IValidator<CreateProjectInput> inputValidator ) {
+        public CreateProjectEndpoint( IProjectProvider projectProvider, IValidator<CreateProjectInput> inputValidator ) {
             mProjectProvider = projectProvider;
             mInputValidator = inputValidator;
         }
