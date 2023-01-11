@@ -9,8 +9,6 @@
 @inject IState<IssueState>      IssueState
 
 <MudContainer Class="ma-1">
-    <MudText Class="mb-2" Typo="Typo.h6">Issues:</MudText>
-
     @if( IssueState.Value.ApiCallInProgress ) {
         <MudText Class="ma-6" Typo="Typo.body1">Loading Project List</MudText>
     }
