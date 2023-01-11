@@ -1,6 +1,7 @@
 ﻿@using SquirrelsNest.Pecan.Client.Projects.Store
 @using Fluxor
 @using SquirrelsNest.Pecan.Client.Issues.Store
+@using SquirrelsNest.Pecan.Client.Projects.ViewModels
 @using SquirrelsNest.Pecan.Shared.Entities
 
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
@@ -77,22 +78,4 @@
     private bool IsCurrentProject( ProjectViewModel project) => 
         ProjectState.Value.CurrentProject != null && 
         ProjectState.Value.CurrentProject.EntityId.Equals( project.Project.EntityId );
-
-    internal class ProjectViewModel {
-        private bool                mIsMouseOver;
-        public  SnCompositeProject  Project { get; }
-
-        public string Name => Project.Name;
-        public string Description => Project.Description;
-
-        public ProjectViewModel( SnCompositeProject project ) {
-            Project = project;
-            mIsMouseOver = false;
-        }
-
-        public void OnMouseEnter() => mIsMouseOver = true;
-        public void OnMouseLeave() => mIsMouseOver = false;
-
-        public string MouseOverHighlight => mIsMouseOver ? "mouse-highlight" : "";
-    }
-}
+  }
