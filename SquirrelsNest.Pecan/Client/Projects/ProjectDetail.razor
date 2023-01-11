@@ -9,15 +9,8 @@
     }
 </style>
 
-<MudPaper Elevation="1" Class="mt-2 pa-2">
+<MudPaper Outlined="true">
     <div @onmouseenter="@OnMouseEnter" @onmouseleave="@OnMouseLeave">
-        <MudStack Row="true" Spacing="1" Class="my-0">
-            <MudText Typo="Typo.h6" Class="d-flex flex-none align-center">Project Details:</MudText>
-            <MudContainer Class="d-flex flex-grow-1"/>
-            <div class="@MouseOverVisibility">
-                <MudIconButton Class="d-flex justify-end" Icon="@Icons.Outlined.Edit" Title="Edit" OnClick="@OnEdit"/>
-            </div>
-        </MudStack>
         <MudStack Row="true" Spacing="2" Class="my-2">
             <MudStack Spacing="0" Style="Width: 7em">
                 <MudText Typo="Typo.body1" Class="d-flex justify-end subdue">Name:</MudText>
@@ -29,6 +22,12 @@
                 <MudText Typo="Typo.body1">@ProjectState.Value.CurrentProject?.Description</MudText>
                 <MudText Typo="Typo.body1">@ProjectState.Value.CurrentProject?.Project.IssuePrefix</MudText>
             </MudStack>
+        </MudStack>
+        <MudStack Row="true" Spacing="1" Class="my-0 mt-n12">
+            <MudContainer Class="d-flex flex-grow-1" />
+            <div class="@MouseOverVisibility">
+                <MudIconButton Class="d-flex justify-end" Icon="@Icons.Outlined.Edit" Title="Edit" OnClick="@OnEdit" />
+            </div>
         </MudStack>
     </div>
 </MudPaper>
