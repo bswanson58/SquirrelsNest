@@ -23,6 +23,10 @@ namespace SquirrelsNest.Pecan.Client.Projects.Store {
             mDispatcher.Dispatch( new EditProjectAction( project ));
         }
 
+        public void DeleteProject( SnCompositeProject project ) {
+            mDispatcher.Dispatch( new DeleteProjectAction( project ));
+        }
+
         public void SetCurrentProject( SnCompositeProject project ) {
             mDispatcher.Dispatch( new SetCurrentProjectAction( project ));
         }

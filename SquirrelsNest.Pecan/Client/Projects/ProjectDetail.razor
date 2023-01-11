@@ -26,7 +26,10 @@
         <MudStack Row="true" Spacing="1" Class="my-0 mt-n12">
             <MudContainer Class="d-flex flex-grow-1" />
             <div class="@MouseOverVisibility">
-                <MudIconButton Class="d-flex justify-end" Icon="@Icons.Outlined.Edit" Title="Edit" OnClick="@OnEdit" />
+                <MudStack Row="true" Spacing="0" Class="d-flex justify-end">
+                    <MudIconButton Icon="@Icons.Outlined.Edit" Title="Edit Project" OnClick="@OnEdit"/>
+                    <MudIconButton Icon="@Icons.Outlined.DeleteOutline" Title="Delete Project" OnClick="@OnDelete"/>
+                </MudStack>
             </div>
         </MudStack>
     </div>
@@ -46,6 +49,12 @@
     private void OnEdit() {
         if( ProjectState.Value.CurrentProject != null ) {
             ProjectFacade.EditProject( ProjectState.Value.CurrentProject );
+        }
+    }
+
+    private void OnDelete() {
+        if( ProjectState.Value.CurrentProject != null ) {
+            ProjectFacade.DeleteProject( ProjectState.Value.CurrentProject );
         }
     }
 }
