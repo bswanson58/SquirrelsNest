@@ -22,14 +22,26 @@
 <div class="@MouseOverHighlight" @onmouseenter="@OnMouseEnter" @onmouseleave="@OnMouseLeave">
     <MudContainer Class="containing-grid pa-0 mb-1">
         <MudContainer Class="d-flex flex-none align-center justify-center pa-2">
-            <MudIcon Icon="@Icons.Material.Filled.Check"/>
+            @if( IsDone ) {
+                @if( IsCompleted ) {
+                    <MudIcon Icon="@Icons.Material.Filled.Check" Class="ma-3" Color="Color.Success"/>
+                }
+                else {
+                    <MudIcon Icon="@Icons.Material.Filled.Check" Class="ma-3" Color="Color.Warning"/>
+                }
+            }
+            else {
+                <div class="@MouseOverVisibility">
+                    <MudIconButton Icon="@Icons.Material.Filled.Check" OnClick="@CompleteIssue">Complete</MudIconButton>
+                </div>
+            }
         </MudContainer>
         <MudStack Spacing="0">
-            <MudStack Row="true">
-                <MudText Typo="Typo.body1">@Project.Project.IssuePrefix</MudText>
-                <MudText Typo="Typo.body1">-</MudText>
-                <MudText Typo="Typo.body1">@Issue.IssueNumber</MudText>
-                <MudText Typo="Typo.body1" Class="mb-1">@Issue.Title</MudText>
+            <MudStack Row="true" Spacing="0">
+                <MudText Typo="Typo.body1" Class="subdue">@Project.Project.IssuePrefix</MudText>
+                <MudText Typo="Typo.body1" Class="subdue">-</MudText>
+                <MudText Typo="Typo.body1" Class="subdue">@Issue.IssueNumber</MudText>
+                <MudText Typo="Typo.body1" Class="ml-2">@Issue.Title</MudText>
             </MudStack>
             <MudText Typo="Typo.body2" Class="ml-2 subdue">@Issue.Description</MudText>
             <MudContainer Class="component-grid">
@@ -73,6 +85,20 @@
 
     public string MouseOverVisibility => mIsMouseOver ? "" : "invisible";
     public string MouseOverHighlight => mIsMouseOver ? "mouse-highlight" : "";
+
+    private bool IsCompleted =>
+        Issue.WorkflowState?.Category.Equals(StateCategory.Completed) == true;
+    private bool IsDone =>
+        Issue.WorkflowState?.Category.Equals( StateCategory.Completed ) == true ||
+        Issue.WorkflowState?.Category.Equals( StateCategory.Terminal ) == true;
+
+    private void CompleteIssue() {
+        var state = Project.WorkflowStates.FirstOrDefault(s => s.Category.Equals(StateCategory.Completed));
+
+        if( state != null ) {
+            IssueFacade.UpdateIssue( Project, Issue.With( state ));
+        }
+    }
 
     private void OnEditRequest() => IssueFacade.EditIssue( Project, Issue );
     private void OnDeleteRequest() => IssueFacade.DeleteIssue( Project, Issue );
