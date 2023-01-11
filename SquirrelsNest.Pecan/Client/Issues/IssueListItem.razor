@@ -25,7 +25,12 @@
             <MudIcon Icon="@Icons.Material.Filled.Check"/>
         </MudContainer>
         <MudStack Spacing="0">
-            <MudText Typo="Typo.body1">@Issue.Title</MudText>
+            <MudStack Row="true">
+                <MudText Typo="Typo.body1">@Project.Project.IssuePrefix</MudText>
+                <MudText Typo="Typo.body1">-</MudText>
+                <MudText Typo="Typo.body1">@Issue.IssueNumber</MudText>
+                <MudText Typo="Typo.body1" Class="mb-1">@Issue.Title</MudText>
+            </MudStack>
             <MudText Typo="Typo.body2" Class="ml-2 subdue">@Issue.Description</MudText>
             <MudContainer Class="component-grid">
                 <MudLink Class="d-flex justify-center subdue" Color="Color.Default" Typo="Typo.body2" OnClick="OnWorkflowStateClick">
