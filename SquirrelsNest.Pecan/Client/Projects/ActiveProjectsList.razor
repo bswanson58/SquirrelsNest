@@ -63,7 +63,10 @@
     private void OnProjectStateChanged( object ? sender, EventArgs e ) {
         if( ProjectState != null ) {
             mProjects.Clear();
-            mProjects.AddRange( ProjectState.Value.Projects.Select( p => new ProjectViewModel( p )));
+            mProjects.AddRange( 
+                ProjectState.Value.Projects
+                    .Where( p => p.IsViableProject())
+                    .Select( p => new ProjectViewModel( p )));
 
             StateHasChanged();
         }

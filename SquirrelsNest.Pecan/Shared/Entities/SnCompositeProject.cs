@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Serialization;
 
 namespace SquirrelsNest.Pecan.Shared.Entities {
@@ -48,5 +49,7 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
 
         public static SnCompositeProject Default =>
             mDefaultProject ??= new SnCompositeProject( SnProject.Default );
+
+        public bool IsViableProject() => Components.Any() && IssueTypes.Any() && WorkflowStates.Any();
     }
 }
