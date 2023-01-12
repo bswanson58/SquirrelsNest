@@ -49,6 +49,7 @@ void ConfigureServices( IServiceCollection services ) {
     services.AddScoped<IResponseStatusHandler, ResponseStatusHandler>();
     services.AddScoped<IAuthenticatedHttpHandler, AuthenticatedHttpHandler>();
 
+    services.AddScoped<IAppStartup, AppStartup>();
     services.AddScoped<AuthFacade>();
     services.AddScoped<IssueFacade>();
     services.AddScoped<ProjectFacade>();

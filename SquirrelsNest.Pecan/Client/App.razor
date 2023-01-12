@@ -6,6 +6,7 @@
 <AuthenticationProvider/>
 
 @inject AnnouncementHandler     ErrorAnnouncer;
+@inject IAppStartup             AppStartup;
 
 @implements IDisposable
 
@@ -14,6 +15,7 @@
         base.OnInitialized();
 
         ErrorAnnouncer.StartAnnouncements();
+        AppStartup.OnStartup();
     }
 
     public void Dispose() {

@@ -29,12 +29,12 @@
 </MudContainer>
 
 @code {
-    private readonly List<ProjectViewModel> mProjects = new List<ProjectViewModel>();
+    private readonly List<ProjectViewModel> mProjects = new ();
 
     protected override void OnInitialized() {
         base.OnInitialized();
 
-        ProjectFacade.LoadProjects();
+        UpdateProjects();
         ProjectState.StateChanged += OnProjectStateChanged;
     }
 
@@ -43,6 +43,10 @@
     }
 
     private void OnProjectStateChanged( object ? sender, EventArgs e ) {
+        UpdateProjects();
+    }
+
+    private void UpdateProjects() {
         if( ProjectState != null ) {
             mProjects.Clear();
             mProjects.AddRange( ProjectState.Value.Projects.Select( p => new ProjectViewModel( p )));
@@ -55,7 +59,7 @@
         ProjectFacade.SetCurrentProject( project.Project );
     }
 
-    private bool IsCurrentProject( ProjectViewModel project) => 
+    private bool IsCurrentProject( ProjectViewModel project ) => 
         ProjectState.Value.CurrentProject != null && 
         ProjectState.Value.CurrentProject.EntityId.Equals( project.Project.EntityId );
 }
