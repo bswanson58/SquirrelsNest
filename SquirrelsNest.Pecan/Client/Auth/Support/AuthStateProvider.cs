@@ -19,7 +19,7 @@ namespace SquirrelsNest.Pecan.Client.Auth.Support {
         private AuthenticationState CreateAuthenticationState( string fromToken ) {
             return new AuthenticationState( 
                 new ClaimsPrincipal( 
-                    new ClaimsIdentity( JwtParser.ParseRolesFromJwt( fromToken ), JWTConstants.JwtAuthType )));
+                    new ClaimsIdentity( JwtParser.GetClaims( fromToken ), JWTConstants.JwtAuthType )));
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync() {

@@ -87,7 +87,7 @@ namespace SquirrelsNest.Pecan.Server.Features.Auth {
         }
 
         public DateTime TokenExpiration() =>
-             DateTimeProvider.Instance.CurrentDateTime.AddMinutes( 
+             DateTimeProvider.Instance.CurrentUtcTime.AddMinutes( 
                  Convert.ToDouble( mJwtSettings[JWTConstants.JwtConfigExpiration]));
 
         public static TokenValidationParameters CreateTokenValidationParameters( IConfigurationSection jwtSettings ) =>
