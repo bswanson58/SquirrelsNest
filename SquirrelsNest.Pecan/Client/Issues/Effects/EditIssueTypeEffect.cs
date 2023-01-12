@@ -26,7 +26,7 @@ namespace SquirrelsNest.Pecan.Client.Issues.Effects {
             var dialog = await mDialogService.ShowAsync<IssueTypeSelectorDialog>( "Select Issue Type", parameters, options );
             var dialogResult = await dialog.Result;
 
-            if((!dialogResult.Cancelled ) &&
+            if((!dialogResult.Canceled ) &&
                ( dialogResult.Data is SnIssueType type )) {
                 mIssueFacade.UpdateIssue( action.Project, action.Issue.With( type ));
             }

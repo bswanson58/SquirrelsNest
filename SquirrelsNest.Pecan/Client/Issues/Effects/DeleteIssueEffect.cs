@@ -19,7 +19,7 @@ namespace SquirrelsNest.Pecan.Client.Issues.Effects {
             var confirmation = await mUiFacade.ConfirmAction( "Confirm Deletion", 
                 $"Would you like to delete the Issue titled '{action.Issue.Title}'?" );
 
-            if(!confirmation.Cancelled ) {
+            if(!confirmation.Canceled ) {
                 mDispatcher.Dispatch( new DeleteIssueSubmitAction( new DeleteIssueRequest( action.Issue )));
             } 
         }

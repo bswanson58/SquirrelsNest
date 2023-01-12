@@ -26,7 +26,7 @@ namespace SquirrelsNest.Pecan.Client.Issues.Effects {
             var dialog = await mDialogService.ShowAsync<ComponentSelectorDialog>( "Select Component", parameters, options );
             var dialogResult = await dialog.Result;
 
-            if((!dialogResult.Cancelled ) &&
+            if((!dialogResult.Canceled ) &&
                ( dialogResult.Data is SnComponent component )) {
                 mIssueFacade.UpdateIssue( action.Project, action.Issue.With( component ));
             }

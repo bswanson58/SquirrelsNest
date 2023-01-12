@@ -19,7 +19,7 @@ namespace SquirrelsNest.Pecan.Client.Projects.Effects {
             var dialog = await mDialogService.ShowAsync<AddProjectDialog>( "New Project Parameters", parameters, options );
             var dialogResult = await dialog.Result;
         
-            if((!dialogResult.Cancelled ) &&
+            if((!dialogResult.Canceled ) &&
                ( dialogResult.Data is CreateProjectInput projectInput )) {
                 dispatcher.Dispatch( new AddProjectSubmitAction( projectInput ));
             }

@@ -19,7 +19,7 @@ namespace SquirrelsNest.Pecan.Client.Projects.Effects {
             var confirmation = await mUiFacade.ConfirmAction( "Confirm Deletion", 
                 $"Are you sure you want to delete the Project titled '{action.Project.Name}'?" );
 
-            if(!confirmation.Cancelled ) {
+            if(!confirmation.Canceled ) {
                 mDispatcher.Dispatch( new DeleteProjectSubmit( new DeleteProjectRequest( action.Project )));
             } 
         }

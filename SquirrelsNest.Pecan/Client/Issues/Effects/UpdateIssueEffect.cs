@@ -22,7 +22,7 @@ namespace SquirrelsNest.Pecan.Client.Issues.Effects {
             var dialog = await mDialogService.ShowAsync<UpdateIssueDialog>( "Issue Parameters", parameters, options );
             var dialogResult = await dialog.Result;
         
-            if((!dialogResult.Cancelled ) &&
+            if((!dialogResult.Canceled ) &&
                ( dialogResult.Data is UpdateIssueRequest issueRequest )) {
                 dispatcher.Dispatch( new UpdateIssueSubmit( issueRequest ));
             }

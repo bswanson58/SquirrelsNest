@@ -18,7 +18,7 @@ namespace SquirrelsNest.Pecan.Client.Projects.Effects {
             var confirmation = await mUiFacade.ConfirmAction( "Confirm Deletion", 
                 $"Would you like to delete the component named '{action.Input.Component.Name}'?" );
 
-            if(!confirmation.Cancelled ) {
+            if(!confirmation.Canceled ) {
                 mDispatcher.Dispatch( new ComponentChangeSubmitAction( action.Input ));
             } 
         }

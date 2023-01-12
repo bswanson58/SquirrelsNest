@@ -19,7 +19,7 @@ namespace SquirrelsNest.Pecan.Client.Auth.Effects {
             var dialog = await mDialogService.ShowAsync<CreateUserDialog>( "Register User", parameters, options );
             var dialogResult = await dialog.Result;
         
-            if((!dialogResult.Cancelled ) &&
+            if((!dialogResult.Canceled ) &&
                ( dialogResult.Data is CreateUserInput userInput )) {
                 dispatcher.Dispatch( new CreateUserSubmitAction( userInput ));
             }

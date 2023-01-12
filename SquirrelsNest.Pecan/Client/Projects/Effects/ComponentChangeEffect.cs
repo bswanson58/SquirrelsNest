@@ -20,7 +20,7 @@ namespace SquirrelsNest.Pecan.Client.Projects.Effects {
             var dialog = await mDialogService.ShowAsync<ComponentEditDialog>( "Component Parameters", parameters, options );
             var dialogResult = await dialog.Result;
         
-            if((!dialogResult.Cancelled ) &&
+            if((!dialogResult.Canceled ) &&
                ( dialogResult.Data is SnComponent component )) {
                 dispatcher.Dispatch( new ComponentChangeSubmitAction( 
                     new ComponentChangeInput( component, action.Input.ChangeType )));

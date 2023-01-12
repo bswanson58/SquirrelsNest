@@ -18,7 +18,7 @@ namespace SquirrelsNest.Pecan.Client.Projects.Effects {
             var confirmation = await mUiFacade.ConfirmAction( "Confirm Deletion", 
                 $"Would you like to delete the Workflow State named '{action.Input.WorkflowState.Name}'?" );
 
-            if(!confirmation.Cancelled ) {
+            if(!confirmation.Canceled ) {
                 mDispatcher.Dispatch( new WorkflowStateChangeSubmitAction( action.Input ));
             } 
         }

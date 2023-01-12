@@ -20,7 +20,7 @@ namespace SquirrelsNest.Pecan.Client.Projects.Effects {
             var dialog = await mDialogService.ShowAsync<WorkflowStateEditDialog>( "Workflow State Parameters", parameters, options );
             var dialogResult = await dialog.Result;
         
-            if((!dialogResult.Cancelled ) &&
+            if((!dialogResult.Canceled ) &&
                ( dialogResult.Data is SnWorkflowState workflowState )) {
                 dispatcher.Dispatch( new WorkflowStateChangeSubmitAction( 
                     new WorkflowStateChangeInput( workflowState, action.Input.ChangeType )));
