@@ -1,15 +1,13 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using SquirrelsNest.Pecan.Server.Database.Entities;
 using SquirrelsNest.Pecan.Shared.Entities;
 
 namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
     public interface IUserDataProvider {
-        IQueryable<SnUserData>  GetAll();
-        ValueTask<SnUserData ?> GetById( string id );
-        Task<SnUserData>        Create( SnUserData userData );
-        ValueTask<SnUserData ?> Update( SnUserData userData );
-        Task                    Delete( SnUserData userData );
+        ValueTask<SnUserData>   GetUserData( SnUser forUser, string dataType );
+        Task<SnUserData>        UpdateUserData( SnUserData userData );
     }
 
     public class SnUserDataProvider : ProviderBase<DbUserData>, IUserDataProvider {
@@ -19,19 +17,31 @@ namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
         public SnUserDataProvider( PecanDbContext context )
             : base( context ) { }
 
-        public IQueryable<SnUserData> GetAll() =>
-            BaseGetAll().Select( e => ConvertTo( e ));
+        public async ValueTask<SnUserData> GetUserData( SnUser forUser, string dataType ) {
+            var dataList = BaseGetAll()
+                .Where( d => d.UserId.Equals( forUser.EntityId ) && 
+                             d.DataType.Equals( dataType ));
 
-        public async ValueTask<SnUserData ?> GetById( string id ) =>
-            ( await BaseGetById( id ))?.ToEntity();
+            return ( await dataList
+                .Select( d => ConvertTo( d ))
+                .ToListAsync())
+                .FirstOrDefault( SnUserData.Default );
+        }
 
-        public async Task<SnUserData> Create( SnUserData userData ) =>
+        public async Task<SnUserData> UpdateUserData( SnUserData userData ) {
+            var existingData = await BaseGetAll()
+                .Where( d => d.UserId.Equals( userData.UserId ) && 
+                             d.DataType.Equals( userData.DataType ))
+                .ToListAsync();
+
+            foreach( var data in existingData ) {
+                await BaseDelete( data.EntityId );
+            }
+
+            return await Create( userData );
+        }
+
+        private async Task<SnUserData> Create( SnUserData userData ) =>
             ( await BaseCreate( ConvertFrom( userData ))).ToEntity();
-
-        public async ValueTask<SnUserData ?> Update( SnUserData userData ) =>
-            ( await BaseUpdate( ConvertFrom( userData )))?.ToEntity();
-
-        public Task Delete( SnUserData userData ) =>
-            BaseDelete( userData.EntityId );
     }
 }

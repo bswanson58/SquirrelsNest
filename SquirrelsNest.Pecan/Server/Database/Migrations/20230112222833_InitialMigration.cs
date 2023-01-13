@@ -156,7 +156,7 @@ namespace SquirrelsNest.Pecan.Server.Database.Migrations
                 {
                     EntityId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DataType = table.Column<int>(type: "int", nullable: false),
+                    DataType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Data = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -290,8 +290,8 @@ namespace SquirrelsNest.Pecan.Server.Database.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "7879ed33-a247-473a-b6ac-ea67c72b330f", null, "administrator", "ADMINISTRATOR" },
-                    { "8c09ee2f-7333-42f6-9315-ee6f7ad4576e", null, "user", "USER" }
+                    { "57304c9d-210c-40fa-b326-c24fdbf79a01", null, "user", "USER" },
+                    { "e695f8f7-772f-4d41-b73f-36094c896431", null, "administrator", "ADMINISTRATOR" }
                 });
 
             migrationBuilder.CreateIndex(

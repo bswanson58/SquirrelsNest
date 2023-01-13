@@ -2,11 +2,13 @@
 @using Fluxor
 @using SquirrelsNest.Pecan.Client.Issues.Store
 @using SquirrelsNest.Pecan.Client.Projects.ViewModels
+@using SquirrelsNest.Pecan.Client.UserData.Store
 @using SquirrelsNest.Pecan.Shared.Entities
 
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 @inject IState<ProjectState>    ProjectState;
+@inject IState<UserDataState>   UserDataState;
 @inject ProjectFacade           ProjectFacade;
 @inject IssueFacade             IssueFacade;
 
@@ -71,6 +73,26 @@
                 ProjectState.Value.Projects
                     .Where( p => p.IsViableProject() )
                     .Select( p => new ProjectViewModel( p )));
+
+            if( mProjects.Any()) {
+                if( ProjectState.Value.CurrentProject == null ) {
+                    if(!String.IsNullOrWhiteSpace( UserDataState.Value.CurrentProjectId )) {
+                        var project = mProjects
+                            .FirstOrDefault( p => p.Project.EntityId.Equals( UserDataState.Value.CurrentProjectId ));
+
+                        if( project != null ) {
+                            ProjectFacade.SetCurrentProject( project.Project );
+                        }
+                    }
+                    else {
+                        var project = mProjects.FirstOrDefault();
+
+                        if( project != null ) {
+                            ProjectFacade.SetCurrentProject( project.Project );
+                        }
+                    }
+                }
+            }
 
             StateHasChanged();
         }

@@ -1,9 +1,10 @@
 ﻿@using SquirrelsNest.Pecan.Client.Auth
 @using SquirrelsNest.Pecan.Client.Ui
+@using SquirrelsNest.Pecan.Client.UserData
 
 <Fluxor.Blazor.Web.StoreInitializer/>
-
 <AuthenticationProvider/>
+<UserDataUpdater />
 
 @inject AnnouncementHandler     ErrorAnnouncer;
 @inject IAppStartup             AppStartup;

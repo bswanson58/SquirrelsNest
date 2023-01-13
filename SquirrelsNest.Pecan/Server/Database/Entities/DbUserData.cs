@@ -3,13 +3,13 @@ using SquirrelsNest.Pecan.Shared.Entities;
 
 namespace SquirrelsNest.Pecan.Server.Database.Entities {
     public class DbUserData : DbEntityBase<DbUserData> {
-        public  string          UserId { get; set; }
-        public  UserDataType    DataType { get; set; }
-        public  string          Data { get; set; }
+        public  string      UserId { get; set; }
+        public  string      DataType { get; set; }
+        public  string      Data { get; set; }
 
         public DbUserData() {
-            UserId = Shared.Entities.EntityIdentifier.Default;
-            DataType = UserDataType.Unknown;
+            UserId = EntityIdentifier.Default;
+            DataType = String.Empty;
             Data = String.Empty;
         }
 
@@ -20,9 +20,9 @@ namespace SquirrelsNest.Pecan.Server.Database.Entities {
             Data = userData.Data;
         }
 
-        public static DbUserData From( SnUserData data ) => new DbUserData( data );
+        public static DbUserData From( SnUserData data ) => new ( data );
 
-        public SnUserData ToEntity() => new SnUserData( EntityId, UserId, DataType, Data );
+        public SnUserData ToEntity() => new ( EntityId, UserId, DataType, Data );
 
         public override void UpdateFrom( DbUserData from ) {
             UserId = from.UserId;

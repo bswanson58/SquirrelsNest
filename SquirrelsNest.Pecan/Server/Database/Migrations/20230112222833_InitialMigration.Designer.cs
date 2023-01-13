@@ -12,7 +12,7 @@ using SquirrelsNest.Pecan.Server.Database;
 namespace SquirrelsNest.Pecan.Server.Database.Migrations
 {
     [DbContext(typeof(PecanDbContext))]
-    [Migration("20221222195312_InitialMigration")]
+    [Migration("20230112222833_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace SquirrelsNest.Pecan.Server.Database.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.1")
+                .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -54,13 +54,13 @@ namespace SquirrelsNest.Pecan.Server.Database.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "8c09ee2f-7333-42f6-9315-ee6f7ad4576e",
+                            Id = "57304c9d-210c-40fa-b326-c24fdbf79a01",
                             Name = "user",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "7879ed33-a247-473a-b6ac-ea67c72b330f",
+                            Id = "e695f8f7-772f-4d41-b73f-36094c896431",
                             Name = "administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });
@@ -428,8 +428,9 @@ namespace SquirrelsNest.Pecan.Server.Database.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("DataType")
-                        .HasColumnType("int");
+                    b.Property<string>("DataType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
