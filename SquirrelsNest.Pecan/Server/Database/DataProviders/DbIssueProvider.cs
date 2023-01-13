@@ -1,7 +1,6 @@
 ﻿using SquirrelsNest.Pecan.Server.Database.Entities;
 using SquirrelsNest.Pecan.Shared.Entities;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
@@ -22,7 +21,10 @@ namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
             : base( context ) { }
 
         public IQueryable<SnIssue> GetAll( SnProject forProject ) =>
-            BaseGetAll().Where( p => p.ProjectId.Equals( forProject.EntityId )).Select( e => ConvertTo( e ));
+            BaseGetAll()
+                .Where( p => p.ProjectId.Equals( forProject.EntityId ))
+                .OrderByDescending( p => p.IssueNumber )
+                .Select( e => ConvertTo( e ));
 
         public async ValueTask<SnIssue ?> GetById( string id ) =>
             ( await BaseGetById( id ))?.ToEntity();
