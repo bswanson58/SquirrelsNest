@@ -71,7 +71,8 @@
             mProjects.Clear();
             mProjects.AddRange(
                 ProjectState.Value.Projects
-                    .Where( p => p.IsViableProject() )
+                    .Where( p => p.IsViableProject())
+                    .OrderBy( p => p.Name )
                     .Select( p => new ProjectViewModel( p )));
 
             if( mProjects.Any()) {

@@ -52,7 +52,10 @@
     private void UpdateProjects() {
         if( ProjectState != null ) {
             mProjects.Clear();
-            mProjects.AddRange( ProjectState.Value.Projects.Select( p => new ProjectViewModel( p )));
+            mProjects.AddRange( 
+                ProjectState.Value.Projects
+                    .OrderBy( p => p.Name )
+                    .Select( p => new ProjectViewModel( p )));
 
             if( mProjects.Any()) {
                 if( ProjectState.Value.CurrentProject == null ) {
