@@ -1,5 +1,6 @@
 ﻿@using Fluxor
 @using SquirrelsNest.Pecan.Client.Projects.Actions
+@using SquirrelsNest.Pecan.Client.Ui.Store
 @using SquirrelsNest.Pecan.Client.UserData.Store
 
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
@@ -7,13 +8,18 @@
 @inject IActionSubscriber       ActionSubscriber;
 @inject IUserDataService        UserDataService;
 @inject IState<UserDataState>   UserDataState;
+@inject IState<UiState>         UiState;
 
 @code {
     protected override void OnInitialized() {
         base.OnInitialized();
 
         ActionSubscriber.SubscribeToAction<SetCurrentProjectAction>( this, action => {
-            var userData = new PecanUserData( action.Project.EntityId );
+            var userData = new PecanUserData( 
+                action.Project.EntityId, 
+                UiState.Value.DisplayCompletedIssues, 
+                UiState.Value.DisplayCompletedIssuesLast,
+                UiState.Value.DisplayOnlyMyAssignedIssues );
 
             UserDataService.PersistUserData( userData );
         });
