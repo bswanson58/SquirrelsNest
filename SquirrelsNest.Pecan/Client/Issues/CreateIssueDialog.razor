@@ -65,6 +65,14 @@
             mSelectedComponent = Project.Components.FirstOrDefault( c => c.EntityId.Equals( Issue.IssueTypeId ) ) ?? SnComponent.Default;
             mSelectedIssueType = Project.IssueTypes.FirstOrDefault( i => i.EntityId.Equals( Issue.IssueTypeId ) ) ?? SnIssueType.Default;
             mSelectedState = Project.WorkflowStates.FirstOrDefault( s => s.EntityId.Equals( Issue.WorkflowStateId ) ) ?? SnWorkflowState.Default;
+
+            if( mSelectedState.EntityId.Equals( SnWorkflowState.Default.EntityId )) {
+                var initialState = Project.WorkflowStates.FirstOrDefault( s => s.Category.Equals( StateCategory.Initial ));
+
+                if( initialState != null ) {
+                    mSelectedState = initialState;
+                }
+            }
         }
     }
 
