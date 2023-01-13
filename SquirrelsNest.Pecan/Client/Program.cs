@@ -16,6 +16,7 @@ using SquirrelsNest.Pecan.Client.Issues.Store;
 using SquirrelsNest.Pecan.Client.Projects.Store;
 using SquirrelsNest.Pecan.Client.Support;
 using SquirrelsNest.Pecan.Client.Ui;
+using SquirrelsNest.Pecan.Client.Ui.Store;
 using SquirrelsNest.Pecan.Client.UserData;
 using SquirrelsNest.Pecan.Client.UserData.Store;
 using SquirrelsNest.Pecan.Client.Users.Store;

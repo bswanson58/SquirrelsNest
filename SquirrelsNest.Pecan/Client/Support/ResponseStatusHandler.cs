@@ -4,7 +4,7 @@ using System.Net.Http;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
 using SquirrelsNest.Pecan.Client.Shared;
-using SquirrelsNest.Pecan.Client.Ui;
+using SquirrelsNest.Pecan.Client.Ui.Store;
 
 namespace SquirrelsNest.Pecan.Client.Support {
     public interface IResponseStatusHandler {

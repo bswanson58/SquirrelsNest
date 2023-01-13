@@ -1,12 +1,14 @@
 ﻿@using Fluxor
 @using SquirrelsNest.Pecan.Client.Issues.Store
 @using SquirrelsNest.Pecan.Client.Projects.Store
+@using SquirrelsNest.Pecan.Client.Ui.Store
 @using SquirrelsNest.Pecan.Shared.Entities
 
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 @inject IState<ProjectState>    ProjectState;
-@inject IState<IssueState>      IssueState
+@inject IState<IssueState>      IssueState;
+@inject IState<UiState>         UiState;
 
 <MudContainer Class="ma-1 pa-0">
     @if( IssueState.Value.ApiCallInProgress ) {
@@ -17,9 +19,61 @@
     }
     else {
         <MudStack Spacing="0">
-            @foreach( var issue in IssueState.Value.Issues ) {
+            @foreach( var issue in mIssues ) {
                 <IssueListItem Project="ProjectState.Value.CurrentProject" Issue="@issue" />
             }
         </MudStack>
     }
 </MudContainer>
+
+@code {
+    private List<SnCompositeIssue> mIssues = new ();
+
+    protected override void OnInitialized() {
+        base.OnInitialized();
+
+        IssueState.StateChanged += OnIssueStateChanged;
+        UiState.StateChanged += OnUiStateChanged;
+
+        UpdateIssueList();
+    }
+
+    private void OnUiStateChanged( object ? sender, EventArgs e ) {
+        UpdateIssueList();
+    }
+
+    private void OnIssueStateChanged( object ? sender, EventArgs e ) {
+        UpdateIssueList();
+    }
+
+    private void UpdateIssueList() {
+        var issueList = IssueState.Value.Issues;
+
+        if(!UiState.Value.DisplayCompletedIssues ) {
+            issueList = issueList
+                .Where( i => !IsIssueCompleted( i ))
+                .ToList();
+        }
+
+        if( UiState.Value.DisplayCompletedIssuesLast ) {
+            issueList = issueList.OrderBy( IsIssueCompleted ).ToList();
+        }
+
+        mIssues.Clear();
+        mIssues.AddRange( issueList );
+
+        StateHasChanged();
+    }
+
+    private bool IsIssueCompleted( SnCompositeIssue issue ) =>
+        issue.WorkflowState?.Category.Equals( StateCategory.Completed ) == true ||
+        issue.WorkflowState?.Category.Equals( StateCategory.Terminal ) == true;
+
+    protected override void Dispose( bool disposing ) {
+        base.Dispose( disposing );
+
+        IssueState.StateChanged -= OnIssueStateChanged;
+        UiState.StateChanged -= OnUiStateChanged;
+    }
+
+}

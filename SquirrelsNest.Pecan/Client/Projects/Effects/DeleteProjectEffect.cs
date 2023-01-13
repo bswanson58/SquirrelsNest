@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Fluxor;
 using SquirrelsNest.Pecan.Client.Projects.Actions;
-using SquirrelsNest.Pecan.Client.Ui;
+using SquirrelsNest.Pecan.Client.Ui.Store;
 using SquirrelsNest.Pecan.Shared.Dto.Projects;
 
 namespace SquirrelsNest.Pecan.Client.Projects.Effects {
@@ -16,12 +16,12 @@ namespace SquirrelsNest.Pecan.Client.Projects.Effects {
         }
 
         public override async Task HandleAsync( DeleteProjectAction action, IDispatcher dispatcher ) {
-            var confirmation = await mUiFacade.ConfirmAction( "Confirm Deletion", 
+            var confirmation = await mUiFacade.ConfirmAction( "Confirm Deletion",
                 $"Are you sure you want to delete the Project titled '{action.Project.Name}'?" );
 
             if(!confirmation.Canceled ) {
                 mDispatcher.Dispatch( new DeleteProjectSubmit( new DeleteProjectRequest( action.Project )));
-            } 
+            }
         }
     }
 }

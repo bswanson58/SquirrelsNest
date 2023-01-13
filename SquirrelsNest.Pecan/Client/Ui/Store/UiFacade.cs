@@ -3,10 +3,10 @@ using Fluxor;
 using MudBlazor;
 using SquirrelsNest.Pecan.Client.Ui.Actions;
 
-namespace SquirrelsNest.Pecan.Client.Ui {
+namespace SquirrelsNest.Pecan.Client.Ui.Store {
     public class UiFacade {
         private readonly IDialogService mDialogService;
-        private readonly IDispatcher    mDispatcher;
+        private readonly IDispatcher mDispatcher;
 
         public UiFacade( IDialogService dialogService, IDispatcher dispatcher ) {
             mDialogService = dialogService;
@@ -14,15 +14,27 @@ namespace SquirrelsNest.Pecan.Client.Ui {
         }
 
         public void ApiCallFailure( string message ) {
-            mDispatcher.Dispatch( new ApiCallFailure( message ));
+            mDispatcher.Dispatch( new ApiCallFailure( message ) );
         }
 
         public async Task<DialogResult> ConfirmAction( string title, string request ) {
-            var parameters = new DialogParameters { { nameof( ConfirmationDialog.Request ), request } };
+            var parameters = new DialogParameters { { nameof( ConfirmationDialog.Request), request } };
             var options = new DialogOptions { FullWidth = true, CloseOnEscapeKey = true };
             var dialog = await mDialogService.ShowAsync<ConfirmationDialog>( title, parameters, options );
 
             return await dialog.Result;
+        }
+
+        public void IssueDisplayCompleted( bool state ) {
+            mDispatcher.Dispatch( new IssueDisplayCompleted( state ));
+        }
+
+        public void IssueDisplayCompletedLast( bool state ) {
+            mDispatcher.Dispatch( new IssueDisplayCompletedLast( state ));
+        }
+
+        public void IssueDisplayMyAssigned( bool state ) {
+            mDispatcher.Dispatch( new IssueDisplayMyAssigned( state ));
         }
     }
 }

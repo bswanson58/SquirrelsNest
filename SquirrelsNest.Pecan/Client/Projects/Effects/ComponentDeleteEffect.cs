@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Fluxor;
 using SquirrelsNest.Pecan.Client.Projects.Actions;
-using SquirrelsNest.Pecan.Client.Ui;
+using SquirrelsNest.Pecan.Client.Ui.Store;
 
 namespace SquirrelsNest.Pecan.Client.Projects.Effects {
     // ReSharper disable once UnusedType.Global
@@ -15,12 +15,12 @@ namespace SquirrelsNest.Pecan.Client.Projects.Effects {
         }
 
         public override async Task HandleAsync( ComponentDeleteAction action, IDispatcher dispatcher ) {
-            var confirmation = await mUiFacade.ConfirmAction( "Confirm Deletion", 
+            var confirmation = await mUiFacade.ConfirmAction( "Confirm Deletion",
                 $"Would you like to delete the component named '{action.Input.Component.Name}'?" );
 
             if(!confirmation.Canceled ) {
                 mDispatcher.Dispatch( new ComponentChangeSubmitAction( action.Input ));
-            } 
+            }
         }
     }
 }

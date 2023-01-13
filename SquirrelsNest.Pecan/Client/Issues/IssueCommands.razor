@@ -1,22 +1,76 @@
 ﻿@using Fluxor
 @using SquirrelsNest.Pecan.Client.Issues.Store
 @using SquirrelsNest.Pecan.Client.Projects.Store
+@using SquirrelsNest.Pecan.Client.Ui.Store
 
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-<MudContainer Class="mt-1">
+<MudContainer Class="mt-1 pa-0">
     <MudStack Row="true" Spacing="2" Class="d-flex justify-end">
         <MudButton Variant="Variant.Text" OnClick="OnAddIssue">New Issue</MudButton>
+        <MudMenu
+            Icon="@Icons.Material.Filled.Menu" 
+            Size="Size.Small" 
+            Dense="true" 
+            AnchorOrigin="Origin.BottomRight" 
+            TransformOrigin="Origin.TopRight">
+            <MudMenuItem
+                Icon="@IconForDisplayCompleted"
+                IconSize="Size.Small"
+                IconColor="Color.Success"
+                OnClick="@OnDisplayCompleted">
+                Display Completed Issues
+            </MudMenuItem>
+            <MudMenuItem
+                Icon="@IconForDisplayCompletedLast" 
+                IconSize="Size.Small"
+                IconColor="Color.Success"
+                OnClick="@OnDisplayCompletedLast">
+                Display Completed Last
+            </MudMenuItem>
+            <MudMenuItem
+                Icon="@IconForDisplayMyAssigned"
+                IconSize="Size.Small"
+                IconColor="Color.Success"
+                OnClick="@OnDisplayMyAssigned">
+                Display My Assigned
+            </MudMenuItem>
+        </MudMenu> 
     </MudStack>
 </MudContainer>
 
 @inject IssueFacade             IssueFacade
 @inject IState<ProjectState>    ProjectState;
+@inject IState<UiState>         UiState;
+@inject UiFacade                UiFacade;
 
 @code {
+    private const string mNoCheck = "<svg style=\"width:24px;height:24px\" viewBox=\"0 0 24 24\"></svg>";
+
     private void OnAddIssue() {
         if( ProjectState.Value.CurrentProject != null ) {
             IssueFacade.AddIssue( ProjectState.Value.CurrentProject );
         }
     }
+
+    private void OnDisplayCompleted() {
+        UiFacade.IssueDisplayCompleted(!UiState.Value.DisplayCompletedIssues );
+    }
+
+    private void OnDisplayCompletedLast() {
+        UiFacade.IssueDisplayCompletedLast(!UiState.Value.DisplayCompletedIssuesLast );
+    }
+
+    private void OnDisplayMyAssigned() {
+        UiFacade.IssueDisplayMyAssigned(!UiState.Value.DisplayOnlyMyAssignedIssues );
+    }
+
+    private string IconForDisplayCompleted =>
+        UiState.Value.DisplayCompletedIssues ? Icons.Material.Filled.Check : mNoCheck;
+
+    private string IconForDisplayCompletedLast =>
+        UiState.Value.DisplayCompletedIssuesLast ? Icons.Material.Filled.Check : mNoCheck;
+
+    private string IconForDisplayMyAssigned =>
+        UiState.Value.DisplayOnlyMyAssignedIssues ? Icons.Material.Filled.Check : mNoCheck;
 }
