@@ -1,5 +1,4 @@
-﻿using System;
-using Fluxor;
+﻿using Fluxor;
 using SquirrelsNest.Pecan.Client.UserData.Actions;
 using SquirrelsNest.Pecan.Client.UserData.Store;
 
@@ -8,8 +7,7 @@ namespace SquirrelsNest.Pecan.Client.UserData.Reducers {
     public static class UserDataReducer {
         [ReducerMethod]
         public static UserDataState UpdateUserData( UserDataState state, RequestUserDataSuccess action ) =>
-            new( false, String.Empty, 
-                 action.UserData.CurrentProjectId,
+            new( action.UserData.CurrentProjectId,
                  action.UserData.DisplayCompletedIssues, 
                  action.UserData.DisplayCompletedIssuesLast,
                  action.UserData.DisplayOnlyMyAssignedIssues );
