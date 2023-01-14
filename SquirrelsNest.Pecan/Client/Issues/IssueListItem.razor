@@ -1,5 +1,9 @@
 ﻿@using SquirrelsNest.Pecan.Shared.Entities
 @using SquirrelsNest.Pecan.Client.Issues.Store
+@using SquirrelsNest.Pecan.Client.UserData.Store
+@using Fluxor
+
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <style>
     .containing-grid {
@@ -21,56 +25,68 @@
 
 <div class="@MouseOverHighlight" @onmouseenter="@OnMouseEnter" @onmouseleave="@OnMouseLeave">
     <MudContainer Class="containing-grid pa-0 mb-1">
-        <MudContainer Class="d-flex flex-none align-center justify-center pa-1">
+        <MudContainer Class="d-flex flex-none align-center justify-center pa-0">
             @if( IsDone ) {
                 @if( IsCompleted ) {
-                    <MudIcon Icon="@Icons.Material.Filled.Check" Class="ma-3" Color="Color.Success"/>
+                    <MudIcon Icon="@Icons.Material.Filled.Check" Size="Size.Small" Class="mx-4 my-0" Color="Color.Success"/>
                 }
                 else {
-                    <MudIcon Icon="@Icons.Material.Filled.Check" Class="ma-3" Color="Color.Warning"/>
+                    <MudIcon Icon="@Icons.Material.Filled.Check" Size="Size.Small" Class="mx-4 my-0" Color="Color.Warning"/>
                 }
             }
             else {
                 <div class="@MouseOverVisibility">
-                    <MudIconButton Icon="@Icons.Material.Filled.Check" OnClick="@CompleteIssue">Complete</MudIconButton>
+                    <MudIconButton Icon="@Icons.Material.Filled.Check" Size="Size.Small" Class="mx-4 my-0 pa-0" 
+                                   OnClick="@CompleteIssue">Complete</MudIconButton>
                 </div>
             }
         </MudContainer>
         <MudStack Spacing="0">
-            <MudStack Row="true" Spacing="0">
+            <MudStack Row="true" Spacing="0" Class="mt-1">
                 <MudText Typo="Typo.body1" Class="subdue">@Project.Project.IssuePrefix</MudText>
                 <MudText Typo="Typo.body1" Class="subdue">-</MudText>
                 <MudText Typo="Typo.body1" Class="subdue">@Issue.IssueNumber</MudText>
                 <MudText Typo="Typo.body1" Class="ml-2">@Issue.Title</MudText>
             </MudStack>
-            <MudText Typo="Typo.body2" Class="ml-2 subdue">@Issue.Description</MudText>
-            <MudContainer Class="component-grid">
-                <MudLink Class="d-flex justify-center subdue" Color="Color.Default" Typo="Typo.body2" OnClick="OnWorkflowStateClick">
-                    @(Issue.WorkflowState?.Name ?? "Unspecified")
-                </MudLink>
-                <MudLink Class="d-flex justify-center subdue" Color="Color.Default" Typo="Typo.body2" OnClick="OnIssueTypeClick">
-                    @(Issue.IssueType?.Name ?? "Unspecified")
-                </MudLink>
-                <MudLink Class="d-flex justify-center subdue" Color="Color.Default" Typo="Typo.body2" OnClick="OnComponentClick">
-                    @(Issue.Component?.Name ?? "Unspecified")
-                </MudLink>
-                <MudLink Class="d-flex justify-center subdue" Color="Color.Default" Typo="Typo.body2" OnClick="OnAssignedUserClick">
-                    @(Issue.AssignedTo?.DisplayName ?? "Unspecified")
-                </MudLink>
-            </MudContainer>
+            @if( DisplayDescription ) {
+                <MudText Typo="Typo.body2" Class="ml-2 subdue">@Issue.Description</MudText>
+            }
+            @if( DisplayComponents ) {
+                <MudContainer Class="component-grid">
+                    <MudLink Color="Color.Default" Typo="Typo.body2" Class="d-flex justify-center subdue"
+                             OnClick="OnWorkflowStateClick">
+                        @(Issue.WorkflowState?.Name ?? "Unspecified")
+                    </MudLink>
+                    <MudLink Color="Color.Default" Typo="Typo.body2" Class="d-flex justify-center subdue"
+                             OnClick="OnIssueTypeClick">
+                        @(Issue.IssueType?.Name ?? "Unspecified")
+                    </MudLink>
+                    <MudLink Color="Color.Default" Typo="Typo.body2" Class="d-flex justify-center subdue"
+                             OnClick="OnComponentClick">
+                        @(Issue.Component?.Name ?? "Unspecified")
+                    </MudLink>
+                    <MudLink Color="Color.Default" Typo="Typo.body2" Class="d-flex justify-center subdue"
+                             OnClick="OnAssignedUserClick">
+                        @(Issue.AssignedTo?.DisplayName ?? "Unspecified")
+                    </MudLink>
+                </MudContainer>
+            }
         </MudStack>
-        <div class="@MouseOverVisibility">
-            <MudContainer Class="d-flex flex-none align-center justify-center pa-2">
+            <MudContainer Class="d-flex flex-none align-center justify-center px-2 py-0">
+                <div class="@MouseOverVisibility">
                 <MudStack Row="true" Spacing="0">
-                    <MudIconButton OnClick="@OnEditRequest" Icon="@Icons.Material.Outlined.Edit" Title="Edit"/>
-                    <MudIconButton OnClick="@OnDeleteRequest" Icon="@Icons.Material.Filled.DeleteOutline" Title="Delete" />
+                    <MudIconButton Icon="@Icons.Material.Outlined.Edit" Size="Size.Small" Title="Edit"
+                                   OnClick="@OnEditRequest" />
+                    <MudIconButton Icon="@Icons.Material.Filled.DeleteOutline" Size="Size.Small" Title="Delete" 
+                                   OnClick="@OnDeleteRequest" />
                 </MudStack>
+                </div>
             </MudContainer>
-        </div>
     </MudContainer>
 </div>
 
-@inject IssueFacade     IssueFacade;
+@inject IssueFacade             IssueFacade;
+@inject IState<UserDataState>   UserDataState;
 
 @code {
     [Parameter]
@@ -80,11 +96,17 @@
 
     private bool                mIsMouseOver = false;
 
-    public void OnMouseEnter() => mIsMouseOver = true;
-    public void OnMouseLeave() => mIsMouseOver = false;
+    private void OnMouseEnter() => mIsMouseOver = true;
+    private void OnMouseLeave() => mIsMouseOver = false;
 
-    public string MouseOverVisibility => mIsMouseOver ? "" : "invisible";
-    public string MouseOverHighlight => mIsMouseOver ? "mouse-highlight" : "";
+    private string MouseOverVisibility => mIsMouseOver ? "" : "invisible";
+    private string MouseOverHighlight => mIsMouseOver ? "mouse-highlight" : "";
+
+    private bool DisplayDescription =>
+        UserDataState.Value.IssueListDisplayStyle.Equals( IssueListStyle.TitleDescription ) ||
+        UserDataState.Value.IssueListDisplayStyle.Equals( IssueListStyle.FullDetail );
+    private bool DisplayComponents =>
+        UserDataState.Value.IssueListDisplayStyle.Equals( IssueListStyle.FullDetail );
 
     private bool IsCompleted =>
         Issue.WorkflowState?.Category.Equals(StateCategory.Completed) == true;

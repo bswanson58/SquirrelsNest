@@ -24,5 +24,9 @@ namespace SquirrelsNest.Pecan.Client.UserData.Store {
         public void IssueDisplayMyAssigned( bool state ) {
             mDispatcher.Dispatch( new IssueDisplayMyAssigned( state ));
         }
+
+        public void SetIssueListDisplayStyle( string style ) {
+            mDispatcher.Dispatch( new IssueListDisplayStyleAction( style ));
+        }
     }
 }

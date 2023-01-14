@@ -8,6 +8,7 @@ namespace SquirrelsNest.Pecan.Client.UserData.Reducers {
         [ReducerMethod]
         public static UserDataState SetCurrentProject( UserDataState state, UserDataSetCurrentProjectAction action ) =>
             new( action.CurrentProjectId,
-                 state.DisplayCompletedIssues, state.DisplayCompletedIssuesLast, state.DisplayOnlyMyAssignedIssues );
+                 state.DisplayCompletedIssues, state.DisplayCompletedIssuesLast, state.DisplayOnlyMyAssignedIssues,
+                 state.IssueListDisplayStyle );
     }
 }

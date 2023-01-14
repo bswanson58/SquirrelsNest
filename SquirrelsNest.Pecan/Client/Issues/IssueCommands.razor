@@ -35,7 +35,28 @@
                 OnClick="@OnDisplayMyAssigned">
                 Display My Assigned
             </MudMenuItem>
-        </MudMenu> 
+
+            <MudDivider DividerType="DividerType.Middle" Class="my-1"/>
+            
+            <MudMenuItem Icon="@IconForListStyleTitle"
+                         IconSize="Size.Small"
+                         IconColor="Color.Success"
+                         OnClick="@OnDisplayTitle">
+                Display Title Only
+            </MudMenuItem>
+            <MudMenuItem Icon="@IconForListStyleTitleDescription"
+                         IconSize="Size.Small"
+                         IconColor="Color.Success"
+                         OnClick="@OnDisplayTitleDescription">
+                Display Title & Description
+            </MudMenuItem>
+            <MudMenuItem Icon="@IconForListStyleFullDetail"
+                         IconSize="Size.Small"
+                         IconColor="Color.Success"
+                         OnClick="@OnDisplayFullDetail">
+                Display Full Detail
+            </MudMenuItem>
+        </MudMenu>
     </MudStack>
 </MudContainer>
 
@@ -73,4 +94,25 @@
 
     private string IconForDisplayMyAssigned =>
         UserDataState.Value.DisplayOnlyMyAssignedIssues ? Icons.Material.Filled.Check : NoCheck;
+
+    private void OnDisplayTitle () {
+        UserDataFacade.SetIssueListDisplayStyle( IssueListStyle.TitleOnly );
+    }
+
+    private void OnDisplayTitleDescription() {
+        UserDataFacade.SetIssueListDisplayStyle( IssueListStyle.TitleDescription );
+    }
+    
+    private void OnDisplayFullDetail() {
+        UserDataFacade.SetIssueListDisplayStyle( IssueListStyle.FullDetail );
+    }
+
+    private string IconForListStyleTitle =>
+        UserDataState.Value.IssueListDisplayStyle.Equals( IssueListStyle.TitleOnly ) ? Icons.Material.Filled.Check : NoCheck;
+    
+    private string IconForListStyleTitleDescription =>
+        UserDataState.Value.IssueListDisplayStyle.Equals( IssueListStyle.TitleDescription ) ? Icons.Material.Filled.Check : NoCheck;
+
+    private string IconForListStyleFullDetail =>
+        UserDataState.Value.IssueListDisplayStyle.Equals( IssueListStyle.FullDetail ) ? Icons.Material.Filled.Check : NoCheck;
 }
