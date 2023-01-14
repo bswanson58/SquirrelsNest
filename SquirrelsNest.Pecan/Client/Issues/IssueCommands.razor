@@ -1,7 +1,7 @@
 ﻿@using Fluxor
 @using SquirrelsNest.Pecan.Client.Issues.Store
 @using SquirrelsNest.Pecan.Client.Projects.Store
-@using SquirrelsNest.Pecan.Client.Ui.Store
+@using SquirrelsNest.Pecan.Client.UserData.Store
 
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
@@ -41,11 +41,11 @@
 
 @inject IssueFacade             IssueFacade
 @inject IState<ProjectState>    ProjectState;
-@inject IState<UiState>         UiState;
-@inject UiFacade                UiFacade;
+@inject IState<UserDataState>   UserDataState;
+@inject UserDataFacade          UserDataFacade;
 
 @code {
-    private const string mNoCheck = "<svg style=\"width:24px;height:24px\" viewBox=\"0 0 24 24\"></svg>";
+    private const string NoCheck = "<svg style=\"width:24px;height:24px\" viewBox=\"0 0 24 24\"></svg>";
 
     private void OnAddIssue() {
         if( ProjectState.Value.CurrentProject != null ) {
@@ -54,23 +54,23 @@
     }
 
     private void OnDisplayCompleted() {
-        UiFacade.IssueDisplayCompleted(!UiState.Value.DisplayCompletedIssues );
+        UserDataFacade.IssueDisplayCompleted(!UserDataState.Value.DisplayCompletedIssues );
     }
 
     private void OnDisplayCompletedLast() {
-        UiFacade.IssueDisplayCompletedLast(!UiState.Value.DisplayCompletedIssuesLast );
+        UserDataFacade.IssueDisplayCompletedLast(!UserDataState.Value.DisplayCompletedIssuesLast );
     }
 
     private void OnDisplayMyAssigned() {
-        UiFacade.IssueDisplayMyAssigned(!UiState.Value.DisplayOnlyMyAssignedIssues );
+        UserDataFacade.IssueDisplayMyAssigned(!UserDataState.Value.DisplayOnlyMyAssignedIssues );
     }
 
     private string IconForDisplayCompleted =>
-        UiState.Value.DisplayCompletedIssues ? Icons.Material.Filled.Check : mNoCheck;
+        UserDataState.Value.DisplayCompletedIssues ? Icons.Material.Filled.Check : NoCheck;
 
     private string IconForDisplayCompletedLast =>
-        UiState.Value.DisplayCompletedIssuesLast ? Icons.Material.Filled.Check : mNoCheck;
+        UserDataState.Value.DisplayCompletedIssuesLast ? Icons.Material.Filled.Check : NoCheck;
 
     private string IconForDisplayMyAssigned =>
-        UiState.Value.DisplayOnlyMyAssignedIssues ? Icons.Material.Filled.Check : mNoCheck;
+        UserDataState.Value.DisplayOnlyMyAssignedIssues ? Icons.Material.Filled.Check : NoCheck;
 }

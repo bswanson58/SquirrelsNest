@@ -1,14 +1,14 @@
 ﻿@using Fluxor
 @using SquirrelsNest.Pecan.Client.Issues.Store
 @using SquirrelsNest.Pecan.Client.Projects.Store
-@using SquirrelsNest.Pecan.Client.Ui.Store
+@using SquirrelsNest.Pecan.Client.UserData.Store
 @using SquirrelsNest.Pecan.Shared.Entities
 
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 @inject IState<ProjectState>    ProjectState;
 @inject IState<IssueState>      IssueState;
-@inject IState<UiState>         UiState;
+@inject IState<UserDataState>   UserDataState;
 
 <MudContainer Class="ma-1 pa-0">
     @if( IssueState.Value.ApiCallInProgress ) {
@@ -33,7 +33,7 @@
         base.OnInitialized();
 
         IssueState.StateChanged += OnIssueStateChanged;
-        UiState.StateChanged += OnUiStateChanged;
+        UserDataState.StateChanged += OnUiStateChanged;
 
         UpdateIssueList();
     }
@@ -49,13 +49,13 @@
     private void UpdateIssueList() {
         var issueList = IssueState.Value.Issues;
 
-        if(!UiState.Value.DisplayCompletedIssues ) {
+        if(!UserDataState.Value.DisplayCompletedIssues ) {
             issueList = issueList
                 .Where( i => !IsIssueCompleted( i ))
                 .ToList();
         }
 
-        if( UiState.Value.DisplayCompletedIssuesLast ) {
+        if( UserDataState.Value.DisplayCompletedIssuesLast ) {
             issueList = issueList.OrderBy( IsIssueCompleted ).ToList();
         }
 
@@ -73,7 +73,7 @@
         base.Dispose( disposing );
 
         IssueState.StateChanged -= OnIssueStateChanged;
-        UiState.StateChanged -= OnUiStateChanged;
+        UserDataState.StateChanged -= OnUiStateChanged;
     }
 
 }

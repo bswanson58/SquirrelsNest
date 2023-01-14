@@ -24,17 +24,5 @@ namespace SquirrelsNest.Pecan.Client.Ui.Store {
 
             return await dialog.Result;
         }
-
-        public void IssueDisplayCompleted( bool state ) {
-            mDispatcher.Dispatch( new IssueDisplayCompleted( state ));
-        }
-
-        public void IssueDisplayCompletedLast( bool state ) {
-            mDispatcher.Dispatch( new IssueDisplayCompletedLast( state ));
-        }
-
-        public void IssueDisplayMyAssigned( bool state ) {
-            mDispatcher.Dispatch( new IssueDisplayMyAssigned( state ));
-        }
     }
 }

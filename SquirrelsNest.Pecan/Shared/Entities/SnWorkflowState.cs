@@ -52,6 +52,7 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
         private static SnWorkflowState ? mDefaultState;
 
         public static SnWorkflowState Default =>
-            mDefaultState ??= new SnWorkflowState( EntityIdentifier.Default, EntityIdentifier.Default, "Unspecified", String.Empty, StateCategory.Intermediate );
+            mDefaultState ??= new SnWorkflowState( EntityIdentifier.Default, EntityIdentifier.Default, "Unspecified", 
+                                                   String.Empty, StateCategory.Intermediate );
     }
 }

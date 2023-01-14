@@ -12,5 +12,17 @@ namespace SquirrelsNest.Pecan.Client.UserData.Store {
         public void RequestUserData() {
             mDispatcher.Dispatch( new RequestUserDataAction());
         }
+
+        public void IssueDisplayCompleted( bool state ) {
+            mDispatcher.Dispatch( new IssueDisplayCompleted( state ));
+        }
+
+        public void IssueDisplayCompletedLast( bool state ) {
+            mDispatcher.Dispatch( new IssueDisplayCompletedLast( state ));
+        }
+
+        public void IssueDisplayMyAssigned( bool state ) {
+            mDispatcher.Dispatch( new IssueDisplayMyAssigned( state ));
+        }
     }
 }

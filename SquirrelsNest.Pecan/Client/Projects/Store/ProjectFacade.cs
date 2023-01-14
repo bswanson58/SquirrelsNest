@@ -1,5 +1,6 @@
 ﻿using Fluxor;
 using SquirrelsNest.Pecan.Client.Projects.Actions;
+using SquirrelsNest.Pecan.Client.UserData.Actions;
 using SquirrelsNest.Pecan.Shared.Dto.Projects;
 using SquirrelsNest.Pecan.Shared.Entities;
 
@@ -29,6 +30,7 @@ namespace SquirrelsNest.Pecan.Client.Projects.Store {
 
         public void SetCurrentProject( SnCompositeProject project ) {
             mDispatcher.Dispatch( new SetCurrentProjectAction( project ));
+            mDispatcher.Dispatch( new UserDataSetCurrentProjectAction( project.EntityId ));
         }
 
         public void AddComponent( SnCompositeProject forProject ) {
