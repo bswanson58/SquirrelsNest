@@ -24,5 +24,13 @@ namespace SquirrelsNest.Pecan.Client.Ui.Store {
 
             return await dialog.Result;
         }
+
+        public async Task<DialogResult> DisplayMessage( string title, string message ) {
+            var parameters = new DialogParameters { { nameof( MessageDialog.Message ), message } };
+            var options = new DialogOptions { FullWidth = true, CloseOnEscapeKey = true };
+            var dialog = await mDialogService.ShowAsync<MessageDialog>( title, parameters, options );
+
+            return await dialog.Result;
+        }
     }
 }
