@@ -33,6 +33,10 @@ namespace SquirrelsNest.Pecan.Client.Projects.Store {
             mDispatcher.Dispatch( new UserDataSetCurrentProjectAction( project.EntityId ));
         }
 
+        public void CreateProjectTemplate( SnCompositeProject project ) {
+            mDispatcher.Dispatch( new CreateProjectTemplateAction( project ));
+        }
+
         public void AddComponent( SnCompositeProject forProject ) {
             var component = new SnComponent( forProject.Project );
 

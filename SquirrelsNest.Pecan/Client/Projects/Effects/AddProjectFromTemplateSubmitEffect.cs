@@ -6,24 +6,28 @@ using Microsoft.Extensions.Logging;
 using SquirrelsNest.Pecan.Client.Projects.Actions;
 using SquirrelsNest.Pecan.Client.Support;
 using SquirrelsNest.Pecan.Client.Ui.Actions;
-using SquirrelsNest.Pecan.Shared.Dto.Projects;
+using SquirrelsNest.Pecan.Shared.Dto.ProjectTemplates;
 
 namespace SquirrelsNest.Pecan.Client.Projects.Effects {
     // ReSharper disable once UnusedType.Global
-    public class AddProjectSubmitEffect : Effect<AddProjectSubmitAction> {
+    public class AddProjectFromTemplateSubmitEffect : Effect<AddProjectFromTemplateSubmitAction> {
         private readonly IAuthenticatedHttpHandler          mHttpHandler;
         private readonly ILogger<AddProjectSubmitEffect>    mLogger;
 
-        public AddProjectSubmitEffect( ILogger<AddProjectSubmitEffect> logger, IAuthenticatedHttpHandler httpHandler ) {
-            mLogger = logger;
+        public AddProjectFromTemplateSubmitEffect( IAuthenticatedHttpHandler httpHandler, ILogger<AddProjectSubmitEffect> logger ) {
             mHttpHandler = httpHandler;
+            mLogger = logger;
         }
 
-        public override async Task HandleAsync( AddProjectSubmitAction action, IDispatcher dispatcher ) {
+        public override async Task HandleAsync( AddProjectFromTemplateSubmitAction action, IDispatcher dispatcher ) {
             dispatcher.Dispatch( new ApiCallStarted( "Adding Project" ));
 
             try {
-                var response = await mHttpHandler.Post<CreateProjectResponse>( CreateProjectRequest.Route, action.ProjectRequest );
+                var request = new CreateProjectFromTemplateRequest(
+                    action.ProjectRequest.ProjectTemplateName, 
+                    action.ProjectRequest.Name, 
+                    action.ProjectRequest.Description );
+                var response = await mHttpHandler.Post<CreateProjectFromTemplateResponse>( CreateProjectFromTemplateRequest.Route, request );
 
                 if(( response?.Project != null ) &&
                    ( response.Succeeded )) {

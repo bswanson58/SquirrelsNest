@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Fluxor;
 using MudBlazor;
 using SquirrelsNest.Pecan.Client.Projects.Actions;
@@ -14,14 +15,19 @@ namespace SquirrelsNest.Pecan.Client.Projects.Effects {
         }
 
         public override async Task HandleAsync( AddProjectAction action, IDispatcher dispatcher ) {
-            var parameters = new DialogParameters { { nameof( AddProjectDialog.Project ), new CreateProjectInput() } };
+            var parameters = new DialogParameters { { nameof( AddProjectDialog.Request ), new CreateProjectRequest() } };
             var options = new DialogOptions { FullWidth = true, CloseOnEscapeKey = true };
             var dialog = await mDialogService.ShowAsync<AddProjectDialog>( "New Project Parameters", parameters, options );
             var dialogResult = await dialog.Result;
         
             if((!dialogResult.Canceled ) &&
-               ( dialogResult.Data is CreateProjectInput projectInput )) {
-                dispatcher.Dispatch( new AddProjectSubmitAction( projectInput ));
+               ( dialogResult.Data is CreateProjectRequest request )) {
+                if(!String.IsNullOrWhiteSpace( request.ProjectTemplateName )) {
+                    dispatcher.Dispatch( new AddProjectFromTemplateSubmitAction( request ));
+                }
+                else {
+                    dispatcher.Dispatch( new AddProjectSubmitAction( request ));
+                }
             }
         }
     }

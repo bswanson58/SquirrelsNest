@@ -1,0 +1,41 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@using Blazored.FluentValidation
+@using Microsoft.AspNetCore.Components
+@using SquirrelsNest.Pecan.Shared.Dto.ProjectTemplates
+@using SquirrelsNest.Pecan.Shared.Entities
+
+<EditForm Model="@Request" OnValidSubmit="@OnSubmit">
+    <FluentValidationValidator />
+    <MudDialog>
+        <DialogContent>
+            <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild">
+                <MudTextField T="string"
+                              Label="Template Name"
+                              HelperText="The name for the project template"
+                              HelperTextOnFocus="true"
+                              @bind-Value="@Request.TemplateName" />
+                <ValidationMessage For="@(() => Request.TemplateName)" />
+                <MudTextField T="string"
+                              Label="Template Description"
+                              HelperText="The description of the project template"
+                              HelperTextOnFocus="true"
+                              @bind-Value="@Request.TemplateDescription" />
+                <ValidationMessage For="@(() => Request.TemplateDescription)" />
+            </MudFocusTrap>
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="OnCancel">Cancel</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Ok</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+@code {
+    [CascadingParameter]
+    public MudDialogInstance?           MudDialog { get; set; }
+    [Parameter]
+    public CreateProjectTemplateRequest Request { get; set; } = new( SnCompositeProject.Default );
+
+    private void OnSubmit() => MudDialog?.Close( DialogResult.Ok( Request ));
+    private void OnCancel() => MudDialog?.Cancel();
+}

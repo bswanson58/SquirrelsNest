@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SquirrelsNest.Pecan.Server.Database.Entities;
@@ -6,7 +7,9 @@ using SquirrelsNest.Pecan.Shared.Entities;
 
 namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
     public interface IUserDataProvider {
+        Task<SnUserData>        Create( SnUserData userData );
         ValueTask<SnUserData>   GetUserData( SnUser forUser, string dataType );
+        Task<List<SnUserData>>  GetUserData( string dataType );
         Task<SnUserData>        UpdateUserData( SnUserData userData );
     }
 
@@ -28,6 +31,13 @@ namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
                 .FirstOrDefault( SnUserData.Default );
         }
 
+        public async Task<List<SnUserData>> GetUserData( string dataType ) {
+            return await BaseGetAll()
+                .Where( d => d.DataType.Equals( dataType ))
+                .Select( d => ConvertTo( d ))
+                .ToListAsync();
+        }
+
         public async Task<SnUserData> UpdateUserData( SnUserData userData ) {
             var existingData = await BaseGetAll()
                 .Where( d => d.UserId.Equals( userData.UserId ) && 
@@ -41,7 +51,7 @@ namespace SquirrelsNest.Pecan.Server.Database.DataProviders {
             return await Create( userData );
         }
 
-        private async Task<SnUserData> Create( SnUserData userData ) =>
+        public async Task<SnUserData> Create( SnUserData userData ) =>
             ( await BaseCreate( ConvertFrom( userData ))).ToEntity();
     }
 }

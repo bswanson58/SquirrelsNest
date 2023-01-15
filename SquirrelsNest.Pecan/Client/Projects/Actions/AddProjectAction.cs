@@ -7,10 +7,18 @@ namespace SquirrelsNest.Pecan.Client.Projects.Actions {
     }
 
     public class AddProjectSubmitAction {
-        public  CreateProjectInput  ProjectInput {  get; }
+        public  CreateProjectRequest  ProjectRequest {  get; }
 
-        public AddProjectSubmitAction( CreateProjectInput projectInput ) {
-            ProjectInput = projectInput;
+        public AddProjectSubmitAction( CreateProjectRequest projectRequest ) {
+            ProjectRequest = projectRequest;
+        }
+    }
+
+    public class AddProjectFromTemplateSubmitAction {
+        public  CreateProjectRequest  ProjectRequest {  get; }
+
+        public AddProjectFromTemplateSubmitAction( CreateProjectRequest projectRequest ) {
+            ProjectRequest = projectRequest;
         }
     }
 

@@ -11,22 +11,22 @@ using SquirrelsNest.Pecan.Shared.Entities;
 
 namespace SquirrelsNest.Pecan.Server.Features.Projects {
     [Authorize]
-    [Route( CreateProjectInput.Route )]
+    [Route( CreateProjectRequest.Route )]
     public class CreateProjectEndpoint : EndpointBaseAsync
-        .WithRequest<CreateProjectInput>
+        .WithRequest<CreateProjectRequest>
         .WithActionResult<CreateProjectResponse> {
 
         private readonly IProjectProvider               mProjectProvider;
-        private readonly IValidator<CreateProjectInput> mInputValidator;
+        private readonly IValidator<CreateProjectRequest> mInputValidator;
 
-        public CreateProjectEndpoint( IProjectProvider projectProvider, IValidator<CreateProjectInput> inputValidator ) {
+        public CreateProjectEndpoint( IProjectProvider projectProvider, IValidator<CreateProjectRequest> inputValidator ) {
             mProjectProvider = projectProvider;
             mInputValidator = inputValidator;
         }
 
         [HttpPost]
         public override async Task<ActionResult<CreateProjectResponse>> HandleAsync( 
-            [FromBody] CreateProjectInput request,
+            [FromBody] CreateProjectRequest request,
             CancellationToken cancellationToken = new()) {
 
             try {

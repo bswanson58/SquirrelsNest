@@ -6,17 +6,19 @@ using SquirrelsNest.Pecan.Shared.Entities;
 using SquirrelsNest.Pecan.Shared.Constants;
 
 namespace SquirrelsNest.Pecan.Shared.Dto.Projects {
-    public class CreateProjectInput {
+    public class CreateProjectRequest {
         public  string      Name { get; set; }
         public  string      Description { get; set; }
         public  string      IssuePrefix { get; set; }
+        public  string      ProjectTemplateName { get; set; }
 
         public const string Route = $"{Routes.BaseRoute}/createProject";
 
-        public CreateProjectInput() {
+        public CreateProjectRequest() {
             Name = String.Empty;
             Description = String.Empty;
             IssuePrefix = String.Empty;
+            ProjectTemplateName = String.Empty;
         }
     }
 
@@ -45,7 +47,7 @@ namespace SquirrelsNest.Pecan.Shared.Dto.Projects {
     }
 
     // ReSharper disable once ClassNeverInstantiated.Global
-    public class CreateProjectInputValidator : AbstractValidator<CreateProjectInput> {
+    public class CreateProjectInputValidator : AbstractValidator<CreateProjectRequest> {
         public CreateProjectInputValidator() {
             RuleFor( p => p.Name )
                 .NotEmpty()

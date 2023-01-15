@@ -14,6 +14,7 @@ using SquirrelsNest.Pecan.Client.Auth.Support;
 using SquirrelsNest.Pecan.Client.Constants;
 using SquirrelsNest.Pecan.Client.Issues.Store;
 using SquirrelsNest.Pecan.Client.Projects.Store;
+using SquirrelsNest.Pecan.Client.ProjectTemplates.Store;
 using SquirrelsNest.Pecan.Client.Support;
 using SquirrelsNest.Pecan.Client.Ui;
 using SquirrelsNest.Pecan.Client.Ui.Store;
@@ -57,6 +58,7 @@ void ConfigureServices( IServiceCollection services ) {
     services.AddScoped<AuthFacade>();
     services.AddScoped<IssueFacade>();
     services.AddScoped<ProjectFacade>();
+    services.AddScoped<ProjectTemplatesFacade>();
     services.AddScoped<UiFacade>();
     services.AddScoped<UserFacade>();
     services.AddScoped<UserDataFacade>();
