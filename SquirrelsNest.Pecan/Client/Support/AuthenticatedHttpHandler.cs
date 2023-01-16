@@ -8,8 +8,9 @@ using SquirrelsNest.Pecan.Shared.Dto;
 
 namespace SquirrelsNest.Pecan.Client.Support {
     public interface IAuthenticatedHttpHandler {
-        Task<TResponse ?>   Get<TResponse>( string route );
-        Task<TResponse ?>   Post<TResponse>( string route, object request );
+        Task<TResponse ?>           Get<TResponse>( string route );
+        Task<TResponse ?>           Post<TResponse>( string route, object request );
+        Task<HttpResponseMessage ?> Post( string route, object request );
     }
 
     public class AuthenticatedHttpHandler : IAuthenticatedHttpHandler {
@@ -39,6 +40,25 @@ namespace SquirrelsNest.Pecan.Client.Support {
                 using var httpClient = mClientFactory.CreateClient( HttpClientNames.Authenticated );
 
                 return await HandleResponse<TResponse>( await httpClient.PostAsJsonAsync( route, request ));
+            }
+            catch( Exception ex ) {
+                mStatusHandler.HandleException( ex );
+
+                return default;
+            }
+        }
+
+        public async Task<HttpResponseMessage ?> Post( string route, object request ) {
+            try {
+                using var httpClient = mClientFactory.CreateClient( HttpClientNames.Authenticated );
+
+                var response = await httpClient.PostAsJsonAsync( route, request );
+
+                if(!response.IsSuccessStatusCode ) {
+                    mStatusHandler.HandleStatusCode( response );
+                }
+
+                return response;
             }
             catch( Exception ex ) {
                 mStatusHandler.HandleException( ex );

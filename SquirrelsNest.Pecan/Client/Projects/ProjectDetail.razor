@@ -29,6 +29,7 @@
                 <MudStack Row="true" Spacing="0" Class="d-flex justify-end">
                     <MudIconButton Icon="@Icons.Material.Outlined.Edit" Title="Edit Project" OnClick="@OnEdit"/>
                     <MudIconButton Icon="@Icons.Material.Filled.SaveAlt" Title="Create Project Template" OnClick="@OnCreateTemplate" />
+                    <MudIconButton Icon="@Icons.Material.Filled.SaveAs" Title="Export Project" OnClick="@OnExport" />
                     <MudIconButton Icon="@Icons.Material.Outlined.DeleteOutline" Title="Delete Project" OnClick="@OnDelete" />
                 </MudStack>
             </div>
@@ -62,6 +63,12 @@
     private void OnCreateTemplate() {
         if( ProjectState.Value.CurrentProject != null ) {
             ProjectFacade.CreateProjectTemplate( ProjectState.Value.CurrentProject );
+        }
+    }
+
+    private void OnExport() {
+        if( ProjectState.Value.CurrentProject != null ) {
+            ProjectFacade.ExportProject( ProjectState.Value.CurrentProject );
         }
     }
 }

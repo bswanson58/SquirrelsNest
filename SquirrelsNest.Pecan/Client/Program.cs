@@ -69,6 +69,7 @@ void ConfigureServices( IServiceCollection services ) {
     services.AddValidatorsFromAssemblyContaining<CreateProjectInputValidator>();
 
     services.AddBlazoredLocalStorage();
+    services.AddBlazorDownloadFile();
 
     services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
     services.AddAuthorizationCore();

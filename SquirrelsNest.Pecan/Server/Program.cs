@@ -13,7 +13,9 @@ using SquirrelsNest.Pecan.Server.Features.Auth;
 using SquirrelsNest.Pecan.Server.Features.Issues;
 using SquirrelsNest.Pecan.Server.Features.Projects;
 using SquirrelsNest.Pecan.Server.Features.ProjectTemplates;
+using SquirrelsNest.Pecan.Server.Features.Transfer;
 using SquirrelsNest.Pecan.Server.Models;
+using SquirrelsNest.Pecan.Server.Support;
 using SquirrelsNest.Pecan.Shared.Constants;
 using SquirrelsNest.Pecan.Shared.Dto.Projects;
 
@@ -48,6 +50,8 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
     services.AddEntityProviders();
 
     services.AddScoped<IProjectTemplateManager, ProjectTemplateManager>();
+    services.AddScoped<IStreamWriter, StreamWriter>();
+    services.AddScoped<IExportManager, ExportManager>();
 
     services.AddValidatorsFromAssemblyContaining<CreateProjectInputValidator>();
 }
