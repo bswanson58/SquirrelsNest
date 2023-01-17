@@ -52,6 +52,7 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
     services.AddScoped<IProjectTemplateManager, ProjectTemplateManager>();
     services.AddScoped<IStreamWriter, StreamWriter>();
     services.AddScoped<IExportManager, ExportManager>();
+    services.AddScoped<IUserService, UserService>();
 
     services.AddValidatorsFromAssemblyContaining<CreateProjectInputValidator>();
 }

@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.ApiEndpoints;
 using FluentValidation;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using SquirrelsNest.Pecan.Server.Database;
-using SquirrelsNest.Pecan.Server.Database.Entities;
-using SquirrelsNest.Pecan.Shared.Constants;
 using SquirrelsNest.Pecan.Shared.Dto.Auth;
 
 namespace SquirrelsNest.Pecan.Server.Features.Auth {
@@ -18,14 +12,12 @@ namespace SquirrelsNest.Pecan.Server.Features.Auth {
         .WithRequest<CreateUserInput>
         .WithActionResult<CreateUserResponse> {
 
-        private readonly    IDbContext                  mContext;
-        private readonly    UserManager<DbUser>         mUserManager;
-        private readonly    IValidator<CreateUserInput> mValidator;
+        private readonly IUserService                   mUserService;
+        private readonly IValidator<CreateUserInput>    mValidator;
 
-        public CreateUser( UserManager<DbUser> userManager, IDbContext context, IValidator<CreateUserInput> validator ) {
-            mUserManager = userManager;
+        public CreateUser( IValidator<CreateUserInput> validator, IUserService userService ) {
             mValidator = validator;
-            mContext = context;
+            mUserService = userService;
         }
 
         [HttpPost]
@@ -39,31 +31,13 @@ namespace SquirrelsNest.Pecan.Server.Features.Auth {
                     return Ok( new CreateUserResponse( validation ));
                 }
 
-                var user = new DbUser { UserName = request.Email, Email = request.Email };
-                var firstUser = !mContext.Users.Any();
-                var result = await mUserManager.CreateAsync( user, request.Password );
+                var user = await mUserService.CreateUser( request.Email, request.Name, request.Password );
 
-                if( result.Succeeded ) {
-                    result = await mUserManager.AddClaimAsync( user, new Claim( ClaimTypes.GivenName, request.Name ));
+                if( user != null ) {
+                    return Ok( new CreateUserResponse());
                 }
 
-                if( result.Succeeded ) {
-                    // make the first user to be created an admin
-                    if( firstUser ) {
-                        result = await mUserManager.AddToRoleAsync( user, ClaimValues.ClaimRoleAdmin );
-                    }
-
-                    // all users have the user role.
-                    if( result.Succeeded ) {
-                        result = await mUserManager.AddToRoleAsync( user, ClaimValues.ClaimRoleUser );
-                    }
-
-                    if( result.Succeeded ) {
-                        return Ok( new CreateUserResponse());
-                    }
-                }
-
-                return Ok( new CreateUserResponse( result.Errors.Select( e => e.Description ))); 
+                return Ok( new CreateUserResponse( false, "User could not be created" ));
             }
             catch( Exception ex ) {
                 return Ok( new CreateUserResponse( ex ));

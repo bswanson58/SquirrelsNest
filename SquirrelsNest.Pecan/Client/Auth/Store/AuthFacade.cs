@@ -30,6 +30,10 @@ namespace SquirrelsNest.Pecan.Client.Auth.Store {
             mDispatcher.Dispatch( new LoginUserSubmitAction( input ));
         }
 
+        public void ChangePassword() {
+            mDispatcher.Dispatch( new ChangePasswordAction());
+        }
+
         public void LogoutUser() {
             mDispatcher.Dispatch( new LogoutUserAction());
         }
