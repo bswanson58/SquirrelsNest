@@ -13,8 +13,9 @@
                     <MudContainer Class="ms-1 ps-1 pe-0 d-flex" Style="height: 15em;">
                         <ComponentList Components="IssueTypes" OnEdit="OnEditIssueType" OnDelete="OnDeleteIssueType"/>
                     </MudContainer>
-                    <MudButton Class="d-flex justify-end" ButtonType="ButtonType.Button" OnClick="OnAddIssueType"
-                               Variant="Variant.Text">Add Type</MudButton>
+                    <MudContainer Class="px-0 py-1 d-flex justify-end">
+                        <MudButton OnClick="@OnAddIssueType" Variant="Variant.Text">Add Issue Type</MudButton>
+                    </MudContainer>
                 </MudStack>
             </MudPaper>
         </MudItem>
@@ -25,8 +26,9 @@
                     <MudContainer Class="ms-1 ps-1 pe-0 d-flex" Style="height: 15em;">
                         <ComponentList Components="Components" OnEdit="OnEditComponent" OnDelete="OnDeleteComponent"/>
                     </MudContainer>
-                    <MudButton Class="d-flex justify-end" ButtonType="ButtonType.Button" OnClick="OnAddComponent"
-                               Variant="Variant.Text">Add Component</MudButton>
+                    <MudContainer Class="px-0 py-1 d-flex justify-end">
+                        <MudButton OnClick="@OnAddComponent" Variant="Variant.Text">Add Component</MudButton>
+                    </MudContainer>
                 </MudStack>
             </MudPaper>
         </MudItem>
@@ -37,8 +39,9 @@
                     <MudContainer Class="ms-1 ps-1 pe-0 d-flex" Style="height: 15em;">
                         <ComponentList Components="States" OnEdit="OnEditState" OnDelete="OnDeleteState"/>
                     </MudContainer>
-                    <MudButton Class="d-flex justify-end" ButtonType="ButtonType.Button" OnClick="OnAddState"
-                               Variant="Variant.Text">Add State</MudButton>
+                    <MudContainer Class="px-0 py-1 d-flex justify-end">
+                        <MudButton OnClick="OnAddState" Variant="Variant.Text">Add State</MudButton>
+                    </MudContainer>
                 </MudStack>
             </MudPaper>
         </MudItem>
@@ -49,8 +52,9 @@
                     <MudContainer Class="ms-1 ps-1 pe-0 d-flex" Style="height: 15em;">
                         <ComponentList Components="Releases" OnEdit="OnEditRelease" OnDelete="OnDeleteRelease"/>
                     </MudContainer>
-                    <MudButton Class="d-flex justify-end" ButtonType="ButtonType.Button" OnClick="OnAddRelease"
-                               Variant="Variant.Text">Add Release</MudButton>
+                    <MudContainer Class="px-0 py-1 d-flex justify-end">
+                        <MudButton OnClick="OnAddRelease" Variant="Variant.Text">Add Release</MudButton>
+                    </MudContainer>
                 </MudStack>
             </MudPaper>
         </MudItem>
