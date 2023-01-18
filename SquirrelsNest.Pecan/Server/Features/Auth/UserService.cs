@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -11,8 +12,9 @@ using SquirrelsNest.Pecan.Shared.Entities;
 
 namespace SquirrelsNest.Pecan.Server.Features.Auth {
     public interface IUserService {
-        Task<SnUser ?> CreateUser( string email, string displayName, string password = "" );
+        Task<SnUser ?>  CreateUser( string email, string displayName, string password = "" );
         Task<bool>      UpdatePassword( SnUser user, string currentPassword, string newPassword );
+        Task<bool>      UpdateUserRoles( SnUser user, List<string> roles );
     }
 
     public class UserService : IUserService {
@@ -88,6 +90,42 @@ namespace SquirrelsNest.Pecan.Server.Features.Auth {
                 return true;
             }
 
+            throw new ApplicationException( "User could not be located" );
+        }
+
+        public async Task<bool> UpdateUserRoles( SnUser user, List<string> roles ) {
+            var dbUser = await mUserManager.FindByIdAsync( user.EntityId );
+
+            if( dbUser != null ) {
+                var currentRoles = await mUserManager.GetRolesAsync( dbUser );
+
+                foreach( var role in roles ) {
+                    if(!currentRoles.Contains( role )) {
+                        var result = await mUserManager.AddToRoleAsync( dbUser, role );
+
+                        if(!result.Succeeded ) {
+                            throw new ApplicationException( 
+                                String.Join( Environment.NewLine, result.Errors.Select( e => e.Description )));
+                        }
+                    }
+                }
+
+                foreach ( var role in currentRoles ) {
+                    if(!roles.Contains( role )) {
+                        if(!roles.Contains( role )) {
+                            var result = await mUserManager.RemoveFromRoleAsync( dbUser, role );
+
+                            if(!result.Succeeded ) {
+                                throw new ApplicationException( 
+                                    String.Join( Environment.NewLine, result.Errors.Select( e => e.Description )));
+                            }
+                        }
+                    }
+                }
+
+                return true;
+            }
+            
             throw new ApplicationException( "User could not be located" );
         }
     }

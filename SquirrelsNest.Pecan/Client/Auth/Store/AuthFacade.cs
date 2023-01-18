@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using SquirrelsNest.Pecan.Client.Auth.Actions;
 using SquirrelsNest.Pecan.Client.Shared;
 using SquirrelsNest.Pecan.Shared.Dto.Auth;
+using SquirrelsNest.Pecan.Shared.Entities;
 
 namespace SquirrelsNest.Pecan.Client.Auth.Store {
     public class AuthFacade {
@@ -32,6 +33,10 @@ namespace SquirrelsNest.Pecan.Client.Auth.Store {
 
         public void ChangePassword() {
             mDispatcher.Dispatch( new ChangePasswordAction());
+        }
+
+        public void ChangeUserRoles( SnUser user ) {
+            mDispatcher.Dispatch( new ChangeUserRolesAction( user ));
         }
 
         public void LogoutUser() {
