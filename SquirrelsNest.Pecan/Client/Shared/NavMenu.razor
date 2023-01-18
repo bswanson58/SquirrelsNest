@@ -1,13 +1,20 @@
 ﻿@using SquirrelsNest.Pecan.Shared.Constants
 
 <MudNavMenu>
-    <MudNavLink Href="/" Match="NavLinkMatch.All">Home</MudNavLink>
+    <MudNavLink Href="/" 
+                Icon="@Icons.Material.Filled.Home"
+                Match="NavLinkMatch.All">Home</MudNavLink>
     <AuthorizeView Roles=@ClaimValues.ClaimRoleUser>
         <Authorized>
-            <MudNavLink Href="@NavLinks.Projects" Match="NavLinkMatch.Prefix">Projects</MudNavLink>
-            <MudNavLink Href="@NavLinks.Issues" Match="NavLinkMatch.Prefix">Issues</MudNavLink>
-            <MudNavLink Href="@NavLinks.Users" Match="NavLinkMatch.Prefix">Users</MudNavLink>
+            <MudNavLink Href="@NavLinks.Projects"
+                        Icon="@Icons.Material.Filled.Workspaces"
+                        Match="NavLinkMatch.Prefix">Projects</MudNavLink>
+            <MudNavLink Href="@NavLinks.Issues" 
+                        Icon="@Icons.Material.Filled.Assignment"
+                        Match="NavLinkMatch.Prefix">Issues</MudNavLink>
+            <MudNavLink Href="@NavLinks.Users"
+                        Icon="@Icons.Material.Filled.SupervisorAccount"
+                        Match="NavLinkMatch.Prefix">Users</MudNavLink>
         </Authorized>
     </AuthorizeView>
-    <MudNavLink Href="/about" Match="NavLinkMatch.Prefix">About</MudNavLink>
 </MudNavMenu>
