@@ -49,8 +49,8 @@ namespace SquirrelsNest.Pecan.Server.Features.Transfer.Dto {
             };
         }
 
-        public SnIssue ToEntity() {
-            return new SnIssue( EntityId, Title, Description, ProjectId, IssueNumber, EntryDate,
+        public SnIssue ToNewEntity( SnProject forProject ) {
+            return new SnIssue( EntityIdentifier.CreateNew(), Title, Description, forProject.EntityId, IssueNumber, EntryDate,
                                 EntityIdentifier.CreateIdOrThrow( EnteredById ),
                                 EntityIdentifier.CreateIdOrThrow( IssueTypeId ),
                                 EntityIdentifier.CreateIdOrThrow( ComponentId ), 

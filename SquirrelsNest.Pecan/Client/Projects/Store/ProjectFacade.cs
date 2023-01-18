@@ -32,6 +32,10 @@ namespace SquirrelsNest.Pecan.Client.Projects.Store {
             mDispatcher.Dispatch( new ExportProjectAction( project ));
         }
 
+        public void ImportProject() {
+            mDispatcher.Dispatch( new ImportProjectAction());
+        }
+
         public void SetCurrentProject( SnCompositeProject project ) {
             mDispatcher.Dispatch( new SetCurrentProjectAction( project ));
             mDispatcher.Dispatch( new UserDataSetCurrentProjectAction( project.EntityId ));

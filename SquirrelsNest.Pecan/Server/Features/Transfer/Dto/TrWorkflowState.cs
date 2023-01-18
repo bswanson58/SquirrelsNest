@@ -30,8 +30,8 @@ namespace SquirrelsNest.Pecan.Server.Features.Transfer.Dto {
             };
         }
 
-        public SnWorkflowState ToEntity() {
-            return new SnWorkflowState( EntityId, ProjectId, Name, Description, Category );
+        public SnWorkflowState ToNewEntity( SnProject forProject ) {
+            return new SnWorkflowState( EntityIdentifier.CreateNew(), forProject.EntityId, Name, Description, Category );
         }
     }
 }

@@ -35,8 +35,8 @@ namespace SquirrelsNest.Pecan.Server.Features.Transfer.Dto {
             };
         }
 
-        public SnProject ToEntity() {
-            return new SnProject( EntityId, Name, Description, Inception, RepositoryUrl, IssuePrefix, NextIssueNumber );
+        public SnProject ToNewEntity() {
+            return new SnProject( EntityIdentifier.CreateNew(), Name, Description, Inception, RepositoryUrl, IssuePrefix, NextIssueNumber );
         }
     }
 }
