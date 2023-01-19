@@ -1,4 +1,6 @@
-﻿@inherits LayoutComponentBase
+﻿@using SquirrelsNest.Pecan.Client.Gravatar
+
+@inherits LayoutComponentBase
 
 <MudThemeProvider />
 <MudDialogProvider />
@@ -12,9 +14,7 @@
                        OnClick="@(DrawerToggle)" />
         <MudText Typo="Typo.h5">SquirrelsNest</MudText>
         <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" 
-                       Color="Color.Inherit" 
-                       Edge="Edge.End" />
+        <Gravatar />
     </MudAppBar>
     <MudDrawer @bind-Open="mDrawerOpen"
                Width="10em"
@@ -30,7 +30,7 @@
 @code {
     bool mDrawerOpen = true;
 
-    void DrawerToggle() {
+    private void DrawerToggle() {
         mDrawerOpen = !mDrawerOpen;
     }
 }

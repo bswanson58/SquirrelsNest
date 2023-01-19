@@ -45,7 +45,8 @@ namespace SquirrelsNest.Pecan.Server.Features.Auth {
             var claims = new List<Claim> {
                 new( ClaimTypes.Name, user.UserName ?? String.Empty ),
                 new( ClaimValues.ClaimEntityId, user.Id ),
-                new( ClaimTypes.Email, user.Email ?? String.Empty )
+                new( ClaimTypes.Email, user.Email ?? String.Empty ),
+                new( ClaimValues.ClaimEmailHash, user.Email?.CalculateMd5Hash() ?? String.Empty )
             };
 
             var dbClaims = await mUserManager.GetClaimsAsync( user );

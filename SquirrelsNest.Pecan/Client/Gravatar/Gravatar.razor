@@ -1,0 +1,55 @@
+﻿@using SquirrelsNest.Pecan.Client.Auth.Store
+@using SquirrelsNest.Pecan.Client.Auth.Support
+@using SquirrelsNest.Pecan.Shared.Constants
+@using System.Security.Claims
+@using Fluxor
+
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<MudAvatar Image="@mGravatarImageUri" 
+           Color="Color.Info"
+           Alt="@mUserDisplayName">@mUserInitials</MudAvatar>
+
+@inject IState<AuthState>   AuthState;
+@inject IGravatarClient     GravatarClient;
+
+@code {
+    string  mGravatarImageUri = String.Empty;
+    string  mUserDisplayName = String.Empty;
+    string  mUserInitials = String.Empty;
+
+    protected override async Task OnInitializedAsync() {
+        await base.OnInitializedAsync();
+
+        AuthState.StateChanged += OnAuthStateChanged;
+        UpdateAvatar();
+    }
+
+    private void OnAuthStateChanged( object? sender, EventArgs e ) {
+        UpdateAvatar();
+    }
+
+    private void UpdateAvatar() {
+        if(!String.IsNullOrWhiteSpace( AuthState.Value.UserToken )) {
+            var emailHash = JwtParser.GetClaimValue( AuthState.Value.UserToken, ClaimValues.ClaimEmailHash );
+
+            mUserDisplayName = JwtParser.GetClaimValue( AuthState.Value.UserToken, ClaimTypes.GivenName );
+            mUserInitials = String.Concat( mUserDisplayName.Split( ' ' ).Select( s => s[0] ));
+
+            if(!String.IsNullOrWhiteSpace( emailHash )) {
+                mGravatarImageUri =
+                    GravatarClient.GetImageUri( emailHash, GravatarDefaultImage.IdentIcon, false, 100 )
+                        .AbsoluteUri;
+
+                StateHasChanged();
+            }
+        }
+    }
+
+    protected override void Dispose( bool disposing ) {
+        base.Dispose( disposing );
+
+        AuthState.StateChanged -= OnAuthStateChanged;
+    }
+
+}
