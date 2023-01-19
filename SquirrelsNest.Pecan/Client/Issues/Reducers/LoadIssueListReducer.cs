@@ -8,14 +8,14 @@ namespace SquirrelsNest.Pecan.Client.Issues.Reducers {
     public static class LoadIssueListReducer {
         [ReducerMethod( typeof( LoadIssueListAction ))]
         public static IssueState LoadIssueList( IssueState state ) =>
-            new ( true, String.Empty, state.Issues );
+            new ( true, String.Empty, state.Issues, state.PageInformation );
 
         [ReducerMethod]
         public static IssueState LoadIssueListSuccess( IssueState state, LoadIssueListSuccessAction action ) =>
-            new ( false, String.Empty, action.Issues );
+            new ( false, String.Empty, action.Issues, action.PageInformation );
 
         [ReducerMethod]
         public static IssueState LoadIssueListFailure( IssueState state, LoadIssueListFailureAction action ) =>
-            new ( false, action.Message, state.Issues );
+            new ( false, action.Message, state.Issues, state.PageInformation );
     }
 }
