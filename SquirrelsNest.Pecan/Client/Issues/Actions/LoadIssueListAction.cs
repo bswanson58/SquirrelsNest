@@ -7,9 +7,9 @@ namespace SquirrelsNest.Pecan.Client.Issues.Actions {
         public  SnCompositeProject  Project { get; }
         public  PageRequest         PageRequest {  get; }
 
-        public LoadIssueListAction( SnCompositeProject forProject ) {
+        public LoadIssueListAction( SnCompositeProject forProject, PageRequest forPage ) {
             Project = forProject;
-            PageRequest = new PageRequest( 1, 25 );
+            PageRequest = forPage;
         }
     }
 

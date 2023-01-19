@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Text.Json.Serialization;
 using SquirrelsNest.Pecan.Shared.Platform;
 
 namespace SquirrelsNest.Pecan.Shared.Entities {
+    [DebuggerDisplay("Issue: {" + nameof( DebugTitle ) + "}")]
     public class SnCompositeIssue {
         public  string              EntityId { get; }
         public  string              Title { get; }
@@ -16,6 +18,9 @@ namespace SquirrelsNest.Pecan.Shared.Entities {
         public  SnRelease           Release { get; }
         public  SnWorkflowState     WorkflowState { get; }
         public  SnUser              AssignedTo { get; }
+
+        [JsonIgnore]
+        public  string              DebugTitle => $"{IssueNumber} - {Title}";
 
         [JsonConstructor]
         public SnCompositeIssue( string entityId, string title, string description, string projectId, uint issueNumber, 

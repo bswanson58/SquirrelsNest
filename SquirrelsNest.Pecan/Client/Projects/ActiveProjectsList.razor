@@ -8,10 +8,8 @@
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 @inject IState<ProjectState>    ProjectState;
-@inject IState<IssueState>      IssueState;
 @inject IState<UserDataState>   UserDataState;
 @inject ProjectFacade           ProjectFacade;
-@inject IssueFacade             IssueFacade;
 
 <style>
     .mouse-highlight {
@@ -94,11 +92,6 @@
                         }
                     }
                 }
-                else {
-                    if(!IssueState.Value.Issues.Any()) {
-                        IssueFacade.LoadIssues( ProjectState.Value.CurrentProject );
-                    }
-                }
             }
 
             StateHasChanged();
@@ -107,8 +100,6 @@
 
     private void SetCurrentProject( ProjectViewModel project ) {
         ProjectFacade.SetCurrentProject( project.Project );
-
-        IssueFacade.LoadIssues( project.Project );
     }
 
     private bool IsCurrentProject( ProjectViewModel project ) => 

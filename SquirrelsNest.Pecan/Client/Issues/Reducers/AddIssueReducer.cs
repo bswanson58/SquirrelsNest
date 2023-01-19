@@ -10,7 +10,7 @@ namespace SquirrelsNest.Pecan.Client.Issues.Reducers {
     public static class AddIssueReducer {
         [ReducerMethod( typeof( AddIssueSubmitAction ))]
         public static IssueState AddIssueSubmit( IssueState state ) =>
-            new ( true, String.Empty, state.Issues, state.PageInformation );
+            new ( true, String.Empty, state.Issues, state.PageInformation, state.CurrentProjectId, state.CurrentDisplayPage );
 
         [ReducerMethod]
         public static IssueState AddIssueSuccess( IssueState state, AddIssueSuccess action ) {
@@ -18,11 +18,12 @@ namespace SquirrelsNest.Pecan.Client.Issues.Reducers {
 
             issueList.AddRange( state.Issues );
 
-            return new IssueState( false, String.Empty, issueList, state.PageInformation.IncreaseTotal );
+            return new ( false, String.Empty, issueList, state.PageInformation.IncreaseTotal, 
+                         state.CurrentProjectId, state.CurrentDisplayPage );
         }
 
         [ReducerMethod]
         public static  IssueState AddIssueFailure( IssueState state, AddIssueFailure action ) =>
-            new ( false, action.Message, state.Issues, state.PageInformation );
+            new ( false, action.Message, state.Issues, state.PageInformation, state.CurrentProjectId, state.CurrentDisplayPage );
     }
 }

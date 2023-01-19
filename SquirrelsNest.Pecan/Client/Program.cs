@@ -14,6 +14,7 @@ using SquirrelsNest.Pecan.Client.Auth.Support;
 using SquirrelsNest.Pecan.Client.Constants;
 using SquirrelsNest.Pecan.Client.Gravatar;
 using SquirrelsNest.Pecan.Client.Issues.Store;
+using SquirrelsNest.Pecan.Client.Issues.Support;
 using SquirrelsNest.Pecan.Client.Projects.Store;
 using SquirrelsNest.Pecan.Client.ProjectTemplates.Store;
 using SquirrelsNest.Pecan.Client.Support;
@@ -64,6 +65,8 @@ void ConfigureServices( IServiceCollection services ) {
     services.AddScoped<UserFacade>();
     services.AddScoped<UserDataFacade>();
     services.AddScoped<AnnouncementHandler>();
+
+    services.AddScoped<IIssueRetriever, IssueRetriever>();
 
     services.AddScoped<IGravatarClient, GravatarClient>();
 

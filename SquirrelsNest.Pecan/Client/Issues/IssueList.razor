@@ -1,14 +1,19 @@
 ﻿@using Fluxor
 @using SquirrelsNest.Pecan.Client.Issues.Store
+@using SquirrelsNest.Pecan.Client.Issues.Support
 @using SquirrelsNest.Pecan.Client.Projects.Store
 @using SquirrelsNest.Pecan.Client.UserData.Store
 @using SquirrelsNest.Pecan.Shared.Entities
 
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-@inject IState<ProjectState>    ProjectState;
-@inject IState<IssueState>      IssueState;
-@inject IState<UserDataState>   UserDataState;
+<style>
+    .pagination-grid {
+        display: grid;
+        grid-template-columns: 1fr auto 4fr;
+        grid-column-gap: 0;
+    }
+</style>
 
 <MudContainer Class="ma-1 pa-0">
     @if( IssueState.Value.ApiCallInProgress ) {
@@ -23,57 +28,56 @@
                 <IssueListItem Project="ProjectState.Value.CurrentProject" Issue="@issue" />
             }
         </MudStack>
+        @if( mPaginationInformation.ShouldDisplay ) {
+            <MudContainer Class="pagination-grid mt-4 pa-0">
+                <MudContainer Class="pa-0"/>
+                <MudContainer Class="pa-0">
+                    <MudPagination Count="@mPaginationInformation.PageCount" @bind-Selected="@SelectedPage" />
+                </MudContainer>
+                <MudContainer Class="pa-0" />
+            </MudContainer>
+        }
     }
 </MudContainer>
 
+@inject IState<ProjectState>    ProjectState;
+@inject IState<IssueState>      IssueState;
+@inject IssueFacade             IssueFacade;
+@inject IIssueRetriever         IssueRetriever;
+
 @code {
-    private List<SnCompositeIssue> mIssues = new ();
+    private List<SnCompositeIssue>  mIssues = new ();
+    private PaginationInformation   mPaginationInformation = new ();
 
     protected override void OnInitialized() {
         base.OnInitialized();
 
-        IssueState.StateChanged += OnIssueStateChanged;
-        UserDataState.StateChanged += OnUiStateChanged;
-
         UpdateIssueList();
+
+        IssueRetriever.OnIssueListChanged += OnIssueListChanged;
     }
 
-    private void OnUiStateChanged( object ? sender, EventArgs e ) {
-        UpdateIssueList();
-    }
-
-    private void OnIssueStateChanged( object ? sender, EventArgs e ) {
+    private void OnIssueListChanged( object sender, EventArgs args ) {
         UpdateIssueList();
     }
 
     private void UpdateIssueList() {
-        var issueList = IssueState.Value.Issues;
-
-        if(!UserDataState.Value.DisplayCompletedIssues ) {
-            issueList = issueList
-                .Where( i => !IsIssueCompleted( i ))
-                .ToList();
-        }
-
-        if( UserDataState.Value.DisplayCompletedIssuesLast ) {
-            issueList = issueList.OrderBy( IsIssueCompleted ).ToList();
-        }
-
         mIssues.Clear();
-        mIssues.AddRange( issueList );
+        mIssues.AddRange( IssueRetriever.IssueList());
+
+        mPaginationInformation = IssueRetriever.PaginationInformation;
 
         StateHasChanged();
     }
 
-    private bool IsIssueCompleted( SnCompositeIssue issue ) =>
-        issue.WorkflowState?.Category.Equals( StateCategory.Completed ) == true ||
-        issue.WorkflowState?.Category.Equals( StateCategory.Terminal ) == true;
+    private int SelectedPage {
+        get => (int)IssueState.Value.CurrentDisplayPage;
+        set => IssueFacade.SetIssueListPage( (uint)value );
+    }
 
     protected override void Dispose( bool disposing ) {
         base.Dispose( disposing );
 
-        IssueState.StateChanged -= OnIssueStateChanged;
-        UserDataState.StateChanged -= OnUiStateChanged;
+        IssueRetriever.OnIssueListChanged -= OnIssueListChanged;
     }
-
 }

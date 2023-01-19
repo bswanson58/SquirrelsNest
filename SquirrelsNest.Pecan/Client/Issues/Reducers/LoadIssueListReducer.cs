@@ -1,21 +1,28 @@
 ﻿using System;
+using System.Collections.Generic;
 using Fluxor;
 using SquirrelsNest.Pecan.Client.Issues.Actions;
 using SquirrelsNest.Pecan.Client.Issues.Store;
+using SquirrelsNest.Pecan.Shared.Entities;
 
 namespace SquirrelsNest.Pecan.Client.Issues.Reducers {
     // ReSharper disable once UnusedType.Global
     public static class LoadIssueListReducer {
         [ReducerMethod( typeof( LoadIssueListAction ))]
         public static IssueState LoadIssueList( IssueState state ) =>
-            new ( true, String.Empty, state.Issues, state.PageInformation );
+            new ( true, String.Empty, state.Issues, state.PageInformation, state.CurrentProjectId, state.CurrentDisplayPage );
 
         [ReducerMethod]
-        public static IssueState LoadIssueListSuccess( IssueState state, LoadIssueListSuccessAction action ) =>
-            new ( false, String.Empty, action.Issues, action.PageInformation );
+        public static IssueState LoadIssueListSuccess( IssueState state, LoadIssueListSuccessAction action ) {
+            var issues = new List<SnCompositeIssue>( state.Issues );
+
+            issues.AddRange( action.Issues );
+
+            return new ( false, String.Empty, issues, action.PageInformation, state.CurrentProjectId, state.CurrentDisplayPage );
+        }
 
         [ReducerMethod]
         public static IssueState LoadIssueListFailure( IssueState state, LoadIssueListFailureAction action ) =>
-            new ( false, action.Message, state.Issues, state.PageInformation );
+            new ( false, action.Message, state.Issues, state.PageInformation, state.CurrentProjectId, state.CurrentDisplayPage );
     }
 }

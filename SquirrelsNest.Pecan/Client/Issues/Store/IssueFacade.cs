@@ -1,5 +1,7 @@
-﻿using Fluxor;
+﻿using System.Collections.Generic;
+using Fluxor;
 using SquirrelsNest.Pecan.Client.Issues.Actions;
+using SquirrelsNest.Pecan.Shared.Dto;
 using SquirrelsNest.Pecan.Shared.Dto.Issues;
 using SquirrelsNest.Pecan.Shared.Entities;
 
@@ -11,8 +13,17 @@ namespace SquirrelsNest.Pecan.Client.Issues.Store {
             mDispatcher = dispatcher;
         }
 
-        public void LoadIssues( SnCompositeProject forProject ) {
-            mDispatcher.Dispatch( new LoadIssueListAction( forProject ));
+        public void LoadIssues( SnCompositeProject forProject, PageRequest forPage ) {
+            mDispatcher.Dispatch( new LoadIssueListAction( forProject, forPage ));
+        }
+
+        public void PrepareForNewProject( string projectId, PageInformation pageInformation, uint currentDisplayPage,
+                                          IEnumerable<SnCompositeIssue> issues ) {
+            mDispatcher.Dispatch( new PrepareForNewProjectAction( projectId, pageInformation, currentDisplayPage, issues ));
+        }
+
+        public void SetIssueListPage( uint toPage ) {
+            mDispatcher.Dispatch( new SetIssueListPageAction( toPage ));
         }
 
         public void AddIssue( SnCompositeProject forProject ) {

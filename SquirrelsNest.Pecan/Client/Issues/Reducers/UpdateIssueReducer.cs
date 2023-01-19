@@ -11,18 +11,18 @@ namespace SquirrelsNest.Pecan.Client.Issues.Reducers {
     public static class UpdateIssueReducer {
         [ReducerMethod( typeof( UpdateIssueSubmit ))]
         public static IssueState UpdateIssueSubmit( IssueState state ) =>
-            new ( true, String.Empty, state.Issues, state.PageInformation );
+            new ( true, String.Empty, state.Issues, state.PageInformation, state.CurrentProjectId, state.CurrentDisplayPage );
 
         [ReducerMethod]
         public static IssueState UpdateIssueSuccess( IssueState state, UpdateIssueSuccess action ) {
             var issues = new List<SnCompositeIssue>( 
                     state.Issues.Select( i => i.EntityId.Equals( action.Issue.EntityId ) ? action.Issue : i ));
 
-            return new IssueState( false, String.Empty, issues, state.PageInformation );
+            return new ( false, String.Empty, issues, state.PageInformation, state.CurrentProjectId, state.CurrentDisplayPage );
         }
 
         [ReducerMethod]
         public static IssueState UpdateIssueFailure( IssueState state, UpdateIssueFailure action ) =>
-            new ( false, action.Message, state.Issues, state.PageInformation );
+            new ( false, action.Message, state.Issues, state.PageInformation, state.CurrentProjectId, state.CurrentDisplayPage );
     }
 }

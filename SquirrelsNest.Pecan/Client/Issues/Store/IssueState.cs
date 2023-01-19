@@ -11,15 +11,21 @@ namespace SquirrelsNest.Pecan.Client.Issues.Store {
     public class IssueState : RootState {
         public IReadOnlyList<SnCompositeIssue>  Issues { get; }
         public PageInformation                  PageInformation { get; }
+        public string                           CurrentProjectId { get; }
+        public uint                             CurrentDisplayPage { get; }
 
         public IssueState( bool callInProgress, string callMessage, 
-                           IEnumerable<SnCompositeIssue> issues, PageInformation pageInformation ) :
+                           IEnumerable<SnCompositeIssue> issues, PageInformation pageInformation,
+                           string currentProjectId, uint currentDisplayPage ) :
             base( callInProgress, callMessage ) {
             Issues = new List<SnCompositeIssue>( issues );
-            PageInformation = PageInformation.Default;
+            PageInformation = pageInformation;
+            CurrentProjectId = currentProjectId;
+            CurrentDisplayPage = currentDisplayPage;
         }
 
         public static IssueState Factory() => 
-            new ( false, String.Empty, Enumerable.Empty<SnCompositeIssue>(), PageInformation.Default );
+            new ( false, String.Empty, Enumerable.Empty<SnCompositeIssue>(), PageInformation.Default,
+                  SnCompositeProject.Default.EntityId, 1 );
     }
 }

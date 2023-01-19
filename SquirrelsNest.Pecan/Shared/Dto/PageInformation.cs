@@ -42,11 +42,13 @@ namespace SquirrelsNest.Pecan.Shared.Dto {
         public static PageInformation Default =>
             new PageInformation( 0, 0, 0, 0 );
 
+        [JsonIgnore]
         public PageInformation ReduceTotal =>
             new ( CurrentPage, TotalPages, PageSize, TotalCount - 1 );
 
+        [JsonIgnore]
         public PageInformation IncreaseTotal =>
-            new( CurrentPage, TotalPages, PageSize, TotalCount + 1 );
+            new ( CurrentPage, TotalPages, PageSize, TotalCount + 1 );
     }
 
     public class PageRequestValidator : AbstractValidator<PageRequest> {
