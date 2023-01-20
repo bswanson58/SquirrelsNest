@@ -28,6 +28,9 @@ namespace SquirrelsNest.Pecan.Client.Issues.Support {
     }
 
     public interface IIssueRetriever {
+        void                            StartRetrieving();
+        void                            EndRetrieving();
+
         IEnumerable<SnCompositeIssue>   IssueList();
         PaginationInformation           PaginationInformation { get; }
 
@@ -56,7 +59,9 @@ namespace SquirrelsNest.Pecan.Client.Issues.Support {
             mActionSubscriber = actionSubscriber;
 
             PaginationInformation = new PaginationInformation();
+        }
 
+        public void StartRetrieving() {
             mActionSubscriber.SubscribeToAction<SetCurrentProjectAction>( this, OnSetCurrentProject );
             mActionSubscriber.SubscribeToAction<LoadIssueListSuccessAction>( this, OnIssuesLoaded );
             mActionSubscriber.SubscribeToAction<SetIssueListPageAction>( this, OnIssueListPageChanged );
@@ -72,6 +77,10 @@ namespace SquirrelsNest.Pecan.Client.Issues.Support {
             if( mProjectState.Value.CurrentProject != null ) {
                 BeginNewProject();
             }
+        }
+
+        public void EndRetrieving() {
+            mActionSubscriber.UnsubscribeFromAllActions( this );
         }
 
         private void OnSetCurrentProject( SetCurrentProjectAction action ) {

@@ -52,9 +52,8 @@
     protected override void OnInitialized() {
         base.OnInitialized();
 
-        UpdateIssueList();
-
         IssueRetriever.OnIssueListChanged += OnIssueListChanged;
+        IssueRetriever.StartRetrieving();
     }
 
     private void OnIssueListChanged( object sender, EventArgs args ) {
@@ -78,6 +77,7 @@
     protected override void Dispose( bool disposing ) {
         base.Dispose( disposing );
 
+        IssueRetriever.EndRetrieving();
         IssueRetriever.OnIssueListChanged -= OnIssueListChanged;
     }
 }
