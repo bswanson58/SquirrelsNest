@@ -10,11 +10,7 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-<<<<<<< HEAD:azure-pipelines.yml
-  solution: 'SquirrelsNest.Pecan/SquirrelsNest.Pecan.sln'
-=======
   solution: '**/SquirrelsNest.Pecan/SquirrelsNest.Pecan.sln'
->>>>>>> pecan-release:SquirrelsNest.Pecan/azure-pipelines.yml
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
