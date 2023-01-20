@@ -10,7 +10,7 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: '**/SquirrelsNest.sln'
+  solution: '/SquirrelsNest/SquirrelsNest.Pecan.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
