@@ -38,31 +38,37 @@ namespace SquirrelsNest.Pecan.Shared.Dto.Issues {
     }
 
     public class CreateIssueResponse : BaseResponse {
-        public  SnCompositeIssue ?  Issue { get; }
+        public  SnCompositeIssue ?      Issue { get; }
+        public  SnCompositeProject ?    Project { get; }
 
         [JsonConstructor]
-        public CreateIssueResponse( bool succeeded, string message, SnCompositeIssue issue ) :
+        public CreateIssueResponse( bool succeeded, string message, SnCompositeIssue issue, SnCompositeProject project ) :
             base( succeeded, message ) {
             Issue = issue;
+            Project = project;
         }
 
-        public CreateIssueResponse( SnCompositeIssue issue ) {
+        public CreateIssueResponse( SnCompositeIssue issue, SnCompositeProject project ) {
             Issue = issue;
+            Project = project;
         }
 
         public CreateIssueResponse( Exception ex ) :
             base( ex ) {
             Issue = null;
+            Project = null;
         }
 
         public CreateIssueResponse( string message ) :
             base( false, message ) {
             Issue = null;
+            Project = null;
         }
 
         public CreateIssueResponse( ValidationResult validationResult ) :
             base ( validationResult ) {
             Issue = null;
+            Project = null;
         }
     }
 

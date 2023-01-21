@@ -26,8 +26,9 @@ namespace SquirrelsNest.Pecan.Client.Issues.Effects {
                 var response = await mHttpHandler.Post<CreateIssueResponse>( CreateIssueRequest.Route, action.Request );
 
                 if(( response?.Issue != null ) &&
+                   ( response.Project != null ) &&
                    ( response.Succeeded )) {
-                    dispatcher.Dispatch( new AddIssueSuccess( response.Issue ));
+                    dispatcher.Dispatch( new AddIssueSuccess( response.Issue, response.Project ));
                 }
                 else {
                     dispatcher.Dispatch( new AddIssueFailure( response?.Message ?? "Received null response" ));

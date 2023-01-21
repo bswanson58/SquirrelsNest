@@ -75,10 +75,11 @@ namespace SquirrelsNest.Pecan.Server.Features.Issues {
                         new CreateIssueResponse( "Project could not be updated when creating the issue" ));
                 }
 
+                compositeProject = await mProjectBuilder.BuildComposite( result, cancellationToken );
                 var issue = await mIssueProvider.Create( newIssue );
 
                 return new ActionResult<CreateIssueResponse>( 
-                    new CreateIssueResponse( await mIssueBuilder.BuildComposite( issue )));
+                    new CreateIssueResponse( await mIssueBuilder.BuildComposite( issue ), compositeProject ));
             }
             catch( Exception ex ) {
                 return new ActionResult<CreateIssueResponse>( new CreateIssueResponse( ex ));

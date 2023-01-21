@@ -21,9 +21,12 @@ namespace SquirrelsNest.Pecan.Client.Issues.Actions {
 
     public class AddIssueSuccess {
         public  SnCompositeIssue    Issue { get; }
+        public  SnCompositeProject  Project { get; }
 
-        public AddIssueSuccess( SnCompositeIssue issue ) =>
+        public AddIssueSuccess( SnCompositeIssue issue, SnCompositeProject project ) {
             Issue = issue;
+            Project = project;
+        }
     }
 
     public class AddIssueFailure : FailureAction {
