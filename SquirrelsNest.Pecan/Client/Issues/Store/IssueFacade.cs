@@ -42,6 +42,10 @@ namespace SquirrelsNest.Pecan.Client.Issues.Store {
             mDispatcher.Dispatch( new DeleteIssueAction( issue ));
         }
 
+        public void ReSyncIssueList( SnCompositeIssue issue ) {
+            mDispatcher.Dispatch( new ReSyncIssueListAction( issue ));
+        }
+
         public void EditComponent( SnCompositeProject project, SnCompositeIssue issue ) {
             mDispatcher.Dispatch( new EditComponentAction( project, issue ));
         }

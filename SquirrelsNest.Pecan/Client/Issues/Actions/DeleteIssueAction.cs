@@ -31,4 +31,13 @@ namespace SquirrelsNest.Pecan.Client.Issues.Actions {
         public DeleteIssueFailure( string message )
             : base( message ) { }
     }
+
+    public class ReSyncIssueListAction {
+        public  SnCompositeIssue    Issue { get; }
+
+        public ReSyncIssueListAction( SnCompositeIssue issue ) {
+            Issue = issue;
+        }
+
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Fluxor;
 using SquirrelsNest.Pecan.Client.Issues.Actions;
 using SquirrelsNest.Pecan.Client.Issues.Store;
@@ -16,7 +17,7 @@ namespace SquirrelsNest.Pecan.Client.Issues.Reducers {
         public static IssueState LoadIssueListSuccess( IssueState state, LoadIssueListSuccessAction action ) {
             var issues = new List<SnCompositeIssue>( state.Issues );
 
-            issues.AddRange( action.Issues );
+            issues.AddRange( action.Issues.Where( i => !state.Issues.Any( ie => ie.EntityId.Equals( i.EntityId ))));
 
             return new ( false, String.Empty, issues, action.PageInformation, state.CurrentProjectId, state.CurrentDisplayPage );
         }
