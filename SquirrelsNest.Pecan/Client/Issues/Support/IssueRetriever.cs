@@ -110,15 +110,15 @@ namespace SquirrelsNest.Pecan.Client.Issues.Support {
         }
 
         private void OnIssueAdded( AddIssueSuccess action ) {
-            OnIssueListChanged?.Invoke( this, EventArgs.Empty );
+            UpdatePaginationInformation();
         }
 
         private void OnIssueUpdated( UpdateIssueSuccess action ) {
-            OnIssueListChanged?.Invoke( this, EventArgs.Empty );
+            UpdatePaginationInformation();
         }
 
         private void OnIssueDeleted( DeleteIssueSuccess action ) {
-            OnIssueListChanged?.Invoke( this, EventArgs.Empty );
+            UpdatePaginationInformation();
         }
 
         private IEnumerable<SnCompositeIssue> FilteredList() {
@@ -172,8 +172,6 @@ namespace SquirrelsNest.Pecan.Client.Issues.Support {
             }
 
             UpdatePaginationInformation();
-
-            OnIssueListChanged?.Invoke( this, EventArgs.Empty );
         }
 
         private void UpdatePaginationInformation() {
@@ -189,6 +187,8 @@ namespace SquirrelsNest.Pecan.Client.Issues.Support {
 
                 PaginationInformation = new PaginationInformation( total );
             }
+
+            OnIssueListChanged?.Invoke( this, EventArgs.Empty );
         }
 
         public void Dispose() {
