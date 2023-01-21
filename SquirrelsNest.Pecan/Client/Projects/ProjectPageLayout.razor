@@ -6,6 +6,8 @@
 @attribute [Route( NavLinks.Projects )]
 @attribute [Authorize( Roles = ClaimValues.cUser )]
 
+<PageTitle>SquirrelsNest - Projects</PageTitle>
+
 <MudGrid Justify="Justify.FlexStart">
     <MudItem xs="3" Class="pl-4">
         <ProjectList />
