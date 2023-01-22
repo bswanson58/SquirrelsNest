@@ -14,16 +14,20 @@ using SquirrelsNest.Pecan.Shared.Entities;
 namespace SquirrelsNest.Pecan.Client.Issues.Support {
     public class PaginationInformation {
         public  int     PageCount { get; }
-        public  bool    ShouldDisplay { get; }
+        public  bool    OnlyFilteredIssues { get; }
+        public  bool    NoIssues { get; }
+        public  bool    DisplayPageControl { get; }
 
         public PaginationInformation() {
             PageCount = 1;
-            ShouldDisplay = false;
+            DisplayPageControl = false;
         }
 
-        public PaginationInformation( int pageCount ) {
+        public PaginationInformation( int pageCount, bool displayPageControl, bool noIssues, bool onlyFilteredIssues ) {
             PageCount = pageCount;
-            ShouldDisplay = true;
+            DisplayPageControl = displayPageControl;
+            NoIssues = noIssues;
+            OnlyFilteredIssues = onlyFilteredIssues;
         }
     }
 
@@ -70,9 +74,9 @@ namespace SquirrelsNest.Pecan.Client.Issues.Support {
             mActionSubscriber.SubscribeToAction<IssueDisplayCompletedLast>( this, OnIssueDisplayCompletedLast );
             mActionSubscriber.SubscribeToAction<IssueDisplayMyAssigned>( this, OnIssueDisplayMyAssigned );
 
-            mActionSubscriber.SubscribeToAction<AddIssueSuccess>( this, OnIssueAdded );
-            mActionSubscriber.SubscribeToAction<DeleteIssueSuccess>( this, OnIssueDeleted );
-            mActionSubscriber.SubscribeToAction<UpdateIssueSuccess>( this, OnIssueUpdated );
+            mActionSubscriber.SubscribeToAction<AddIssueSuccess>( this, OnAddIssueSuccess );
+            mActionSubscriber.SubscribeToAction<DeleteIssueSuccess>( this, OnDeleteIssueSuccess );
+            mActionSubscriber.SubscribeToAction<UpdateIssueSuccess>( this, OnUpdateIssueSuccess );
 
             if( mProjectState.Value.CurrentProject != null ) {
                 BeginNewProject();
@@ -109,16 +113,16 @@ namespace SquirrelsNest.Pecan.Client.Issues.Support {
             InsureAdequateIssuesLoaded();
         }
 
-        private void OnIssueAdded( AddIssueSuccess action ) {
+        private void OnAddIssueSuccess( AddIssueSuccess action ) {
             UpdatePaginationInformation();
         }
 
-        private void OnIssueUpdated( UpdateIssueSuccess action ) {
+        private void OnUpdateIssueSuccess( UpdateIssueSuccess action ) {
             UpdatePaginationInformation();
         }
 
-        private void OnIssueDeleted( DeleteIssueSuccess action ) {
-            UpdatePaginationInformation();
+        private void OnDeleteIssueSuccess( DeleteIssueSuccess action ) {
+            OnIssueListChanged?.Invoke( this, EventArgs.Empty );
         }
 
         private IEnumerable<SnCompositeIssue> FilteredList() {
@@ -175,18 +179,23 @@ namespace SquirrelsNest.Pecan.Client.Issues.Support {
         }
 
         private void UpdatePaginationInformation() {
-            if( mIssueState.Value.PageInformation.TotalCount < DisplayPageSize ) {
-                PaginationInformation = new PaginationInformation();
-            }
-            else {
-                var total = (int)Math.Ceiling( FilteredList().Count() / (double)DisplayPageSize );
+            var filteredListCount = FilteredList().Count();
+            var total = (int)Math.Ceiling( filteredListCount / (double)DisplayPageSize );
 
-                if( mIssueState.Value.PageInformation.HasNext ) {
-                    total += 1;
-                }
-
-                PaginationInformation = new PaginationInformation( total );
+            if( mIssueState.Value.PageInformation.HasNext ) {
+                total += 1;
             }
+
+            var anyIssues = mIssueState.Value.PageInformation.TotalCount > 0;
+            var onlyFilteredIssues = ( filteredListCount == 0 ) && anyIssues;
+            var displayPageControl = total > 1;
+
+            if((!displayPageControl ) &&
+               ( mIssueState.Value.CurrentDisplayPage > 1 )) {
+                mIssueFacade.SetIssueListPage( 1 );
+            }
+
+            PaginationInformation = new PaginationInformation( total, displayPageControl, !anyIssues, onlyFilteredIssues );
 
             OnIssueListChanged?.Invoke( this, EventArgs.Empty );
         }
