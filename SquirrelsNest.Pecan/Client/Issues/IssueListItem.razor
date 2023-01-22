@@ -38,7 +38,7 @@
             else {
                 <div class="@MouseOverVisibility">
                     <MudIconButton Icon="@Icons.Material.Filled.Check" Size="Size.Small" Class="mx-4 my-0 pa-0" 
-                                   OnClick="@CompleteIssue">Complete</MudIconButton>
+                                   OnClick="@OnCompleteIssue">Complete</MudIconButton>
                 </div>
             }
         </MudContainer>
@@ -116,15 +116,15 @@
         Issue.WorkflowState?.Category.Equals( StateCategory.Completed ) == true ||
         Issue.WorkflowState?.Category.Equals( StateCategory.Terminal ) == true;
 
-    private void CompleteIssue() {
+    private async void OnCompleteIssue() {
         var state = Project.WorkflowStates.FirstOrDefault( s => s.Category.Equals( StateCategory.Completed ));
 
         if( state != null ) {
             IssueFacade.UpdateIssue( Project, Issue.With( state ));
         }
         else {
-            UiFacade.DisplayMessage("Attention!", 
-                                    "There are no workflow states in this project marked with the 'Completed' or 'Terminal' state category." );
+            await UiFacade.DisplayMessage("Attention!", 
+                "There are no workflow states in this project marked with the 'Completed' or 'Terminal' state category." );
         }
     }
 
