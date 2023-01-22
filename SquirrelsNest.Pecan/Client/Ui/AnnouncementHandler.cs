@@ -20,6 +20,12 @@ namespace SquirrelsNest.Pecan.Client.Ui {
 
             // Information announcements
             mActionSubscriber.SubscribeToAction<ApiCallStarted>( this, action => {
+                if( mNotifications?.Severity == Severity.Info ) {
+                    mNotifier.Remove( mNotifications );
+
+                    mNotifications = null;
+                }
+
                 mNotifications = mNotifier.Add<ApiCallAnnouncement>( 
                     new Dictionary<string, object>() {
                         { nameof( ApiCallAnnouncement.AnnouncementMessage ), action.AnnouncementMessage }
