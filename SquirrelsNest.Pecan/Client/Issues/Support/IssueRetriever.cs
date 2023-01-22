@@ -43,7 +43,7 @@ namespace SquirrelsNest.Pecan.Client.Issues.Support {
     }
 
     public class IssueRetriever : IIssueRetriever, IDisposable {
-        private const int                       DisplayPageSize = 3;
+        private const int                       DisplayPageSize = 15;
 
         private readonly IState<ProjectState>   mProjectState;
         private readonly IState<IssueState>     mIssueState;
