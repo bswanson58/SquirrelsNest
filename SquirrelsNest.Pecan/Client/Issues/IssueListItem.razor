@@ -2,6 +2,7 @@
 @using SquirrelsNest.Pecan.Client.Issues.Store
 @using SquirrelsNest.Pecan.Client.UserData.Store
 @using Fluxor
+@using SquirrelsNest.Pecan.Client.Ui.Store
 
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
@@ -86,6 +87,7 @@
 </div>
 
 @inject IssueFacade             IssueFacade;
+@inject UiFacade                UiFacade;
 @inject IState<UserDataState>   UserDataState;
 
 @code {
@@ -115,10 +117,14 @@
         Issue.WorkflowState?.Category.Equals( StateCategory.Terminal ) == true;
 
     private void CompleteIssue() {
-        var state = Project.WorkflowStates.FirstOrDefault(s => s.Category.Equals(StateCategory.Completed));
+        var state = Project.WorkflowStates.FirstOrDefault( s => s.Category.Equals( StateCategory.Completed ));
 
         if( state != null ) {
             IssueFacade.UpdateIssue( Project, Issue.With( state ));
+        }
+        else {
+            UiFacade.DisplayMessage("Attention!", 
+                                    "There are no workflow states in this project marked with the 'Completed' or 'Terminal' state category." );
         }
     }
 
