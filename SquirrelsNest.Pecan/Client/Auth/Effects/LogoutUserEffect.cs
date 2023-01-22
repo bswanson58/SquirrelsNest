@@ -12,12 +12,14 @@ namespace SquirrelsNest.Pecan.Client.Auth.Effects {
         private readonly HttpClient                     mHttpClient;
         private readonly AuthenticationStateProvider    mAuthStateProvider;
         private readonly ILocalStorageService           mLocalStorage;
+        private readonly IAppStartup                    mAppStartup;
 
         public LogoutUserEffect( HttpClient httpClient, AuthenticationStateProvider authStateProvider, 
-                                 ILocalStorageService localStorage ) {
+                                 ILocalStorageService localStorage, IAppStartup appStartup ) {
             mHttpClient = httpClient;
             mAuthStateProvider = authStateProvider;
             mLocalStorage = localStorage;
+            mAppStartup = appStartup;
         }
 
         public override async Task HandleAsync( LogoutUserAction action, IDispatcher dispatcher ) {
@@ -29,6 +31,8 @@ namespace SquirrelsNest.Pecan.Client.Auth.Effects {
             }
 
             mHttpClient.DefaultRequestHeaders.Authorization = null;
+
+            mAppStartup.OnLogout();
         }
     }
 }

@@ -15,6 +15,7 @@ namespace SquirrelsNest.Pecan.Client {
     public interface IAppStartup {
         Task    OnStartup();
         Task    OnLogin();
+        void    OnLogout();
     }
 
     public class AppStartup : IAppStartup {
@@ -64,6 +65,10 @@ namespace SquirrelsNest.Pecan.Client {
             mNavigationManager.NavigateTo( NavLinks.Projects );
 
             return Task.CompletedTask;
+        }
+
+        public void OnLogout() {
+            mNavigationManager.NavigateTo( NavLinks.Home );
         }
     }
 }
