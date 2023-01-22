@@ -2,9 +2,9 @@
 using Fluxor;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 using SquirrelsNest.Pecan.Client.Auth.Actions;
+using SquirrelsNest.Pecan.Client.Support;
 using SquirrelsNest.Pecan.Shared.Dto.Auth;
 using SquirrelsNest.Pecan.Client.Ui.Actions;
 
@@ -12,9 +12,9 @@ namespace SquirrelsNest.Pecan.Client.Auth.Effects {
     // ReSharper disable once UnusedType.Global
     public class CreateUserSubmitEffect : Effect<CreateUserSubmitAction> {
         private readonly    ILogger<CreateUserSubmitEffect> mLogger;
-        private readonly    HttpClient                      mHttpClient;
+        private readonly    IAnonymousHttpHandler           mHttpClient;
 
-        public CreateUserSubmitEffect( HttpClient httpClient, ILogger<CreateUserSubmitEffect> logger ) {
+        public CreateUserSubmitEffect( IAnonymousHttpHandler httpClient, ILogger<CreateUserSubmitEffect> logger ) {
             mHttpClient = httpClient;
             mLogger = logger;
         }
@@ -23,8 +23,7 @@ namespace SquirrelsNest.Pecan.Client.Auth.Effects {
             dispatcher.Dispatch( new ApiCallStarted( "Registering New User" ));
 
             try {
-                var postResponse = await mHttpClient.PostAsJsonAsync( CreateUserInput.Route, action.UserInput );
-                var response = await postResponse.Content.ReadFromJsonAsync<CreateUserResponse>();
+                var response = await mHttpClient.Post<CreateUserResponse>( CreateUserInput.Route, action.UserInput );
 
                 if( response != null ) {
                     if( response.Succeeded ) {
@@ -35,7 +34,7 @@ namespace SquirrelsNest.Pecan.Client.Auth.Effects {
                     }
                 }
                 else {
-                    dispatcher.Dispatch( new CreateUserFailureAction( "Received null response" ));
+                    dispatcher.Dispatch( new CreateUserFailureAction( response?.Message ?? "Received null response" ));
                 }
             }
             catch ( HttpRequestException exception ) {

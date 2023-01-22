@@ -7,24 +7,43 @@ using SquirrelsNest.Pecan.Client.Constants;
 using SquirrelsNest.Pecan.Shared.Dto;
 
 namespace SquirrelsNest.Pecan.Client.Support {
-    public interface IAuthenticatedHttpHandler {
+    public interface IAuthenticatedHttpHandler : IBaseHttpHandler { }
+    public interface IAnonymousHttpHandler: IBaseHttpHandler { }
+
+    public interface IBaseHttpHandler {
         Task<TResponse ?>           Get<TResponse>( string route );
         Task<TResponse ?>           Post<TResponse>( string route, object request );
         Task<HttpResponseMessage ?> Post( string route, object request );
     }
 
-    public class AuthenticatedHttpHandler : IAuthenticatedHttpHandler {
+    public class AuthenticatedHttpHandler : BaseHttpHandler, IAuthenticatedHttpHandler {
+        public AuthenticatedHttpHandler( IHttpClientFactory clientFactory, IResponseStatusHandler statusHandler )
+            : base( clientFactory, statusHandler ) { }
+
+        protected override string   ClientName => HttpClientNames.Authenticated;
+    }
+
+    public class AnonymousHttpHandler : BaseHttpHandler, IAnonymousHttpHandler {
+        public AnonymousHttpHandler( IHttpClientFactory clientFactory, IResponseStatusHandler statusHandler )
+            : base( clientFactory, statusHandler ) { }
+
+        protected override string   ClientName => HttpClientNames.Anonymous;
+    }
+
+    public abstract class BaseHttpHandler : IBaseHttpHandler {
         private readonly IHttpClientFactory     mClientFactory;
         private readonly IResponseStatusHandler mStatusHandler;
 
-        public AuthenticatedHttpHandler( IHttpClientFactory clientFactory, IResponseStatusHandler statusHandler ) {
+        protected abstract string               ClientName { get; }
+
+        protected BaseHttpHandler( IHttpClientFactory clientFactory, IResponseStatusHandler statusHandler ) {
             mClientFactory = clientFactory;
             mStatusHandler = statusHandler;
         }
 
         public async Task<TResponse ?> Get<TResponse>( string route ) {
             try {
-                using var httpClient = mClientFactory.CreateClient( HttpClientNames.Authenticated );
+                using var httpClient = mClientFactory.CreateClient( ClientName );
 
                 return await HandleResponse<TResponse>( await httpClient.GetAsync( route ));
             }
@@ -37,7 +56,7 @@ namespace SquirrelsNest.Pecan.Client.Support {
 
         public async Task<TResponse ?> Post<TResponse>( string route, object request ) {
             try {
-                using var httpClient = mClientFactory.CreateClient( HttpClientNames.Authenticated );
+                using var httpClient = mClientFactory.CreateClient( ClientName );
 
                 return await HandleResponse<TResponse>( await httpClient.PostAsJsonAsync( route, request ));
             }
@@ -50,7 +69,7 @@ namespace SquirrelsNest.Pecan.Client.Support {
 
         public async Task<HttpResponseMessage ?> Post( string route, object request ) {
             try {
-                using var httpClient = mClientFactory.CreateClient( HttpClientNames.Authenticated );
+                using var httpClient = mClientFactory.CreateClient( ClientName );
 
                 var response = await httpClient.PostAsJsonAsync( route, request );
 

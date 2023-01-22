@@ -4,19 +4,18 @@ using Microsoft.Extensions.Logging;
 using SquirrelsNest.Pecan.Client.Auth.Actions;
 using SquirrelsNest.Pecan.Shared.Dto.Auth;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
-using SquirrelsNest.Pecan.Client.Constants;
+using SquirrelsNest.Pecan.Client.Support;
 using SquirrelsNest.Pecan.Client.Ui.Actions;
 
 namespace SquirrelsNest.Pecan.Client.Auth.Effects {
     // ReSharper disable once UnusedType.Global
     public class LoginUserSubmitEffect : Effect<LoginUserSubmitAction> {
         private readonly ILogger<LoginUserSubmitEffect> mLogger;
-        private readonly IHttpClientFactory             mClientFactory;
+        private readonly IAnonymousHttpHandler          mHttpHandler;
 
-        public LoginUserSubmitEffect( IHttpClientFactory clientFactory, ILogger<LoginUserSubmitEffect> logger ) {
-            mClientFactory = clientFactory;
+        public LoginUserSubmitEffect( IAnonymousHttpHandler httpHandler, ILogger<LoginUserSubmitEffect> logger ) {
+            mHttpHandler = httpHandler;
             mLogger = logger;
         }
 
@@ -24,9 +23,7 @@ namespace SquirrelsNest.Pecan.Client.Auth.Effects {
             dispatcher.Dispatch( new ApiCallStarted( "Requesting User Authentication" ));
 
             try {
-                using var httpClient = mClientFactory.CreateClient( HttpClientNames.Anonymous );
-                var postResponse = await httpClient.PostAsJsonAsync( LoginUserInput.Route, action.UserInput );
-                var response = await postResponse.Content.ReadFromJsonAsync<LoginUserResponse>();
+                var response = await mHttpHandler.Post<LoginUserResponse>( LoginUserInput.Route, action.UserInput  );
 
                 if( response != null ) {
                     if( response.Succeeded ) {
@@ -37,7 +34,7 @@ namespace SquirrelsNest.Pecan.Client.Auth.Effects {
                     }
                 }
                 else {
-                    dispatcher.Dispatch( new LoginUserFailureAction( "Received null response" ));
+                    dispatcher.Dispatch( new LoginUserFailureAction( response?.Message ?? "Received null response" ));
                 }
             }
             catch( HttpRequestException exception ) {

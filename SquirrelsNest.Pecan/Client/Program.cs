@@ -54,6 +54,7 @@ void ConfigureServices( IServiceCollection services ) {
 
     services.AddScoped<IResponseStatusHandler, ResponseStatusHandler>();
     services.AddScoped<IAuthenticatedHttpHandler, AuthenticatedHttpHandler>();
+    services.AddScoped<IAnonymousHttpHandler, AnonymousHttpHandler>();
 
     services.AddScoped<IAppStartup, AppStartup>();
     services.AddScoped<IUserDataService, UserDataService>();
