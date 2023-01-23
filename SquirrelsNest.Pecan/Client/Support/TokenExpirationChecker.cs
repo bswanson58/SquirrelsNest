@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components.Authorization;
 using SquirrelsNest.Pecan.Client.Auth.Store;
-using SquirrelsNest.Pecan.Shared.Platform;
+using SquirrelsNest.Pecan.Client.Auth.Support;
 
 namespace SquirrelsNest.Pecan.Client.Support {
     public interface ITokenExpirationChecker : IDisposable {
@@ -14,14 +12,14 @@ namespace SquirrelsNest.Pecan.Client.Support {
     public class TokenExpirationChecker : ITokenExpirationChecker {
         private const int                   CheckTimeInMinutes = 1;
 
-        private readonly AuthenticationStateProvider    mAuthenticationProvider;
-        private readonly AuthFacade                     mAuthFacade;
-        private Timer ?                                 mTimer;
-        private bool                                    mDidIt;
+        private readonly IAuthInformation   mAuthInformation;
+        private readonly AuthFacade         mAuthFacade;
+        private Timer ?                     mTimer;
+        private bool                        mDidIt;
 
-        public TokenExpirationChecker( AuthFacade authFacade, AuthenticationStateProvider authenticationProvider ) {
+        public TokenExpirationChecker( AuthFacade authFacade, IAuthInformation authInformation ) {
             mAuthFacade = authFacade;
-            mAuthenticationProvider = authenticationProvider;
+            mAuthInformation = authInformation;
 
             mTimer = null;
             mDidIt = false;
@@ -37,8 +35,8 @@ namespace SquirrelsNest.Pecan.Client.Support {
                 TimeSpan.FromMinutes( CheckTimeInMinutes ));
         }
 
-        private async void OnTimer( object ? state ) {
-            if( await TokenRefreshImmanent( 1 )) {
+        private void OnTimer( object ? state ) {
+            if( TokenRefreshImmanent( TimeSpan.FromMinutes( CheckTimeInMinutes ))) {
                 if(!mDidIt ) {
                     mAuthFacade.LogoutUser();
 
@@ -50,23 +48,8 @@ namespace SquirrelsNest.Pecan.Client.Support {
             }
         }
 
-        private async Task<bool> TokenRefreshImmanent( int withinMinutes ) {
-            var expTime = await TokenExpirationTime();
-            var diff = expTime - DateTimeProvider.Instance.CurrentUtcTime;
-
-            return diff.TotalMinutes <= withinMinutes;
-        }
-
-        private async Task<DateTimeOffset> TokenExpirationTime() {
-            var authState = await mAuthenticationProvider.GetAuthenticationStateAsync();
-            var exp = authState.User.FindFirst( c => c.Type.Equals( "exp" ))?.Value;
-
-            if(!String.IsNullOrWhiteSpace( exp )) {
-                return DateTimeOffset.FromUnixTimeSeconds( Convert.ToInt64( exp ));
-            }
-
-            return DateTimeOffset.MinValue;
-        }
+        private bool TokenRefreshImmanent( TimeSpan timeOffset ) =>
+            mAuthInformation.TimeOffsetToTokenExpiration < timeOffset;
 
         public void StopChecking() {
             mTimer?.Dispose();

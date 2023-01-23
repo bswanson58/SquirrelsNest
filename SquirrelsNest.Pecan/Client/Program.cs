@@ -80,6 +80,7 @@ void ConfigureServices( IServiceCollection services ) {
     services.AddBlazorDownloadFile();
 
     services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
+    services.AddScoped<IAuthInformation, AuthInformation>();
     services.AddAuthorizationCore();
 
     services.AddMudServices();

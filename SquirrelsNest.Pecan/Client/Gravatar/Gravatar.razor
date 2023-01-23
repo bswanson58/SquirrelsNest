@@ -6,17 +6,21 @@
 
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-<MudAvatar Image="@mGravatarImageUri" 
-           Color="Color.Info"
-           Alt="@mUserDisplayName">@mUserInitials</MudAvatar>
+@if( mAuthStateValid ) {
+    <MudAvatar Image="@mGravatarImageUri"
+               Color="Color.Info"
+               Alt="@mUserDisplayName">@mUserInitials</MudAvatar>
+}
 
 @inject IState<AuthState>   AuthState;
 @inject IGravatarClient     GravatarClient;
+@inject IAuthInformation    AuthInformation;
 
 @code {
-    string  mGravatarImageUri = String.Empty;
-    string  mUserDisplayName = String.Empty;
-    string  mUserInitials = String.Empty;
+    private bool    mAuthStateValid = false;    
+    private string  mGravatarImageUri = String.Empty;
+    private string  mUserDisplayName = String.Empty;
+    private string  mUserInitials = String.Empty;
 
     protected override async Task OnInitializedAsync() {
         await base.OnInitializedAsync();
@@ -30,20 +34,22 @@
     }
 
     private void UpdateAvatar() {
-        if(!String.IsNullOrWhiteSpace( AuthState.Value.UserToken )) {
-            var emailHash = JwtParser.GetClaimValue( AuthState.Value.UserToken, ClaimValues.ClaimEmailHash );
+        mAuthStateValid = AuthInformation.IsAuthValid;
 
-            mUserDisplayName = JwtParser.GetClaimValue( AuthState.Value.UserToken, ClaimTypes.GivenName );
+        if( mAuthStateValid ) {
+            mUserDisplayName = AuthInformation.UserName;
             mUserInitials = String.Concat( mUserDisplayName.Split( ' ' ).Select( s => s[0] ));
+
+            var emailHash = AuthInformation.UserEmailHash;
 
             if(!String.IsNullOrWhiteSpace( emailHash )) {
                 mGravatarImageUri =
                     GravatarClient.GetImageUri( emailHash, GravatarDefaultImage.IdentIcon, false, 100 )
                         .AbsoluteUri;
-
-                StateHasChanged();
             }
         }
+
+        StateHasChanged();
     }
 
     protected override void Dispose( bool disposing ) {
