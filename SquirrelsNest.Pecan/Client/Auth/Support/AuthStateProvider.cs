@@ -1,9 +1,11 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using SquirrelsNest.Pecan.Client.Constants;
 using SquirrelsNest.Pecan.Shared.Constants;
+using SquirrelsNest.Pecan.Shared.Platform;
 
 namespace SquirrelsNest.Pecan.Client.Auth.Support {
     public class AuthStateProvider : AuthenticationStateProvider {
@@ -24,12 +26,17 @@ namespace SquirrelsNest.Pecan.Client.Auth.Support {
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync() {
             var token = await mLocalStorage.GetItemAsStringAsync( LocalStorageNames.AuthToken );
+            var expiration = JwtParser.GetClaimValue( token, "exp" );
 
-            if( string.IsNullOrWhiteSpace( token )) {
-                return mAnonymous;
+            if(!String.IsNullOrWhiteSpace( expiration )) {
+                var expTime = DateTimeOffset.FromUnixTimeSeconds( Convert.ToInt64( expiration ));
+                        
+                if(( expTime - DateTimeProvider.Instance.CurrentUtcTime ) > TimeSpan.Zero ) {
+                    return CreateAuthenticationState( token );
+                }
             }
 
-            return CreateAuthenticationState( token );
+            return mAnonymous;
         }
 
         public async Task SetUserAuthentication( string authToken, string refreshToken ) {
