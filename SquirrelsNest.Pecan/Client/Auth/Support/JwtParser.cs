@@ -18,14 +18,17 @@ namespace SquirrelsNest.Pecan.Client.Auth.Support {
 
         private static IList<Claim> ParseClaimsFromJwt( string jwt ) {
             var claims = new List<Claim>();
-            var payload = jwt.Split ('.' )[1];
-            var jsonBytes = ParseBase64WithoutPadding( payload );
-            var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>( jsonBytes );
 
-            if( keyValuePairs != null ) {
-                claims.AddRange( 
-                    keyValuePairs
-                        .Select( kvp => new Claim( kvp.Key, kvp.Value.ToString() ?? String.Empty )));
+            if(!String.IsNullOrWhiteSpace( jwt )) {
+                var payload = jwt.Split ('.' )[1];
+                var jsonBytes = ParseBase64WithoutPadding( payload );
+                var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>( jsonBytes );
+
+                if( keyValuePairs != null ) {
+                    claims.AddRange( 
+                        keyValuePairs
+                            .Select( kvp => new Claim( kvp.Key, kvp.Value.ToString() ?? String.Empty )));
+                }
             }
 
             return claims;

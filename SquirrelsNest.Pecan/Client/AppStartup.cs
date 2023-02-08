@@ -20,42 +20,40 @@ namespace SquirrelsNest.Pecan.Client {
     }
 
     public class AppStartup : IAppStartup {
-        private readonly AuthFacade                 mAuthFacade;
-        private readonly ProjectFacade              mProjectFacade;
-        private readonly IState<ProjectState>       mProjectState;
-        private readonly ITokenRefresher            mTokenSupport;
-        private readonly NavigationManager          mNavigationManager;
-        private readonly UserDataFacade             mUserDataFacade;
-        private readonly ILocalStorageService       mLocalStorage;
-        private readonly ITokenExpirationChecker    mTokenChecker;
+        private readonly AuthFacade                     mAuthFacade;
+        private readonly IAuthInformation               mAuthInformation;
+        private readonly ProjectFacade                  mProjectFacade;
+        private readonly IState<ProjectState>           mProjectState;
+        private readonly NavigationManager              mNavigationManager;
+        private readonly UserDataFacade                 mUserDataFacade;
+        private readonly ILocalStorageService           mLocalStorage;
+        private readonly ITokenExpirationChecker        mTokenChecker;
 
         public AppStartup( AuthFacade authFacade, ProjectFacade projectFacade, IState<ProjectState> projectState, 
-                           ITokenRefresher tokenSupport, NavigationManager navigationManager,
-                           UserDataFacade userDataFacade, ILocalStorageService localStorageService,
-                           ITokenExpirationChecker tokenChecker ) {
+                           NavigationManager navigationManager, UserDataFacade userDataFacade, 
+                           ILocalStorageService localStorageService, ITokenExpirationChecker tokenChecker, 
+                           IAuthInformation authInformation ) {
             mAuthFacade = authFacade;
             mProjectFacade = projectFacade;
             mProjectState = projectState;
-            mTokenSupport = tokenSupport;
             mNavigationManager = navigationManager;
             mUserDataFacade = userDataFacade;
             mLocalStorage = localStorageService;
             mTokenChecker = tokenChecker;
+            mAuthInformation = authInformation;
         }
 
         public async Task OnStartup() {
             var token = await mLocalStorage.GetItemAsStringAsync( LocalStorageNames.AuthToken );
             var refresh = await mLocalStorage.GetItemAsStringAsync( LocalStorageNames.RefreshToken );
 
-            if(!String.IsNullOrWhiteSpace( token )) {
-                mAuthFacade.SetInitialAuthToken( token, refresh );
-            }
+            mAuthFacade.SetInitialAuthToken( token, refresh );
 
-            if( await mTokenSupport.TokenRefreshRequired( 1 )) {
-                mNavigationManager.NavigateTo( NavLinks.Login );
+            if( mAuthInformation.IsAuthValid ) {
+                await OnLogin();
             }
             else {
-                await OnLogin();
+                mNavigationManager.NavigateTo( NavLinks.Login );
             }
         }
 
