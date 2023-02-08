@@ -6,12 +6,15 @@ on:
     branches: 
       - develop
 
+env:
+  BUILD_PATH: './SquirrelsNest.Pecan'
+
 jobs:
   build:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./SquirrelsNest.Pecan
+        working-directory: '${{ env.BUILD_PATH }}'
 
     steps:
       - name: Checkout source
