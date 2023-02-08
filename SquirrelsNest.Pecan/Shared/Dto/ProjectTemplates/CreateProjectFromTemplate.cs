@@ -10,14 +10,17 @@ namespace SquirrelsNest.Pecan.Shared.Dto.ProjectTemplates {
         public  string  TemplateName { get; }
         public  string  ProjectName { get; }
         public  string  ProjectDescription { get; }
+        public  string  IssuePrefix { get; }
 
         public const string Route = $"{Routes.BaseRoute}/createProjectFromTemplate";
 
         [JsonConstructor]
-        public CreateProjectFromTemplateRequest( string templateName, string projectName, string projectDescription ) {
+        public CreateProjectFromTemplateRequest( string templateName, string projectName, 
+                                                 string projectDescription, string issuePrefix ) {
             TemplateName = templateName;
             ProjectName = projectName;
             ProjectDescription = projectDescription;
+            IssuePrefix = issuePrefix;
         }
     }
 

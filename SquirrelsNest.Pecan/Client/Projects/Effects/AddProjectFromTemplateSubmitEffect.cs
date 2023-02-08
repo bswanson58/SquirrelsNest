@@ -26,7 +26,8 @@ namespace SquirrelsNest.Pecan.Client.Projects.Effects {
                 var request = new CreateProjectFromTemplateRequest(
                     action.ProjectRequest.ProjectTemplateName, 
                     action.ProjectRequest.Name, 
-                    action.ProjectRequest.Description );
+                    action.ProjectRequest.Description,
+                    action.ProjectRequest.IssuePrefix );
                 var response = await mHttpHandler.Post<CreateProjectFromTemplateResponse>( CreateProjectFromTemplateRequest.Route, request );
 
                 if(( response?.Project != null ) &&

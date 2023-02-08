@@ -45,8 +45,10 @@ namespace SquirrelsNest.Pecan.Server.Features.ProjectTemplates {
                     return Ok( new CreateProjectFromTemplateResponse( "Template could not be located" ));
                 }
 
-                var projectParameters = new ProjectParameters 
-                    { ProjectName = request.ProjectName, ProjectDescription = request.ProjectDescription };
+                var projectParameters = new ProjectParameters {
+                    ProjectName = request.ProjectName,
+                    ProjectDescription = request.ProjectDescription, 
+                    IssuePrefix = request.IssuePrefix };
                 var project = await mTemplateManager.CreateProject( template, projectParameters );
                 var compositeProject = await mProjectBuilder.BuildComposite( project, cancellationToken );
 

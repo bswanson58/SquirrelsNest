@@ -49,8 +49,10 @@ namespace SquirrelsNest.Pecan.Server.Features.ProjectTemplates {
         }
 
         public async Task<SnProject> CreateProject( ProjectTemplate fromTemplate, ProjectParameters parameters ) {
-            var project = await mProjectProvider.Create( 
-                new SnProject( parameters.ProjectName, parameters.ProjectDescription ).With( issuePrefix:parameters.IssuePrefix ));
+            var project = new SnProject( parameters.ProjectName, parameters.IssuePrefix )
+                .With( description: parameters.ProjectDescription );
+            
+            project = await mProjectProvider.Create( project );
 
             foreach ( var component in fromTemplate.Components ) {
                 await mComponentProvider.Create(
@@ -64,7 +66,8 @@ namespace SquirrelsNest.Pecan.Server.Features.ProjectTemplates {
 
             foreach ( var state in fromTemplate.WorkflowStates ) {
                 await mStateProvider.Create( 
-                    new SnWorkflowState( project ).With( name: state.Name, description: state.Description ));
+                    new SnWorkflowState( project )
+                        .With( name: state.Name, description: state.Description, category: state.Category ));
             }
 
             return project;
