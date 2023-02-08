@@ -1,4 +1,4 @@
-name: Build CloudTags (develop)
+name: Build SquirrelsNest.Pecan (develop)
 
 on:
   workflow_dispatch:

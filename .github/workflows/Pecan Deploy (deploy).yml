@@ -1,4 +1,4 @@
-name: Build & Deploy CloudTags (deploy)
+name: Build & Deploy SquirrelsNest.Pecan (deploy)
 
 on:
   workflow_dispatch:
