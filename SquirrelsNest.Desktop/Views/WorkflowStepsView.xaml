@@ -1,0 +1,74 @@
+﻿<UserControl x:Class="SquirrelsNest.Desktop.Views.WorkflowStepsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModelLocator="clr-namespace:MvvmSupport.ViewModelLocator;assembly=MvvmSupport"
+             xmlns:viewModels="clr-namespace:SquirrelsNest.Desktop.ViewModels"
+             xmlns:entities="clr-namespace:SquirrelsNest.Common.Entities;assembly=SquirrelsNest.Common"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             viewModelLocator:ViewModelLocator.AutoWireViewModel="True"
+             d:DataContext="{d:DesignInstance viewModels:WorkflowStepsViewModel, IsDesignTimeCreatable=False}">
+
+    <UserControl.Resources>
+        <DataTemplate x:Key="StateTemplate" DataType="entities:SnWorkflowState">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource ListViewTextStyle}" Text="{Binding Name}"/>
+                        <TextBlock Style="{StaticResource ListViewTextStyle}" Opacity="0.6" Text=" ("/>
+                        <TextBlock Style="{StaticResource ListViewTextStyle}" Opacity="0.6" Text="{Binding Category}"/>
+                        <TextBlock Style="{StaticResource ListViewTextStyle}" Opacity="0.6" Text=")"/>
+                    </StackPanel>
+                    <TextBlock Style="{StaticResource ListViewSubTextStyle}" Margin="5,0,0,0" Text="{Binding Description}"/>
+                </StackPanel>
+
+                <StackPanel x:Name="StateCommands"  Grid.Column="1" Margin="0,0,10,0" Opacity="0"
+                            VerticalAlignment="Center" Orientation="Horizontal">
+                    <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                    <Button Margin="5,0" HorizontalAlignment="Right" Width="17" Height="15" Padding="1" BorderThickness="0" Background="Transparent" 
+                            Cursor="Hand" Focusable="False" Content="{StaticResource Image:Edit}" ToolTip="Edit Workflow State Properties"
+                            Command="{Binding Path=DataContext.EditState, RelativeSource={RelativeSource AncestorType={x:Type GroupBox}}}" CommandParameter="{Binding}"/>
+
+                    <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                    <Button Margin="5,0" HorizontalAlignment="Right" Width="17" Height="15" Padding="1" BorderThickness="0" Background="Transparent" 
+                            Cursor="Hand" Focusable="False" Content="{StaticResource Image:Delete}" ToolTip="Delete Workflow State"
+                            Command="{Binding Path=DataContext.DeleteState, RelativeSource={RelativeSource AncestorType={x:Type GroupBox}}}" CommandParameter="{Binding}"/>
+                </StackPanel>
+            </Grid>
+
+            <DataTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="StateCommands" Property="Opacity" Value="1"/>
+                </Trigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+    </UserControl.Resources>
+
+    <GroupBox Style="{StaticResource SectionBorderStyle}">
+        <GroupBox.Header>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Style="{StaticResource ControlTitleStyle}" Text=" Workflow Steps " />
+            </StackPanel>
+        </GroupBox.Header>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <ListBox Grid.Column="0" ItemsSource="{Binding StateList}" ItemTemplate="{StaticResource StateTemplate}"/>
+
+            <Button Grid.Column="2" VerticalAlignment="Bottom" Style="{StaticResource GeneralButtonStyle}" Content="New Step" Command="{Binding CreateState}"/>
+        </Grid>
+    </GroupBox>
+</UserControl>

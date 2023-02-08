@@ -1,0 +1,5 @@
+<ul role='list'>
+  <li *ngFor='let issue of issueList$ | async'>
+    <sn-issue-detail [issue]='issue'></sn-issue-detail>
+  </li>
+</ul>

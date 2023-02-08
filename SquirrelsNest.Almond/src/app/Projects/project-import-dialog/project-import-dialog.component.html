@@ -1,0 +1,16 @@
+<h3 mat-dialog-title>Import Project</h3>
+<mat-dialog-content fxLayout='column'>
+  <mat-form-field style='width: 60%'>
+    <mat-label>Project Name</mat-label>
+    <input type='text' required matInput [(ngModel)]='projectName' placeholder='Project Name'>
+  </mat-form-field>
+  <div fxLayout='row'>
+    <input type='file' class='file-input' (change)='onFileSelected($event)' #fileUpload>
+    <button mat-button style='padding: 0 1em' (click)='fileUpload.click()'>Select File</button>
+    <h4 *ngIf='importFile' fxFlexAlign='center'>({{importFileName}})</h4>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions fxLayout='row' fxLayoutAlign='end center' fxLayoutGap='1em'>
+  <button class='mat-button' (click)='onCancel()'>Cancel</button>
+  <button class='mat-button' (click)='onClose()'>OK</button>
+</mat-dialog-actions>

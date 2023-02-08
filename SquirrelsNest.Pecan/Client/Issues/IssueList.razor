@@ -1,0 +1,92 @@
+﻿@using Fluxor
+@using SquirrelsNest.Pecan.Client.Issues.Store
+@using SquirrelsNest.Pecan.Client.Issues.Support
+@using SquirrelsNest.Pecan.Client.Projects.Store
+@using SquirrelsNest.Pecan.Client.UserData.Store
+@using SquirrelsNest.Pecan.Shared.Entities
+
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<style>
+    .pagination-grid {
+        display: grid;
+        grid-template-columns: 1fr auto 4fr;
+        grid-column-gap: 0;
+        grid-template-areas: ". paginator ."
+    }
+
+    .paginator {
+        grid-area: paginator;
+    }
+</style>
+
+<MudContainer Class="ma-1 pa-0">
+    <MudStack Spacing="0">
+        @foreach( var issue in mIssues ) {
+            <IssueListItem Project="ProjectState.Value.CurrentProject" Issue="@issue" />
+        }
+    </MudStack>
+    <MudContainer Class="pagination-grid mt-4 pa-0">
+        <MudContainer Class="paginator pa-0">
+        @if( mPaginationInformation.DisplayPageControl ) {
+            <MudPagination Count="@mPaginationInformation.PageCount" @bind-Selected="@SelectedPage" />
+        }
+        @if( mPaginationInformation.OnlyFilteredIssues ) {
+            <MudText Typo="Typo.body1">All issue have been filtered</MudText>
+        }
+        @if( mPaginationInformation.NoIssues ) {
+            <MudStack Row="true" Spacing="0">
+                <MudText Typo="Typo.body1">There are no issues for this project,</MudText>
+                <MudLink Typo="Typo.body1" Class="ml-1" OnClick="@OnEnterIssue">please add one.</MudLink>
+            </MudStack>
+        }
+        </MudContainer>
+    </MudContainer>
+</MudContainer>
+
+@inject IState<ProjectState>    ProjectState;
+@inject IState<IssueState>      IssueState;
+@inject IssueFacade             IssueFacade;
+@inject IIssueRetriever         IssueRetriever;
+
+@code {
+    private List<SnCompositeIssue>  mIssues = new ();
+    private PaginationInformation   mPaginationInformation = new ();
+
+    protected override void OnInitialized() {
+        base.OnInitialized();
+
+        IssueRetriever.OnIssueListChanged += OnIssueListChanged;
+        IssueRetriever.StartRetrieving();
+    }
+
+    private void OnIssueListChanged( object sender, EventArgs args ) {
+        UpdateIssueList();
+    }
+
+    private void UpdateIssueList() {
+        mIssues.Clear();
+        mIssues.AddRange( IssueRetriever.IssueList());
+
+        mPaginationInformation = IssueRetriever.PaginationInformation;
+
+        StateHasChanged();
+    }
+
+    private int SelectedPage {
+        get => (int)IssueState.Value.CurrentDisplayPage;
+        set => IssueFacade.SetIssueListPage( (uint)value );
+    }
+
+    private void OnEnterIssue() {
+        if( ProjectState.Value.CurrentProject != null )
+        IssueFacade.AddIssue( ProjectState.Value.CurrentProject );
+    }
+
+    protected override void Dispose( bool disposing ) {
+        base.Dispose( disposing );
+
+        IssueRetriever.EndRetrieving();
+        IssueRetriever.OnIssueListChanged -= OnIssueListChanged;
+    }
+}

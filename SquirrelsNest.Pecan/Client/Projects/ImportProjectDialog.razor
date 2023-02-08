@@ -1,0 +1,71 @@
+﻿@using Blazored.FluentValidation
+@using FluentValidation
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components
+@using SquirrelsNest.Pecan.Shared.Dto.Projects
+@using SquirrelsNest.Pecan.Client.Projects.Actions
+
+<EditForm Model="@Request" OnValidSubmit="@OnSubmit">
+    <FluentValidationValidator Validator="@( new ImportProjectActionValidator())"/>
+    <MudDialog>
+        <DialogContent>
+            <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild">
+                <MudTextField
+                    T="string" 
+                    Immediate="true"
+                    Label="Project Name"
+                    HelperText="Name for the project"
+                    HelperTextOnFocus="true"
+                    @bind-Value="@Request.Request.Name"/>
+                <ValidationMessage For="@(() => Request.Request.Name)"/>
+                <MudTextField
+                    T="string"
+                    Label="Description"
+                    HelperText="Description for the project"
+                    HelperTextOnFocus="true"
+                    @bind-Value="@Request.Request.Description"/>
+                <ValidationMessage For="@(() => Request.Request.Description)"/>
+                <MudTextField
+                    T="string"
+                    Label="Issue Prefix"
+                    HelperText="Characters used to prefix project issue numbers"
+                    HelperTextOnFocus="true"
+                    @bind-Value="@Request.Request.IssuePrefix"/>
+                <ValidationMessage For="@(() => Request.Request.IssuePrefix)"/>
+                <MudText Typo="Typo.body1" Class="mt-2 mb-1">
+                    Please select the file to be imported as a project:
+                </MudText>
+                <InputFile style="margin-left: 1em;" OnChange="@OnFileSelected"/>
+                <ValidationMessage For="@(() => Request.File)" />
+            </MudFocusTrap>
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="OnCancel">Cancel</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Ok</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+@code {
+    [CascadingParameter]
+    public MudDialogInstance?   MudDialog { get; set; }
+    [Parameter]
+    public ImportProjectSubmit  Request { get; set; } = new ( new ImportProjectRequest());
+
+    private void OnSubmit() => MudDialog?.Close( DialogResult.Ok( Request ));
+    private void OnCancel() => MudDialog?.Cancel();
+
+    private void OnFileSelected( InputFileChangeEventArgs inputFileArgs ) {
+        Request.File = inputFileArgs.File;
+    }
+
+    public class ImportProjectActionValidator : AbstractValidator<ImportProjectSubmit> {
+        public ImportProjectActionValidator() {
+            RuleFor( p => p.Request ).SetValidator( new ImportProjectRequestValidator());
+
+            RuleFor( p => p.File )
+                .NotNull()
+                .WithMessage( "File to import must be selected" );
+        }
+    } 
+}

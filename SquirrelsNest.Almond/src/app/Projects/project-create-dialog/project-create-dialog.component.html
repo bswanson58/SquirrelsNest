@@ -1,0 +1,27 @@
+<h3 mat-dialog-title>Project Details</h3>
+<mat-dialog-content fxLayout='column'>
+  <mat-form-field style='width: 60%'>
+    <mat-label>Project Title</mat-label>
+    <input type='text' required matInput [(ngModel)]='projectTitle' placeholder='Title' value='projectTitle'>
+  </mat-form-field>
+  <mat-form-field style='width: 100%'>
+    <mat-label>Description</mat-label>
+    <input type='text' matInput [(ngModel)]='projectDescription' aria-multiline='true' ngModel placeholder='Description'
+           value='projectDescription'>
+  </mat-form-field>
+  <mat-form-field style='width: 25%'>
+    <mat-label>Issue Prefix</mat-label>
+    <input type='text' required matInput [(ngModel)]='issuePrefix' ngModel placeholder='Issue Prefix'
+           value='issuePrefix'>
+  </mat-form-field>
+  <mat-form-field style='width: 60%'>
+    <mat-label>Project Template</mat-label>
+    <mat-select required [(value)]='selectedTemplate'>
+      <mat-option *ngFor='let item of templateList$ | async' [value]='item.name'>{{item.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions fxLayout='row' fxLayoutAlign='end center' fxLayoutGap='1em'>
+  <button class='mat-button' (click)='onCancel()'>Cancel</button>
+  <button class='mat-button' (click)='onClose()'>OK</button>
+</mat-dialog-actions>

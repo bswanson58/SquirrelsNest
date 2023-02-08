@@ -1,0 +1,25 @@
+﻿@using SquirrelsNest.Pecan.Shared.Entities
+
+<MudDialog>
+    <DialogContent>
+        <IssueTypeSelector Project="@Project" @bind-SelectedIssueType="@SelectedIssueType"/>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="OnCancel">Cancel</MudButton>
+        <MudButton OnClick="OnSubmit" Color="Color.Primary">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    public MudDialogInstance?           MudDialog { get; set; }
+    [Parameter]
+    public SnCompositeProject           Project { get; set; } = SnCompositeProject.Default;
+    [Parameter]
+    public SnIssueType                  SelectedIssueType { get; set; } = SnIssueType.Default;
+    [Parameter]
+    public EventCallback<SnIssueType>   SelectedIssueTypeChanged { get; set; }
+
+    private void OnSubmit() => MudDialog?.Close( DialogResult.Ok( SelectedIssueType ));
+    private void OnCancel() => MudDialog?.Cancel();
+}

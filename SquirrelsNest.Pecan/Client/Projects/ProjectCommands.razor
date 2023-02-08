@@ -1,0 +1,21 @@
+﻿@using SquirrelsNest.Pecan.Client.Projects.Store
+
+@inject ProjectFacade ProjectFacade
+
+<MudContainer Class="mb-1 pa-0">
+    <MudStack Row="true" Spacing="1" Class="d-flex justify-end">
+        <MudButton Variant="Variant.Text" OnClick="OnAddProject">Add Project</MudButton>
+        <MudButton Variant="Variant.Text" OnClick="OnImportProject">Import Project</MudButton>
+    </MudStack>
+</MudContainer>
+
+@code {
+
+    private void OnAddProject() {
+        ProjectFacade.AddProject();
+    }
+
+    private void OnImportProject() {
+        ProjectFacade.ImportProject();
+    }
+}

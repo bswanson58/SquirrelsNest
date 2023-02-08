@@ -1,0 +1,30 @@
+<mat-toolbar color='primary'>
+  <div>
+    <button mat-icon-button (click)='onToggleSidenav()'>
+      <mat-icon>menu</mat-icon>
+    </button>
+  </div>
+  <div><a routerLink='/'>SquirrelsNest</a></div>
+  <div fxFlex fxLayout fxLayoutAlign='flex-end' fxHide.sm>
+    <ul fxLayout fxLayoutGap='10px' class='navigation-items'>
+      <li *ngIf='!(isAuthenticated$ | async)'>
+        <a routerLink='/login' [class.active-route]='isActiveRoute("/login")'>Login</a>
+      </li>
+      <li *ngIf='!(isAuthenticated$ | async)'>
+        <a routerLink='/register' [class.active-route]='isActiveRoute("/register")'>Register</a>
+      </li>
+      <li *ngIf='isAuthenticated$ | async'>
+        <a routerLink='/projects' [class.active-route]='isActiveRoute("/projects")'>Projects</a>
+      </li>
+      <li *ngIf='isAuthenticated$ | async'>
+        <a routerLink='/issues' [class.active-route]='isActiveRoute("/issues")'>Issues</a>
+      </li>
+      <li *ngIf='isAuthenticated$ | async'>
+        <a routerLink='/users' [class.active-route]='isActiveRoute("/users")'>Users</a>
+      </li>
+      <li *ngIf='isAuthenticated$ | async'>
+        <a style='cursor: pointer' (click)='onLogout()'>Logout</a>
+      </li>
+    </ul>
+  </div>
+</mat-toolbar>

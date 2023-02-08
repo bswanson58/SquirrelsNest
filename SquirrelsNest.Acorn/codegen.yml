@@ -1,0 +1,6 @@
+# server schema loaded from: https://localhost:7274/api/?sdl
+schema: schema.graphql
+generates:
+  ./src/data/graphQlTypes.d.ts:
+    plugins:
+      - typescript

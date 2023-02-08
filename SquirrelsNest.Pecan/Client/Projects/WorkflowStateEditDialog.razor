@@ -1,0 +1,119 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components
+@using SquirrelsNest.Pecan.Shared.Entities
+@using System.ComponentModel.DataAnnotations
+
+<EditForm Model="@mModel" OnValidSubmit="@OnSubmit">
+    <DataAnnotationsValidator />
+    <MudDialog>
+        <DialogContent>
+            <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild">
+                <MudTextField T="string"
+                              Immediate="true"
+                              Label="Workflow State Name"
+                              HelperText="Name for the workflow state"
+                              HelperTextOnFocus="true"
+                              @bind-Value="@mModel.Name" />
+                <ValidationMessage For="@(() => mModel.Name)" />
+                <MudTextField T="string"
+                              Label="Description"
+                              HelperText="Description for the workflow state"
+                              HelperTextOnFocus="true"
+                              @bind-Value="@mModel.Description" />
+                <ValidationMessage For="@(() => mModel.Description)" />
+                <MudSelect T="StateEnum" 
+                           ToStringFunc="@( e => e.ToString())"
+                           Label="State Category"
+                           @bind-Value="@mModel.Category">
+                    @foreach( var e in mEnumValues ) {
+                        <MudSelectItem Value="e"></MudSelectItem>
+                    }
+                </MudSelect>
+                <ValidationMessage For="@(() => mModel.Category)" />
+            </MudFocusTrap>
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="OnCancel">Cancel</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Ok</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+@code {
+    [Parameter]
+    public SnWorkflowState?             WorkflowState { get; set; }
+    [CascadingParameter]
+    public MudDialogInstance?           MudDialog { get; set; }
+
+    private ComponentModel              mModel = new ComponentModel();
+    private readonly List<StateEnum>    mEnumValues = new List<StateEnum>();
+
+    protected override void OnParametersSet() {
+        base.OnParametersSet();
+
+        if( WorkflowState != null ) {
+            mModel = new ComponentModel( WorkflowState );
+        }
+
+        mEnumValues.Clear();
+        foreach( var e in Enum.GetValues( typeof( StateCategory ))) {
+            mEnumValues.Add( new StateEnum((StateCategory)e ));
+        }
+    }
+
+    private void OnSubmit() {
+        if( WorkflowState != null ) {
+            MudDialog?.Close( 
+                DialogResult.Ok( WorkflowState.With( name: mModel.Name, description: mModel.Description, category: mModel.Category.Category  )));
+        }
+        else {
+            MudDialog?.Cancel();
+        }
+    }
+
+    private void OnCancel() => MudDialog?.Cancel();
+
+    internal class ComponentModel {
+        [Required( ErrorMessage = "Workflow State Name is required" )]
+        public string           Name { get; set; }
+        public string           Description { get; set; }
+        public StateEnum        Category { get; set; }
+
+        public ComponentModel() {
+            Name = String.Empty;
+            Description = String.Empty;
+            Category = new StateEnum( StateCategory.Intermediate );
+        }
+
+        public ComponentModel( SnWorkflowState workflowState ) {
+            Name = workflowState.Name;
+            Description = workflowState.Description;
+            Category = new StateEnum( workflowState.Category );
+        }
+    }
+
+    internal class StateEnum {
+        public StateCategory Category { get; }
+
+        public StateEnum( StateCategory category ) {
+            Category = category;
+        }
+
+        public override bool Equals( object ? obj ) {
+            if( obj is StateEnum e ) {
+                return e.Category == Category;
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode() {
+            return Category.GetHashCode();
+        }
+
+        public override string ToString() {
+            return Category.ToString();
+        }
+    }
+}
+

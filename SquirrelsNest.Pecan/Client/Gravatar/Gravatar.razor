@@ -1,0 +1,61 @@
+﻿@using SquirrelsNest.Pecan.Client.Auth.Store
+@using SquirrelsNest.Pecan.Client.Auth.Support
+@using SquirrelsNest.Pecan.Shared.Constants
+@using System.Security.Claims
+@using Fluxor
+
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+@if( mAuthStateValid ) {
+    <MudAvatar Image="@mGravatarImageUri"
+               Color="Color.Info"
+               Alt="@mUserDisplayName">@mUserInitials</MudAvatar>
+}
+
+@inject IState<AuthState>   AuthState;
+@inject IGravatarClient     GravatarClient;
+@inject IAuthInformation    AuthInformation;
+
+@code {
+    private bool    mAuthStateValid = false;    
+    private string  mGravatarImageUri = String.Empty;
+    private string  mUserDisplayName = String.Empty;
+    private string  mUserInitials = String.Empty;
+
+    protected override async Task OnInitializedAsync() {
+        await base.OnInitializedAsync();
+
+        AuthState.StateChanged += OnAuthStateChanged;
+        UpdateAvatar();
+    }
+
+    private void OnAuthStateChanged( object? sender, EventArgs e ) {
+        UpdateAvatar();
+    }
+
+    private void UpdateAvatar() {
+        mAuthStateValid = AuthInformation.IsAuthValid;
+
+        if( mAuthStateValid ) {
+            mUserDisplayName = AuthInformation.UserName;
+            mUserInitials = String.Concat( mUserDisplayName.Split( ' ' ).Select( s => s[0] ));
+
+            var emailHash = AuthInformation.UserEmailHash;
+
+            if(!String.IsNullOrWhiteSpace( emailHash )) {
+                mGravatarImageUri =
+                    GravatarClient.GetImageUri( emailHash, GravatarDefaultImage.IdentIcon, false, 100 )
+                        .AbsoluteUri;
+            }
+        }
+
+        StateHasChanged();
+    }
+
+    protected override void Dispose( bool disposing ) {
+        base.Dispose( disposing );
+
+        AuthState.StateChanged -= OnAuthStateChanged;
+    }
+
+}

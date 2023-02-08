@@ -1,0 +1,36 @@
+﻿@using SquirrelsNest.Pecan.Shared.Entities
+
+<MudSelect T="SnWorkflowState"
+           Label="Workflow State"
+           ToStringFunc="s => s.Name"
+           @bind-Value="@Value">
+    @foreach( var state in mWorkflowStates ) {
+            <MudSelectItem Value="state">@state.Name</MudSelectItem>
+    }
+</MudSelect>
+
+@code {
+    [Parameter]
+    public SnCompositeProject?              Project { get; set; }
+    [Parameter]
+    public SnWorkflowState                  SelectedWorkflowState { get; set; } = SnWorkflowState.Default;
+    [Parameter]
+    public EventCallback<SnWorkflowState>   SelectedWorkflowStateChanged { get; set; }
+
+    private readonly List<SnWorkflowState>  mWorkflowStates = new();
+
+    private SnWorkflowState Value {
+        get => SelectedWorkflowState;
+        set => SelectedWorkflowStateChanged.InvokeAsync( value );
+    }
+
+    protected override void OnParametersSet() {
+        base.OnParametersSet();
+
+        if( Project != null ) {
+            mWorkflowStates.Clear();
+            mWorkflowStates.AddRange( Project.WorkflowStates );
+            mWorkflowStates.Add( SnWorkflowState.Default );
+        }
+    }
+}

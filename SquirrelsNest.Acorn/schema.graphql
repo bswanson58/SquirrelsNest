@@ -1,0 +1,459 @@
+﻿schema {
+  query: Query
+  mutation: Mutation
+}
+
+type AddIssuePayload {
+  issue: ClIssue
+  errors: [MutationError!]!
+}
+
+type ClComponent {
+  projectId: String!
+  name: String!
+  description: String!
+  id: String!
+}
+
+type ClIssue {
+  title: String!
+  description: String!
+  project: ClProjectBase!
+  issueNumber: Int!
+  entryDate: Date!
+  enteredBy: ClUser!
+  issueType: ClIssueType!
+  component: ClComponent!
+  release: ClRelease!
+  workflowState: ClWorkflowState!
+  assignedTo: ClUser!
+  isFinalized: Boolean!
+  id: String!
+}
+
+type ClIssueCollectionSegment {
+  items: [ClIssue!]
+  "Information to aid in pagination."
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+type ClIssueType {
+  projectId: String!
+  name: String!
+  description: String!
+  id: String!
+}
+
+type ClProject {
+  issuePrefix: String!
+  nextIssueNumber: Int!
+  components: [ClComponent!]!
+  issueTypes: [ClIssueType!]!
+  workflowStates: [ClWorkflowState!]!
+  users: [ClUser!]!
+  name: String!
+  description: String!
+  inception: Date!
+  repositoryUrl: String!
+  id: String!
+}
+
+type ClProjectBase {
+  name: String!
+  description: String!
+  inception: Date!
+  repositoryUrl: String!
+  id: String!
+}
+
+type ClProjectCollectionSegment {
+  items: [ClProject!]
+  "Information to aid in pagination."
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+type ClRelease {
+  projectId: String!
+  name: String!
+  description: String!
+  repositoryLabel: String!
+  releaseDate: Date!
+  id: String!
+}
+
+type ClUser {
+  name: String!
+  loginName: String!
+  email: String!
+  id: String!
+}
+
+type ClWorkflowState {
+  projectId: String!
+  name: String!
+  description: String!
+  category: StateCategory!
+  id: String!
+}
+
+"Information about the offset pagination."
+type CollectionSegmentInfo {
+  "Indicates whether more items exist following the set defined by the clients arguments."
+  hasNextPage: Boolean!
+  "Indicates whether more items exist prior the set defined by the clients arguments."
+  hasPreviousPage: Boolean!
+}
+
+type DeleteIssuePayload {
+  issueId: String!
+  errors: [MutationError!]!
+}
+
+type LoginPayload {
+  token: String!
+  expiration: DateTime!
+}
+
+type Mutation {
+  login(loginInput: LoginInput!): LoginPayload!
+  addIssue(issueInput: AddIssueInput!): AddIssuePayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
+  updateIssue(updateInput: UpdateIssueInput!): UpdateIssuePayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
+  deleteIssue(deleteInput: DeleteIssueInput!): DeleteIssuePayload! @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
+}
+
+type MutationError {
+  message: String!
+  suggestion: String!
+}
+
+type Query {
+  projectList(skip: Int take: Int where: ClProjectFilterInput order: [ClProjectSortInput!]): ClProjectCollectionSegment @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
+  issueList(skip: Int take: Int projectId: ID! where: ClIssueFilterInput order: [ClIssueSortInput!]): ClIssueCollectionSegment @authorize(policy: "IsUser", apply: BEFORE_RESOLVER)
+}
+
+type UpdateIssuePayload {
+  issue: ClIssue
+  errors: [MutationError!]!
+}
+
+input AddIssueInput {
+  projectId: String!
+  title: String!
+  description: String!
+  issueTypeId: String!
+}
+
+input BooleanOperationFilterInput {
+  eq: Boolean
+  neq: Boolean
+}
+
+input ClComponentFilterInput {
+  and: [ClComponentFilterInput!]
+  or: [ClComponentFilterInput!]
+  projectId: StringOperationFilterInput
+  name: StringOperationFilterInput
+  description: StringOperationFilterInput
+  id: StringOperationFilterInput
+}
+
+input ClComponentSortInput {
+  projectId: SortEnumType
+  name: SortEnumType
+  description: SortEnumType
+  id: SortEnumType
+}
+
+input ClIssueFilterInput {
+  and: [ClIssueFilterInput!]
+  or: [ClIssueFilterInput!]
+  title: StringOperationFilterInput
+  description: StringOperationFilterInput
+  project: ClProjectBaseFilterInput
+  issueNumber: ComparableInt32OperationFilterInput
+  entryDate: ComparableDateOnlyOperationFilterInput
+  enteredBy: ClUserFilterInput
+  issueType: ClIssueTypeFilterInput
+  component: ClComponentFilterInput
+  release: ClReleaseFilterInput
+  workflowState: ClWorkflowStateFilterInput
+  assignedTo: ClUserFilterInput
+  isFinalized: BooleanOperationFilterInput
+  id: StringOperationFilterInput
+}
+
+input ClIssueSortInput {
+  title: SortEnumType
+  description: SortEnumType
+  project: ClProjectBaseSortInput
+  issueNumber: SortEnumType
+  entryDate: SortEnumType
+  enteredBy: ClUserSortInput
+  issueType: ClIssueTypeSortInput
+  component: ClComponentSortInput
+  release: ClReleaseSortInput
+  workflowState: ClWorkflowStateSortInput
+  assignedTo: ClUserSortInput
+  isFinalized: SortEnumType
+  id: SortEnumType
+}
+
+input ClIssueTypeFilterInput {
+  and: [ClIssueTypeFilterInput!]
+  or: [ClIssueTypeFilterInput!]
+  projectId: StringOperationFilterInput
+  name: StringOperationFilterInput
+  description: StringOperationFilterInput
+  id: StringOperationFilterInput
+}
+
+input ClIssueTypeSortInput {
+  projectId: SortEnumType
+  name: SortEnumType
+  description: SortEnumType
+  id: SortEnumType
+}
+
+input ClProjectBaseFilterInput {
+  and: [ClProjectBaseFilterInput!]
+  or: [ClProjectBaseFilterInput!]
+  name: StringOperationFilterInput
+  description: StringOperationFilterInput
+  inception: ComparableDateOnlyOperationFilterInput
+  repositoryUrl: StringOperationFilterInput
+  id: StringOperationFilterInput
+}
+
+input ClProjectBaseSortInput {
+  name: SortEnumType
+  description: SortEnumType
+  inception: SortEnumType
+  repositoryUrl: SortEnumType
+  id: SortEnumType
+}
+
+input ClProjectFilterInput {
+  and: [ClProjectFilterInput!]
+  or: [ClProjectFilterInput!]
+  issuePrefix: StringOperationFilterInput
+  nextIssueNumber: ComparableInt32OperationFilterInput
+  components: ListFilterInputTypeOfClComponentFilterInput
+  issueTypes: ListFilterInputTypeOfClIssueTypeFilterInput
+  workflowStates: ListFilterInputTypeOfClWorkflowStateFilterInput
+  users: ListFilterInputTypeOfClUserFilterInput
+  name: StringOperationFilterInput
+  description: StringOperationFilterInput
+  inception: ComparableDateOnlyOperationFilterInput
+  repositoryUrl: StringOperationFilterInput
+  id: StringOperationFilterInput
+}
+
+input ClProjectSortInput {
+  issuePrefix: SortEnumType
+  nextIssueNumber: SortEnumType
+  name: SortEnumType
+  description: SortEnumType
+  inception: SortEnumType
+  repositoryUrl: SortEnumType
+  id: SortEnumType
+}
+
+input ClReleaseFilterInput {
+  and: [ClReleaseFilterInput!]
+  or: [ClReleaseFilterInput!]
+  projectId: StringOperationFilterInput
+  name: StringOperationFilterInput
+  description: StringOperationFilterInput
+  repositoryLabel: StringOperationFilterInput
+  releaseDate: ComparableDateOnlyOperationFilterInput
+  id: StringOperationFilterInput
+}
+
+input ClReleaseSortInput {
+  projectId: SortEnumType
+  name: SortEnumType
+  description: SortEnumType
+  repositoryLabel: SortEnumType
+  releaseDate: SortEnumType
+  id: SortEnumType
+}
+
+input ClUserFilterInput {
+  and: [ClUserFilterInput!]
+  or: [ClUserFilterInput!]
+  name: StringOperationFilterInput
+  loginName: StringOperationFilterInput
+  email: StringOperationFilterInput
+  id: StringOperationFilterInput
+}
+
+input ClUserSortInput {
+  name: SortEnumType
+  loginName: SortEnumType
+  email: SortEnumType
+  id: SortEnumType
+}
+
+input ClWorkflowStateFilterInput {
+  and: [ClWorkflowStateFilterInput!]
+  or: [ClWorkflowStateFilterInput!]
+  projectId: StringOperationFilterInput
+  name: StringOperationFilterInput
+  description: StringOperationFilterInput
+  category: StateCategoryOperationFilterInput
+  id: StringOperationFilterInput
+}
+
+input ClWorkflowStateSortInput {
+  projectId: SortEnumType
+  name: SortEnumType
+  description: SortEnumType
+  category: SortEnumType
+  id: SortEnumType
+}
+
+input ComparableDateOnlyOperationFilterInput {
+  eq: Date
+  neq: Date
+  in: [Date!]
+  nin: [Date!]
+  gt: Date
+  ngt: Date
+  gte: Date
+  ngte: Date
+  lt: Date
+  nlt: Date
+  lte: Date
+  nlte: Date
+}
+
+input ComparableInt32OperationFilterInput {
+  eq: Int
+  neq: Int
+  in: [Int!]
+  nin: [Int!]
+  gt: Int
+  ngt: Int
+  gte: Int
+  ngte: Int
+  lt: Int
+  nlt: Int
+  lte: Int
+  nlte: Int
+}
+
+input DeleteIssueInput {
+  issueId: String!
+}
+
+input ListFilterInputTypeOfClComponentFilterInput {
+  all: ClComponentFilterInput
+  none: ClComponentFilterInput
+  some: ClComponentFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfClIssueTypeFilterInput {
+  all: ClIssueTypeFilterInput
+  none: ClIssueTypeFilterInput
+  some: ClIssueTypeFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfClUserFilterInput {
+  all: ClUserFilterInput
+  none: ClUserFilterInput
+  some: ClUserFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfClWorkflowStateFilterInput {
+  all: ClWorkflowStateFilterInput
+  none: ClWorkflowStateFilterInput
+  some: ClWorkflowStateFilterInput
+  any: Boolean
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input StateCategoryOperationFilterInput {
+  eq: StateCategory
+  neq: StateCategory
+  in: [StateCategory!]
+  nin: [StateCategory!]
+}
+
+input StringOperationFilterInput {
+  and: [StringOperationFilterInput!]
+  or: [StringOperationFilterInput!]
+  eq: String
+  neq: String
+  contains: String
+  ncontains: String
+  in: [String]
+  nin: [String]
+  startsWith: String
+  nstartsWith: String
+  endsWith: String
+  nendsWith: String
+}
+
+input UpdateIssueInput {
+  issueId: String!
+  operations: [UpdateOperationInput!]!
+}
+
+input UpdateOperationInput {
+  path: IssueUpdatePath!
+  value: String!
+}
+
+enum ApplyPolicy {
+  BEFORE_RESOLVER
+  AFTER_RESOLVER
+}
+
+enum IssueUpdatePath {
+  UNKNOWN
+  TITLE
+  DESCRIPTION
+  ISSUE_TYPE_ID
+  COMPONENT_ID
+  RELEASE_ID
+  WORKFLOW_STATE_ID
+  ASSIGNED_TO_ID
+}
+
+enum SortEnumType {
+  ASC
+  DESC
+}
+
+enum StateCategory {
+  INTERMEDIATE
+  INITIAL
+  TERMINAL
+  COMPLETED
+}
+
+directive @authorize("The name of the authorization policy that determines access to the annotated resource." policy: String "Roles that are allowed to access the annotated resource." roles: [String!] "Defines when when the resolver shall be executed.By default the resolver is executed after the policy has determined that the current user is allowed to access the field." apply: ApplyPolicy! = BEFORE_RESOLVER) repeatable on SCHEMA | OBJECT | FIELD_DEFINITION
+
+"The `@defer` directive may be provided for fragment spreads and inline fragments to inform the executor to delay the execution of the current fragment to indicate deprioritization of the current fragment. A query with `@defer` directive will cause the request to potentially return multiple responses, where non-deferred data is delivered in the initial response and data deferred is delivered in a subsequent response. `@include` and `@skip` take precedence over `@defer`."
+directive @defer("If this argument label has a value other than null, it will be passed on to the result of this defer directive. This label is intended to give client applications a way to identify to which fragment a deferred result belongs to." label: String "Deferred when true." if: Boolean) on FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+"The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions."
+directive @specifiedBy("The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types." url: String!) on SCALAR
+
+"The `@stream` directive may be provided for a field of `List` type so that the backend can leverage technology such as asynchronous iterators to provide a partial list in the initial response, and additional list items in subsequent responses. `@include` and `@skip` take precedence over `@stream`."
+directive @stream("If this argument label has a value other than null, it will be passed on to the result of this stream directive. This label is intended to give client applications a way to identify to which fragment a streamed result belongs to." label: String "The initial elements that shall be send down to the consumer." initialCount: Int! = 0 "Streamed when true." if: Boolean) on FIELD
+
+"The `Date` scalar represents an ISO-8601 compliant date type."
+scalar Date
+
+"The `DateTime` scalar represents an ISO-8601 compliant date time type."
+scalar DateTime @specifiedBy(url: "https:\/\/www.graphql-scalars.com\/date-time")

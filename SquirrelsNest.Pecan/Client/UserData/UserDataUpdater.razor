@@ -1,0 +1,36 @@
+﻿@using Fluxor
+@using SquirrelsNest.Pecan.Client.UserData.Store
+
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+@inject IUserDataService        UserDataService;
+@inject IState<UserDataState>   UserDataState;
+
+@code {
+    protected override void OnInitialized() {
+        base.OnInitialized();
+
+        UserDataState.StateChanged += OnUserDataChanged;
+    }
+
+    private void OnUserDataChanged( object ? sender, EventArgs e ) {
+        UpdateUserData();
+    }
+
+    private void UpdateUserData() {
+        var userData = new PecanUserData( 
+            UserDataState.Value.CurrentProjectId,
+            UserDataState.Value.DisplayCompletedIssues, 
+            UserDataState.Value.DisplayCompletedIssuesLast,
+            UserDataState.Value.DisplayOnlyMyAssignedIssues,
+            UserDataState.Value.IssueListDisplayStyle );
+
+        UserDataService.PersistUserData( userData );
+    }
+
+    protected override void Dispose( bool disposing ) {
+        base.Dispose( disposing );
+
+        UserDataState.StateChanged -= OnUserDataChanged;
+    }
+}

@@ -1,0 +1,16 @@
+<section fxLayout='row' style='margin-top: 5%;'>
+  <div fxFlex='50%' fxLayout='column' fxLayoutAlign='start end'>
+    <div fxLayout='column' fxLayoutAlign='start center'>
+      <h2>SquirrelsNest</h2>
+      <img class='images' src='assets/resources/images/squirrel-icon.png' alt='product image'/>
+      <h5>A place to track all your things</h5>
+    </div>
+  </div>
+  <div fxFlex='2em' fxLayoutAlign='center center'>
+    <mat-divider style='height: 100%' [vertical]='true'></mat-divider>
+  </div>
+  <div fxFlex='50%' fxLayout='column' fxLayoutAlign='center start' fxLayoutGap='1em'>
+    <button mat-flat-button (click)='onLogin()'>Login</button>
+    <button mat-flat-button (click)='onRegister()'>Register</button>
+  </div>
+</section>

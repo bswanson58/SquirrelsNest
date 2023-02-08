@@ -1,0 +1,5 @@
+<div fxLayout fxLayoutAlign='center center'>
+  <h1 fxFlex='2 1 auto'>{{(currentProject$ | async)?.name}}</h1>
+  <button mat-icon-button (click)='onToggleListStyle()'><mat-icon>list</mat-icon></button>
+  <button mat-button (click)='onCreateNewIssue()'>New Issue</button>
+</div>

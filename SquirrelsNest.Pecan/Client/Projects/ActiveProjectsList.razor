@@ -1,0 +1,108 @@
+﻿@using SquirrelsNest.Pecan.Client.Projects.Store
+@using Fluxor
+@using SquirrelsNest.Pecan.Client.Issues.Store
+@using SquirrelsNest.Pecan.Client.Projects.ViewModels
+@using SquirrelsNest.Pecan.Client.UserData.Store
+@using SquirrelsNest.Pecan.Shared.Entities
+
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+@inject IState<ProjectState>    ProjectState;
+@inject IState<UserDataState>   UserDataState;
+@inject ProjectFacade           ProjectFacade;
+
+<style>
+    .mouse-highlight {
+        background: lightgrey
+    }
+</style>
+
+<MudContainer Class="my-1 mx-0">
+    <MudText Class="mb-2" Typo="Typo.h6">Projects:</MudText>
+
+    @if( ProjectState.Value.ApiCallInProgress ) {
+        <MudText Class="ma-6" Typo="Typo.body1">Loading Project List</MudText>
+    }
+    else if( ProjectState.Value.ApiCallMessage.Length > 0 ) {
+        <MudText Class="ma-6" Typo="Typo.body1" Color="Color.Error">Error: @ProjectState.Value.ApiCallMessage</MudText>
+    }
+    else {
+        <MudStack>
+            @foreach( var project in mProjects ) {
+                <div @onmouseenter="@project.OnMouseEnter" @onmouseleave="@project.OnMouseLeave"
+                     class="@project.MouseOverHighlight"
+                     @onclick="@(() => SetCurrentProject( project ))">
+                    <MudStack Spacing="0" Class="cursor-pointer">
+                        @if( IsCurrentProject( project )) {
+                            <MudText Class="ms-2 my-0" Typo="Typo.body1" Color="Color.Primary">@project.Name</MudText>
+                        }
+                        else {
+                            <MudText Class="ms-2 my-0" Typo="Typo.body1">@project.Name</MudText>
+                        }
+                        <MudText Class="ms-3 my-0 subdue" Typo="Typo.body2">@project.Description</MudText>
+                    </MudStack>
+                </div>
+            }
+        </MudStack>
+    }
+</MudContainer>
+
+@code {
+    private readonly List<ProjectViewModel> mProjects = new ();
+
+    protected override void OnInitialized() {
+        base.OnInitialized();
+
+        UpdateProjects();
+        ProjectState.StateChanged += OnProjectStateChanged;
+    }
+
+    protected override void Dispose( bool disposing ) {
+        ProjectState.StateChanged -= OnProjectStateChanged;
+    }
+
+    private void OnProjectStateChanged( object ? sender, EventArgs e ) {
+        UpdateProjects();
+    }
+
+    private void UpdateProjects() {
+        if( ProjectState != null ) {
+            mProjects.Clear();
+            mProjects.AddRange(
+                ProjectState.Value.Projects
+                    .Where( p => p.IsViableProject())
+                    .OrderBy( p => p.Name )
+                    .Select( p => new ProjectViewModel( p )));
+
+            if( mProjects.Any()) {
+                if( ProjectState.Value.CurrentProject == null ) {
+                    if(!String.IsNullOrWhiteSpace( UserDataState.Value.CurrentProjectId )) {
+                        var project = mProjects
+                            .FirstOrDefault( p => p.Project.EntityId.Equals( UserDataState.Value.CurrentProjectId ));
+
+                        if( project != null ) {
+                            SetCurrentProject( project );
+                        }
+                    }
+                    else {
+                        var project = mProjects.FirstOrDefault();
+
+                        if( project != null ) {
+                            SetCurrentProject( project );
+                        }
+                    }
+                }
+            }
+
+            StateHasChanged();
+        }
+    }
+
+    private void SetCurrentProject( ProjectViewModel project ) {
+        ProjectFacade.SetCurrentProject( project.Project );
+    }
+
+    private bool IsCurrentProject( ProjectViewModel project ) => 
+        ProjectState.Value.CurrentProject != null && 
+        ProjectState.Value.CurrentProject.EntityId.Equals( project.Project.EntityId );
+  }

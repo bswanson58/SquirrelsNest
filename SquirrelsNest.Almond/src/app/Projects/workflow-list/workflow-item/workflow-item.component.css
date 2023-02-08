@@ -1,0 +1,8 @@
+.dimmed {
+  opacity: 60%;
+  cursor: pointer;
+}
+
+.highlight {
+  background: #80808030;
+}

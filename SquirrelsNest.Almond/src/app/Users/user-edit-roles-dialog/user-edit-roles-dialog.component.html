@@ -1,0 +1,10 @@
+<h3 mat-dialog-title>User Roles for {{user.name}}:</h3>
+<mat-dialog-content fxLayout='column' style='padding-bottom: 1em;'>
+  <mat-checkbox (change)='onChangeRole()' [(ngModel)]='isAdmin'>Administrator access</mat-checkbox>
+  <mat-checkbox (change)='onChangeRole()' [(ngModel)]='isUser'>User access</mat-checkbox>
+  <mat-checkbox (change)='onChangeDisable()' [(ngModel)]='isDisabled'>User is disabled</mat-checkbox>
+</mat-dialog-content>
+<mat-dialog-actions fxLayout='row' fxLayoutAlign='end center' fxLayoutGap='1em'>
+  <button class='mat-button' (click)='onCancel()'>Cancel</button>
+  <button class='mat-button' (click)='onClose()'>OK</button>
+</mat-dialog-actions>

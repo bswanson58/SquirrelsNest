@@ -1,0 +1,59 @@
+﻿@using SquirrelsNest.Pecan.Client.Auth.Store
+@using SquirrelsNest.Pecan.Client.Auth.Support
+
+@page "/"
+
+<PageTitle>SquirrelsNest</PageTitle>
+
+<style>
+    .row-grid {
+        display: grid;
+        grid-template-rows: auto auto auto;
+        grid-row-gap: 1em;
+    }
+
+    .center-row {
+        display: grid;
+        grid-template-columns: auto 5px auto;
+        grid-column-gap: 0px;
+    }
+</style>
+
+<MudContainer class="row-grid mt-15">
+    <MudText Typo="Typo.h4" style="justify-self: center;">SquirrelsNest</MudText>
+
+    <MudContainer class="center-row">
+        <MudImage Style="justify-self: right; height: 193px;" Src="images/squirrel-icon.png" />
+        <MudDivider Vertical="true" FlexItem="true" Class="my-6"/>
+        @if(@AuthInformation.IsAuthValid ) {
+            <MudContainer Class="d-flex flex-column justify-center align-start">
+                <MudButton ButtonType="ButtonType.Button" Variant="Variant.Text" OnClick="@OnLogout">Logout</MudButton>
+                <MudButton ButtonType="ButtonType.Button" Variant="Variant.Text" OnClick="@OnRegister">Register</MudButton>
+            </MudContainer>
+        }
+        else {
+            <MudContainer Class="d-flex flex-column justify-center align-start">
+                <MudButton ButtonType="ButtonType.Button" Variant="Variant.Text" OnClick="@OnLogin">Login</MudButton>
+                <MudButton ButtonType="ButtonType.Button" Variant="Variant.Text" OnClick="@OnRegister">Register</MudButton>
+            </MudContainer>
+        }
+    </MudContainer>
+
+    <MudText Typo="Typo.body1" style="justify-self: center;">A place to track all your things</MudText>
+</MudContainer>
+
+@inject AuthFacade          AuthFacade;
+@inject IAuthInformation    AuthInformation;
+@code {
+    private void OnRegister() {
+        AuthFacade.RegisterUser();
+    }
+
+    private void OnLogin() {
+        AuthFacade.LoginUser();
+    }
+
+    private void OnLogout() {
+        AuthFacade.LogoutUser();
+    }
+}

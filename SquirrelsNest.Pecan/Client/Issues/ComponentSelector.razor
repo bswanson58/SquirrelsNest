@@ -1,0 +1,36 @@
+﻿@using SquirrelsNest.Pecan.Shared.Entities
+
+<MudSelect T="SnComponent"
+           Label="Component"
+           ToStringFunc="c => c.Name"
+           @bind-Value="@Value">
+    @foreach( var component in mComponents ) {
+        <MudSelectItem Value="component">@component.Name</MudSelectItem>
+    }
+</MudSelect>
+
+@code {
+    [Parameter]
+    public SnCompositeProject?          Project { get; set; }
+    [Parameter]
+    public SnComponent                  SelectedComponent { get; set; } = SnComponent.Default;
+    [Parameter]
+    public EventCallback<SnComponent>   SelectedComponentChanged { get; set; }
+
+    private List<SnComponent>           mComponents = new();
+
+    private SnComponent Value {
+        get => SelectedComponent;
+        set => SelectedComponentChanged.InvokeAsync( value );
+    }
+
+    protected override void OnParametersSet() {
+        base.OnParametersSet();
+
+        if( Project != null ) {
+            mComponents.Clear();
+            mComponents.AddRange( Project.Components );
+            mComponents.Add( SnComponent.Default );
+        }
+    }
+}

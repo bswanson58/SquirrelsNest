@@ -1,0 +1,139 @@
+﻿@using SquirrelsNest.Pecan.Shared.Entities
+@using SquirrelsNest.Pecan.Client.Issues.Store
+@using SquirrelsNest.Pecan.Client.UserData.Store
+@using Fluxor
+@using SquirrelsNest.Pecan.Client.Ui.Store
+
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<style>
+    .containing-grid {
+        display: grid;
+        grid-template-columns: min-content 1fr min-content;
+        grid-row-gap: 0;
+    }
+
+    .component-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-column-gap: 0;
+    }
+
+    .mouse-highlight {
+        background: lightgrey
+    }
+</style>
+
+<div class="@MouseOverHighlight" @onmouseenter="@OnMouseEnter" @onmouseleave="@OnMouseLeave">
+    <MudContainer Class="containing-grid pa-0 mb-1">
+        <MudContainer Class="d-flex flex-none align-center justify-center pa-0">
+            @if( IsDone ) {
+                @if( IsCompleted ) {
+                    <MudIcon Icon="@Icons.Material.Filled.Check" Size="Size.Small" Class="mx-4 my-0" Color="Color.Success"/>
+                }
+                else {
+                    <MudIcon Icon="@Icons.Material.Filled.Check" Size="Size.Small" Class="mx-4 my-0" Color="Color.Warning"/>
+                }
+            }
+            else {
+                <div class="@MouseOverVisibility">
+                    <MudIconButton Icon="@Icons.Material.Filled.Check" 
+                                   Size="Size.Small" Class="mx-4 my-0 pa-0" Style="opacity: 0.3;" 
+                                   OnClick="@OnCompleteIssue">Complete</MudIconButton>
+                </div>
+            }
+        </MudContainer>
+        <MudStack Spacing="0">
+            <MudStack Row="true" Spacing="0" Class="mt-1">
+                <MudText Typo="Typo.body1" Class="subdue">@Project.Project.IssuePrefix</MudText>
+                <MudText Typo="Typo.body1" Class="subdue">-</MudText>
+                <MudText Typo="Typo.body1" Class="subdue">@Issue.IssueNumber</MudText>
+                <MudText Typo="Typo.body1" Class="ml-2">@Issue.Title</MudText>
+            </MudStack>
+            @if( DisplayDescription ) {
+                <MudText Typo="Typo.body2" Class="ml-2 subdue">@Issue.Description</MudText>
+            }
+            @if( DisplayComponents ) {
+                <MudContainer Class="component-grid">
+                    <MudLink Color="Color.Default" Typo="Typo.body2" Class="d-flex justify-center subdue"
+                             OnClick="OnWorkflowStateClick">
+                        @(Issue.WorkflowState?.Name ?? "Unspecified")
+                    </MudLink>
+                    <MudLink Color="Color.Default" Typo="Typo.body2" Class="d-flex justify-center subdue"
+                             OnClick="OnIssueTypeClick">
+                        @(Issue.IssueType?.Name ?? "Unspecified")
+                    </MudLink>
+                    <MudLink Color="Color.Default" Typo="Typo.body2" Class="d-flex justify-center subdue"
+                             OnClick="OnComponentClick">
+                        @(Issue.Component?.Name ?? "Unspecified")
+                    </MudLink>
+                    <MudLink Color="Color.Default" Typo="Typo.body2" Class="d-flex justify-center subdue"
+                             OnClick="OnAssignedUserClick">
+                        @(Issue.AssignedTo?.DisplayName ?? "Unspecified")
+                    </MudLink>
+                </MudContainer>
+            }
+        </MudStack>
+            <MudContainer Class="d-flex flex-none align-center justify-center px-2 py-0">
+                <div class="@MouseOverVisibility">
+                <MudStack Row="true" Spacing="0">
+                    <MudIconButton Icon="@Icons.Material.Outlined.Edit" Size="Size.Small" Title="Edit"
+                                   OnClick="@OnEditRequest" />
+                    <MudIconButton Icon="@Icons.Material.Filled.DeleteOutline" Size="Size.Small" Title="Delete" 
+                                   OnClick="@OnDeleteRequest" />
+                </MudStack>
+                </div>
+            </MudContainer>
+    </MudContainer>
+</div>
+
+@inject IssueFacade             IssueFacade;
+@inject UiFacade                UiFacade;
+@inject IState<UserDataState>   UserDataState;
+
+@code {
+    [Parameter]
+    public SnCompositeIssue     Issue { get; set; } = SnCompositeIssue.Default;
+    [Parameter]
+    public SnCompositeProject   Project { get; set; } = SnCompositeProject.Default;
+
+    private bool                mIsMouseOver = false;
+
+    private void OnMouseEnter() => mIsMouseOver = true;
+    private void OnMouseLeave() => mIsMouseOver = false;
+
+    private string MouseOverVisibility => mIsMouseOver ? "" : "invisible";
+    private string MouseOverHighlight => mIsMouseOver ? "mouse-highlight" : "";
+
+    private bool DisplayDescription =>
+        UserDataState.Value.IssueListDisplayStyle.Equals( IssueListStyle.TitleDescription ) ||
+        UserDataState.Value.IssueListDisplayStyle.Equals( IssueListStyle.FullDetail );
+    private bool DisplayComponents =>
+        UserDataState.Value.IssueListDisplayStyle.Equals( IssueListStyle.FullDetail );
+
+    private bool IsCompleted =>
+        Issue.WorkflowState?.Category.Equals(StateCategory.Completed) == true;
+    private bool IsDone =>
+        Issue.WorkflowState?.Category.Equals( StateCategory.Completed ) == true ||
+        Issue.WorkflowState?.Category.Equals( StateCategory.Terminal ) == true;
+
+    private async void OnCompleteIssue() {
+        var state = Project.WorkflowStates.FirstOrDefault( s => s.Category.Equals( StateCategory.Completed ));
+
+        if( state != null ) {
+            IssueFacade.UpdateIssue( Project, Issue.With( state ));
+        }
+        else {
+            await UiFacade.DisplayMessage("Attention!", 
+                "There are no workflow states in this project marked with the 'Completed' or 'Terminal' state category." );
+        }
+    }
+
+    private void OnEditRequest() => IssueFacade.EditIssue( Project, Issue );
+    private void OnDeleteRequest() => IssueFacade.DeleteIssue( Project, Issue );
+
+    private void OnComponentClick() => IssueFacade.EditComponent( Project, Issue );
+    private void OnIssueTypeClick() => IssueFacade.EditIssueType( Project, Issue );
+    private void OnWorkflowStateClick() => IssueFacade.EditWorkflowState( Project, Issue );
+    private void OnAssignedUserClick() => IssueFacade.EditAssignedUser( Project, Issue );
+}

@@ -1,0 +1,26 @@
+﻿@using SquirrelsNest.Pecan.Client.Auth
+@using SquirrelsNest.Pecan.Client.Ui
+@using SquirrelsNest.Pecan.Client.UserData
+
+<Fluxor.Blazor.Web.StoreInitializer/>
+<AuthenticationProvider/>
+<UserDataUpdater />
+
+@inject AnnouncementHandler     ErrorAnnouncer;
+@inject IAppStartup             AppStartup;
+
+@implements IDisposable
+
+@code {
+    protected override void OnInitialized() {
+        base.OnInitialized();
+
+        ErrorAnnouncer.StartAnnouncements();
+        AppStartup.OnStartup();
+    }
+
+    public void Dispose() {
+        ErrorAnnouncer?.Dispose();
+        AppStartup?.Dispose();
+    }
+}

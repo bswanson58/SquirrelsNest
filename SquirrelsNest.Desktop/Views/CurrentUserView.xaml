@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="SquirrelsNest.Desktop.Views.CurrentUserView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:viewModelLocator="clr-namespace:MvvmSupport.ViewModelLocator;assembly=MvvmSupport"
+             xmlns:viewModels="clr-namespace:SquirrelsNest.Desktop.ViewModels"
+             xmlns:valueConverters="clr-namespace:SquirrelsNest.Desktop.ValueConverters"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800"
+             viewModelLocator:ViewModelLocator.AutoWireViewModel="True"
+             d:DataContext="{d:DesignInstance viewModels:CurrentUserViewModel, IsDesignTimeCreatable=False}">
+
+    <UserControl.Resources>
+        <valueConverters:ByteImageConverter x:Key="ImageConverter" />
+    </UserControl.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Image Grid.Row="0" Height="100" Width="100" ToolTip="{Binding UserName}" Stretch="Uniform"
+               Source="{Binding UserImage, Converter={StaticResource ImageConverter}}">
+            <Image.Clip>
+                <EllipseGeometry Center="50,50" RadiusX="50" RadiusY="50"/>
+            </Image.Clip>
+        </Image>
+
+        <TextBlock Grid.Row="1" Margin="10" HorizontalAlignment="Center" Text="{Binding UserName}"/>
+    </Grid>
+</UserControl>

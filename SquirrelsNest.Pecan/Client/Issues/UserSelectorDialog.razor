@@ -1,0 +1,25 @@
+﻿@using SquirrelsNest.Pecan.Shared.Entities
+
+<MudDialog>
+    <DialogContent>
+        <UserSelector Project="@Project" @bind-SelectedUser="@SelectedUser"/>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="OnCancel">Cancel</MudButton>
+        <MudButton OnClick="OnSubmit" Color="Color.Primary">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    public MudDialogInstance?       MudDialog { get; set; }
+    [Parameter]
+    public SnCompositeProject       Project { get; set; } = SnCompositeProject.Default;
+    [Parameter]
+    public SnUser                   SelectedUser { get; set; } = SnUser.Default;
+    [Parameter]
+    public EventCallback<SnUser>    SelectedUserChanged { get; set; }
+
+    private void OnSubmit() => MudDialog?.Close( DialogResult.Ok( SelectedUser ));
+    private void OnCancel() => MudDialog?.Cancel();
+}

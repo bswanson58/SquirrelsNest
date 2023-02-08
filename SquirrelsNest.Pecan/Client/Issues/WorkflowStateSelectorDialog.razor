@@ -1,0 +1,25 @@
+﻿@using SquirrelsNest.Pecan.Shared.Entities
+
+<MudDialog>
+    <DialogContent>
+        <WorkflowStateSelector Project="@Project" @bind-SelectedWorkflowState="@SelectedWorkflowState"/>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="OnCancel">Cancel</MudButton>
+        <MudButton OnClick="OnSubmit" Color="Color.Primary">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    public MudDialogInstance?           MudDialog { get; set; }
+    [Parameter]
+    public SnCompositeProject           Project { get; set; } = SnCompositeProject.Default;
+    [Parameter]
+    public SnWorkflowState                  SelectedWorkflowState { get; set; } = SnWorkflowState.Default;
+    [Parameter]
+    public EventCallback<SnWorkflowState>   SelectedWorkflowStateChanged { get; set; }
+
+    private void OnSubmit() => MudDialog?.Close( DialogResult.Ok( SelectedWorkflowState ));
+    private void OnCancel() => MudDialog?.Cancel();
+}

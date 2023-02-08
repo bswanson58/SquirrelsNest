@@ -1,0 +1,59 @@
+﻿<UserControl x:Class="SquirrelsNest.Desktop.Views.ExportProjectDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:viewModelLocator="clr-namespace:MvvmSupport.ViewModelLocator;assembly=MvvmSupport"
+             xmlns:viewModels="clr-namespace:SquirrelsNest.Desktop.ViewModels"
+             xmlns:entities="clr-namespace:SquirrelsNest.Common.Entities;assembly=SquirrelsNest.Common"
+             xmlns:dialogService="clr-namespace:MvvmSupport.DialogService;assembly=MvvmSupport"
+             mc:Ignorable="d" 
+             Height="200" Width="600"
+             viewModelLocator:ViewModelLocator.AutoWireViewModel="True"
+             d:DataContext="{d:DesignInstance viewModels:ExportProjectDialogViewModel, IsDesignTimeCreatable=False}">
+
+    <dialogService:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="dialogService:Dialog.WindowStartupLocation" Value="CenterOwner" />
+            <Setter Property="ResizeMode" Value="NoResize"/>
+            <Setter Property="ShowInTaskbar" Value="False"/>
+            <Setter Property="SizeToContent" Value="WidthAndHeight"/>
+        </Style>
+    </dialogService:Dialog.WindowStyle>
+
+    <UserControl.Resources>
+        <DataTemplate x:Key="ProjectTemplate" DataType="{x:Type entities:SnProject}">
+            <TextBlock Text="{Binding Name}"/>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid Margin="10" FocusManager.FocusedElement="{Binding ElementName=_firstFocus}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <TextBlock Style="{StaticResource ControlTitleStyle}" VerticalAlignment="Center" Text="Project:"/>
+            <ComboBox VerticalAlignment="Center" Margin="5,0" Width="200" ItemTemplate="{StaticResource ProjectTemplate}" x:Name="_firstFocus"
+                      ItemsSource="{Binding ProjectList}" SelectedItem="{Binding CurrentProject}"/>
+        </StackPanel>
+
+        <CheckBox Grid.Row="2" Margin="45,0,0,0" IsChecked="{Binding IncludeCompletedProjects}" Content="Include Completed Issues"/>
+
+        <StackPanel Grid.Row="4" Orientation="Vertical" Margin="45,0">
+            <TextBlock Style="{StaticResource ControlTitleStyle}" Text="Export File Name:"/>
+            <TextBox Text="{Binding ExportPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Width="70" Margin="10,0" Style="{StaticResource GeneralButtonStyle}" Content="OK" Command="{Binding AcceptCommand}" IsDefault="True"/>
+            <Button Width="70" Style="{StaticResource GeneralButtonStyle}" Content="Cancel" Command="{Binding CancelCommand}" IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

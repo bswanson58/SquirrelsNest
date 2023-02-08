@@ -1,0 +1,53 @@
+<div fxLayout='row' style='margin-bottom: 5px'
+     [class.highlight]='isHovering'
+     (mouseover)='isHovering = true'
+     (mouseleave)='isHovering = false'>
+  <div fxFlex='3em' fxLayoutAlign='center center'>
+    <button mat-icon-button *ngIf='isHovering && !isCompleted' class='dimmed' (click)='onCompleteIssue()'>
+      <mat-icon>done</mat-icon>
+    </button>
+    <mat-icon *ngIf='isCompleted' [class.isCompletedColor]='isCompleted'>done</mat-icon>
+  </div>
+
+  <div fxLayout='column' fxFlex='grow'>
+    <ng-container *ngIf='(issueListStyle$ | async) === issueStyleTitleOnly'>
+      <div>
+        <span class='dimmed'>{{project?.issuePrefix}}-{{issue.issueNumber}}</span>
+        <span style='margin-left: 0.5em' [class.isCompletedText]='isCompleted'>{{issue.title}}</span>
+      </div>
+    </ng-container>
+    <ng-container *ngIf='(issueListStyle$ | async) === issueStyleTitleDescription'>
+      <div>
+        <span class='dimmed'>{{project?.issuePrefix}}-{{issue.issueNumber}}</span>
+        <span style='margin-left: 0.5em' [class.isCompletedText]='isCompleted'>{{issue.title}}</span>
+      </div>
+      <span fxFlex class='dimmed' style='margin-left: 1em;'>{{issue.description}}</span>
+    </ng-container>
+    <ng-container *ngIf='(issueListStyle$ | async) === issueStyleFullDetail'>
+      <div>
+        <span class='dimmed'>{{project?.issuePrefix}}-{{issue.issueNumber}}</span>
+        <span style='margin-left: 0.5em' [class.isCompletedText]='isCompleted'>{{issue.title}}</span>
+      </div>
+      <span fxFlex class='dimmed' style='margin-left: 1em;'>{{issue.description}}</span>
+      <div fxLayout='row' [class.dimmed]='isCompleted'>
+        <button mat-button fxFlex fxFlexOffset='2em' onclick='this.blur()'
+                (click)='onIssueType()'>{{issue.issueType.name}}</button>
+        <button mat-button fxFlex fxFlexOffset='2em' onclick='this.blur()'
+                (click)='onWorkflowState()'>{{issue.workflowState.name}}</button>
+        <button mat-button fxFlex fxFlexOffset='2em' onclick='this.blur()'
+                (click)='onComponentType()'>{{issue.component.name}}</button>
+        <button mat-button fxFlex fxFlexOffset='2em' onclick='this.blur()'
+                (click)='onAssignedTo()'>{{issue.assignedTo.name}}</button>
+      </div>
+    </ng-container>
+  </div>
+
+  <div fxLayout='row' fxLayoutAlign='center center' fxFlex='6em'>
+    <button mat-icon-button *ngIf='isHovering' class='dimmed' (click)='onEditIssue()'>
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button *ngIf='isHovering' class='dimmed' (click)='onDeleteIssue()'>
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+</div>

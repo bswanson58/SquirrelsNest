@@ -1,0 +1,13 @@
+<h3 mat-dialog-title>{{issueTitle}}</h3>
+<h4 mat-dialog-title>{{dialogTitle}}</h4>
+<mat-dialog-content>
+  <mat-form-field>
+    <mat-select required [(value)]='selectedItemId'>
+      <mat-option *ngFor='let item of selectorValues' [value]='item.id'>{{item.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions fxLayout='row' fxLayoutAlign='end center' fxLayoutGap='1em'>
+  <button class='mat-button' (click)='onCancel()'>Cancel</button>
+  <button class='mat-button' (click)='onClose()'>OK</button>
+</mat-dialog-actions>

@@ -1,0 +1,91 @@
+﻿@using SquirrelsNest.Pecan.Client.Projects.Store
+@using Fluxor
+@using SquirrelsNest.Pecan.Client.Projects.ViewModels
+@using SquirrelsNest.Pecan.Client.UserData.Store
+@using SquirrelsNest.Pecan.Shared.Entities
+@using System.Diagnostics.CodeAnalysis
+
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+@inject IState<UserDataState>   UserDataState;
+@inject IState<ProjectState>    ProjectState;
+@inject ProjectFacade           ProjectFacade;
+
+<MudContainer Class="ma-1 ml-2 pa-0">
+    <MudText Class="mb-2" Typo="Typo.h6">Projects:</MudText>
+        <MudStack Spacing="1">
+            @foreach( var project in mProjects ) {
+                <div @onmouseenter="@project.OnMouseEnter" @onmouseleave="@project.OnMouseLeave"
+                     class="@project.MouseOverHighlight"
+                     @onclick="@(() => SetCurrentProject( project ))">
+                    <MudContainer Class="cursor-pointer pa-0">
+                        @if( IsCurrentProject( project ) ) {
+                            <MudText Class="ms-2 my-0" Typo="Typo.body1" Color="Color.Primary">@project.Name</MudText>
+                        }
+                        else {
+                            <MudText Class="ms-2 my-0" Typo="Typo.body1">@project.Name</MudText>
+                        }
+                    </MudContainer>
+                </div>
+            }
+        </MudStack>
+</MudContainer>
+
+@code {
+    private readonly List<ProjectViewModel> mProjects = new ();
+
+    protected override void OnInitialized() {
+        base.OnInitialized();
+
+        UpdateProjects();
+        ProjectState.StateChanged += OnProjectStateChanged;
+    }
+
+    protected override void Dispose( bool disposing ) {
+        ProjectState.StateChanged -= OnProjectStateChanged;
+    }
+
+    private void OnProjectStateChanged( object ? sender, EventArgs e ) {
+        UpdateProjects();
+    }
+
+    private void UpdateProjects() {
+        if( ProjectState != null ) {
+            mProjects.Clear();
+            mProjects.AddRange( 
+                ProjectState.Value.Projects
+                    .OrderBy( p => p.Name )
+                    .Select( p => new ProjectViewModel( p )));
+
+            if( mProjects.Any()) {
+                if( ProjectState.Value.CurrentProject == null ) {
+                    if(!String.IsNullOrWhiteSpace( UserDataState.Value.CurrentProjectId )) {
+                        var project = mProjects
+                        .FirstOrDefault( p => p.Project.EntityId.Equals( UserDataState.Value.CurrentProjectId ));
+
+                        if( project != null ) {
+                            ProjectFacade.SetCurrentProject( project.Project );
+                        }
+                    }
+                    else {
+                        var project = mProjects.FirstOrDefault();
+
+                        if( project != null ) {
+                            ProjectFacade.SetCurrentProject( project.Project );
+                        }
+                    }
+                }
+            }
+
+            StateHasChanged();
+        }
+    }
+
+    private void SetCurrentProject( ProjectViewModel project ) {
+        ProjectFacade.SetCurrentProject( project.Project );
+    }
+
+    private bool IsCurrentProject( ProjectViewModel project ) => 
+        ProjectState.Value.CurrentProject != null && 
+        ProjectState.Value.CurrentProject.EntityId.Equals( project.Project.EntityId );
+}

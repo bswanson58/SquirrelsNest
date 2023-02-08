@@ -1,0 +1,31 @@
+﻿@using SquirrelsNest.Pecan.Client.Projects.Actions
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components
+@using SquirrelsNest.Pecan.Shared.Entities
+
+<EditForm Model="@Request" OnValidSubmit="@OnSubmit">
+    <MudDialog>
+        <DialogContent>
+            <MudText Typo="Typo.body1">
+                Would you like to export the project named '@Request.Project.Name'?
+            </MudText>
+            <MudCheckBox @bind-Checked="@Request.IncludeCompletedIssues">
+                Include Completed Issues
+            </MudCheckBox>
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="OnCancel">Cancel</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Ok</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+@code {
+    [CascadingParameter]
+    public MudDialogInstance?   MudDialog { get; set; }
+    [Parameter]
+    public ExportProjectSubmit  Request { get; set; } = new ExportProjectSubmit(SnCompositeProject.Default, false);
+
+    private void OnSubmit() => MudDialog?.Close( DialogResult.Ok( Request ));
+    private void OnCancel() => MudDialog?.Cancel();
+}

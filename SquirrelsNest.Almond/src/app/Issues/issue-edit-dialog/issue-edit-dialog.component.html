@@ -1,0 +1,44 @@
+<h3 mat-dialog-title>Issue Details</h3>
+<mat-dialog-content fxLayout='column'>
+  <mat-form-field style='width: 60%'>
+    <mat-label>Issue Title</mat-label>
+    <input type='text' required matInput [(ngModel)]='issueTitle' placeholder='Title' value='issueTitle'>
+  </mat-form-field>
+  <mat-form-field style='width: 100%'>
+    <mat-label>Description</mat-label>
+    <input type='text' matInput [(ngModel)]='issueDescription' aria-multiline='true' ngModel placeholder='Description'
+           value='issueTitle'>
+  </mat-form-field>
+  <div fxLayout='row' fxLayoutGap='2em'>
+    <mat-form-field style='width: 40%'>
+      <mat-label>Issue Type</mat-label>
+      <mat-select [(value)]='selectedIssueTypeId'>
+        <mat-option *ngFor='let item of issueTypes$ | async' [value]='item.id'>{{item.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field style='width: 40%'>
+      <mat-label>Component</mat-label>
+      <mat-select [(value)]='selectedComponentId'>
+        <mat-option *ngFor='let item of components$ | async' [value]='item.id'>{{item.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div fxLayout='row' fxLayoutGap='2em'>
+    <mat-form-field style='width: 40%'>
+      <mat-label>Workflow State</mat-label>
+      <mat-select [(value)]='selectedWorkflowId'>
+        <mat-option *ngFor='let item of workflowStates$ | async' [value]='item.id'>{{item.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field style='width: 40%'>
+      <mat-label>Assigned User</mat-label>
+      <mat-select [(value)]='selectedUserId'>
+        <mat-option *ngFor='let item of users$ | async' [value]='item.id'>{{item.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions fxLayout='row' fxLayoutAlign='end center' fxLayoutGap='1em'>
+  <button class='mat-button' (click)='onCancel()'>Cancel</button>
+  <button class='mat-button' (click)='onClose()'>OK</button>
+</mat-dialog-actions>

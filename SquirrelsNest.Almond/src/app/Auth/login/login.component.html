@@ -1,0 +1,14 @@
+<section fxLayout='column' fxLayoutAlign='center center' fxLayoutGap='5px'>
+  <form #form='ngForm' (ngSubmit)='onSubmit(form)'>
+    <mat-form-field>
+      <input type='email' matInput email ngModel name='email' placeholder='Login Name'>
+    </mat-form-field>
+    <mat-form-field>
+      <input type='password' matInput required minlength='6' ngModel name='password' placeholder='Password'>
+      <mat-hint>Passwords have a minimum length of 6 characters</mat-hint>
+    </mat-form-field>
+    <div fxLayout='column'>
+      <button mat-button type='submit' color='primary' fxFlexAlign='end' [disabled]='form.invalid'>Login</button>
+    </div>
+  </form>
+</section>

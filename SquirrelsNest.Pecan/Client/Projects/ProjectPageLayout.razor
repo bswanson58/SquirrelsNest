@@ -1,0 +1,26 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using SquirrelsNest.Pecan.Client.Shared
+@using SquirrelsNest.Pecan.Shared.Constants
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+@attribute [Route( NavLinks.Projects )]
+@attribute [Authorize( Roles = ClaimValues.cUser )]
+
+<PageTitle>SquirrelsNest - Projects</PageTitle>
+
+<MudGrid Justify="Justify.FlexStart">
+    <MudItem xs="3" Class="pl-4">
+        <ProjectList />
+    </MudItem>
+    <MudItem xs="9" Class="pr-6 my-2">
+        <MudStack Row="true">
+            <MudText Class="d-flex flex-none" Typo="Typo.h6">Project Details:</MudText>
+            <MudContainer Class="d-flex flex-grow-1"/>
+            <MudContainer Class="d-flex align-end pa-0 pr-1">
+                <ProjectCommands/>
+            </MudContainer>
+        </MudStack>
+        <ProjectDetail/>
+        <ProjectComponents/>
+    </MudItem>
+</MudGrid>

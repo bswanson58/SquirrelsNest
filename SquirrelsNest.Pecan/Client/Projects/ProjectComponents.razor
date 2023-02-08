@@ -1,0 +1,128 @@
+﻿@using Fluxor
+@using SquirrelsNest.Pecan.Client.Projects.Store
+@using SquirrelsNest.Pecan.Shared.Entities
+
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<MudContainer Class="mt-2 me-8 pa-0">
+    <MudGrid Spacing="1">
+        <MudItem xs="6">
+            <MudPaper Class="pa-2" Height="20em" Elevation="1">
+                <MudStack Spacing="0">
+                    <MudText Typo="Typo.body1" Class="subdue">Issue Types:</MudText>
+                    <MudContainer Class="ms-1 ps-1 pe-0 d-flex" Style="height: 15em;">
+                        <ComponentList Components="IssueTypes" OnEdit="OnEditIssueType" OnDelete="OnDeleteIssueType"/>
+                    </MudContainer>
+                    <MudContainer Class="px-0 py-1 d-flex justify-end">
+                        <MudButton OnClick="@OnAddIssueType" Variant="Variant.Text">Add Issue Type</MudButton>
+                    </MudContainer>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6">
+            <MudPaper Class="pa-2" Height="20em" Elevation="1">
+                <MudStack Spacing="0">
+                    <MudText Typo="Typo.body1" Class="subdue">Components:</MudText>
+                    <MudContainer Class="ms-1 ps-1 pe-0 d-flex" Style="height: 15em;">
+                        <ComponentList Components="Components" OnEdit="OnEditComponent" OnDelete="OnDeleteComponent"/>
+                    </MudContainer>
+                    <MudContainer Class="px-0 py-1 d-flex justify-end">
+                        <MudButton OnClick="@OnAddComponent" Variant="Variant.Text">Add Component</MudButton>
+                    </MudContainer>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6">
+            <MudPaper Class="pa-2" Height="20em" Elevation="1">
+                <MudStack Spacing="0">
+                    <MudText Typo="Typo.body1" Class="subdue">Workflow States:</MudText>
+                    <MudContainer Class="ms-1 ps-1 pe-0 d-flex" Style="height: 15em;">
+                        <ComponentList Components="States" OnEdit="OnEditState" OnDelete="OnDeleteState"/>
+                    </MudContainer>
+                    <MudContainer Class="px-0 py-1 d-flex justify-end">
+                        <MudButton OnClick="OnAddState" Variant="Variant.Text">Add State</MudButton>
+                    </MudContainer>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6">
+            <MudPaper Class="pa-2" Height="20em" Elevation="1">
+                <MudStack Spacing="0">
+                    <MudText Typo="Typo.body1" Class="subdue">Releases:</MudText>
+                    <MudContainer Class="ms-1 ps-1 pe-0 d-flex" Style="height: 15em;">
+                        <ComponentList Components="Releases" OnEdit="OnEditRelease" OnDelete="OnDeleteRelease"/>
+                    </MudContainer>
+                    <MudContainer Class="px-0 py-1 d-flex justify-end">
+                        <MudButton OnClick="OnAddRelease" Variant="Variant.Text">Add Release</MudButton>
+                    </MudContainer>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@inject IState<ProjectState>    ProjectState;
+@inject ProjectFacade           ProjectFacade;
+
+@code {
+    private IReadOnlyList<SnComponent>?      Components => ProjectState.Value.CurrentProject?.Components;
+    private IReadOnlyList<SnIssueType>?      IssueTypes => ProjectState.Value.CurrentProject?.IssueTypes;
+    private IReadOnlyList<SnWorkflowState>?  States => ProjectState.Value.CurrentProject?.WorkflowStates;
+    private IReadOnlyList<SnRelease>?        Releases => ProjectState.Value.CurrentProject?.Releases;
+
+    private void OnAddComponent() {
+        if( ProjectState.Value.CurrentProject != null ) {
+            ProjectFacade.AddComponent( ProjectState.Value.CurrentProject );
+        }
+    }
+    private void OnEditComponent( IComponentBase component ) {
+        if( component is SnComponent c ) {
+            ProjectFacade.UpdateComponent( c );
+        }
+    }
+    private void OnDeleteComponent( IComponentBase component ) {
+        if( component is SnComponent c ) {
+            ProjectFacade.DeleteComponent( c );
+        }
+    }
+
+    private void OnAddIssueType() {
+        if( ProjectState.Value.CurrentProject != null ) {
+            ProjectFacade.AddIssueType( ProjectState.Value.CurrentProject );
+        }
+    }
+
+    private void OnEditIssueType( IComponentBase issueType ) {
+        if( issueType is SnIssueType it ) {
+            ProjectFacade.UpdateIssueType( it );
+        }
+    }
+
+    private void OnDeleteIssueType( IComponentBase issueType ) {
+        if( issueType is SnIssueType it ) {
+            ProjectFacade.DeleteIssueType( it );
+        }
+    }
+
+    private void OnAddState() {
+        if( ProjectState.Value.CurrentProject != null ) {
+            ProjectFacade.AddWorkflowState( ProjectState.Value.CurrentProject );
+        }
+    }
+
+    private void OnEditState( IComponentBase state ) {
+        if( state is SnWorkflowState s ) {
+            ProjectFacade.UpdateWorkflowState( s );
+        }
+    }
+
+    private void OnDeleteState( IComponentBase state ) {
+        if( state is SnWorkflowState s ) {
+            ProjectFacade.DeleteWorkflowState( s );
+        }
+    }
+
+    private void OnAddRelease() {}
+    private void OnEditRelease( IComponentBase release ) { }
+    private void OnDeleteRelease( IComponentBase release ) { }
+}

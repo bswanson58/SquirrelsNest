@@ -1,0 +1,74 @@
+﻿@using Fluxor
+@using SquirrelsNest.Pecan.Client.Projects.Store
+
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<style>
+    .mouse-highlight {
+        background: lightgrey
+    }
+</style>
+
+<MudPaper Outlined="true">
+    <div @onmouseenter="@OnMouseEnter" @onmouseleave="@OnMouseLeave">
+        <MudStack Row="true" Spacing="2" Class="my-2">
+            <MudStack Spacing="0" Style="Width: 7em">
+                <MudText Typo="Typo.body1" Class="d-flex justify-end subdue">Name:</MudText>
+                <MudText Typo="Typo.body1" Class="d-flex justify-end subdue">Description:</MudText>
+                <MudText Typo="Typo.body1" Class="d-flex justify-end subdue">Issue Prefix:</MudText>
+            </MudStack>
+            <MudStack Spacing="0">
+                <MudText Typo="Typo.body1">@ProjectState.Value.CurrentProject?.Name</MudText>
+                <MudText Typo="Typo.body1">@ProjectState.Value.CurrentProject?.Description</MudText>
+                <MudText Typo="Typo.body1">@ProjectState.Value.CurrentProject?.Project.IssuePrefix</MudText>
+            </MudStack>
+        </MudStack>
+        <MudStack Row="true" Spacing="1" Class="my-0 mt-n12">
+            <MudContainer Class="d-flex flex-grow-1" />
+            <div class="@MouseOverVisibility">
+                <MudStack Row="true" Spacing="0" Class="d-flex justify-end">
+                    <MudIconButton Icon="@Icons.Material.Outlined.Edit" Title="Edit Project" OnClick="@OnEdit"/>
+                    <MudIconButton Icon="@Icons.Material.Filled.SaveAlt" Title="Create Project Template" OnClick="@OnCreateTemplate" />
+                    <MudIconButton Icon="@Icons.Material.Filled.SaveAs" Title="Export Project" OnClick="@OnExport" />
+                    <MudIconButton Icon="@Icons.Material.Outlined.DeleteOutline" Title="Delete Project" OnClick="@OnDelete" />
+                </MudStack>
+            </div>
+        </MudStack>
+    </div>
+</MudPaper>
+
+@inject IState<ProjectState>    ProjectState;
+@inject ProjectFacade           ProjectFacade;
+
+@code {
+    private bool mIsMouseOver = false;
+
+    private void OnMouseEnter() => mIsMouseOver = true;
+    private void OnMouseLeave() => mIsMouseOver = false;
+
+    private string MouseOverVisibility => mIsMouseOver && ( ProjectState.Value.CurrentProject != null ) ? "" : "invisible";
+
+    private void OnEdit() {
+        if( ProjectState.Value.CurrentProject != null ) {
+            ProjectFacade.EditProject( ProjectState.Value.CurrentProject );
+        }
+    }
+
+    private void OnDelete() {
+        if( ProjectState.Value.CurrentProject != null ) {
+            ProjectFacade.DeleteProject( ProjectState.Value.CurrentProject );
+        }
+    }
+
+    private void OnCreateTemplate() {
+        if( ProjectState.Value.CurrentProject != null ) {
+            ProjectFacade.CreateProjectTemplate( ProjectState.Value.CurrentProject );
+        }
+    }
+
+    private void OnExport() {
+        if( ProjectState.Value.CurrentProject != null ) {
+            ProjectFacade.ExportProject( ProjectState.Value.CurrentProject );
+        }
+    }
+}

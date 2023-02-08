@@ -1,0 +1,15 @@
+<h3 mat-dialog-title>Issue Type Details</h3>
+<mat-dialog-content fxLayout='column'>
+  <mat-form-field style='width: 60%'>
+    <mat-label>Name</mat-label>
+    <input type='text' required matInput [(ngModel)]='name' placeholder='Title'>
+  </mat-form-field>
+  <mat-form-field style='width: 100%'>
+    <mat-label>Description</mat-label>
+    <input type='text' matInput [(ngModel)]='description' aria-multiline='true' placeholder='Description'>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions fxLayout='row' fxLayoutAlign='end center' fxLayoutGap='1em'>
+  <button class='mat-button' (click)='onCancel()'>Cancel</button>
+  <button class='mat-button' (click)='onClose()'>OK</button>
+</mat-dialog-actions>

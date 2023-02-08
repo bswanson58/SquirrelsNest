@@ -1,0 +1,10 @@
+<div fxLayout='row'
+     [class.highlight]='isHovering'
+     (mouseover)='isHovering = true'
+     (mouseleave)='isHovering = false'>
+  <div fxFlex='grow' fxLayoutAlign='start center' style='padding: 0.2em'>{{issueType.name}}</div>
+  <div fxLayout='row' fxLayoutAlign='center center' fxLayoutGap='0.5em' fxFlex='4em'>
+    <mat-icon *ngIf='isHovering' class='dimmed' (click)='onEdit()'>edit</mat-icon>
+    <mat-icon *ngIf='isHovering' class='dimmed' (click)='onDelete()'>delete</mat-icon>
+  </div>
+</div>

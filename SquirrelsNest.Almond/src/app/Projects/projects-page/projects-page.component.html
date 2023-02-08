@@ -1,0 +1,20 @@
+<section fxLayout='row' fxLayoutGap='10px' style='height: 100%'>
+  <div fxLayout='column' fxFlex='25em'>
+    <sn-project-list fxFlex='grow'></sn-project-list>
+  </div>
+  <div fxLayout='column' fxFlex fxLayoutGap='1em' style='margin-top: 1em'>
+    <sn-project-commands fxFlexAlign='end'></sn-project-commands>
+
+    <sn-project-detail></sn-project-detail>
+
+    <div fxFlex='15em' fxLayout='row' fxLayoutGap='1em'>
+      <sn-issue-types-list fxFlex='50%'></sn-issue-types-list>
+      <sn-workflow-list fxFlex='50%'></sn-workflow-list>
+    </div>
+
+    <div fxFlex='15em' fxLayout='row' fxLayoutGap='1em'>
+      <sn-components-list fxFlex='50%'></sn-components-list>
+      <sn-project-users-list fxFlex='50%'></sn-project-users-list>
+    </div>
+  </div>
+</section>
