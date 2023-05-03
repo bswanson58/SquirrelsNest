@@ -1,3 +1,5 @@
+using System;
+using AspNetCore.Identity.CosmosDb.Extensions;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -35,13 +37,22 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
     services.AddControllersWithViews();
     services.AddRazorPages();
 
-    services.AddDbContext<PecanDbContext>( options => {
-        options.UseSqlServer( configuration.GetConnectionString( "DatabaseConnection" ));
-#if DEBUG
-        options.EnableDetailedErrors();
-        options.EnableSensitiveDataLogging();
-#endif
-    } );
+    var connectionString = configuration.GetConnectionString( "DatabaseConnection" ) ?? String.Empty;
+    var databaseName = configuration.GetValue<string>( "DatabaseName" ) ?? "PecanDB";
+    var setupDatabase = configuration.GetValue<string>( "SetupDatabase" ) ?? "false";
+    
+    if( bool.TryParse( setupDatabase, out var setup ) && setup ) {
+        var builder1 = new DbContextOptionsBuilder<PecanDbContext>();
+
+        builder1.UseCosmos( connectionString, databaseName );
+
+        using (var dbContext = new PecanDbContext( builder1.Options )) {
+            dbContext.Database.EnsureCreated();
+        }
+    }
+
+    services.AddDbContext<PecanDbContext>( options =>
+        options.UseCosmos( connectionString: connectionString, databaseName: databaseName ));
 
     services.AddScoped<IDbContext, PecanDbContext>();
     services.AddScoped<ICompositeIssueBuilder, CompositeIssueBuilder>();
@@ -60,11 +71,11 @@ void ConfigureServices( IServiceCollection services, ConfigurationManager config
 
 void ConfigureSecurity( IServiceCollection services, ConfigurationManager configuration ) {
     // AddIdentity must be called before AddAuthentication
-    services.AddIdentity<DbUser, IdentityRole>( 
-        options => PasswordRequirements.LoadPasswordRequirements( configuration, options ))
-        .AddEntityFrameworkStores<PecanDbContext>()
+    services.AddCosmosIdentity<PecanDbContext, DbUser, IdentityRole>(
+            options => PasswordRequirements.LoadPasswordRequirements( configuration, options )
+        )
         .AddDefaultTokenProviders();
-
+    
 //    JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
     var jwtSettings = configuration.GetSection( JWTConstants.JwtConfigSettings );

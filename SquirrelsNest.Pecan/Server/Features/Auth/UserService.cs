@@ -30,7 +30,7 @@ namespace SquirrelsNest.Pecan.Server.Features.Auth {
 
         public async Task<SnUser ?> CreateUser( string email, string displayName, string password = "" ) {
             var user = new DbUser { UserName = email, Email = email };
-            var firstUser = !mContext.Users.Any();
+            var firstUser = !mContext.Users.ToList().Any();
             var result = await mUserManager.CreateAsync( user );
 
             if(( result.Succeeded ) &&

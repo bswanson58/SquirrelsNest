@@ -7,9 +7,10 @@
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 @if( mAuthStateValid ) {
-    <MudAvatar Image="@mGravatarImageUri"
-               Color="Color.Info"
-               Alt="@mUserDisplayName">@mUserInitials</MudAvatar>
+    <MudAvatar Size="Size.Medium" Color="Color.Info">
+        <MudImage Fluid="true" ObjectFit="ObjectFit.Contain" ObjectPosition="ObjectPosition.Center"
+              Alt="@mUserDisplayName" Src="@mGravatarImageUri" />
+    </MudAvatar>
 }
 
 @inject IState<AuthState>   AuthState;
@@ -44,7 +45,7 @@
 
             if(!String.IsNullOrWhiteSpace( emailHash )) {
                 mGravatarImageUri =
-                    GravatarClient.GetImageUri( emailHash, GravatarDefaultImage.IdentIcon, false, 100 )
+                    GravatarClient.GetImageUri( emailHash, GravatarDefaultImage.IdentIcon, false, 48 )
                         .AbsoluteUri;
             }
         }

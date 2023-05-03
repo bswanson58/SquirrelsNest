@@ -2,7 +2,8 @@
 using SquirrelsNest.Pecan.Server.Database.Entities;
 using SquirrelsNest.Pecan.Server.Database.Support;
 using System;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using AspNetCore.Identity.CosmosDb;
+using Microsoft.AspNetCore.Identity;
 
 // The framework will set the DbSet properties appropriately:
 #pragma warning disable CS8618 
@@ -21,7 +22,7 @@ namespace SquirrelsNest.Pecan.Server.Database {
         DbSet<DbUser>               Users { get; }
     }
 
-    public class PecanDbContext : IdentityDbContext<DbUser>, IDbContext {
+    public class PecanDbContext : CosmosIdentityDbContext<DbUser, IdentityRole>, IDbContext {
         public  DbSet<DbAssociation>    Associations { get; set; }
         public  DbSet<DbComponent>      Components { get; set; }
         public  DbSet<DbIssue>          Issues { get; set; }
@@ -30,8 +31,6 @@ namespace SquirrelsNest.Pecan.Server.Database {
         public  DbSet<DbRelease>        Releases { get; set; }
         public  DbSet<DbUserData>       UserData { get; set; }
         public  DbSet<DbWorkflowState>  WorkflowStates { get; set; }
-
-        public PecanDbContext() { }
 
         public PecanDbContext( DbContextOptions<PecanDbContext> options ) :
             base( options ) { }
